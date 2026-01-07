@@ -2,10 +2,18 @@ import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { FirebaseModule } from '../firebase/firebase.module';
+import { BullModule } from '@nestjs/bullmq';
+import { GenerationProcessor } from './generation.processor';
 
 @Module({
-  imports: [FirebaseModule], // Import FirebaseModule to use FirebaseService
+  imports: [
+    FirebaseModule,
+    // Register the generation queue
+    BullModule.registerQueue({
+      name: 'generation-queue',
+    }),
+  ],
   controllers: [ProductsController],
-  providers: [ProductsService],
+  providers: [ProductsService, GenerationProcessor],
 })
 export class ProductsModule { }
