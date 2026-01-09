@@ -88,6 +88,50 @@ export class ProductsService {
     }
   }
 
+  /**
+   * Regenerate 3D model using existing image
+   */
+  async regenerateModel(productId: string, dimensions: GenerateModelDto) {
+    try {
+      const db = this.firebaseService.getFirestore();
+      const productDoc = await db.collection('products').doc(productId).get();
+
+      if (!productDoc.exists) {
+        throw new Error(`Product with ID ${productId} not found`);
+      }
+
+      const productData = productDoc.data();
+      if (!productData || !productData.imageUrl) {
+        throw new Error(`Product ${productId} does not have an image URL`);
+      }
+
+      // Add job to generation queue directly
+      const job = await this.generationQueue.add('generate-3d-model', {
+        productId,
+        imageUrl: productData.imageUrl,
+        dimensions,
+      });
+
+      console.log(`[Regen] Added job ${job.id} for product ${productId}`);
+
+      // Update status
+      await db.collection('products').doc(productId).update({
+        modelStatus: 'processing',
+        modelError: null, // Clear previous errors
+        updatedAt: new Date(),
+      });
+
+      return {
+        message: 'Regeneration started',
+        jobId: job.id,
+        status: 'processing'
+      };
+    } catch (error) {
+      console.error('Error regenerating model:', error);
+      throw error;
+    }
+  }
+
   async findAll() {
     const db = this.firebaseService.getFirestore();
     const snapshot = await db.collection('products').get();
