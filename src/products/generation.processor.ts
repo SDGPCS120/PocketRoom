@@ -160,8 +160,8 @@ export class GenerationProcessor extends WorkerHost {
      */
     private async uploadToStorage(productId: string, buffer: Buffer): Promise<string> {
         const storage = this.firebaseService.getStorage();
-        const bucket = storage.bucket();
-        const fileName = `models/${productId}.glb`;
+        const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+        const fileName = `3DModel/${productId}.glb`;
         const file = bucket.file(fileName);
 
         await file.save(buffer, {

@@ -47,8 +47,8 @@ export class ProductsService {
 
       // Step 2: Upload raw image to Firebase Storage
       const storage = this.firebaseService.getStorage();
-      const bucket = storage.bucket();
-      const imageFileName = `images/${productId}_${Date.now()}.jpg`;
+      const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+      const imageFileName = `Images/${productId}_${Date.now()}.jpg`;
       const imageFileRef = bucket.file(imageFileName);
 
       await imageFileRef.save(imageFile.buffer, {
