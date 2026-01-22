@@ -1,98 +1,219 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# PocketRoom - 3D Model Generation Pipeline
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS-based backend service that generates 3D models from product images using **Stability AI's Stable Fast 3D** API. The pipeline automatically processes images, generates GLB models, optimizes them with Draco compression, and stores them in Firebase.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Features
 
-## Description
+- **Image-to-3D Generation**: Convert product images to 3D GLB models using Stability AI
+- **Draco Compression**: Automatic GLB optimization for mobile-ready models
+- **Firebase Integration**: Store images and models in Firebase Storage, track status in Firestore
+- **Job Queue**: BullMQ-powered async processing with Redis
+- **REST API**: Full CRUD for products with 3D generation endpoint
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Prerequisites
 
-## Project setup
+- **Node.js** v18 or higher
+- **Redis** server (for job queue)
+- **Firebase** project with Firestore and Storage enabled
+- **Stability AI** API key ([Get one here](https://platform.stability.ai/))
+
+## 🛠️ Setup
+
+### 1. Install Dependencies
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+### 2. Configure Firebase
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project or use existing one
+3. Enable **Firestore Database** and **Storage**
+4. Go to Project Settings → Service Accounts → Generate New Private Key
+5. Save the downloaded file as `service-account.json` in the project root
+
+### 3. Configure Environment Variables
+
+Copy the example environment file and fill in your values:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Edit `.env` with your actual values:
+
+```env
+PORT=3000
+FIREBASE_STORAGE_BUCKET=your-project-id.appspot.com
+STABILITY_API_KEY=sk-your-stability-api-key
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
+
+### 4. Start Redis
+
+**Windows (WSL or Docker):**
+```bash
+# WSL
+redis-server
+
+# Docker
+docker run -d -p 6379:6379 redis
+```
+
+**macOS:**
+```bash
+brew services start redis
+```
+
+**Linux:**
+```bash
+sudo systemctl start redis
+```
+
+### 5. Run the Application
 
 ```bash
-# unit tests
-$ npm run test
+# Development (with hot reload)
+npm run start:dev
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Production
+npm run build
+npm run start:prod
 ```
 
-## Deployment
+The server will start on `http://localhost:3000`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 📡 API Endpoints
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Products
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/products` | Create a new product |
+| `GET` | `/products` | Get all products |
+| `GET` | `/products/:id` | Get a product by ID |
+| `PATCH` | `/products/:id` | Update a product |
+| `DELETE` | `/products/:id` | Delete a product |
+
+### 3D Model Generation
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/products/:id/generate` | Generate 3D model for a product |
+
+#### Generate 3D Model Request
+
+**Endpoint:** `POST /products/:id/generate`
+
+**Content-Type:** `multipart/form-data`
+
+**Body:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `image` | File | Product image (JPG, PNG, GIF - max 10MB) |
+| `x` | Number | Width dimension |
+| `y` | Number | Height dimension |
+| `z` | Number | Depth dimension |
+
+**Example using cURL:**
+```bash
+curl -X POST http://localhost:3000/products/YOUR_PRODUCT_ID/generate \
+  -F "image=@/path/to/your/image.jpg" \
+  -F "x=1.0" \
+  -F "y=1.5" \
+  -F "z=0.8"
+```
+
+**Response (202 Accepted):**
+```json
+{
+  "message": "Model generation started",
+  "jobId": "123",
+  "productId": "abc123",
+  "status": "processing"
+}
+```
+
+## 🔄 Pipeline Flow
+
+```
+1. Upload image → Firebase Storage (Images/)
+2. Add job to Redis queue
+3. Worker downloads image
+4. Send to Stability AI Stable Fast 3D
+5. Receive raw GLB
+6. Optimize with Draco compression
+7. Upload to Firebase Storage (3DModel/)
+8. Update Firestore with modelURL & status
+```
+
+### Model Status Values
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Product created, no generation started |
+| `processing` | 3D model generation in progress |
+| `completed` | Model generated and available at `modelURL` |
+| `failed` | Generation failed (see `modelError` field) |
+
+## 📁 Project Structure
+
+```
+src/
+├── app.module.ts           # Main application module
+├── main.ts                 # Application entry point
+├── firebase/
+│   ├── firebase.module.ts  # Firebase module
+│   └── firebase.service.ts # Firebase Admin SDK setup
+└── products/
+    ├── dto/
+    │   ├── create-product.dto.ts    # Product creation validation
+    │   ├── update-product.dto.ts    # Product update validation
+    │   └── generate-model.dto.ts    # 3D generation validation
+    ├── entities/
+    │   └── product.entity.ts
+    ├── utils/
+    │   └── optimization.util.ts     # Draco GLB optimization
+    ├── generation.processor.ts      # BullMQ job processor
+    ├── products.controller.ts       # REST API endpoints
+    ├── products.module.ts           # Products module
+    └── products.service.ts          # Business logic
+```
+
+## 🧪 Testing
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🔧 Troubleshooting
 
-## Resources
+### Redis Connection Error
+Make sure Redis is running:
+```bash
+redis-cli ping
+# Should return: PONG
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### Firebase Initialization Error
+- Verify `service-account.json` exists in project root
+- Check that the file contains valid credentials
+- Ensure `FIREBASE_STORAGE_BUCKET` matches your Firebase project
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Stability AI Error
+- Verify your API key is valid
+- Check you have sufficient credits
+- Ensure image is valid (JPG/PNG, not corrupted)
 
-## Support
+## 📄 License
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is [MIT licensed](LICENSE).

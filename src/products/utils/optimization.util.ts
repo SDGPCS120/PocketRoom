@@ -1,9 +1,9 @@
 import { processGlb } from 'gltf-pipeline';
 
 /**
- * Optimizes a GLB buffer using Draco compression
- * @param glbBuffer - The raw GLB buffer to optimize
- * @returns Promise<Buffer> - The optimized GLB buffer
+ Optimizes a GLB buffer using Draco compression
+ @param glbBuffer - The raw GLB buffer to optimize
+ @returns Promise<Buffer> - The optimized GLB buffer
  */
 export async function optimizeGLB(glbBuffer: Buffer): Promise<Buffer> {
     try {
@@ -11,11 +11,10 @@ export async function optimizeGLB(glbBuffer: Buffer): Promise<Buffer> {
 
         const options = {
             dracoOptions: {
-                compressionLevel: 7, // Level 7 compression
+                compressionLevel: 7,
             },
         };
 
-        // Process the GLB with gltf-pipeline
         const result = await processGlb(glbBuffer, options);
 
         console.log('GLB optimization completed successfully');

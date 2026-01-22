@@ -10,15 +10,12 @@ export class FirebaseService implements OnModuleInit {
 
             admin.initializeApp({
                 credential: admin.credential.cert(serviceAccount),
-                // Storage bucket is optional - only needed if using Firebase Storage
-                // Get from: Firebase Console -> Storage -> Files tab
-                // Or use environment variable: process.env.FIREBASE_STORAGE_BUCKET
                 storageBucket: process.env.FIREBASE_STORAGE_BUCKET || undefined
             });
 
-            console.log('✅ Firebase Admin Initialized Successfully');
+            console.log('Firebase Admin Initialized Successfully');
         } catch (error) {
-            console.error('❌ Firebase Admin Initialization Failed:', error.message);
+            console.error('Firebase Admin Initialization Failed:', error.message);
             throw error;
         }
     }

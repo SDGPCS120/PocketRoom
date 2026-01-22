@@ -8,7 +8,6 @@ import { GenerationProcessor } from './generation.processor';
 @Module({
   imports: [
     FirebaseModule,
-    // Register the generation queue
     BullModule.registerQueue({
       name: 'generation-queue',
     }),

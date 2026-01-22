@@ -32,15 +32,14 @@ export class ProductsController {
    * Accepts an image file and dimensions to generate a 3D model
    */
   @Post(':id/generate')
-  @HttpCode(HttpStatus.ACCEPTED) // 202 Accepted
+  @HttpCode(HttpStatus.ACCEPTED)
   @UseInterceptors(
     FileInterceptor('image', {
       limits: {
         fileSize: 10 * 1024 * 1024, // 10MB limit
       },
       fileFilter: (req, file, callback) => {
-        // Validate image file types
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
           return callback(
             new BadRequestException('Only image files are allowed!'),
             false,

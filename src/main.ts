@@ -7,9 +7,9 @@ async function bootstrap() {
 
   // Enable validation globally
   app.useGlobalPipes(new ValidationPipe({
-    whitelist: true, // Strip properties that don't have decorators
-    forbidNonWhitelisted: true, // Throw error if extra properties sent
-    transform: true, // Auto-transform payloads to DTO instances
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
   }));
 
   // Enable CORS for frontend access

@@ -28,8 +28,8 @@ export class ProductsService {
   }
 
   /**
-   * Generate 3D model for a product
-   * Uploads image to Firebase Storage and adds job to queue
+   Generate 3D model for a product
+   Uploads image to Firebase Storage and adds job to queue
    */
   async generateModel(
     productId: string,
@@ -37,7 +37,7 @@ export class ProductsService {
     dimensions: GenerateModelDto,
   ) {
     try {
-      // Step 1: Verify product exists
+      // Step 1
       const db = this.firebaseService.getFirestore();
       const productDoc = await db.collection('products').doc(productId).get();
 
@@ -45,7 +45,7 @@ export class ProductsService {
         throw new Error(`Product with ID ${productId} not found`);
       }
 
-      // Step 2: Upload raw image to Firebase Storage
+      // Step 2
       const storage = this.firebaseService.getStorage();
       const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
       const imageFileName = `Images/${productId}_${Date.now()}.jpg`;
@@ -60,14 +60,14 @@ export class ProductsService {
       await imageFileRef.makePublic();
       const imageUrl = `https://storage.googleapis.com/${bucket.name}/${imageFileName}`;
 
-      // Step 3: Update product status to 'processing'
+      // Step 3
       await db.collection('products').doc(productId).update({
         modelStatus: 'processing',
         imageUrl: imageUrl,
         updatedAt: new Date(),
       });
 
-      // Step 4: Add job to generation queue
+      // Step 4
       const job = await this.generationQueue.add('generate-3d-model', {
         productId,
         imageUrl,

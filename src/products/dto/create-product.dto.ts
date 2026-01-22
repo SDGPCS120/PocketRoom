@@ -50,7 +50,7 @@ export class CreateProductDto {
 
     @IsString()
     @IsOptional()
-    productID?: string;  // Optional - can be auto-generated
+    productID?: string;
 
     @IsBoolean()
     @IsOptional()
