@@ -4,50 +4,61 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Models
-class Sofa {
+// A more generic model for furniture items
+class Furniture {
   final int id;
   final String name;
   final double price;
   final String brand;
   final double rating;
   final String image;
+  final String furnitureType; // e.g., "Sofa", "Chair", "Table"
+  final String dimensions;    // e.g., "H: 90cm, W: 200cm, D: 100cm"
 
-  Sofa({
+  Furniture({
     required this.id,
     required this.name,
     required this.price,
     required this.brand,
     required this.rating,
     required this.image,
+    required this.furnitureType,
+    required this.dimensions,
   });
 }
 
 // Data
-final sofasData = [
-  Sofa(
+// The list now contains Furniture objects.
+final furnitureData = [
+  Furniture(
     id: 1,
     name: "The sofa",
     price: 88000,
     brand: "FurnitureMan",
     rating: 4.0,
     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
+    furnitureType: "Sofa",
+    dimensions: "H:90 W:200 D:100",
   ),
-  Sofa(
+  Furniture(
     id: 2,
     name: "Sofa Max",
     price: 100000,
     brand: "FurnitureMan",
     rating: 4.0,
     image: "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
+    furnitureType: "Sofa",
+    dimensions: "H:95 W:220 D:105",
   ),
-  Sofa(
+  Furniture(
     id: 3,
     name: "Sofa Lite",
     price: 54000,
     brand: "FurnitureMan",
     rating: 4.0,
     image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
+    furnitureType: "Sofa",
+    dimensions: "H:85 W:180 D:90",
   ),
 ];
 
@@ -55,7 +66,8 @@ final categories = ["Arpico", "Best sellers", "Minimalistic", "New", "Modern"];
 
 // Riverpod Providers
 final activeCategoryProvider = StateProvider<String>((ref) => "Best sellers");
-final sofasProvider = Provider<List<Sofa>>((ref) => sofasData);
+// The provider now provides a list of Furniture.
+final furnitureProvider = Provider<List<Furniture>>((ref) => furnitureData);
 
 // Main App
 void main() {
@@ -261,7 +273,7 @@ class SectionHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'Sofas',
+            'Sofas', // This could be made dynamic later based on the category
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
@@ -289,23 +301,26 @@ class ProductList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final sofas = ref.watch(sofasProvider);
+    // Watch the new furnitureProvider
+    final furnitureItems = ref.watch(furnitureProvider);
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      itemCount: sofas.length,
+      itemCount: furnitureItems.length,
       itemBuilder: (context, index) {
-        return ProductCard(sofa: sofas[index]);
+        // Pass the Furniture object to the card
+        return ProductCard(furniture: furnitureItems[index]);
       },
     );
   }
 }
 
 // Product Card Widget
+// It now accepts a Furniture object instead of a Sofa object.
 class ProductCard extends StatelessWidget {
-  final Sofa sofa;
+  final Furniture furniture;
 
-  const ProductCard({Key? key, required this.sofa}) : super(key: key);
+  const ProductCard({Key? key, required this.furniture}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -340,7 +355,7 @@ class ProductCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.network(
-                  sofa.image,
+                  furniture.image,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
@@ -361,7 +376,7 @@ class ProductCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        sofa.name,
+                        furniture.name,
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -370,7 +385,7 @@ class ProductCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'LKR ${sofa.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                        'LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -379,7 +394,7 @@ class ProductCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Brand: ${sofa.brand}',
+                        'Brand: ${furniture.brand}',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[700],
@@ -397,7 +412,7 @@ class ProductCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        sofa.rating.toString(),
+                        furniture.rating.toString(),
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
