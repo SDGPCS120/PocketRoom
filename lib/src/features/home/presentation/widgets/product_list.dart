@@ -8,13 +8,29 @@ class ProductList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final furnitureItems = ref.watch(furnitureProvider);
+    // Watch the new FutureProvider. This gives us an AsyncValue.
+    final furnitureListAsync = ref.watch(furnitureListProvider);
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      itemCount: furnitureItems.length,
-      itemBuilder: (context, index) {
-        return ProductCard(furniture: furnitureItems[index]);
+    // Use .when to handle the different states of the FutureProvider.
+    return furnitureListAsync.when(
+      // The state while data is loading
+      loading: () => const Center(child: CircularProgressIndicator()),
+      
+      // The state when an error occurs
+      error: (error, stackTrace) => Center(
+        child: Text('An error occurred: $error'),
+      ),
+
+      // The state when data has been successfully fetched
+      data: (furnitureItems) {
+        // If we have data, we build the list as before.
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          itemCount: furnitureItems.length,
+          itemBuilder: (context, index) {
+            return ProductCard(furniture: furnitureItems[index]);
+          },
+        );
       },
     );
   }
