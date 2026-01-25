@@ -33,4 +33,4 @@ final furnitureData = [
   ),
 ];
 
-final categories = ["Arpico", "Best sellers", "Minimalistic", "New", "Modern"];
+final categories = ["Max", "Best sellers", "Minimalistic", "New", "Modern"];
