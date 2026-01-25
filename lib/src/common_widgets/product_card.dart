@@ -8,6 +8,9 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the text theme from the context to ensure we use the correct font.
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -61,27 +64,30 @@ class ProductCard extends StatelessWidget {
                     children: [
                       Text(
                         furniture.name,
-                        style: const TextStyle(
-                          fontSize: 20,
+                        // Using headlineSmall from theme for the product title.
+                        style: textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2D2D2D),
+                          color: const Color(0xFF2D2D2D),
+                          fontSize: 20, // Keep original size
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
-                        style: const TextStyle(
-                          fontSize: 16,
+                        // Using titleMedium from theme for the price.
+                        style: textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D2D2D),
+                          color: const Color(0xFF2D2D2D),
+                          fontSize: 16, // Keep original size
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Brand: ${furniture.brand}',
-                        style: TextStyle(
-                          fontSize: 12,
+                        // Using bodySmall for less important text.
+                        style: textTheme.bodySmall?.copyWith(
                           color: Colors.grey[700],
+                          fontSize: 12, // Keep original size
                         ),
                       ),
                     ],
@@ -97,10 +103,11 @@ class ProductCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         furniture.rating.toString(),
-                        style: const TextStyle(
-                          fontSize: 14,
+                        // Using labelLarge for the rating text.
+                        style: textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D2D2D),
+                          color: const Color(0xFF2D2D2D),
+                          fontSize: 14, // Keep original size
                         ),
                       ),
                     ],

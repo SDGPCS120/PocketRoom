@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'src/core/theme/app_theme.dart';
 import 'src/features/home/presentation/home_page.dart';
 
 void main() {
@@ -14,11 +15,7 @@ class PocketRoomApp extends StatelessWidget {
     return MaterialApp(
       title: 'PocketRoom',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
-        scaffoldBackgroundColor: const Color(0xFFFFF8F3),
-        fontFamily: 'Poppins',
-      ),
+      theme: AppTheme.lightTheme, // Using the new centralized theme
       home: const HomePage(),
     );
   }

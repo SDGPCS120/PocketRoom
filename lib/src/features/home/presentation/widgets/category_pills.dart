@@ -45,6 +45,9 @@ class CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the base text style from the current theme for the font family.
+    final textStyle = Theme.of(context).textTheme.labelLarge;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -66,10 +69,10 @@ class CategoryChip extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: TextStyle(
+            // Use the theme's text style, but override the color based on state.
+            style: textStyle?.copyWith(
               color: isActive ? Colors.white : const Color(0xFF2D2D2D),
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w600, // Preserve the original weight
             ),
           ),
         ),

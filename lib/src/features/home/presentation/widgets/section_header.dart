@@ -5,17 +5,19 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
+          Text(
             'Sofas', // This could be made dynamic later based on the category
-            style: TextStyle(
-              fontSize: 26,
+            style: textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2D2D2D),
+              color: const Color(0xFF2D2D2D),
+              fontSize: 26, // Keep original size
             ),
           ),
           IconButton(
