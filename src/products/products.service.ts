@@ -57,13 +57,19 @@ export class ProductsService {
         },
       });
 
-      await imageFileRef.makePublic();
-      const imageUrl = `https://storage.googleapis.com/${bucket.name}/${imageFileName}`;
+      // Use signed URL for reliable Tripo access (expires in 1 hour)
+      // This works even if bucket rules block public access
+      const [signedUrl] = await imageFileRef.getSignedUrl({
+        action: 'read',
+        expires: Date.now() + 60 * 60 * 1000, // 1 hour
+      });
+      const imageUrl = signedUrl;
 
       // Step 3
       await db.collection('products').doc(productId).update({
         modelStatus: 'processing',
         imageUrl: imageUrl,
+        imagePath: imageFileName, // Store path for regeneration (signed URLs expire)
         updatedAt: new Date(),
       });
 
@@ -90,6 +96,7 @@ export class ProductsService {
 
   /**
    * Regenerate 3D model using existing image
+   * Handles both new products (with imagePath) and legacy products (with only imageUrl)
    */
   async regenerateModel(productId: string, dimensions: GenerateModelDto) {
     try {
@@ -101,14 +108,49 @@ export class ProductsService {
       }
 
       const productData = productDoc.data();
-      if (!productData || !productData.imageUrl) {
-        throw new Error(`Product ${productId} does not have an image URL`);
+
+      // RESILIENT: Check for imagePath first, fall back to imageUrl for legacy products
+      let imageUrl: string;
+
+      if (productData?.imagePath) {
+        // New flow: Generate fresh signed URL from stored path
+        console.log(`[Regen] Using imagePath: ${productData.imagePath}`);
+        const storage = this.firebaseService.getStorage();
+        const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+        const imageFileRef = bucket.file(productData.imagePath);
+
+        const [freshSignedUrl] = await imageFileRef.getSignedUrl({
+          action: 'read',
+          expires: Date.now() + 60 * 60 * 1000, // 1 hour
+        });
+        imageUrl = freshSignedUrl;
+        console.log(`[Regen] Generated fresh signed URL for ${productId}`);
+
+      } else if (productData?.imageUrl) {
+        // Legacy flow: Use existing imageUrl directly (may be public GCS URL)
+        console.log(`[Regen] Using legacy imageUrl for ${productId}`);
+        imageUrl = productData.imageUrl;
+
+        // Try to extract path from GCS URL and backfill imagePath
+        const gcsMatch = productData.imageUrl.match(/storage\.googleapis\.com\/[^/]+\/(.+?)(\?|$)/);
+        if (gcsMatch) {
+          const extractedPath = decodeURIComponent(gcsMatch[1]);
+          console.log(`[Regen] Backfilling imagePath: ${extractedPath}`);
+          await db.collection('products').doc(productId).update({
+            imagePath: extractedPath
+          });
+        }
+      } else {
+        throw new Error(
+          `Logic Error: Product ${productId} is missing a source image. ` +
+          `Cannot generate 3D model from nothing. Check your upload logic.`
+        );
       }
 
-      // Add job to generation queue directly
+      // Add job to generation queue
       const job = await this.generationQueue.add('generate-3d-model', {
         productId,
-        imageUrl: productData.imageUrl,
+        imageUrl,
         dimensions,
       });
 

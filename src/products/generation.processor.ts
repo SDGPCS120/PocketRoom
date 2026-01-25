@@ -112,18 +112,23 @@ export class GenerationProcessor extends WorkerHost {
             const extension = imageUrl.split(/[#?]/)[0].split('.').pop()?.toLowerCase() || 'jpg';
             const fileType = ['png', 'jpg', 'jpeg', 'bmp'].includes(extension) ? (extension === 'jpeg' ? 'jpg' : extension) : 'jpg';
 
+            // Use Tripo v1.4 for cost efficiency (~25-30 credits vs ~250 for v2)
+            // v2.0 is the default expensive "industry-leading" model
             const payload = {
                 type: 'image_to_model',
                 file: {
                     type: fileType,
                     url: imageUrl
-                }
+                },
+                model_version: 'v1.4-20240625' // Explicitly use v1.4 to save credits
             };
-            require('fs').writeFileSync('C:\\Users\\abdur\\Documents\\GitHub\\3D_generation_Pipeline\\debug_payload.json', JSON.stringify(payload, null, 2));
-            console.error('[Tripo] Payload written to debug_payload.json');
+
+            // Log the URL for debugging - test this URL in an Incognito window!
+            console.log(`[Tripo] Image URL being sent: ${imageUrl}`);
+            console.log('[Tripo] ⚠️  If you get a 400 error, test this URL in Incognito mode first!');
 
             const startResponse = await axios.post(
-                'https://api.tripo3d.ai/v2/openapi/task', // V2 API Endpoint
+                'https://api.tripo3d.ai/v2/openapi/task', // V2 API Endpoint supports v1.4 model param
                 payload,
                 { headers: { Authorization: `Bearer ${apiKey}` } }
             );
@@ -136,10 +141,10 @@ export class GenerationProcessor extends WorkerHost {
             // ---------------------------------------------------------
             let modelUrl = '';
             let attempts = 0;
-            const maxAttempts = 60; // Wait max 2 minutes (2s * 60)
+            const maxAttempts = 36; // Wait max 3 minutes (5s * 36)
 
             while (attempts < maxAttempts) {
-                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+                await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds (avoid API throttling)
 
                 const statusResponse = await axios.get(
                     `https://api.tripo3d.ai/v2/openapi/task/${taskId}`,
@@ -175,8 +180,12 @@ export class GenerationProcessor extends WorkerHost {
             // ---------------------------------------------------------
             console.log('[Processor] Step 4: Saving to Firebase...');
             const bucket = this.firebaseService.getStorage().bucket();
+<<<<<<< HEAD
             const filename = `models/${productId}_${Date.now()}.glb`;
 >>>>>>> 9e3ad75 (using Tripo instead of Stable fast)
+=======
+            const filename = `3DModel/${productId}_${Date.now()}.glb`;
+>>>>>>> 41d5565 (tripo is working fine)
             const file = bucket.file(filename);
 
             await file.save(optimizedBuffer, {

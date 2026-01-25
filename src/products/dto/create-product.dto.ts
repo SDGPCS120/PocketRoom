@@ -60,4 +60,12 @@ export class CreateProductDto {
     @IsString({ each: true })
     @IsOptional()
     styleTags?: string[];
+
+    @IsString()
+    @IsOptional()
+    imageUrl?: string;
+
+    @IsString()
+    @IsOptional()
+    imagePath?: string;
 }

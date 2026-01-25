@@ -20,6 +20,7 @@ async function bootstrap() {
                 choices: [
                     { name: '📋 View All Products', value: 'view' },
                     { name: '🔄 Regenerate 3D Model', value: 'regenerate' },
+                    { name: '🗑️  Delete Product', value: 'delete' },
                     { name: '❌ Exit', value: 'exit' },
                 ],
             },
@@ -92,6 +93,53 @@ async function bootstrap() {
                     genSpinner.fail(chalk.red('Failed to trigger generation.'));
                     console.error(error.message);
                 }
+            }
+        }
+
+        if (action === 'delete') {
+            const spinner = ora('Fetching products...').start();
+            const products = await productsService.findAll() as any[];
+            spinner.stop();
+
+            if (products.length === 0) {
+                console.log(chalk.yellow('No products found.'));
+                continue;
+            }
+
+            const { productId } = await inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'productId',
+                    message: 'Select a product to delete:',
+                    choices: products.map(p => ({
+                        name: `${p.name} - ID: ${p.id}`,
+                        value: p.id
+                    }))
+                }
+            ]);
+
+            const selectedProduct = products.find(p => p.id === productId);
+
+            const { confirm } = await inquirer.prompt([
+                {
+                    type: 'confirm',
+                    name: 'confirm',
+                    message: chalk.red(`⚠️  Are you sure you want to DELETE "${selectedProduct?.name}"? This cannot be undone!`),
+                    default: false
+                }
+            ]);
+
+            if (confirm) {
+                const deleteSpinner = ora('Deleting product...').start();
+                try {
+                    await productsService.remove(productId);
+                    deleteSpinner.succeed(chalk.green(`Product "${selectedProduct?.name}" deleted successfully!`));
+                } catch (error) {
+                    deleteSpinner.fail(chalk.red('Failed to delete product.'));
+                    console.error(error.message);
+                }
+            } else {
+                console.log(chalk.gray('Deletion cancelled.'));
             }
         }
     }
