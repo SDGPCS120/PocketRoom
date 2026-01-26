@@ -19,8 +19,8 @@ async function bootstrap() {
                 message: 'What would you like to do?',
                 choices: [
                     { name: '📋 View All Products', value: 'view' },
-                    { name: '🔄 Regenerate 3D Model', value: 'regenerate' },
-                    { name: '🗑️  Delete Product', value: 'delete' },
+                    { name: '➕ Add New Product', value: 'add' },
+                    { name: '🔄 Generate 3D Model', value: 'regenerate' },
                     { name: '❌ Exit', value: 'exit' },
                 ],
             },
@@ -96,50 +96,136 @@ async function bootstrap() {
             }
         }
 
-        if (action === 'delete') {
-            const spinner = ora('Fetching products...').start();
-            const products = await productsService.findAll() as any[];
-            spinner.stop();
 
-            if (products.length === 0) {
-                console.log(chalk.yellow('No products found.'));
-                continue;
-            }
 
-            const { productId } = await inquirer.prompt([
+        if (action === 'add') {
+            console.log(chalk.cyan('\n📝 Enter Product Details\n'));
+
+            const answers = await inquirer.prompt([
                 {
-                    type: 'list',
-                    name: 'productId',
-                    message: 'Select a product to delete:',
-                    choices: products.map(p => ({
-                        name: `${p.name} - ID: ${p.id}`,
-                        value: p.id
-                    }))
-                }
-            ]);
-
-            const selectedProduct = products.find(p => p.id === productId);
-
-            const { confirm } = await inquirer.prompt([
+                    type: 'input',
+                    name: 'productID',
+                    message: 'Product ID (leave empty to auto-generate):',
+                },
+                {
+                    type: 'input',
+                    name: 'name',
+                    message: 'Product Name:',
+                    validate: (input) => input ? true : 'Name is required'
+                },
+                {
+                    type: 'number',
+                    name: 'price',
+                    message: 'Price ($):',
+                    validate: (input) => !isNaN(input) && input >= 0 ? true : 'Please enter a valid price'
+                },
+                {
+                    type: 'input',
+                    name: 'material',
+                    message: 'Material:',
+                    validate: (input) => input ? true : 'Material is required'
+                },
+                {
+                    type: 'input',
+                    name: 'primaryColor',
+                    message: 'Primary Color:',
+                    validate: (input) => input ? true : 'Color is required'
+                },
                 {
                     type: 'confirm',
-                    name: 'confirm',
-                    message: chalk.red(`⚠️  Are you sure you want to DELETE "${selectedProduct?.name}"? This cannot be undone!`),
-                    default: false
+                    name: 'stockStatus',
+                    message: 'In Stock?',
+                    default: true
+                },
+                {
+                    type: 'input',
+                    name: 'styleTags',
+                    message: 'Style Tags (comma separated):',
+                    filter: (input) => input.split(',').map(t => t.trim()).filter(t => t.length > 0)
+                },
+                {
+                    type: 'number',
+                    name: 'height',
+                    message: 'Height (cm):',
+                    validate: (input) => !isNaN(input) && input > 0 ? true : 'Valid height required'
+                },
+                {
+                    type: 'number',
+                    name: 'length',
+                    message: 'Length (cm):',
+                    validate: (input) => !isNaN(input) && input > 0 ? true : 'Valid length required'
+                },
+                {
+                    type: 'number',
+                    name: 'width',
+                    message: 'Width (cm):',
+                    validate: (input) => !isNaN(input) && input > 0 ? true : 'Valid width required'
+                },
+                {
+                    type: 'input',
+                    name: 'imagePath',
+                    message: 'Path to Product Image (absolute or relative):',
+                    validate: async (input) => {
+                        try {
+                            const fs = require('fs');
+                            if (fs.existsSync(input)) return true;
+                            return 'File does not exist';
+                        } catch (e) {
+                            return 'Invalid path';
+                        }
+                    }
                 }
             ]);
 
-            if (confirm) {
-                const deleteSpinner = ora('Deleting product...').start();
-                try {
-                    await productsService.remove(productId);
-                    deleteSpinner.succeed(chalk.green(`Product "${selectedProduct?.name}" deleted successfully!`));
-                } catch (error) {
-                    deleteSpinner.fail(chalk.red('Failed to delete product.'));
-                    console.error(error.message);
-                }
-            } else {
-                console.log(chalk.gray('Deletion cancelled.'));
+            const fs = require('fs');
+            const path = require('path');
+            const mime = require('mime-types');
+
+            const spinner = ora('Creating product...').start();
+
+            try {
+                // 1. Create initial product document
+                const productData = {
+                    productID: answers.productID || undefined, // undefined will trigger auto-gen logic if we handled it that way, but passing undefined key is fine as DTO handles it? Actually if undefined, DTO is fine.
+                    name: answers.name,
+                    price: answers.price,
+                    material: answers.material,
+                    primaryColor: answers.primaryColor,
+                    stockStatus: answers.stockStatus,
+                    styleTags: answers.styleTags,
+                    dimensions: {
+                        height: answers.height,
+                        length: answers.length,
+                        width: answers.width
+                    }
+                };
+
+                const createResult = await productsService.create(productData as any);
+                const newProductId = createResult.id;
+
+                spinner.text = 'Uploading image...';
+
+                // 2. Read and upload image
+                const imagePath = path.resolve(answers.imagePath);
+                const fileBuffer = fs.readFileSync(imagePath);
+                const mimeType = mime.lookup(imagePath) || 'image/jpeg';
+
+                const uploadResult = await productsService.uploadProductImage(newProductId, fileBuffer, mimeType);
+
+                // 3. Update product with image URLs
+                await productsService.update(newProductId, {
+                    imageUrl: uploadResult.imageUrl,
+                    imagePath: uploadResult.imagePath,
+                    // Ensure modelStatus is pending, but we are NOT triggering generation
+                    modelStatus: 'pending'
+                });
+
+                spinner.succeed(chalk.green(`Product created successfully! ID: ${newProductId}`));
+                console.log(chalk.gray(`Image uploaded to: ${uploadResult.imagePath}`));
+
+            } catch (error) {
+                spinner.fail(chalk.red('Failed to add product.'));
+                console.error(error.message);
             }
         }
     }

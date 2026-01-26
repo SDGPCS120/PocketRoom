@@ -15,14 +15,54 @@ export class ProductsService {
   async create(createProductDto: CreateProductDto) {
     try {
       const db = this.firebaseService.getFirestore();
-      const docRef = await db.collection('products').add({
-        ...createProductDto,
-        createdAt: new Date(),
-        modelStatus: 'pending', // Default status for 3D pipeline
-      });
-      return { id: docRef.id, message: 'Product created' };
+
+      if (createProductDto.productID) {
+        await db.collection('products').doc(createProductDto.productID).set({
+          ...createProductDto,
+          createdAt: new Date(),
+          modelStatus: 'pending',
+        });
+        return { id: createProductDto.productID, message: 'Product created' };
+      } else {
+        const docRef = await db.collection('products').add({
+          ...createProductDto,
+          createdAt: new Date(),
+          modelStatus: 'pending',
+        });
+        return { id: docRef.id, message: 'Product created' };
+      }
     } catch (error) {
       console.error('Error creating product:', error);
+      throw error;
+    }
+  }
+
+  async uploadProductImage(productId: string, fileBuffer: Buffer, mimeType: string) {
+    try {
+      const storage = this.firebaseService.getStorage();
+      const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+      const extension = mimeType.split('/')[1] || 'jpg';
+      const imageFileName = `Images/${productId}.${extension}`;
+      const imageFileRef = bucket.file(imageFileName);
+
+      await imageFileRef.save(fileBuffer, {
+        metadata: {
+          contentType: mimeType,
+        },
+      });
+
+      // Generate signed URL
+      const [signedUrl] = await imageFileRef.getSignedUrl({
+        action: 'read',
+        expires: Date.now() + 60 * 60 * 1000 * 24 * 365, // 1 year (long expiry for manual upload)
+      });
+
+      return {
+        imageUrl: signedUrl,
+        imagePath: imageFileName
+      };
+    } catch (error) {
+      console.error('Error uploading product image:', error);
       throw error;
     }
   }
