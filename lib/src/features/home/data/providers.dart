@@ -32,8 +32,18 @@ final furnitureListProvider = FutureProvider<List<Furniture>>((ref) async {
     // Return only items that contain 'Lite' in their name
     return allFurniture.where((item) => item.name.contains('Lite')).toList();
   }
-  
-  if (activeCategory == 'Modern') {
+
+  if (activeCategory == 'Damro') {
+    // Return only items that contain 'Lite' in their name
+    return allFurniture.where((item) => item.brand.contains('Damro')).toList();
+  }
+
+  if (activeCategory == 'Arpico') {
+    // Return only items that contain 'Lite' in their name
+    return allFurniture.where((item) => item.brand.contains('Arpico')).toList();
+  }
+
+  if (activeCategory == 'Max') {
     // Return only items that contain 'Max' in their name
     return allFurniture.where((item) => item.name.contains('Max')).toList();
   }

@@ -3,9 +3,9 @@ import './models/furniture_model.dart';
 final furnitureData = [
   Furniture(
     id: 1,
-    name: "The sofa",
+    name: "Lite Sofa",
     price: 88000,
-    brand: "FurnitureMan",
+    brand: "Phoenix",
     rating: 4.0,
     image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
     furnitureType: "Sofa",
@@ -15,7 +15,7 @@ final furnitureData = [
     id: 2,
     name: "Sofa Max",
     price: 100000,
-    brand: "FurnitureMan",
+    brand: "Arpico",
     rating: 4.0,
     image: "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
     furnitureType: "Sofa",
@@ -25,7 +25,7 @@ final furnitureData = [
     id: 3,
     name: "Sofa Lite",
     price: 54000,
-    brand: "FurnitureMan",
+    brand: "Damro",
     rating: 4.0,
     image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
     furnitureType: "Sofa",
@@ -33,4 +33,4 @@ final furnitureData = [
   ),
 ];
 
-final categories = ["Max", "Best sellers", "Minimalistic", "New", "Modern"];
+final categories = ["Max", "Arpico", "Minimalistic", "Damro", "Modern"];
