@@ -11,7 +11,8 @@ dependencies:
   flutter_riverpod: ^2.4.9
   getwidget: ^4.0.0
   google_fonts: ^6.2.1
-
+  flutter:
+    sdk: flutter
   cupertino_icons: ^1.0.8
 
 dev_dependencies:

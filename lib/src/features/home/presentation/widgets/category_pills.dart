@@ -4,7 +4,7 @@ import '../../data/mock_data.dart';
 import '../../data/providers.dart';
 
 class CategoryPills extends ConsumerWidget {
-  const CategoryPills({Key? key}) : super(key: key);
+  const CategoryPills({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,11 +37,11 @@ class CategoryChip extends StatelessWidget {
   final VoidCallback onTap;
 
   const CategoryChip({
-    Key? key,
+    super.key,
     required this.label,
     required this.isActive,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class CategoryChip extends StatelessWidget {
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: const Color(0xFFFF8A3D).withOpacity(0.3),
+                    color: const Color(0xFFFF8A3D).withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),

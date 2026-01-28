@@ -4,7 +4,7 @@ import '../../../../common_widgets/product_card.dart';
 import '../../data/providers.dart';
 
 class ProductList extends ConsumerWidget {
-  const ProductList({Key? key}) : super(key: key);
+  const ProductList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -4,7 +4,7 @@ import '../features/home/data/models/furniture_model.dart';
 class ProductCard extends StatelessWidget {
   final Furniture furniture;
 
-  const ProductCard({Key? key, required this.furniture}) : super(key: key);
+  const ProductCard({super.key, required this.furniture});
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ void main() {
 }
 
 class PocketRoomApp extends StatelessWidget {
-  const PocketRoomApp({Key? key}) : super(key: key);
+  const PocketRoomApp({super.key});
 
   @override
   Widget build(BuildContext context) {
