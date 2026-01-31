@@ -5,49 +5,38 @@ import './repositories/furniture_repository.dart';
 // Provider for the active category (unchanged).
 final activeCategoryProvider = StateProvider<String>((ref) => "Best sellers");
 
-// Provider for the repository itself. This allows us to easily swap
-// the implementation for testing or different data sources.
+// Provider for the repository itself (unchanged).
 final furnitureRepositoryProvider = Provider<IFurnitureRepository>((ref) {
   return FurnitureRepository();
 });
 
-// The main provider that the UI will interact with.
-// It's now a FutureProvider that depends on both the repository and the active category.
-final furnitureListProvider = FutureProvider<List<Furniture>>((ref) async {
-  // Watch the repository provider to get the repository instance.
+// 1. "Fetcher" Provider: Fetches all furniture from the repository ONCE.
+final allFurnitureProvider = FutureProvider<List<Furniture>>((ref) {
   final repository = ref.watch(furnitureRepositoryProvider);
+  return repository.fetchFurniture();
+});
 
-  // Watch the active category. When this changes, this provider will automatically re-run.
+// 2. "Filterer" Provider: This is a fast, synchronous provider.
+// It takes the full list from allFurnitureProvider and filters it based
+// on the active category. It re-runs whenever the category changes.
+final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
+  final allFurniture = ref.watch(allFurnitureProvider).value ?? [];
   final activeCategory = ref.watch(activeCategoryProvider);
 
-  // Fetch all furniture from the repository.
-  final allFurniture = await repository.fetchFurniture();
-
-  // In a real application, you would pass the activeCategory to your repository,
-  // e.g., `repository.fetchFurniture(category: activeCategory)`, and the API 
-  // would handle the filtering on the backend.
-  //
-  // Since we are using mock data, we'll simulate the filtering logic here.
-  if (activeCategory == 'Minimalistic') {
-    // Return only items that contain 'Lite' in their name
-    return allFurniture.where((item) => item.name.contains('Lite')).toList();
+  // --- Restoring your filtering logic here ---
+  switch (activeCategory) {
+    case 'Arpico':
+      return allFurniture.where((item) => item.brand.contains('Arpico')).toList();
+    case 'Modern':
+      return allFurniture.where((item) => item.name.contains('Sofa')).toList();
+    case 'Max':
+      return allFurniture.where((item) => item.name.contains('Max')).toList();
+    case 'Minimalistic':
+      return allFurniture.where((item) => item.name.contains('Lite')).toList();
+    case 'Damro':
+      return allFurniture.where((item) => item.brand.contains('Damro')).toList();
+    default:
+      // For all other categories, return the full list.
+      return allFurniture;
   }
-
-  if (activeCategory == 'Damro') {
-    // Return only items that contain 'Lite' in their name
-    return allFurniture.where((item) => item.brand.contains('Damro')).toList();
-  }
-
-  if (activeCategory == 'Arpico') {
-    // Return only items that contain 'Lite' in their name
-    return allFurniture.where((item) => item.brand.contains('Arpico')).toList();
-  }
-
-  if (activeCategory == 'Max') {
-    // Return only items that contain 'Max' in their name
-    return allFurniture.where((item) => item.name.contains('Max')).toList();
-  }
-
-  // For "Best sellers" or any other category, we'll return all items for now.
-  return allFurniture;
 });

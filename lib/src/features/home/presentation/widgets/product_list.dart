@@ -8,27 +8,27 @@ class ProductList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the new FutureProvider. This gives us an AsyncValue.
-    final furnitureListAsync = ref.watch(furnitureListProvider);
+    // Watch the "fetcher" provider to handle the initial loading/error states.
+    final allFurnitureAsync = ref.watch(allFurnitureProvider);
 
-    // Use .when to handle the different states of the FutureProvider.
-    return furnitureListAsync.when(
-      // The state while data is loading
+    return allFurnitureAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      
-      // The state when an error occurs
-      error: (error, stackTrace) => Center(
-        child: Text('An error occurred: $error'),
-      ),
+      error: (error, stack) => Center(child: Text('Error: $error')),
+      data: (_) {
+        // Once the data has loaded, watch the fast "filterer" provider to get
+        // the list that should be displayed.
+        final filteredList = ref.watch(filteredFurnitureProvider);
+        
+        // If the filtered list is empty, show a message.
+        if (filteredList.isEmpty) {
+          return const Center(child: Text('No items found in this category.'));
+        }
 
-      // The state when data has been successfully fetched
-      data: (furnitureItems) {
-        // If we have data, we build the list as before.
         return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          itemCount: furnitureItems.length,
+          itemCount: filteredList.length,
           itemBuilder: (context, index) {
-            return ProductCard(furniture: furnitureItems[index]);
+            return ProductCard(furniture: filteredList[index]);
           },
         );
       },
