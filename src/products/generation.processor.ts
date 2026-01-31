@@ -42,11 +42,37 @@ export class GenerationProcessor extends WorkerHost {
             const imageBuffer = Buffer.from(imageResponse.data);
             this.logger.log(`[Processor] Downloaded image: ${imageBuffer.length} bytes`);
 
-            // CALL API
+            // CALL API: BACKGROUND REMOVAL
+            this.logger.log('[StabilityAI] Removing background...');
+            const removeBgFormData = new FormData();
+            removeBgFormData.append('image', imageBuffer, { filename: 'input.jpg' });
+            removeBgFormData.append('output_format', 'webp'); // Stability recommends webp/png for transparency
+
+            const removeBgResponse = await axios.post(
+                'https://api.stability.ai/v2beta/stable-image/edit/remove-background',
+                removeBgFormData,
+                {
+                    headers: {
+                        ...removeBgFormData.getHeaders(),
+                        Authorization: `Bearer ${apiKey}`,
+                        Accept: 'image/*'
+                    },
+                    responseType: 'arraybuffer',
+                },
+            );
+
+            if (removeBgResponse.status !== 200) {
+                throw new Error(`Stability Background Removal Error: ${removeBgResponse.status}`);
+            }
+
+            const cleanImageBuffer = Buffer.from(removeBgResponse.data);
+            this.logger.log(`[StabilityAI] Background removed. Clean image size: ${cleanImageBuffer.length} bytes`);
+
+            // CALL API: STABLE FAST 3D
             this.logger.log('[StabilityAI] Sending to Stable Fast 3D...');
 
             const formData = new FormData();
-            formData.append('image', imageBuffer, { filename: 'input.jpg' });
+            formData.append('image', cleanImageBuffer, { filename: 'input.webp' });
 
             const aiResponse = await axios.post(
                 'https://api.stability.ai/v2beta/3d/stable-fast-3d',
