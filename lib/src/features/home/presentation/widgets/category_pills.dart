@@ -18,11 +18,19 @@ class CategoryPills extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         itemCount: categories.length,
         itemBuilder: (context, index) {
+          final category = categories[index];
           return CategoryChip(
-            label: categories[index],
-            isActive: activeCategory == categories[index],
+            label: category,
+            isActive: activeCategory == category,
             onTap: () {
-              ref.read(activeCategoryProvider.notifier).state = categories[index];
+              final notifier = ref.read(activeCategoryProvider.notifier);
+              // If the tapped category is already active, reset to default.
+              if (notifier.state == category) {
+                notifier.state = 'Best sellers'; 
+              } else {
+              // Otherwise, set the new category.
+                notifier.state = category;
+              }
             },
           );
         },
@@ -59,7 +67,7 @@ class CategoryChip extends StatelessWidget {
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: const Color(0xFFFF8A3D).withValues(alpha: 0.3),
+                    color: const Color(0xFFFF8A3D).withOpacity(0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
