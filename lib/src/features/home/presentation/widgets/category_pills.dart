@@ -67,7 +67,7 @@ class CategoryChip extends StatelessWidget {
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: const Color(0xFFFF8A3D).withOpacity(0.3),
+                    color: const Color(0xFFFF8A3D).withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),

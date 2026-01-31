@@ -5,8 +5,8 @@ class Furniture {
   final String brand;
   final double rating;
   final String image;
-  final String furnitureType; // e.g., "Sofa", "Chair", "Table"
-  final String dimensions;    // e.g., "H: 90cm, W: 200cm, D: 100cm"
+  final String furnitureType;
+  final String dimensions;
 
   Furniture({
     required this.id,
