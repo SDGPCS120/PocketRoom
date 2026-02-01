@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_theme.dart'; // Import the new theme file
 import '../features/home/data/models/furniture_model.dart';
-import '../features/home/presentation/product_page.dart'; // Corrected import path
+import '../features/home/presentation/product_page.dart';
 
 class ProductCard extends StatelessWidget {
   final Furniture furniture;
 
-  const ProductCard({Key? key, required this.furniture}) : super(key: key);
+  const ProductCard({super.key, required this.furniture});
 
   @override
   Widget build(BuildContext context) {
@@ -14,18 +15,16 @@ class ProductCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
-      clipBehavior: Clip.antiAlias, // Ensures the ripple effect is clipped to the card shape
+      clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
       child: InkWell(
         onTap: () {
-          // Navigate to the ProductPage on tap
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductPage( // Corrected page class
-                // Pass the list of image URLs to the details page
+              builder: (context) => ProductPage(
                 imageUrls: furniture.images,
               ),
             ),
@@ -34,14 +33,8 @@ class ProductCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFFFFE5D3),
-                Color(0xFFFFD4B8),
-              ],
-            ),
+            // Use the centralized gradient
+            gradient: AppColors.cardGradient,
           ),
           child: Row(
             children: [
@@ -60,14 +53,14 @@ class ProductCard extends StatelessWidget {
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
-                              color: Colors.grey[200],
-                              child: const Icon(Icons.chair, size: 50),
+                              color: AppColors.secondary, // Use centralized color
+                              child: const Icon(Icons.chair, size: 50, color: AppColors.textSecondary),
                             );
                           },
                         )
                       : Container(
-                          color: Colors.grey[200],
-                          child: const Icon(Icons.chair, size: 50),
+                          color: AppColors.secondary, // Use centralized color
+                          child: const Icon(Icons.chair, size: 50, color: AppColors.textSecondary),
                         ),
                 ),
               ),
@@ -84,7 +77,7 @@ class ProductCard extends StatelessWidget {
                           furniture.name,
                           style: textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF2D2D2D),
+                            color: AppColors.textPrimary, // Use centralized color
                             fontSize: 20,
                           ),
                         ),
@@ -93,7 +86,7 @@ class ProductCard extends StatelessWidget {
                           "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
                           style: textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF2D2D2D),
+                            color: AppColors.textPrimary, // Use centralized color
                             fontSize: 16,
                           ),
                         ),
@@ -101,7 +94,7 @@ class ProductCard extends StatelessWidget {
                         Text(
                           'Brand: ${furniture.brand}',
                           style: textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[700],
+                            color: AppColors.textSecondary, // Use centralized color
                             fontSize: 12,
                           ),
                         ),
@@ -112,7 +105,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         const Icon(
                           Icons.star,
-                          color: Color(0xFFFF8A3D),
+                          color: AppColors.primary, // Use centralized color
                           size: 16,
                         ),
                         const SizedBox(width: 4),
@@ -120,7 +113,7 @@ class ProductCard extends StatelessWidget {
                           furniture.rating.toString(),
                           style: textTheme.labelLarge?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF2D2D2D),
+                            color: AppColors.textPrimary, // Use centralized color
                             fontSize: 14,
                           ),
                         ),

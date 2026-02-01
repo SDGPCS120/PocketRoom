@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocketroom/src/core/theme/app_theme.dart'; // Corrected import path
 import '../../data/mock_data.dart';
 import '../../data/providers.dart';
 
@@ -24,11 +25,9 @@ class CategoryPills extends ConsumerWidget {
             isActive: activeCategory == category,
             onTap: () {
               final notifier = ref.read(activeCategoryProvider.notifier);
-              // If the tapped category is already active, reset to default.
               if (notifier.state == category) {
                 notifier.state = 'Best sellers'; 
               } else {
-              // Otherwise, set the new category.
                 notifier.state = category;
               }
             },
@@ -53,7 +52,6 @@ class CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get the base text style from the current theme for the font family.
     final textStyle = Theme.of(context).textTheme.labelLarge;
 
     return GestureDetector(
@@ -62,12 +60,13 @@ class CategoryChip extends StatelessWidget {
         margin: const EdgeInsets.only(right: 10),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFFFF8A3D) : const Color(0xFFFFE5D3),
+          // Use centralized colors
+          color: isActive ? AppColors.primary : AppColors.secondary,
           borderRadius: BorderRadius.circular(25),
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: const Color(0xFFFF8A3D).withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -77,10 +76,10 @@ class CategoryChip extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            // Use the theme's text style, but override the color based on state.
             style: textStyle?.copyWith(
-              color: isActive ? Colors.white : const Color(0xFF2D2D2D),
-              fontWeight: FontWeight.w600, // Preserve the original weight
+              // Use centralized colors
+              color: isActive ? Colors.white : AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_theme.dart';
 
 class AppHeader extends StatelessWidget {
   const AppHeader({super.key});
@@ -20,7 +21,7 @@ class AppHeader extends StatelessWidget {
                 onPressed: () {},
                 icon: const Icon(Icons.shopping_cart_outlined, size: 22),
                 style: IconButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFE5D3),
+                  backgroundColor: AppColors.secondary, // Use centralized color
                   shape: const CircleBorder(),
                 ),
               ),
@@ -29,7 +30,7 @@ class AppHeader extends StatelessWidget {
                 onPressed: () {},
                 icon: const Icon(Icons.person_outline, size: 22),
                 style: IconButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFE5D3),
+                  backgroundColor: AppColors.secondary, // Use centralized color
                   shape: const CircleBorder(),
                 ),
               ),
