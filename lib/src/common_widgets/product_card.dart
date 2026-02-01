@@ -4,11 +4,10 @@ import '../features/home/data/models/furniture_model.dart';
 class ProductCard extends StatelessWidget {
   final Furniture furniture;
 
-  const ProductCard({super.key, required this.furniture});
+  const ProductCard({Key? key, required this.furniture}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Get the text theme from the context to ensure we use the correct font.
     final textTheme = Theme.of(context).textTheme;
 
     return Card(
@@ -41,16 +40,22 @@ class ProductCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  furniture.image,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.chair, size: 50),
-                    );
-                  },
-                ),
+                // Use the first image from the list for the thumbnail.
+                child: furniture.images.isNotEmpty
+                    ? Image.network(
+                        furniture.images.first,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[200],
+                            child: const Icon(Icons.chair, size: 50),
+                          );
+                        },
+                      )
+                    : Container(
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.chair, size: 50),
+                      ),
               ),
             ),
             const SizedBox(width: 16),
@@ -64,30 +69,27 @@ class ProductCard extends StatelessWidget {
                     children: [
                       Text(
                         furniture.name,
-                        // Using headlineSmall from theme for the product title.
                         style: textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFF2D2D2D),
-                          fontSize: 20, // Keep original size
+                          fontSize: 20, 
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
-                        // Using titleMedium from theme for the price.
                         style: textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF2D2D2D),
-                          fontSize: 16, // Keep original size
+                          fontSize: 16,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Brand: ${furniture.brand}',
-                        // Using bodySmall for less important text.
                         style: textTheme.bodySmall?.copyWith(
                           color: Colors.grey[700],
-                          fontSize: 12, // Keep original size
+                          fontSize: 12,
                         ),
                       ),
                     ],
@@ -103,11 +105,10 @@ class ProductCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         furniture.rating.toString(),
-                        // Using labelLarge for the rating text.
                         style: textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: const Color(0xFF2D2D2D),
-                          fontSize: 14, // Keep original size
+                          fontSize: 14,
                         ),
                       ),
                     ],
