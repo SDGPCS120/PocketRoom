@@ -77,7 +77,9 @@ void main() {
     // Simulate a user tap on the chip.
     await tester.tap(minimalisticChip);
     // Rebuild the widget tree to reflect the new state.
-    await tester.pump();
+    await tester.tap(minimalisticChip);
+    await tester.pumpAndSettle();
+
 
     // After filtering, only 'Sofa Lite' should be visible.
     expect(find.text('Sofa Lite'), findsOneWidget);
