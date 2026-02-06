@@ -4,27 +4,27 @@ import * as path from 'path';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
-    onModuleInit() {
-        try {
-            const serviceAccount = require(path.resolve('service-account.json'));
+  onModuleInit() {
+    try {
+      const serviceAccount = require(path.resolve('service-account.json'));
 
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount),
-                storageBucket: process.env.FIREBASE_STORAGE_BUCKET || undefined
-            });
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || undefined,
+      });
 
-            console.log('Firebase Admin Initialized Successfully');
-        } catch (error) {
-            console.error('Firebase Admin Initialization Failed:', error.message);
-            throw error;
-        }
+      console.log('Firebase Admin Initialized Successfully');
+    } catch (error) {
+      console.error('Firebase Admin Initialization Failed:', error.message);
+      throw error;
     }
+  }
 
-    getFirestore() {
-        return admin.firestore();
-    }
+  getFirestore() {
+    return admin.firestore();
+  }
 
-    getStorage() {
-        return admin.storage();
-    }
+  getStorage() {
+    return admin.storage();
+  }
 }

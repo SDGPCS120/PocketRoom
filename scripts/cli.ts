@@ -166,8 +166,8 @@ async function bootstrap() {
                     name: 'imagePath',
                     message: 'Path to Product Image (absolute or relative):',
                     validate: async (input) => {
+                        const fs = require('fs');
                         try {
-                            const fs = require('fs');
                             if (fs.existsSync(input)) return true;
                             return 'File does not exist';
                         } catch (e) {

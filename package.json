@@ -51,7 +51,7 @@
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^5.0.0",
-    "@types/inquirer": "^9.0.9",
+    "@types/inquirer": "^8.2.12",
     "@types/jest": "^30.0.0",
     "@types/mime-types": "^3.0.1",
     "@types/node": "^22.10.7",

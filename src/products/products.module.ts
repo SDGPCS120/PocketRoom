@@ -15,4 +15,4 @@ import { GenerationProcessor } from './generation.processor';
   controllers: [ProductsController],
   providers: [ProductsService, GenerationProcessor],
 })
-export class ProductsModule { }
+export class ProductsModule {}

@@ -17,11 +17,14 @@ export class ProductsService {
       const db = this.firebaseService.getFirestore();
 
       if (createProductDto.productID) {
-        await db.collection('products').doc(createProductDto.productID).set({
-          ...createProductDto,
-          createdAt: new Date(),
-          modelStatus: 'pending',
-        });
+        await db
+          .collection('products')
+          .doc(createProductDto.productID)
+          .set({
+            ...createProductDto,
+            createdAt: new Date(),
+            modelStatus: 'pending',
+          });
         return { id: createProductDto.productID, message: 'Product created' };
       } else {
         const docRef = await db.collection('products').add({
@@ -37,7 +40,11 @@ export class ProductsService {
     }
   }
 
-  async uploadProductImage(productId: string, fileBuffer: Buffer, mimeType: string) {
+  async uploadProductImage(
+    productId: string,
+    fileBuffer: Buffer,
+    mimeType: string,
+  ) {
     try {
       const storage = this.firebaseService.getStorage();
       const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
@@ -59,7 +66,7 @@ export class ProductsService {
 
       return {
         imageUrl: signedUrl,
-        imagePath: imageFileName
+        imagePath: imageFileName,
       };
     } catch (error) {
       console.error('Error uploading product image:', error);
@@ -120,7 +127,9 @@ export class ProductsService {
         dimensions,
       });
 
-      console.log(`Added job ${job.id} to generation queue for product ${productId}`);
+      console.log(
+        `Added job ${job.id} to generation queue for product ${productId}`,
+      );
 
       return {
         message: 'Model generation started',
@@ -148,12 +157,9 @@ export class ProductsService {
       }
 
       const productData = productDoc.data();
-
-      // RESILIENT: Check for imagePath first, fall back to imageUrl for legacy products
       let imageUrl: string;
 
       if (productData?.imagePath) {
-        // New flow: Generate fresh signed URL from stored path
         console.log(`[Regen] Using imagePath: ${productData.imagePath}`);
         const storage = this.firebaseService.getStorage();
         const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
@@ -165,25 +171,26 @@ export class ProductsService {
         });
         imageUrl = freshSignedUrl;
         console.log(`[Regen] Generated fresh signed URL for ${productId}`);
-
       } else if (productData?.imageUrl) {
         // Legacy flow: Use existing imageUrl directly (may be public GCS URL)
         console.log(`[Regen] Using legacy imageUrl for ${productId}`);
         imageUrl = productData.imageUrl;
 
         // Try to extract path from GCS URL and backfill imagePath
-        const gcsMatch = productData.imageUrl.match(/storage\.googleapis\.com\/[^/]+\/(.+?)(\?|$)/);
+        const gcsMatch = productData.imageUrl.match(
+          /storage\.googleapis\.com\/[^/]+\/(.+?)(\?|$)/,
+        );
         if (gcsMatch) {
           const extractedPath = decodeURIComponent(gcsMatch[1]);
           console.log(`[Regen] Backfilling imagePath: ${extractedPath}`);
           await db.collection('products').doc(productId).update({
-            imagePath: extractedPath
+            imagePath: extractedPath,
           });
         }
       } else {
         throw new Error(
           `Logic Error: Product ${productId} is missing a source image. ` +
-          `Cannot generate 3D model from nothing. Check your upload logic.`
+          `Cannot generate 3D model from nothing. Check your upload logic.`,
         );
       }
 
@@ -206,7 +213,7 @@ export class ProductsService {
       return {
         message: 'Regeneration started',
         jobId: job.id,
-        status: 'processing'
+        status: 'processing',
       };
     } catch (error) {
       console.error('Error regenerating model:', error);

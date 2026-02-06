@@ -10,15 +10,9 @@ export async function optimizeGLB(glbBuffer: Buffer): Promise<Buffer> {
         console.log('Starting GLB optimization with Draco compression...');
 
         const options = {
-<<<<<<< HEAD
             dracoOptions: {
                 compressionLevel: 7,
             },
-=======
-            // dracoOptions: {
-            //     compressionLevel: 7, // Level 7 compression
-            // },
->>>>>>> 41d5565 (tripo is working fine)
         };
 
         const result = await processGlb(glbBuffer, options);
