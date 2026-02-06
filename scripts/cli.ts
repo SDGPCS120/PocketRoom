@@ -4,6 +4,10 @@ import { ProductsService } from '../src/products/products.service';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import chalk from 'chalk';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as mime from 'mime-types';
+
 
 async function bootstrap() {
     const app = await NestFactory.createApplicationContext(AppModule);
@@ -167,21 +171,18 @@ async function bootstrap() {
                     message: 'Path to Product Image (absolute or relative):',
                     validate: async (input) => {
                         try {
-                            const fs = require('fs');
                             if (fs.existsSync(input)) return true;
                             return 'File does not exist';
                         } catch (e) {
                             return 'Invalid path';
                         }
                     }
+
                 }
             ]);
 
-            const fs = require('fs');
-            const path = require('path');
-            const mime = require('mime-types');
-
             const spinner = ora('Creating product...').start();
+
 
             try {
                 // 1. Create initial product document
