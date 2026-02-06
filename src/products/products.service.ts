@@ -10,7 +10,7 @@ export class ProductsService {
   constructor(
     private readonly firebaseService: FirebaseService,
     @InjectQueue('generation-queue') private readonly generationQueue: Queue,
-  ) { }
+  ) {}
 
   async create(createProductDto: CreateProductDto) {
     try {
@@ -190,7 +190,11 @@ export class ProductsService {
       } else {
         throw new Error(
           `Logic Error: Product ${productId} is missing a source image. ` +
+<<<<<<< HEAD
           `Cannot generate 3D model from nothing. Check your upload logic.`,
+=======
+            `Cannot generate 3D model from nothing. Check your upload logic.`,
+>>>>>>> d736028ecd9905450b5fd998b5f70e76ff4eef59
         );
       }
 
@@ -238,7 +242,7 @@ export class ProductsService {
     return { id: doc.id, ...doc.data() };
   }
 
-  async update(id: string, updateProductDto: any) {
+  async update(id: string, updateProductDto: Partial<CreateProductDto>) {
     const db = this.firebaseService.getFirestore();
     const docRef = db.collection('products').doc(id);
 
