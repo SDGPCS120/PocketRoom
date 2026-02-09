@@ -68,8 +68,6 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   imagePath?: string;
-<<<<<<< HEAD
-=======
 
   @IsString()
   @IsOptional()
@@ -81,5 +79,4 @@ export class CreateProductDto {
 
   @IsOptional()
   updatedAt?: Date;
->>>>>>> d736028ecd9905450b5fd998b5f70e76ff4eef59
 }

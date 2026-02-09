@@ -9,19 +9,11 @@ export async function optimizeGLB(glbBuffer: Buffer): Promise<Buffer> {
   try {
     console.log('Starting GLB optimization with Draco compression...');
 
-<<<<<<< HEAD
-        const options = {
-            dracoOptions: {
-                compressionLevel: 7,
-            },
-        };
-=======
     const options = {
-      // dracoOptions: {
-      //     compressionLevel: 7, // Level 7 compression
-      // },
+      dracoOptions: {
+        compressionLevel: 7,
+      },
     };
->>>>>>> d736028ecd9905450b5fd998b5f70e76ff4eef59
 
     const result = await processGlb(glbBuffer, options);
 

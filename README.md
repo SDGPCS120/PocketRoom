@@ -1,10 +1,10 @@
 # PocketRoom - 3D Model Generation Pipeline
 
-A NestJS-based backend service that generates 3D models from product images using **Stability AI's Stable Fast 3D** API. The pipeline automatically processes images, generates GLB models, optimizes them with Draco compression, and stores them in Firebase.
+A NestJS-based backend service that generates 3D models from product images using **Tripo AI** API. The pipeline automatically processes images, generates GLB models, optimizes them with Draco compression, and stores them in Firebase.
 
 ## 🚀 Features
 
-- **Image-to-3D Generation**: Convert product images to 3D GLB models using Stability AI
+- **Image-to-3D Generation**: Convert product images to 3D GLB models using Tripo AI
 - **Draco Compression**: Automatic GLB optimization for mobile-ready models
 - **Firebase Integration**: Store images and models in Firebase Storage, track status in Firestore
 - **Job Queue**: BullMQ-powered async processing with Redis
@@ -15,7 +15,7 @@ A NestJS-based backend service that generates 3D models from product images usin
 - **Node.js** v18 or higher
 - **Redis** server (for job queue)
 - **Firebase** project with Firestore and Storage enabled
-- **Stability AI** API key ([Get one here](https://platform.stability.ai/))
+- **Tripo AI** API key ([Get one here](https://www.tripo3d.ai/))
 
 ## 🛠️ Setup
 
@@ -46,7 +46,7 @@ Edit `.env` with your actual values:
 ```env
 PORT=3000
 FIREBASE_STORAGE_BUCKET=your-project-id.appspot.com
-STABILITY_API_KEY=sk-your-stability-api-key
+TRIPO_API_KEY=your-tripo-api-key
 REDIS_HOST=localhost
 REDIS_PORT=6379
 ```
@@ -142,7 +142,7 @@ curl -X POST http://localhost:3000/products/YOUR_PRODUCT_ID/generate \
 1. Upload image → Firebase Storage (Images/)
 2. Add job to Redis queue
 3. Worker downloads image
-4. Send to Stability AI Stable Fast 3D
+4. Send to Tripo AI
 5. Receive raw GLB
 6. Optimize with Draco compression
 7. Upload to Firebase Storage (3DModel/)
@@ -209,7 +209,7 @@ redis-cli ping
 - Check that the file contains valid credentials
 - Ensure `FIREBASE_STORAGE_BUCKET` matches your Firebase project
 
-### Stability AI Error
+### Tripo AI Error
 - Verify your API key is valid
 - Check you have sufficient credits
 - Ensure image is valid (JPG/PNG, not corrupted)
