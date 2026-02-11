@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../data/mock_data.dart';
-import '../../data/providers.dart';
+import '../../data/mock_data.dart'; 
+import '../../data/providers.dart'; 
 import '../category_products_page.dart';
 
 class CategoryIconsRow extends ConsumerWidget {
@@ -12,15 +12,15 @@ class CategoryIconsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
 
-    // Helper map to associate categories with icons
+// We don't really need to watch the provider here since we don't show active state on home page
+    // final activeCategory = ref.watch(selectedFurnitureTypeProvider);
     // Using standard Material icons as placeholders
     final Map<String, IconData> categoryIcons = {
       'All': Icons.grid_view,
-      'Sofas': Icons.chair,
-      'Tables': Icons.table_restaurant,
-      'Chairs': Icons.chair_alt,
-      'Lighting': Icons.light,
-      'Beds': Icons.bed, // Assuming 'Beds' might be in mock_data or generic fallback
+      'Sofa': Icons.chair,
+      'Table': Icons.table_restaurant,
+      'Chair': Icons.chair_alt,
+      'Lamp': Icons.light,
     };
 
     return Container(
@@ -29,9 +29,9 @@ class CategoryIconsRow extends ConsumerWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: categories.length,
+        itemCount: furnitureTypes.length,
         itemBuilder: (context, index) {
-          final category = categories[index];
+          final category = furnitureTypes[index];
           final icon = categoryIcons[category] ?? Icons.category; // Fallback icon
 
 
@@ -41,8 +41,11 @@ class CategoryIconsRow extends ConsumerWidget {
             // No active state for the home page icons as they are launchers
             isActive: false, 
             onTap: () {
-               // Update the provider so the next page knows what to show
-               ref.read(activeCategoryProvider.notifier).state = category;
+               // Set the Furniture Type (e.g. Sofa, Chair)
+               ref.read(selectedFurnitureTypeProvider.notifier).state = category;
+               
+               // Reset the General Category filter to default
+               ref.read(selectedGeneralCategoryProvider.notifier).state = 'Best sellers';
                
                // Navigate to the CategoryProductsPage
                Navigator.push(
@@ -50,7 +53,11 @@ class CategoryIconsRow extends ConsumerWidget {
                  MaterialPageRoute(
                    builder: (context) => const CategoryProductsPage(),
                  ),
-               );
+               ).then((_) {
+                 // Reset the Furniture Type and General Category when returning to Home
+                 ref.read(selectedFurnitureTypeProvider.notifier).state = 'All';
+                 ref.read(selectedGeneralCategoryProvider.notifier).state = 'Best sellers';
+               });
             },
           );
         },

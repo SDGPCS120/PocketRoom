@@ -12,7 +12,7 @@ class CategoryProductsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeCategory = ref.watch(activeCategoryProvider);
+    final activeCategory = ref.watch(selectedFurnitureTypeProvider);
 
     return Scaffold(
       body: SafeArea(

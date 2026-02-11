@@ -2,8 +2,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './models/furniture_model.dart';
 import './repositories/furniture_repository.dart';
 
-// Provider for the active category (unchanged).
-final activeCategoryProvider = StateProvider<String>((ref) => "Best sellers");
+// Provider for the active Furniture Type (selected from Home Page)
+final selectedFurnitureTypeProvider = StateProvider<String>((ref) => "All");
+
+// Provider for the active General Category (selected from Category Products Page)
+final selectedGeneralCategoryProvider = StateProvider<String>((ref) => "Best sellers");
 
 // Provider for the repository itself (unchanged).
 final furnitureRepositoryProvider = Provider<IFurnitureRepository>((ref) {
@@ -16,27 +19,34 @@ final allFurnitureProvider = FutureProvider<List<Furniture>>((ref) {
   return repository.fetchFurniture();
 });
 
-// 2. "Filterer" Provider: This is a fast, synchronous provider.
-// It takes the full list from allFurnitureProvider and filters it based
-// on the active category. It re-runs whenever the category changes.
+// 2. "Filterer" Provider: Filters by BOTH Furniture Type AND General Category
 final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
   final allFurniture = ref.watch(allFurnitureProvider).value ?? [];
-  final activeCategory = ref.watch(activeCategoryProvider);
+  final activeType = ref.watch(selectedFurnitureTypeProvider);
+  final activeCategory = ref.watch(selectedGeneralCategoryProvider);
 
-  // --- Restoring your filtering logic here ---
+  // First, filter by Furniture Type (if not "All")
+  var filtered = allFurniture;
+  if (activeType != 'All') {
+    filtered = filtered.where((item) => item.furnitureType == activeType).toList();
+  }
+
+  // Then, filter by General Category
+  // Categories: ["Best sellers", "Arpico", "Modern", "Max", "Minimalistic", "Damro"]
   switch (activeCategory) {
     case 'Arpico':
-      return allFurniture.where((item) => item.brand.contains('Arpico')).toList();
+      return filtered.where((item) => item.brand.contains('Arpico')).toList();
     case 'Modern':
-      return allFurniture.where((item) => item.name.contains('Sofa')).toList();
+      return filtered.where((item) => item.name.contains('Modern')).toList();
     case 'Max':
-      return allFurniture.where((item) => item.name.contains('Max')).toList();
+      return filtered.where((item) => item.name.contains('Max')).toList();
     case 'Minimalistic':
-      return allFurniture.where((item) => item.name.contains('Lite')).toList();
+      return filtered.where((item) => item.name.contains('Lite')).toList(); // Assuming Lite means Minimalistic
     case 'Damro':
-      return allFurniture.where((item) => item.brand.contains('Damro')).toList();
+      return filtered.where((item) => item.brand.contains('Damro')).toList();
+    case 'Best sellers':
     default:
-      // For all other categories, return the full list.
-      return allFurniture;
+      // For "Best sellers" or others, maybe return all type-filtered items?
+      return filtered;
   }
 });

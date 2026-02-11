@@ -9,7 +9,7 @@ class CategoryPills extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeCategory = ref.watch(activeCategoryProvider);
+    final activeCategory = ref.watch(selectedGeneralCategoryProvider);
 
     return Container(
       height: 50,
@@ -24,7 +24,7 @@ class CategoryPills extends ConsumerWidget {
             label: category,
             isActive: activeCategory == category,
             onTap: () {
-              final notifier = ref.read(activeCategoryProvider.notifier);
+              final notifier = ref.read(selectedGeneralCategoryProvider.notifier);
               if (notifier.state == category) {
                 notifier.state = 'Best sellers'; 
               } else {

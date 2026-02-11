@@ -136,6 +136,44 @@ final furnitureData = [
     furnitureType: "Sofa",
     dimensions: "H:85 W:180 D:90",
   ),
+  Furniture(
+    id: 4,
+    name: "Classic Chair",
+    price: 12000,
+    brand: "WoodWorks",
+    rating: 4.5,
+    images: [
+      "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=300&fit=crop",
+    ],
+    furnitureType: "Chair",
+    dimensions: "H:90 W:50 D:50",
+  ),
+  Furniture(
+    id: 5,
+    name: "Modern Table",
+    price: 45000,
+    brand: "Ikea",
+    rating: 4.2,
+    images: [
+      "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=400&h=300&fit=crop",
+    ],
+    furnitureType: "Table",
+    dimensions: "H:75 W:120 D:80",
+  ),
+  Furniture(
+    id: 6,
+    name: "Reading Lamp",
+    price: 8500,
+    brand: "LumiLux",
+    rating: 4.8,
+    images: [
+      "https://images.unsplash.com/photo-1507473888900-52e1ad145986?w=400&h=300&fit=crop",
+    ],
+    furnitureType: "Lamp",
+    dimensions: "H:150 W:30 D:30",
+  ),
 ];
 
-final categories = ["Arpico", "Damro", "Best sellers", "Minimalistic", "New", "Modern"];
+final furnitureTypes = ["All", "Sofa", "Chair", "Table", "Lamp"];
+
+final categories = ["Best sellers", "Arpico", "Modern", "Max", "Minimalistic", "Damro"];
