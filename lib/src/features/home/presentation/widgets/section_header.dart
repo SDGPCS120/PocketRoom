@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SectionHeader extends StatelessWidget {
-  const SectionHeader({super.key});
+  final String title;
+  const SectionHeader({super.key, this.title = "Sofas"});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class SectionHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Sofas', // This could be made dynamic later based on the category
+            title,
             style: textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: const Color(0xFF2D2D2D),
