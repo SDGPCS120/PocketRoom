@@ -11,17 +11,21 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            const AppHeader(),
-            const SearchBarWidget(),
-            const FeaturedCollectionCard(), // Added Featured Card
-            const CategoryIconsRow(),      // Replaced CategoryPills with CategoryIconsRow
-            const SectionHeader(title: "Trending Now"), // Updated title
+            AppHeader(),
+            SearchBarWidget(),
             Expanded(
-              child: ProductList(),
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(child: FeaturedCollectionCard()),
+                  SliverToBoxAdapter(child: CategoryIconsRow()),
+                  SliverToBoxAdapter(child: SectionHeader(title: "Trending Now")),
+                  ProductList(),
+                ],
+              ),
             ),
           ],
         ),

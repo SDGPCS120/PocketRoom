@@ -12,8 +12,8 @@ class ProductList extends ConsumerWidget {
     final allFurnitureAsync = ref.watch(allFurnitureProvider);
 
     return allFurnitureAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+      loading: () => const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
+      error: (error, stack) => SliverFillRemaining(child: Center(child: Text('Error: $error'))),
       data: (_) {
         // Once the data has loaded, watch the fast "filterer" provider to get
         // the list that should be displayed.
@@ -21,15 +21,19 @@ class ProductList extends ConsumerWidget {
         
         // If the filtered list is empty, show a message.
         if (filteredList.isEmpty) {
-          return const Center(child: Text('No items found in this category.'));
+          return const SliverFillRemaining(child: Center(child: Text('No items found in this category.')));
         }
 
-        return ListView.builder(
+        return SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          itemCount: filteredList.length,
-          itemBuilder: (context, index) {
-            return ProductCard(furniture: filteredList[index]);
-          },
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return ProductCard(furniture: filteredList[index]);
+              },
+              childCount: filteredList.length,
+            ),
+          ),
         );
       },
     );

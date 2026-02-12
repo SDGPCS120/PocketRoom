@@ -22,8 +22,12 @@ class CategoryProductsPage extends ConsumerWidget {
             const SearchBarWidget(),
             const CategoryPills(),
             SectionHeader(title: activeCategory), // Dynamic title
-            Expanded(
-              child: ProductList(),
+            const Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  ProductList(),
+                ],
+              ),
             ),
           ],
         ),
