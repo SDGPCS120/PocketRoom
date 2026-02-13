@@ -1,0 +1,10 @@
+Analyzing pocketroom...                                         
+
+  error - Target of URI doesn't exist: '../../data/providers.dart' - lib\src\features\home\presentation\category_products_page.dart:3:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../../common_widgets/app_header.dart' - lib\src\features\home\presentation\category_products_page.dart:4:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../../../common_widgets/search_bar_widget.dart' - lib\src\features\home\presentation\category_products_page.dart:5:8 - uri_does_not_exist
+  error - Undefined name 'activeCategoryProvider' - lib\src\features\home\presentation\category_products_page.dart:15:38 - undefined_identifier
+  error - The name 'AppHeader' isn't a class - lib\src\features\home\presentation\category_products_page.dart:21:19 - creation_with_non_type
+  error - The name 'SearchBarWidget' isn't a class - lib\src\features\home\presentation\category_products_page.dart:22:19 - creation_with_non_type
+warning - The value of the local variable 'activeCategory' isn't used - lib\src\features\home\presentation\widgets\category_icons_row.dart:13:11 - unused_local_variable
+
