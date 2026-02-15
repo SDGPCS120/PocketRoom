@@ -1,3 +1,16 @@
+import '../data/budget_api.dart';
+import '../data/budget_models.dart';
+
+import 'widgets/budget_slider.dart';
+import 'widgets/required_items_selector.dart';
+import 'widgets/style_dropdown.dart';
+import 'widgets/color_picker_row.dart';
+import 'widgets/generate_button.dart';
+import 'widgets/budget_result_page.dart';
+
+
+
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -71,15 +84,16 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
       if (!mounted) return;
 
       if (res.statusCode >= 200 && res.statusCode < 300) {
-        final data = jsonDecode(res.body);
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Bundle generated ✅'),
-            content: SingleChildScrollView(child: Text(jsonEncode(data))),
-          ),
-        );
-      } else {
+  final Map<String, dynamic> data = jsonDecode(res.body);
+
+  if (!mounted) return;
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => BudgetResultPage(result: data),
+    ),
+  );
+} else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed: ${res.statusCode}\n${res.body}')),
         );
