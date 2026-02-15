@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/home/presentation/home_page.dart';
 import 'src/features/auth/presentation/username_page.dart';
+import 'src/features/splash/presentation/splash_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -72,14 +73,14 @@ Future<void> main() async {
 class PocketRoomApp extends StatelessWidget {
   const PocketRoomApp({super.key});
 
-  // This builds the root app shell and routes through the auth gate.
+  // This builds the root app shell and routes through the splash page.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PocketRoom',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme, // Using the new centralized theme
-      home: const AuthGate(),
+      theme: AppTheme.lightTheme,
+      home: const SplashPage(),
     );
   }
 }
