@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/home/presentation/home_page.dart';
 
+import 'src/features/splash/presentation/splash_page.dart';
+
 void main() {
   runApp(const ProviderScope(child: PocketRoomApp()));
 }
@@ -16,7 +18,7 @@ class PocketRoomApp extends StatelessWidget {
       title: 'PocketRoom',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme, // Using the new centralized theme
-      home: const HomePage(),
+      home: const SplashPage(),
     );
   }
 }
