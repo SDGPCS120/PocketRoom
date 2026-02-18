@@ -1,7 +1,0 @@
-{
-  "type": "image_to_model",
-  "file": {
-    "type": "jpg",
-    "file_url": "https://storage.googleapis.com/pocketroom-80f62.firebasestorage.app/Images/images.jpeg"
-  }
-}
