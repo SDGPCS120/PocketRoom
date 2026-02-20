@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FirebaseService } from '../firebase/firebase.service.js';
+import { FirebaseService } from '../../firebase/firebase.service.js';
 
 export type FirestoreUser = {
   uid: string;

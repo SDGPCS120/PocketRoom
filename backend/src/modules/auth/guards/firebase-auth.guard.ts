@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { FirebaseService } from '../../firebase/firebase.service.js';
+import { FirebaseService } from '../../../firebase/firebase.service.js';
 
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {
