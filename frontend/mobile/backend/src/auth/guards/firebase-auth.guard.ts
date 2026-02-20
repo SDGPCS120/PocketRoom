@@ -30,7 +30,7 @@ export class FirebaseAuthGuard implements CanActivate {
       req.user = {
         uid: decoded.uid,
         email: decoded.email ?? null,
-        claims: decoded as unknown as Record<string, any>,
+        claims: decoded as unknown as Record<string, unknown>,
       };
 
       return true;
