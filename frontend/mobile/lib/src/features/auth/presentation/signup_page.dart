@@ -1,46 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_theme.dart';
-import 'signup_page.dart';
+import 'login_page.dart';
 import '../../home/presentation/home_page.dart';
 
-/// Login screen. Placeholder auth logic — wire real API when backend is ready.
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+/// Signup / Create Account screen. Placeholder auth logic.
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmController = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscureConfirm = true;
+  bool _loading = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmController.dispose();
     super.dispose();
   }
 
   void _submit() {
+    // TEMPORARY signup gate — replace with real auth when backend is ready.
+    // Any values in the fields are accepted; navigate directly to the home screen.
     if (!_formKey.currentState!.validate()) return;
-
-    // TEMPORARY login gate — replace with real auth when backend is ready.
-    // Any email + password '12345' grants access.
-    if (_passwordController.text == '123456') {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
-        (_) => false, // clear the auth stack
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Incorrect password. Please try again.')),
-      );
-    }
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const HomePage()),
+      (_) => false, // clear the auth stack
+    );
   }
 
   @override
@@ -64,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const SizedBox(height: 12),
                 Text(
-                  'Welcome back',
+                  'Create account',
                   style: textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
@@ -72,12 +71,23 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Log in to your PocketRoom account',
+                  'Join PocketRoom and start exploring',
                   style: textTheme.bodyMedium?.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 36),
+
+                // Full name field
+                _AuthTextField(
+                  controller: _nameController,
+                  label: 'Full name',
+                  hint: 'Your name',
+                  validator: (v) => (v == null || v.trim().isEmpty)
+                      ? 'Enter your name'
+                      : null,
+                ),
+                const SizedBox(height: 16),
 
                 // Email field
                 _AuthTextField(
@@ -108,29 +118,35 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() => _obscurePassword = !_obscurePassword),
                   ),
                   validator: (v) =>
-                      (v == null || v.isEmpty) ? 'Enter your password' : null,
+                      (v == null || v.length < 6) ? 'Min 6 characters' : null,
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
 
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      // TODO: forgot password flow
-                    },
-                    child: Text(
-                      'Forgot password?',
-                      style: GoogleFonts.fredoka(color: AppColors.primary),
+                // Confirm password field
+                _AuthTextField(
+                  controller: _confirmController,
+                  label: 'Confirm password',
+                  hint: '••••••••',
+                  obscureText: _obscureConfirm,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirm ? Icons.visibility_off : Icons.visibility,
+                      color: AppColors.textSecondary,
                     ),
+                    onPressed: () =>
+                        setState(() => _obscureConfirm = !_obscureConfirm),
                   ),
+                  validator: (v) => (v != _passwordController.text)
+                      ? 'Passwords do not match'
+                      : null,
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 32),
 
-                // Log in button
+                // Create account button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _submit,
+                    onPressed: _loading ? null : _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
@@ -139,31 +155,40 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: Text(
-                      'Log in',
-                      style: GoogleFonts.fredoka(fontSize: 18),
-                    ),
+                    child: _loading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(
+                            'Create account',
+                            style: GoogleFonts.fredoka(fontSize: 18),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 24),
 
-                // Navigate to Signup
+                // Already have account → Log in
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have an account? ",
+                      'Already have an account? ',
                       style: textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary,
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => Navigator.push(
+                      onTap: () => Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (_) => const SignupPage()),
+                        MaterialPageRoute(builder: (_) => const LoginPage()),
                       ),
                       child: Text(
-                        'Create one',
+                        'Log in',
                         style: GoogleFonts.fredoka(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
@@ -181,7 +206,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-/// Reusable styled text field used in Login and Signup screens.
+/// Reusable styled text field (same widget defined in login_page.dart;
+/// redeclared locally here to avoid cross-file private-class coupling).
 class _AuthTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
