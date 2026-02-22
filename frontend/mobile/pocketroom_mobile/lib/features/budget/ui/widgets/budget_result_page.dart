@@ -1,21 +1,34 @@
 import 'package:flutter/material.dart';
 
-class BudgetResultPage extends StatelessWidget {
+class BudgetResultPage extends StatefulWidget {
   final Map<String, dynamic> result;
 
   const BudgetResultPage({super.key, required this.result});
 
   @override
+  State<BudgetResultPage> createState() => _BudgetResultPageState();
+}
+
+class _BudgetResultPageState extends State<BudgetResultPage> {
+  int _currentIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
-    final bool ok = result['ok'] == true;
+    final bool ok = widget.result['ok'] == true;
+    final reason = widget.result['reason'];
+    final totalBudget = widget.result['totalBudget'];
+    final bundles = (widget.result['bundles'] as List?) ?? [];
 
-    final List<dynamic> requiredBundle = (result['requiredBundle'] as List?) ?? [];
-    final List<dynamic> optionalBundle = (result['optionalBundle'] as List?) ?? [];
+    Map<String, dynamic>? currentBundle;
+    if (bundles.isNotEmpty) {
+      currentBundle = bundles[_currentIndex] as Map<String, dynamic>?;
+    }
 
-    final totalBudget = result['totalBudget'];
-    final totalCost = result['totalCost'];
-    final remaining = result['remaining'];
-    final reason = result['reason'];
+    final totalCost = currentBundle?['totalCost'] ?? 0;
+    final remaining = currentBundle?['remaining'] ?? 0;
+
+    final List<dynamic> requiredBundle = (currentBundle?['requiredBundle'] as List?) ?? [];
+    final List<dynamic> optionalBundle = (currentBundle?['optionalBundle'] as List?) ?? [];
 
     final items = [...requiredBundle, ...optionalBundle];
 
@@ -33,6 +46,28 @@ class BudgetResultPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (bundles.length > 1) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Bundle ${_currentIndex + 1} of ${bundles.length}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _currentIndex = (_currentIndex + 1) % bundles.length;
+                        });
+                      },
+                      icon: const Icon(Icons.skip_next),
+                      label: const Text("Next Bundle"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFE39A3B),
+                        foregroundColor: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
               _SummaryCard(
                 ok: ok,
                 totalBudget: totalBudget,
