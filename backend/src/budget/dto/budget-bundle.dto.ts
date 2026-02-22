@@ -84,16 +84,18 @@ export type PickedItem = {
   product: FurnitureItem;
 };
 
-export class BudgetBundleResponseDto {
-  ok!: boolean;
-  totalBudget!: number;
+export class BundleVariantDto {
   totalCost!: number;
   remaining!: number;
-
   requiredBundle!: PickedItem[];
   optionalBundle!: PickedItem[];
   explanations!: string[];
+}
 
+export class BudgetBundleResponseDto {
+  ok!: boolean;
+  totalBudget!: number;
+  bundles!: BundleVariantDto[];
   reason?: string;
   minPossibleCost?: number;
 }
