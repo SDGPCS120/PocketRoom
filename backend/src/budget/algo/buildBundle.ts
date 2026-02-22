@@ -1,5 +1,5 @@
 import { MOCK_FURNITURE, FurnitureItem } from '../../furniture/furniture.mock';
-import { BudgetBundleRequestDto, BudgetBundleResponseDto } from '../dto/budget-bundle.dto';
+import { BudgetBundleRequestDto, BudgetBundleResponseDto, BundleVariantDto } from '../dto/budget-bundle.dto';
 import { norm, scoreItem } from './scoring';
 import { Candidate, mckp, minCostRequired } from './mckp';
 import { greedyOptional } from './greedy';
@@ -70,57 +70,82 @@ export function buildBundle(req: BudgetBundleRequestDto): BudgetBundleResponseDt
     return {
       ok: false,
       totalBudget: req.totalBudget,
-      totalCost: 0,
-      remaining: req.totalBudget,
-      requiredBundle: [],
-      optionalBundle: [],
-      explanations: [],
+      bundles: [],
       reason: `Missing categories after filtering: ${missing.join(', ')}`,
     };
   }
 
-  const dpRes = mckp(required, requiredGroups, req.totalBudget, step);
-  if (!dpRes.ok) {
-    return {
-      ok: false,
-      totalBudget: req.totalBudget,
-      totalCost: 0,
-      remaining: req.totalBudget,
-      requiredBundle: [],
-      optionalBundle: [],
-      explanations: [],
-      reason: 'No valid bundle fits the budget.',
-      minPossibleCost: minCostRequired(required, requiredGroups) ?? undefined,
-    };
+  const bundles: BundleVariantDto[] = [];
+  const generatedSignatures = new Set<string>();
+  const MAX_LIMIT = 50;
+
+  while (bundles.length < MAX_LIMIT) {
+    const dpRes = mckp(required, requiredGroups, req.totalBudget, step);
+    if (!dpRes.ok) {
+      if (bundles.length > 0) break;
+      return {
+        ok: false,
+        totalBudget: req.totalBudget,
+        bundles: [],
+        reason: 'No valid bundle fits the budget.',
+        minPossibleCost: minCostRequired(required, requiredGroups) ?? undefined,
+      };
+    }
+
+    const requiredCost = dpRes.totalCost;
+    const leftover = req.totalBudget - requiredCost;
+    const optRes = greedyOptional(optionalGroups, leftover, maxOptional);
+
+    const totalCost = requiredCost + optRes.spent;
+    const remaining = req.totalBudget - totalCost;
+
+    // Check for duplicates
+    const signature = [
+      ...dpRes.picks.map(p => p.product.id),
+      ...optRes.picks.map(p => p.product.id)
+    ].sort().join(',');
+
+    if (generatedSignatures.has(signature)) {
+      // If we generated the exact same set of items, we are in a loop. Break out.
+      break;
+    }
+    generatedSignatures.add(signature);
+
+    const explanations: string[] = [];
+
+    const requiredBundle = dpRes.picks.map((c) => {
+      explanations.push(`${c.product.category}: ${c.product.name} (${c.reason})`);
+      return toPicked(c);
+    });
+
+    const optionalBundle = optRes.picks.map((c) => {
+      explanations.push(`Optional ${c.product.category}: ${c.product.name} (${c.reason})`);
+      return toPicked(c);
+    });
+
+    bundles.push({
+      totalCost,
+      remaining,
+      requiredBundle,
+      optionalBundle,
+      explanations,
+    });
+
+    // Penalize the selected required items so the next iteration finds alternatives
+    for (const c of dpRes.picks) {
+      const cat = norm(c.product.category);
+      if (requiredGroups[cat]) {
+        const item = requiredGroups[cat].find((it) => it.product.id === c.product.id);
+        if (item) {
+          item.score -= 10000;
+        }
+      }
+    }
   }
-
-  const requiredCost = dpRes.totalCost;
-  const leftover = req.totalBudget - requiredCost;
-
-  const optRes = greedyOptional(optionalGroups, leftover, maxOptional);
-
-  const totalCost = requiredCost + optRes.spent;
-  const remaining = req.totalBudget - totalCost;
-
-  const explanations: string[] = [];
-
-  const requiredBundle = dpRes.picks.map((c) => {
-    explanations.push(`${c.product.category}: ${c.product.name} (${c.reason})`);
-    return toPicked(c);
-  });
-
-  const optionalBundle = optRes.picks.map((c) => {
-    explanations.push(`Optional ${c.product.category}: ${c.product.name} (${c.reason})`);
-    return toPicked(c);
-  });
 
   return {
     ok: true,
     totalBudget: req.totalBudget,
-    totalCost,
-    remaining,
-    requiredBundle,
-    optionalBundle,
-    explanations,
+    bundles,
   };
 }
