@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { firebaseAdmin } from '../firebase/firebase-admin';
+import { FirebaseService } from '../../firebase/firebase.service.js';
 
 export type FirestoreUser = {
   uid: string;
@@ -37,9 +37,10 @@ function toFirestoreUser(
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly firebaseService: FirebaseService) { }
+
   async syncUser(uid: string, email: string | null): Promise<SyncResult> {
-    const admin = firebaseAdmin();
-    const db = admin.firestore();
+    const db = this.firebaseService.firestore;
 
     const ref = db.collection('users').doc(uid);
     const snap = await ref.get();
@@ -53,15 +54,15 @@ export class AuthService {
 
       await ref.set({
         ...user,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        lastLoginAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: this.firebaseService.fieldValue.serverTimestamp(),
+        lastLoginAt: this.firebaseService.fieldValue.serverTimestamp(),
       });
 
       return { status: 'created', user };
     }
 
     await ref.update({
-      lastLoginAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastLoginAt: this.firebaseService.fieldValue.serverTimestamp(),
     });
 
     // snap.data() can be loosely typed; treat it as unknown and normalize
@@ -70,8 +71,7 @@ export class AuthService {
   }
 
   async getRoles(uid: string): Promise<string[]> {
-    const admin = firebaseAdmin();
-    const db = admin.firestore();
+    const db = this.firebaseService.firestore;
 
     const snap = await db.collection('users').doc(uid).get();
     const user = toFirestoreUser(uid, snap.data() as unknown, null);
