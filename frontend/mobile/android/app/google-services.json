@@ -12,7 +12,20 @@
           "package_name": "com.example.pocketroom"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "93470454666-63j18vq9nhqj7rurb0h4tnr4br88f61d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pocketroom",
+            "certificate_hash": "5ef3f144821069e27b8042450f45f218e9b90340"
+          }
+        },
+        {
+          "client_id": "93470454666-k4j0e2p2eb8gajkpva35h7m8chkjtc78.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCqpQLCadDl71NTcRRTohJccNLKiYipGSQ"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "93470454666-k4j0e2p2eb8gajkpva35h7m8chkjtc78.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "93470454666-nu5219v96gis3k6lv3c937or51inn98v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.pocketroom"
+              }
+            }
+          ]
         }
       }
     }

@@ -1,9 +1,40 @@
+import 'dart:io';
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AppHeader extends StatelessWidget {
   const AppHeader({super.key});
+
+  void _logLine(String message) {
+    final line = '[AUTH_LOG] $message';
+    debugPrint(line);
+    developer.log(line, name: 'AuthFlow');
+    stdout.writeln(line);
+  }
+
+  Future<void> _printGoogleAuthInfo(User user) async {
+    _logLine('=== GOOGLE LOGIN SUCCESS ===');
+    final token = await user.getIdToken(true);
+    if (token == null) {
+      _logLine('Google token is null for uid=${user.uid}');
+      return;
+    }
+
+    _logLine('Google UID: ${user.uid}');
+    _logLine('Google Email: ${user.email ?? "(no email)"}');
+    _logLine('Google TOKEN LENGTH: ${token.length}');
+
+    const chunkSize = 600;
+    for (int i = 0; i < token.length; i += chunkSize) {
+      final end = (i + chunkSize < token.length) ? i + chunkSize : token.length;
+      _logLine('GOOGLE_TOKEN_PART ${i ~/ chunkSize}: ${token.substring(i, end)}');
+    }
+    _logLine('=== END GOOGLE TOKEN ===');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,41 +71,69 @@ class AppHeader extends StatelessWidget {
               IconButton(
                 onPressed: () async {
                   final auth = FirebaseAuth.instance;
+                  final googleSignIn = GoogleSignIn();
+                  _logLine('Starting Google sign-in...');
 
                   try {
-                    if (auth.currentUser == null) {
-                      await auth.signInAnonymously();
-                      print("Signed in anonymously");
+                    final googleUser = await googleSignIn.signIn();
+                    if (googleUser == null) {
+                      _logLine('Google sign-in cancelled by user');
+                      return;
                     }
 
-                    final user = auth.currentUser;
+                    final googleAuth = await googleUser.authentication;
+                    final credential = GoogleAuthProvider.credential(
+                      accessToken: googleAuth.accessToken,
+                      idToken: googleAuth.idToken,
+                    );
+
+                    UserCredential userCredential;
+                    final currentUser = auth.currentUser;
+
+                    // Preserve anonymous UID/data by linking when possible.
+                    if (currentUser != null && currentUser.isAnonymous) {
+                      userCredential =
+                          await currentUser.linkWithCredential(credential);
+                    } else {
+                      userCredential =
+                          await auth.signInWithCredential(credential);
+                    }
+
+                    final user = userCredential.user;
                     if (user == null) {
-                      print("User is still null.");
+                      _logLine('Google sign-in succeeded but user is null');
                       return;
                     }
 
-                    final token = await user.getIdToken(true);
-
-                    if (token == null) {
-                      print("Token is null.");
-                      return;
-                    }
-
-                    print("UID: ${user.uid}");
-                    print("TOKEN LENGTH: ${token.length}");
-
-                    // Print in chunks to avoid console truncation
-                    const chunkSize = 800;
-                    for (int i = 0; i < token.length; i += chunkSize) {
-                      final end = (i + chunkSize < token.length)
-                          ? i + chunkSize
-                          : token.length;
-                      print(
-                        "TOKEN_PART ${i ~/ chunkSize}: ${token.substring(i, end)}",
-                      );
+                    await _printGoogleAuthInfo(user);
+                  } on FirebaseAuthException catch (e) {
+                    // If linking fails due to account already existing, fallback to sign in.
+                    if (e.code == 'credential-already-in-use' ||
+                        e.code == 'provider-already-linked') {
+                      try {
+                        final googleUser = await googleSignIn.signIn();
+                        if (googleUser == null) return;
+                        final googleAuth = await googleUser.authentication;
+                        final credential = GoogleAuthProvider.credential(
+                          accessToken: googleAuth.accessToken,
+                          idToken: googleAuth.idToken,
+                        );
+                        final userCredential =
+                            await auth.signInWithCredential(credential);
+                        final user = userCredential.user;
+                        if (user == null) {
+                          _logLine('Fallback Google sign-in returned null user');
+                          return;
+                        }
+                        await _printGoogleAuthInfo(user);
+                      } catch (fallbackError) {
+                        _logLine('Fallback Google sign-in failed: $fallbackError');
+                      }
+                    } else {
+                      _logLine('Firebase auth error: ${e.code} - ${e.message}');
                     }
                   } catch (e) {
-                    print("Auth error: $e");
+                    _logLine('Auth error: $e');
                   }
                 },
 
