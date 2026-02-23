@@ -10,13 +10,26 @@ public class inputMannager : MonoBehaviour
     [SerializeField] private Camera arCam;
     [SerializeField] private ARRaycastManager raycastManager;
     [SerializeField] private GameObject crossHair;
+    [SerializeField] private float rotationStep = 15f; //rotation degrees per click
 
+    public bool isMovingObject = false;
+    public bool isOverObject = false;
+
+    private GameObject obj;
+    private GameObject selectedObject;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private Pose pose;
 
     void Update()
     {
         CrossHairCalculation();
+
+        if (isMovingObject && selectedObject != null)
+        {
+            MoveSelectedObject();
+        }
+        //Debug.Log("isMovingObject: " + isMovingObject);
+
 
 #if UNITY_EDITOR //if in unity editor in pc use mouse input
         HandleMouseInput();
@@ -49,9 +62,15 @@ public class inputMannager : MonoBehaviour
 
     void SpawnObject() // object spawning logic
     {
-        if (IsCrosshairOverObject())
+        if (GetObjectUnderCrosshair() != null)
         {
             Debug.Log("Blocked: Crosshair is over an existing object.");
+            return;
+        }
+
+        if (isMovingObject)
+        {
+            Debug.Log("Cannot spawn while moving object");
             return;
         }
 
@@ -61,7 +80,7 @@ public class inputMannager : MonoBehaviour
             return;
         }
 
-        PhotonNetwork.Instantiate(
+        PhotonNetwork.Instantiate(//actual spawning happens here
             dataHandler.Instance.furniture.name,
             pose.position,
             pose.rotation
@@ -101,9 +120,9 @@ public class inputMannager : MonoBehaviour
         }
     }
 
-    bool IsCrosshairOverObject()// checking if the crosshair is in the furniture layer so objects wont spawn
+    GameObject GetObjectUnderCrosshair()
     {
-        float checkRadius = 0.1f; // search radius around the pointer, adjust if needed
+        float checkRadius = 0.1f;
 
         Collider[] hits = Physics.OverlapSphere(
             pose.position,
@@ -114,11 +133,101 @@ public class inputMannager : MonoBehaviour
         {
             if (col.CompareTag("furniture"))
             {
-                return true;
+                PhotonView pv = col.GetComponentInParent<PhotonView>();
+
+                if (pv != null)
+                {
+                    return pv.gameObject; //this returns the parent networked object
+                }
             }
         }
 
-        return false;
+        return null;
+    }
+
+    public void OnMoveButtonPressed()
+    {
+        Debug.Log("Move button pressed");
+
+        if (isMovingObject) return;
+
+        obj = GetObjectUnderCrosshair();
+
+        if (obj != null)
+        {
+            selectedObject = obj;
+
+            PhotonView pv = selectedObject.GetComponent<PhotonView>();
+
+            if (pv != null)
+            {
+                pv.RequestOwnership();
+            }
+
+            isMovingObject = true;
+        }
+        else
+        {
+            Debug.Log("No furniture under crosshair");
+        }
+    }
+
+    public void OnPlaceButtonPressed()
+    {
+        if (!isMovingObject) return;
+
+        isMovingObject = false;
+        selectedObject = null;
+
+        Debug.Log("Object placed");
+    }
+
+    void MoveSelectedObject()
+    {
+        if (selectedObject == null) return;
+
+        PhotonView pv = selectedObject.GetComponent<PhotonView>();
+        if (pv == null) return;
+
+        if (!pv.IsMine)
+            pv.RequestOwnership();
+
+        if (pv.IsMine)
+        {
+            selectedObject.transform.position = pose.position;
+        }
+    }
+
+    public void RotateLeft()//public becaues private wont show up in OnClick() event in the inspector
+    {
+        if (selectedObject == null) return;
+
+        PhotonView pv = selectedObject.GetComponent<PhotonView>();
+        if (pv == null) return;
+
+        if (!pv.IsMine)
+            pv.RequestOwnership();
+
+        if (pv.IsMine)
+        {
+            selectedObject.transform.Rotate(0f, -rotationStep, 0f);
+        }
+    }
+
+    public void RotateRight()//public becaues private wont show up in OnClick() event in the inspector
+    {
+        if (selectedObject == null) return;
+
+        PhotonView pv = selectedObject.GetComponent<PhotonView>();
+        if (pv == null) return;
+
+        if (!pv.IsMine)
+            pv.RequestOwnership();
+
+        if (pv.IsMine)
+        {
+            selectedObject.transform.Rotate(0f, rotationStep, 0f);
+        }
     }
 
 }

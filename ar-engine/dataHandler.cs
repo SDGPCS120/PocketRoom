@@ -17,8 +17,4 @@ public class dataHandler : MonoBehaviour
             return instance;
         }
     }
-
-    void CreateButton() {
-    
-    }
 }
