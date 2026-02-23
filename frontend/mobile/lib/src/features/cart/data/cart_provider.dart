@@ -22,11 +22,11 @@ class CartNotifier extends Notifier<List<CartItem>> {
     }
   }
 
-  void removeItem(int furnitureId) {
+  void removeItem(String furnitureId) {
     state = state.where((item) => item.furniture.id != furnitureId).toList();
   }
 
-  void incrementQuantity(int furnitureId) {
+  void incrementQuantity(String furnitureId) {
     final index = state.indexWhere((item) => item.furniture.id == furnitureId);
     if (index != -1) {
       final item = state[index];
@@ -38,7 +38,7 @@ class CartNotifier extends Notifier<List<CartItem>> {
     }
   }
 
-  void decrementQuantity(int furnitureId) {
+  void decrementQuantity(String furnitureId) {
     final index = state.indexWhere((item) => item.furniture.id == furnitureId);
     if (index != -1) {
       final item = state[index];

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './models/furniture_model.dart';
 import './repositories/furniture_repository.dart';
+import './repositories/api_product_repository.dart';
 
 // Provider for the active Furniture Type (selected from Home Page)
 final selectedFurnitureTypeProvider = StateProvider<String>((ref) => "All");
@@ -8,9 +9,9 @@ final selectedFurnitureTypeProvider = StateProvider<String>((ref) => "All");
 // Provider for the active General Category (selected from Category Products Page)
 final selectedGeneralCategoryProvider = StateProvider<String>((ref) => "Best sellers");
 
-// Provider for the repository itself (unchanged).
+// Provider for the repository — now uses the API-backed implementation.
 final furnitureRepositoryProvider = Provider<IFurnitureRepository>((ref) {
-  return FurnitureRepository();
+  return ApiProductRepository();
 });
 
 // 1. "Fetcher" Provider: Fetches all furniture from the repository ONCE.
