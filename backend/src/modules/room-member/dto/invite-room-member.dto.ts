@@ -6,7 +6,6 @@ export enum RoomRole {
 }
 
 export class InviteRoomMemberDto {
-
   @IsString()
   roomId: string;
 

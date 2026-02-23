@@ -3,7 +3,6 @@ import { CreateOrderDto } from './dto/create-order.dto';
 
 @Controller('order')
 export class OrderController {
-
   @Get()
   ping() {
     return { message: 'Order endpoint is online' };

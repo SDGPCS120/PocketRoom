@@ -37,7 +37,7 @@ function toFirestoreUser(
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly firebaseService: FirebaseService) { }
+  constructor(private readonly firebaseService: FirebaseService) {}
 
   async syncUser(uid: string, email: string | null): Promise<SyncResult> {
     const db = this.firebaseService.firestore;

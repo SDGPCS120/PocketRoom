@@ -3,7 +3,6 @@ import {
   IsEnum,
   IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   MaxLength,
 } from 'class-validator';

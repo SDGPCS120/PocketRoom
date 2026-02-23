@@ -9,7 +9,7 @@ import { FirebaseService } from '../../../firebase/firebase.service.js';
 
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {
-  constructor(private readonly firebaseService: FirebaseService) { }
+  constructor(private readonly firebaseService: FirebaseService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<Request & { user?: any }>();

@@ -7,7 +7,6 @@ export enum PresenceStatus {
 }
 
 export class PresenceUpdateDto {
-
   @IsEnum(PresenceStatus)
   status: PresenceStatus;
 
