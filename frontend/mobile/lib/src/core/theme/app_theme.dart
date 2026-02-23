@@ -3,24 +3,44 @@ import 'package:google_fonts/google_fonts.dart';
 
 // A dedicated class for holding your app's custom colors.
 class AppColors {
-  // This class is not meant to be instantiated.
   AppColors._();
 
   // Main branding colors
-  static const Color primary = Color(0xFFFF8A3D);
+  static const Color primary = Color(0xFFE79742); // Updated to match product border/price
   static const Color secondary = Color(0xFFFFE5D3);
-  static const Color background = Color(0xFFFFF8F3);
+  static const Color background = Color(0xFFFFFFFF); // Updated to match card background
   
   // Text colors
-  static const Color textPrimary = Color(0xFF2D2D2D);
-  static const Color textSecondary = Color(0xFF757575); // A slightly lighter grey
+  static const Color textPrimary = Color(0xFF1E293B); // Product card title
+  static const Color textSecondary = Color(0xFF94A3B8); // Product card brand
+  static const Color textRating = Color(0xFF444D5C); // Product card rating
+  static const Color priceColor = Color(0xFFE79742);
+
+  // Border colors
+  static const Color cardBorder = Color(0xFFE79742);
 
   // Gradient for cards
   static const Gradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFFFE5D3), Color(0xFFFFD4B8)],
+    colors: [Color(0xFFFFFFFF), Color(0xFFFFFFFF)], // Changed to solid white as per design
   );
+
+  // Shadows
+  static List<BoxShadow> productCardShadow = [
+    BoxShadow(
+      color: const Color(0xFFE79742).withOpacity(0.12),
+      offset: const Offset(0, 10),
+      blurRadius: 25,
+      spreadRadius: -5,
+    ),
+    BoxShadow(
+      color: Colors.black.withOpacity(0.02),
+      offset: const Offset(0, 8),
+      blurRadius: 10,
+      spreadRadius: -6,
+    ),
+  ];
 }
 
 class AppTheme {

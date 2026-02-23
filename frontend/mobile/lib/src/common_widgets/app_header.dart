@@ -5,11 +5,18 @@ import '../core/theme/app_theme.dart';
 import '../features/auth/presentation/login_page.dart';
 import '../features/auth/presentation/profile_page.dart';
 
-class AppHeader extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
+import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
+
+class AppHeader extends ConsumerWidget {
   const AppHeader({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cartItems = ref.watch(cartProvider);
+    final itemCount = cartItems.length;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
@@ -48,33 +55,7 @@ class AppHeader extends StatelessWidget {
               final hasAuthDisplayName =
                   (user.displayName ?? '').trim().isNotEmpty;
               if (hasAuthDisplayName) {
-                return Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.shopping_cart_outlined, size: 22),
-                      style: IconButton.styleFrom(
-                        backgroundColor: AppColors.secondary,
-                        shape: const CircleBorder(),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const ProfilePage(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.person_outline, size: 22),
-                      style: IconButton.styleFrom(
-                        backgroundColor: AppColors.secondary,
-                        shape: const CircleBorder(),
-                      ),
-                    ),
-                  ],
-                );
+                return _buildUserActions(context, ref, itemCount);
               }
 
               return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -112,39 +93,78 @@ class AppHeader extends StatelessWidget {
                     );
                   }
 
-                  return Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.shopping_cart_outlined, size: 22),
-                        style: IconButton.styleFrom(
-                          backgroundColor: AppColors.secondary,
-                          shape: const CircleBorder(),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const ProfilePage(),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.person_outline, size: 22),
-                        style: IconButton.styleFrom(
-                          backgroundColor: AppColors.secondary,
-                          shape: const CircleBorder(),
-                        ),
-                      ),
-                    ],
-                  );
+                  return _buildUserActions(context, ref, itemCount);
                 },
               );
             },
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildUserActions(BuildContext context, WidgetRef ref, int itemCount) {
+    return Row(
+      children: [
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartPage()),
+                );
+              },
+              icon: const Icon(Icons.shopping_cart_outlined, size: 22),
+              style: IconButton.styleFrom(
+                backgroundColor: AppColors.secondary,
+                shape: const CircleBorder(),
+              ),
+            ),
+            if (itemCount > 0)
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Text(
+                    itemCount.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(width: 4),
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const ProfilePage(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.person_outline, size: 22),
+          style: IconButton.styleFrom(
+            backgroundColor: AppColors.secondary,
+            shape: const CircleBorder(),
+          ),
+        ),
+      ],
     );
   }
 }

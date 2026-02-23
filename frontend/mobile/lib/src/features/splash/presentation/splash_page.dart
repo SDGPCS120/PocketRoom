@@ -71,8 +71,8 @@ class _SplashPageState extends State<SplashPage>
           },
           child: SvgPicture.asset(
             'assets/logo.svg',
-            width: 150, // Adjust size as needed
-            height: 150,
+            width: 110, // Adjust size as needed
+            height: 110,
           ),
         ),
       ),
