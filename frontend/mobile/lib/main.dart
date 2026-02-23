@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/home/presentation/home_page.dart';
 import 'src/features/auth/presentation/username_page.dart';
+import 'src/features/splash/presentation/splash_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -74,7 +75,7 @@ class PocketRoomApp extends StatelessWidget {
     return MaterialApp(
       title: 'PocketRoom',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme, // Using the new centralized theme
+      theme: AppTheme.lightTheme,
       home: const AuthGate(),
     );
   }
