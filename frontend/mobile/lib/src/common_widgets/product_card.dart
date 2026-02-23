@@ -3,13 +3,16 @@ import '../core/theme/app_theme.dart'; // Import the new theme file
 import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
 
-class ProductCard extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
+
+class ProductCard extends ConsumerWidget {
   final Furniture furniture;
 
   const ProductCard({super.key, required this.furniture});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.background,
@@ -129,18 +132,32 @@ class ProductCard extends StatelessWidget {
                       color: AppColors.priceColor,
                     ),
                   ),
-                  Container(
-                    width: 22,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primary, width: 1),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.add_shopping_cart,
-                        size: 12,
-                        color: AppColors.primary,
+                  GestureDetector(
+                    onTap: () {
+                      ref.read(cartProvider.notifier).addItem(furniture);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${furniture.name} added to cart'),
+                          duration: const Duration(seconds: 1),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          backgroundColor: AppColors.primary,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.primary, width: 1),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.add_shopping_cart,
+                          size: 12,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ),
