@@ -19,6 +19,6 @@ public class buttonManager : MonoBehaviour
     }
 
     void selectObject() {
-        dataHandler.Instance.furniture = furniture;
+        dataHandler.Instance.SetPrefabSelection(furniture);
     }
 }

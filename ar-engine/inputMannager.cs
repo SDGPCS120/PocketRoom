@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+using System;
+using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,6 +12,8 @@ public class inputMannager : MonoBehaviour
     [SerializeField] private ARRaycastManager raycastManager;
     [SerializeField] private GameObject crossHair;
     [SerializeField] private float rotationStep = 15f; //rotation degrees per click
+    [SerializeField] private float spawnYOffset = 0.290f;//this is so that the object spawns slightly above the plane, preventing clipping issues
+    [SerializeField] private string networkFurnitureHostPrefabName = "NetworkFurnitureHost";
 
     public bool isMovingObject = false;
     public bool isOverObject = false;
@@ -74,17 +77,65 @@ public class inputMannager : MonoBehaviour
             return;
         }
 
-        if (dataHandler.Instance.furniture == null)
+        bool useRuntimeNetworkModel = dataHandler.Instance.useRuntimeNetworkModel &&
+                                      !string.IsNullOrWhiteSpace(dataHandler.Instance.selectedModelUrl);
+
+        if (!useRuntimeNetworkModel && dataHandler.Instance.furniture == null)
         {
             Debug.LogWarning("Furniture prefab is not assigned.");
             return;
         }
 
-        PhotonNetwork.Instantiate(//actual spawning happens here
-            dataHandler.Instance.furniture.name,
-            pose.position,
+        Vector3 spawnPosition = pose.position + new Vector3(0f, spawnYOffset, 0f);
+
+        if (useRuntimeNetworkModel)
+        {
+            SpawnRuntimeNetworkModel(spawnPosition, pose.rotation);
+            return;
+        }
+
+        GameObject selectedFurniture = dataHandler.Instance.furniture;
+
+        GameObject spawned = PhotonNetwork.Instantiate(//actual spawning happens here
+            selectedFurniture.name,
+            spawnPosition,
             pose.rotation
         );
+        EnsureBoxColliders(spawned);
+    }
+
+    void SpawnRuntimeNetworkModel(Vector3 spawnPosition, Quaternion spawnRotation)
+    {
+        string modelUrl = dataHandler.Instance.selectedModelUrl;
+        string modelName = dataHandler.Instance.selectedModelName;
+
+        if (PhotonNetwork.InRoom)
+        {
+            GameObject spawned = PhotonNetwork.Instantiate(
+                networkFurnitureHostPrefabName,
+                spawnPosition,
+                spawnRotation,
+                0,
+                new object[] { modelUrl, modelName }
+            );
+            EnsureBoxColliders(spawned);
+            return;
+        }
+
+        GameObject hostPrefab = Resources.Load<GameObject>(networkFurnitureHostPrefabName);
+        if (hostPrefab == null)
+        {
+            Debug.LogError($"Missing Resources prefab: {networkFurnitureHostPrefabName}");
+            return;
+        }
+
+        GameObject localHost = Instantiate(hostPrefab, spawnPosition, spawnRotation);
+        NetworkFurnitureLoader loader = localHost.GetComponent<NetworkFurnitureLoader>();
+        if (loader != null)
+        {
+            loader.InitializeFromSelection(modelUrl, modelName);
+        }
+        EnsureBoxColliders(localHost);
     }
 
     bool IsPointerOverUI(Vector2 position) //checks if the user is touching/clicking on a UI element instead of the AR world
@@ -122,23 +173,35 @@ public class inputMannager : MonoBehaviour
 
     GameObject GetObjectUnderCrosshair()
     {
-        float checkRadius = 0.1f;
+        // Primary: raycast from screen center to detect furniture directly under crosshair.
+        Vector3 centerScreen = new Vector3(Screen.width / 2f, Screen.height / 2f);
+        Ray centerRay = arCam.ScreenPointToRay(centerScreen);
+        if (Physics.Raycast(centerRay, out RaycastHit rayHit, 20f))
+        {
+            Collider col = rayHit.collider;
+            if (IsFurnitureCollider(col))
+            {
+                PhotonView pv = col.GetComponentInParent<PhotonView>();
+                if (pv != null)
+                {
+                    return pv.gameObject;
+                }
+            }
+        }
 
-        Collider[] hits = Physics.OverlapSphere(
-            pose.position,
-            checkRadius
-        );
+        // Fallback: overlap around spawn pose (accounts for y offset above plane).
+        float checkRadius = 0.35f;
+        Vector3 checkCenter = pose.position + new Vector3(0f, spawnYOffset, 0f);
+        Collider[] hits = Physics.OverlapSphere(checkCenter, checkRadius);
 
         foreach (Collider col in hits)
         {
-            if (col.CompareTag("furniture"))
-            {
-                PhotonView pv = col.GetComponentInParent<PhotonView>();
+            if (!IsFurnitureCollider(col)) continue;
 
-                if (pv != null)
-                {
-                    return pv.gameObject; //this returns the parent networked object
-                }
+            PhotonView pv = col.GetComponentInParent<PhotonView>();
+            if (pv != null)
+            {
+                return pv.gameObject;
             }
         }
 
@@ -161,7 +224,11 @@ public class inputMannager : MonoBehaviour
 
             if (pv != null)
             {
-                pv.RequestOwnership();
+                bool isLocalOnlyView = pv.ViewID == 0;
+                if (!isLocalOnlyView)
+                {
+                    pv.RequestOwnership();
+                }
             }
 
             isMovingObject = true;
@@ -189,12 +256,14 @@ public class inputMannager : MonoBehaviour
         PhotonView pv = selectedObject.GetComponent<PhotonView>();
         if (pv == null) return;
 
-        if (!pv.IsMine)
+        bool isLocalOnlyView = pv.ViewID == 0;
+
+        if (!pv.IsMine && !isLocalOnlyView)
             pv.RequestOwnership();
 
-        if (pv.IsMine)
+        if (pv.IsMine || isLocalOnlyView)
         {
-            selectedObject.transform.position = pose.position;
+            selectedObject.transform.position = pose.position + new Vector3(0f, spawnYOffset, 0f);
         }
     }
 
@@ -205,10 +274,12 @@ public class inputMannager : MonoBehaviour
         PhotonView pv = selectedObject.GetComponent<PhotonView>();
         if (pv == null) return;
 
-        if (!pv.IsMine)
+        bool isLocalOnlyView = pv.ViewID == 0;
+
+        if (!pv.IsMine && !isLocalOnlyView)
             pv.RequestOwnership();
 
-        if (pv.IsMine)
+        if (pv.IsMine || isLocalOnlyView)
         {
             selectedObject.transform.Rotate(0f, -rotationStep, 0f);
         }
@@ -221,14 +292,73 @@ public class inputMannager : MonoBehaviour
         PhotonView pv = selectedObject.GetComponent<PhotonView>();
         if (pv == null) return;
 
-        if (!pv.IsMine)
+        bool isLocalOnlyView = pv.ViewID == 0;
+
+        if (!pv.IsMine && !isLocalOnlyView)
             pv.RequestOwnership();
 
-        if (pv.IsMine)
+        if (pv.IsMine || isLocalOnlyView)
         {
             selectedObject.transform.Rotate(0f, rotationStep, 0f);
         }
     }
 
+    void EnsureBoxColliders(GameObject root)
+    {
+        if (root == null) return;
+
+        PhotonView pv = root.GetComponentInParent<PhotonView>();
+        GameObject target = pv != null ? pv.gameObject : root;
+
+        if (target.GetComponent<Collider>() != null) return;
+
+        Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+        BoxCollider box = target.AddComponent<BoxCollider>();
+
+        if (renderers.Length == 0)
+        {
+            box.center = Vector3.zero;
+            box.size = Vector3.one * 0.2f;
+            return;
+        }
+
+        Bounds worldBounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+        {
+            worldBounds.Encapsulate(renderers[i].bounds);
+        }
+
+        Vector3 localCenter = target.transform.InverseTransformPoint(worldBounds.center);
+        Vector3 lossy = target.transform.lossyScale;
+        Vector3 safeLossy = new Vector3(
+            Mathf.Max(Mathf.Abs(lossy.x), 0.0001f),
+            Mathf.Max(Mathf.Abs(lossy.y), 0.0001f),
+            Mathf.Max(Mathf.Abs(lossy.z), 0.0001f)
+        );
+        Vector3 localSize = new Vector3(
+            worldBounds.size.x / safeLossy.x,
+            worldBounds.size.y / safeLossy.y,
+            worldBounds.size.z / safeLossy.z
+        );
+
+        box.center = localCenter;
+        box.size = localSize;
+    }
+
+    bool IsFurnitureCollider(Collider col)
+    {
+        if (col == null) return false;
+        if (col.CompareTag("furniture")) return true;
+
+        Transform taggedParent = col.transform.root;
+        if (taggedParent != null && taggedParent.CompareTag("furniture")) return true;
+
+        Transform parent = col.GetComponentInParent<Transform>();
+        return parent != null && parent.CompareTag("furniture");
+    }
+
 }
+
+
+
 
