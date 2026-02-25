@@ -6,6 +6,12 @@
 class ApiConfig {
   ApiConfig._();
 
-  /// Change this to your machine's IP if testing on a physical device.
-  static const String baseUrl = 'http://10.0.2.2:3000';
+  /// USE NGROK for mobile phone testing (works everywhere)
+  static const String baseUrl = 'https://jagless-kristal-appliably.ngrok-free.dev';
+
+  /// ALTERNATIVE: Local IP for physical mobile phone (must be on same Wi-Fi)
+  // static const String baseUrl = 'http://10.31.21.205:3000';
+
+  /// ALTERNATIVE: Use 10.0.2.2 for Android Emulator
+  // static const String baseUrl = 'http://10.0.2.2:3000';
 }
