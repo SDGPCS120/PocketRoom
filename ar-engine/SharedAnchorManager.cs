@@ -38,6 +38,7 @@ public class SharedAnchorManager : MonoBehaviourPun
 
         photonView.RPC(
             "ReceiveAnchor",
+            // Buffered RPC makes late joiners receive the same anchor as existing players.
             RpcTarget.AllBuffered,
             pose.position,
             pose.rotation

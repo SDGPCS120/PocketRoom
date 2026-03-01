@@ -90,6 +90,7 @@ public class inputMannager : MonoBehaviour
 
         if (useRuntimeNetworkModel)
         {
+            // Runtime GLB flow: spawn a Photon host and let each client load the same URL locally.
             SpawnRuntimeNetworkModel(spawnPosition, pose.rotation);
             return;
         }
@@ -111,6 +112,7 @@ public class inputMannager : MonoBehaviour
 
         if (PhotonNetwork.InRoom)
         {
+            // Model URL/name are sent once through Photon instantiation data.
             GameObject spawned = PhotonNetwork.Instantiate(
                 networkFurnitureHostPrefabName,
                 spawnPosition,
@@ -133,6 +135,7 @@ public class inputMannager : MonoBehaviour
         NetworkFurnitureLoader loader = localHost.GetComponent<NetworkFurnitureLoader>();
         if (loader != null)
         {
+            // Local fallback path when testing without an active Photon room.
             loader.InitializeFromSelection(modelUrl, modelName);
         }
         EnsureBoxColliders(localHost);
@@ -225,6 +228,7 @@ public class inputMannager : MonoBehaviour
             if (pv != null)
             {
                 bool isLocalOnlyView = pv.ViewID == 0;
+                // ViewID 0 means local-only object, so ownership requests are not applicable.
                 if (!isLocalOnlyView)
                 {
                     pv.RequestOwnership();

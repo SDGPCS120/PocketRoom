@@ -15,6 +15,7 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
 
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
+        // Read model metadata passed by PhotonNetwork.Instantiate(..., instantiationData).
         if (photonView.InstantiationData == null || photonView.InstantiationData.Length == 0) return;
 
         modelUrl = photonView.InstantiationData[0] as string;
@@ -32,6 +33,7 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
 
     private async void Start()
     {
+        // Guard avoids duplicate loads if object gets re-enabled.
         if (hasStarted) return;
         hasStarted = true;
 
@@ -89,9 +91,11 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
 
         if (tagAsFurniture)
         {
+            // Tag entire hierarchy so selection checks can hit parent or child colliders.
             SetTagRecursively(transform, "furniture");
         }
 
+        // Rebuild collider after model is loaded so bounds match rendered mesh.
         RefreshRootBoxCollider(gameObject);
     }
 

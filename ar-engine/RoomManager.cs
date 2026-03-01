@@ -13,6 +13,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     private bool pendingCreateRoom = false;
     private bool pendingJoinRoom = false;
+    // Stores the room code that should be used after async transitions
+    // like leaving a room / rejoining lobby complete.
     private string pendingRoomCode = "";
     string roomCode;
 
@@ -99,7 +101,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             MaxPlayers = 5,
             IsVisible = false,
+            // Destroy room immediately when last player leaves.
             EmptyRoomTtl = 0,
+            // Remove disconnected players immediately (no reconnection window).
             PlayerTtl = 0
         };
 
@@ -161,6 +165,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()// for debugging
     {
+        // For join flow, PhotonNetwork.CurrentRoom.Name is the source of truth.
         statusText.text = "Connected to room "+roomCode;
         roomCodeText.text = "Room Code: " + PhotonNetwork.CurrentRoom.Name;
         Debug.Log("Joined room: " + PhotonNetwork.CurrentRoom.Name);

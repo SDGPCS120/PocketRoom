@@ -9,6 +9,7 @@ public class buttonManager : MonoBehaviour
     void Start()
     {
         btn = GetComponent<Button>();
+        // Connect this UI button to prefab selection in dataHandler.
         btn.onClick.AddListener(selectObject);
     }
 
@@ -19,6 +20,7 @@ public class buttonManager : MonoBehaviour
     }
 
     void selectObject() {
+        // Marks this prefab as the active furniture choice.
         dataHandler.Instance.SetPrefabSelection(furniture);
     }
 }

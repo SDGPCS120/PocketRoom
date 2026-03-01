@@ -18,6 +18,7 @@ public class MoveButtonUILogic : MonoBehaviour
 
     void OnButtonClick()
     {
+        // UI mode flag decides whether this click starts move or confirms placement.
         bool temp = inputManager.isMovingObject;
 
         if (isMoveMode)

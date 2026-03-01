@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class dataHandler : MonoBehaviour
 {
+    // Used for Resources/Photon prefab-based placement.
     public GameObject furniture;
+    // Used for runtime GLB network-host placement.
     public bool useRuntimeNetworkModel;
     public string selectedModelUrl;
     public string selectedModelName;
@@ -24,6 +26,7 @@ public class dataHandler : MonoBehaviour
 
     public void SetPrefabSelection(GameObject prefab)
     {
+        // Switching to prefab mode clears runtime model metadata.
         furniture = prefab;
         useRuntimeNetworkModel = false;
         selectedModelUrl = string.Empty;
@@ -32,6 +35,7 @@ public class dataHandler : MonoBehaviour
 
     public void SetRuntimeModelSelection(string modelUrl, string modelName)
     {
+        // Switching to runtime mode clears direct prefab selection.
         furniture = null;
         useRuntimeNetworkModel = !string.IsNullOrWhiteSpace(modelUrl);
         selectedModelUrl = modelUrl;

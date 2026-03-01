@@ -48,6 +48,7 @@ public class RuntimeGlbCartLoader : MonoBehaviour
     public async Task RefreshCartAsync()
     {
 #if !FIREBASE_FIRESTORE
+        // Keeps compile/runtime stable when Firebase SDK or define is missing.
         SetStatus("Enable FIREBASE_FIRESTORE + Firebase SDK");
         Debug.LogError("RuntimeGlbCartLoader requires Firebase Firestore SDK. Add Firebase Firestore package and define FIREBASE_FIRESTORE.");
         await Task.CompletedTask;
@@ -170,6 +171,7 @@ public class RuntimeGlbCartLoader : MonoBehaviour
         var legacyButtonManager = itemButtonObj.GetComponent<buttonManager>();
         if (legacyButtonManager != null)
         {
+            // Prevent legacy click listener from overwriting runtime selection with null prefab.
             legacyButtonManager.furniture = null;
             legacyButtonManager.enabled = false;
         }
