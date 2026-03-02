@@ -13,6 +13,7 @@ public class SharedAnchorManager : MonoBehaviourPun
 
     public static Transform sharedAnchor;
 
+    //this waits for the first valid plane tap and creates a shared anchor once.
     void Update()
     {
         if (sharedAnchor != null) return;
@@ -45,6 +46,7 @@ public class SharedAnchorManager : MonoBehaviourPun
         );
     }
 
+    //this receives the anchor pose on all clients and creates it if missing.
     [PunRPC]//this code will run while using the unity editor
     void ReceiveAnchor(Vector3 position, Quaternion rotation)
     {

@@ -23,6 +23,7 @@ public class inputMannager : MonoBehaviour
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
     private Pose pose;
 
+    //this updates crosshair tracking and handles current input mode each frame.
     void Update()
     {
         CrossHairCalculation();
@@ -105,6 +106,7 @@ public class inputMannager : MonoBehaviour
         EnsureBoxColliders(spawned);
     }
 
+    //this spawns the network host object and passes model metadata to all clients.
     void SpawnRuntimeNetworkModel(Vector3 spawnPosition, Quaternion spawnRotation)
     {
         string modelUrl = dataHandler.Instance.selectedModelUrl;
@@ -211,6 +213,7 @@ public class inputMannager : MonoBehaviour
         return null;
     }
 
+    //this selects furniture under the crosshair and starts move mode.
     public void OnMoveButtonPressed()
     {
         Debug.Log("Move button pressed");
@@ -243,6 +246,7 @@ public class inputMannager : MonoBehaviour
         }
     }
 
+    //this ends move mode and drops the currently selected object in place.
     public void OnPlaceButtonPressed()
     {
         if (!isMovingObject) return;
@@ -253,6 +257,7 @@ public class inputMannager : MonoBehaviour
         Debug.Log("Object placed");
     }
 
+    //this moves the selected object to the current crosshair pose while in move mode.
     void MoveSelectedObject()
     {
         if (selectedObject == null) return;
@@ -307,6 +312,7 @@ public class inputMannager : MonoBehaviour
         }
     }
 
+    //this ensures the network root has a box collider for hit detection and selection.
     void EnsureBoxColliders(GameObject root)
     {
         if (root == null) return;
@@ -349,6 +355,7 @@ public class inputMannager : MonoBehaviour
         box.size = localSize;
     }
 
+    //this checks if a collider belongs to a furniture object in the hierarchy.
     bool IsFurnitureCollider(Collider col)
     {
         if (col == null) return false;

@@ -9,6 +9,7 @@ public class removingLogic : MonoBehaviour
     //a simple script to remove all objects in a scene
 
     public ARPlaneManager PlaneManager;
+    //this finds all furniture objects and removes them from the scene.
     public void removeAllObjects() {
         GameObject[] allObjs = GameObject.FindGameObjectsWithTag("furniture");
 

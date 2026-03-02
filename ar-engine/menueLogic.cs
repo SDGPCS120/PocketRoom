@@ -6,13 +6,29 @@ public class menueLogic : MonoBehaviour
 
     public GameObject menu;
     
+    //this hides the assigned menu object when the scene starts.
     void Start()
     {
-        menu.SetActive(false);
+        if (menu != null)
+        {
+            menu.SetActive(false);
+        }
     }
 
+    //this toggles either the main menu or CartMenu depending on setup.
     public void openMenu() {
-        bool isActive = menu.activeSelf;
-        menu.SetActive(!isActive);
+        Canvas canvas = GetComponentInParent<Canvas>(true);
+
+        //this is specificly for closing the cart menu when an object is selected
+        if(menu==null){
+            Transform cartMenu = canvas.transform.Find("CartMenu");
+            bool isActive = cartMenu.gameObject.activeSelf;
+            cartMenu.gameObject.SetActive(!isActive);
+
+        //this is for opening and closing the main menu when the menu button is pressed
+        }else{
+            bool isActive = menu.activeSelf;
+            menu.SetActive(!isActive);
+        }
     }
 }

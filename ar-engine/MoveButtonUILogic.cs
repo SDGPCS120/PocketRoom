@@ -10,12 +10,14 @@ public class MoveButtonUILogic : MonoBehaviour
 
     private bool isMoveMode = true;
 
+    //this initializes the move/place button state and click listener.
     void Start()
     {
         button.onClick.AddListener(OnButtonClick);
         buttonText.text = "Move";
     }
 
+    //this toggles between selecting an object to move and placing it.
     void OnButtonClick()
     {
         // UI mode flag decides whether this click starts move or confirms placement.

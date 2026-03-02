@@ -30,6 +30,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
     */
     //////////////////////////////////////////////////////////////
 
+    //this starts the Photon connection flow when the scene loads.
     void Start()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -42,6 +43,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinLobby();
     }
 
+    //this handles lobby entry and runs pending create/join actions.
     public override void OnJoinedLobby()
     {
         Debug.Log("Joined Lobby");
@@ -171,6 +173,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         Debug.Log("Joined room: " + PhotonNetwork.CurrentRoom.Name);
     }
 
+    //this resets room UI and returns the player to lobby after leaving.
     public override void OnLeftRoom()
     {
         Debug.Log("Left room - rejoining lobby");
@@ -205,6 +208,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     }
 
+    //this leaves the room on app quit to avoid stale room membership.
     void OnApplicationQuit()
     {
         if (PhotonNetwork.InRoom)

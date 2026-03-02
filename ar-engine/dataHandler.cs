@@ -14,6 +14,7 @@ public class dataHandler : MonoBehaviour
 
     private static dataHandler instance;
 
+    //this returns the singleton dataHandler instance used by selection scripts.
     public static dataHandler Instance {
 
         get {
@@ -24,6 +25,7 @@ public class dataHandler : MonoBehaviour
         }
     }
 
+    //this stores a prefab selection for direct Photon prefab spawning.
     public void SetPrefabSelection(GameObject prefab)
     {
         // Switching to prefab mode clears runtime model metadata.
@@ -33,6 +35,7 @@ public class dataHandler : MonoBehaviour
         selectedModelName = string.Empty;
     }
 
+    //this stores runtime model metadata for network host based spawning.
     public void SetRuntimeModelSelection(string modelUrl, string modelName)
     {
         // Switching to runtime mode clears direct prefab selection.

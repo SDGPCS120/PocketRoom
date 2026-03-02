@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 #if FIREBASE_FIRESTORE
 using Firebase;
@@ -34,9 +35,12 @@ public class RuntimeGlbCartLoader : MonoBehaviour
         public string Id;
         public string Name;
         public string GlbUrl;
+        public string ImageUrl;
+        public string PriceText;
         public int SortOrder;
     }
 
+    //this auto-loads cart items on startup when loadOnStart is enabled.
     private async void Start()
     {
         if (loadOnStart)
@@ -45,6 +49,7 @@ public class RuntimeGlbCartLoader : MonoBehaviour
         }
     }
 
+    //this connects to Firebase, reads products, and builds the cart UI.
     public async Task RefreshCartAsync()
     {
 #if !FIREBASE_FIRESTORE
@@ -107,7 +112,7 @@ public class RuntimeGlbCartLoader : MonoBehaviour
         foreach (var item in items)
         {
             catalogById[item.Id] = item;
-            CreateCartButton(item.Id, item.Name);
+            CreateCartButton(item.Id, item.Name, item.PriceText, item.ImageUrl);
         }
 
         SetStatus($"Loaded {items.Count} items");
@@ -115,6 +120,7 @@ public class RuntimeGlbCartLoader : MonoBehaviour
     }
 
 #if FIREBASE_FIRESTORE
+    //this converts Firestore documents into catalog items used by the UI.
     private List<CatalogItem> ParseCatalog(QuerySnapshot snapshot)
     {
         var items = new List<CatalogItem>();
@@ -127,6 +133,7 @@ public class RuntimeGlbCartLoader : MonoBehaviour
             }
 
             string name = doc.TryGetValue("name", out string nameValue) ? nameValue : doc.Id;
+            // Supports both current field name (modelURL) and legacy field name (glbUrl).
             string glbUrl = doc.TryGetValue("modelURL", out string modelUrlValue)
                 ? modelUrlValue
                 : (doc.TryGetValue("glbUrl", out string legacyUrlValue) ? legacyUrlValue : string.Empty);
@@ -143,15 +150,51 @@ public class RuntimeGlbCartLoader : MonoBehaviour
                 Id = doc.Id,
                 Name = name,
                 GlbUrl = glbUrl,
+                ImageUrl = GetImageUrl(doc),
+                PriceText = GetPriceText(doc),
                 SortOrder = sort
             });
         }
 
         return items;
     }
+
+    //this reads the price field and formats it as a display string with $.
+    private static string GetPriceText(DocumentSnapshot doc)
+    {
+        if (!doc.TryGetValue("price", out object rawPrice) || rawPrice == null)
+        {
+            return string.Empty;
+        }
+
+        if (rawPrice is long longPrice)
+        {
+            return $"${longPrice}";
+        }
+
+        if (rawPrice is double doublePrice)
+        {
+            return $"${doublePrice:0.##}";
+        }
+
+        string text = rawPrice.ToString();
+        if (string.IsNullOrWhiteSpace(text)) return string.Empty;
+        return text.TrimStart().StartsWith("$", StringComparison.Ordinal) ? text : $"${text}";
+    }
+
+    //this reads the imageUrl field from a Firestore document.
+    private static string GetImageUrl(DocumentSnapshot doc)
+    {
+        if (!doc.TryGetValue("imageUrl", out string imageUrl))
+        {
+            return string.Empty;
+        }
+        return imageUrl ?? string.Empty;
+    }
 #endif
 
-    private void CreateCartButton(string itemId, string itemName)
+    //this creates one cart button and fills its title, price, and thumbnail.
+    private void CreateCartButton(string itemId, string itemName, string priceText, string imageUrl)
     {
         if (cartContentRoot == null || cartItemButtonPrefab == null)
         {
@@ -161,10 +204,23 @@ public class RuntimeGlbCartLoader : MonoBehaviour
 
         var itemButtonObj = Instantiate(cartItemButtonPrefab, cartContentRoot);
         var button = itemButtonObj.GetComponent<Button>();
-        var nameLabel = itemButtonObj.GetComponentInChildren<TMP_Text>(true);
-        if (nameLabel != null)
+        TMP_Text[] labels = itemButtonObj.GetComponentsInChildren<TMP_Text>(true);
+        TMP_Text titleLabel = FindLabelByName(labels, "title");
+        TMP_Text priceLabel = FindLabelByName(labels, "price");
+
+        // Fallbacks keep old prefabs working even if label objects are not named.
+        if (titleLabel == null && labels.Length > 0) titleLabel = labels[0];
+        if (priceLabel == null && labels.Length > 1) priceLabel = labels[1];
+
+        if (titleLabel != null) titleLabel.text = itemName;
+        if (priceLabel != null) priceLabel.text = priceText;
+
+        // Finds image slot by name ("image") first, then falls back to first child Image.
+        var imageSlot = FindImageByName(itemButtonObj.GetComponentsInChildren<Image>(true), "image");
+        if (imageSlot != null && !string.IsNullOrWhiteSpace(imageUrl))
         {
-            nameLabel.text = itemName;
+            // Loads thumbnail from Firestore URL at runtime.
+            StartCoroutine(LoadImageIntoSlot(imageUrl, imageSlot));
         }
 
         // Backward compatibility: disable legacy prefab assignment for runtime catalog items.
@@ -182,6 +238,7 @@ public class RuntimeGlbCartLoader : MonoBehaviour
         }
     }
 
+    //this stores the selected model so the user can place it in AR.
     private void OnCartItemSelected(string itemId, string itemName)
     {
         if (!catalogById.TryGetValue(itemId, out var item))
@@ -190,16 +247,16 @@ public class RuntimeGlbCartLoader : MonoBehaviour
             return;
         }
 
+        // Selection stores only metadata; the model is loaded later by NetworkFurnitureLoader.
         dataHandler.Instance.SetRuntimeModelSelection(item.GlbUrl, item.Name);
 
         if (selectedNameText != null)
         {
             selectedNameText.text = item.Name;
         }
-
-        SetStatus($"Selected: {item.Name}");
     }
 
+    //this clears old cart buttons before rebuilding the list.
     private void ClearCartButtons()
     {
         if (cartContentRoot == null)
@@ -213,11 +270,78 @@ public class RuntimeGlbCartLoader : MonoBehaviour
         }
     }
 
+    //this updates the status text shown in the UI.
     private void SetStatus(string message)
     {
         if (statusText != null)
         {
             statusText.text = message;
+        }
+    }
+
+    //this finds a TMP label by name keyword like "title" or "price".
+    private static TMP_Text FindLabelByName(TMP_Text[] labels, string keyword)
+    {
+        for (int i = 0; i < labels.Length; i++)
+        {
+            if (labels[i] == null) continue;
+            string n = labels[i].gameObject.name;
+            if (!string.IsNullOrWhiteSpace(n) &&
+                n.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return labels[i];
+            }
+        }
+        return null;
+    }
+
+    //this finds an Image component by name keyword like "image".
+    private static Image FindImageByName(Image[] images, string keyword)
+    {
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i] == null) continue;
+            string n = images[i].gameObject.name;
+            if (!string.IsNullOrWhiteSpace(n) &&
+                n.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return images[i];
+            }
+        }
+
+        // Skip the root button Image when possible and use the first child image as fallback.
+        for (int i = 0; i < images.Length; i++)
+        {
+            if (images[i] == null) continue;
+            if (images[i].transform.parent != null) return images[i];
+        }
+
+        return images.Length > 0 ? images[0] : null;
+    }
+
+    //this downloads an image from URL and assigns it to the target UI Image.
+    private static System.Collections.IEnumerator LoadImageIntoSlot(string imageUrl, Image targetImage)
+    {
+        using (var request = UnityWebRequestTexture.GetTexture(imageUrl))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogWarning($"Image load failed: {imageUrl} ({request.error})");
+                yield break;
+            }
+
+            Texture2D texture = DownloadHandlerTexture.GetContent(request);
+            if (texture == null || targetImage == null) yield break;
+
+            var sprite = Sprite.Create(
+                texture,
+                new Rect(0, 0, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f)
+            );
+            targetImage.sprite = sprite;
+            targetImage.preserveAspect = true;
         }
     }
 }

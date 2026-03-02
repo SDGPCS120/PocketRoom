@@ -13,11 +13,13 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
 
     private bool hasStarted;
 
+    //this reads model URL/name sent during network instantiation.
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         // Read model metadata passed by PhotonNetwork.Instantiate(..., instantiationData).
         if (photonView.InstantiationData == null || photonView.InstantiationData.Length == 0) return;
 
+        // Index order must match inputMannager: [0]=modelUrl, [1]=modelName.
         modelUrl = photonView.InstantiationData[0] as string;
         if (photonView.InstantiationData.Length > 1)
         {
@@ -25,12 +27,14 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
         }
     }
 
+    //this sets model metadata for local fallback spawning when not in room.
     public void InitializeFromSelection(string url, string name)
     {
         modelUrl = url;
         modelName = name;
     }
 
+    //this starts loading the GLB model once per spawned host object.
     private async void Start()
     {
         // Guard avoids duplicate loads if object gets re-enabled.
@@ -46,6 +50,7 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
         await LoadModelAsync();
     }
 
+    //this downloads and instantiates the GLB under this network host.
     private async Task LoadModelAsync()
     {
         var import = new GltfImport(logger: new ConsoleLogger());
@@ -66,6 +71,7 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
             return;
         }
 
+        // A dedicated child keeps the network host root stable for PhotonView + collider updates.
         var modelRoot = new GameObject(string.IsNullOrWhiteSpace(modelName) ? "RuntimeModel" : modelName);
         modelRoot.transform.SetParent(transform, false);
 
@@ -99,6 +105,7 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
         RefreshRootBoxCollider(gameObject);
     }
 
+    //this applies a tag to the full spawned model hierarchy.
     private static void SetTagRecursively(Transform root, string tagName)
     {
         root.tag = tagName;
@@ -108,6 +115,7 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
         }
     }
 
+    //this rebuilds the root collider based on the loaded mesh bounds.
     private static void RefreshRootBoxCollider(GameObject root)
     {
         var existing = root.GetComponent<BoxCollider>();
@@ -131,6 +139,7 @@ public class NetworkFurnitureLoader : MonoBehaviourPun, IPunInstantiateMagicCall
             worldBounds.Encapsulate(renderers[i].bounds);
         }
 
+        // Convert world-space renderer bounds back into root local-space collider values.
         Vector3 localCenter = root.transform.InverseTransformPoint(worldBounds.center);
         Vector3 lossy = root.transform.lossyScale;
         Vector3 safeLossy = new Vector3(
