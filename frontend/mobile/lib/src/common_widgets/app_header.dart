@@ -8,6 +8,7 @@ import '../features/auth/presentation/profile_page.dart';
 class AppHeader extends StatelessWidget {
   const AppHeader({super.key});
 
+  // This renders the top header and switches actions by auth/onboarding state.
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -21,6 +22,7 @@ class AppHeader extends StatelessWidget {
             initialData: FirebaseAuth.instance.currentUser,
             builder: (context, snapshot) {
               final user = snapshot.data ?? FirebaseAuth.instance.currentUser;
+              // Anonymous users see a CTA to start auth.
               if (user == null || user.isAnonymous) {
                 return SizedBox(
                   height: 38,
@@ -47,6 +49,7 @@ class AppHeader extends StatelessWidget {
 
               final hasAuthDisplayName =
                   (user.displayName ?? '').trim().isNotEmpty;
+              // Fully onboarded users (name already in auth profile) see icons.
               if (hasAuthDisplayName) {
                 return Row(
                   children: [
@@ -88,6 +91,7 @@ class AppHeader extends StatelessWidget {
                       (docData?['username'] as String? ?? '').trim();
                   final hasFirestoreUsername = firestoreUsername.isNotEmpty;
 
+                  // If onboarding is still incomplete, keep showing the CTA.
                   if (!hasFirestoreUsername) {
                     return SizedBox(
                       height: 38,
@@ -112,6 +116,7 @@ class AppHeader extends StatelessWidget {
                     );
                   }
 
+                  // If username exists in Firestore, show cart/profile actions.
                   return Row(
                     children: [
                       IconButton(

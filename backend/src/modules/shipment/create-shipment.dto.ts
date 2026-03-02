@@ -6,7 +6,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { ShipmentStatus } from '../enums/shipment-status.enum';
+import { ShipmentStatus } from './shipment-status.enum';
 
 export class CreateShipmentDto {
   @IsString()

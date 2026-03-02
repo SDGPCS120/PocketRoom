@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class UsernamePage extends StatefulWidget {
   const UsernamePage({super.key});
 
+  // This creates mutable state for username onboarding logic.
   @override
   State<UsernamePage> createState() => _UsernamePageState();
 }
@@ -15,8 +16,10 @@ class _UsernamePageState extends State<UsernamePage> {
 
   final _usernameAllowedRegex = RegExp(r'^[a-z0-9_]+$');
 
+  // This normalizes username into a case-insensitive key.
   String _normalizeUsername(String value) => value.trim().toLowerCase();
 
+  // This pre-fills username input if a name already exists.
   @override
   void initState() {
     super.initState();
@@ -24,17 +27,20 @@ class _UsernamePageState extends State<UsernamePage> {
     _controller.text = currentName;
   }
 
+  // This disposes controller resources when page is removed.
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
+  // This shows a user-facing status/error message.
   void _showMessage(String text) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
+  // This validates and saves a unique username to Auth + Firestore.
   Future<void> _saveUsername() async {
     final username = _controller.text.trim();
     if (username.isEmpty) {
@@ -62,6 +68,7 @@ class _UsernamePageState extends State<UsernamePage> {
       return;
     }
 
+    // Firestore docs used to enforce one-username-per-user globally.
     final normalized = _normalizeUsername(username);
     final db = FirebaseFirestore.instance;
     final usersRef = db.collection('users').doc(user.uid);
@@ -69,6 +76,7 @@ class _UsernamePageState extends State<UsernamePage> {
 
     setState(() => _isLoading = true);
     try {
+      // Transaction prevents race conditions when reserving usernames.
       await db.runTransaction((txn) async {
         final usernameSnap = await txn.get(usernameRef);
         if (usernameSnap.exists) {
@@ -78,6 +86,7 @@ class _UsernamePageState extends State<UsernamePage> {
           }
         }
 
+        // Remove old reservation if user changes username.
         final userSnap = await txn.get(usersRef);
         final previousNormalized =
             userSnap.data()?['usernameNormalized'] as String?;
@@ -90,6 +99,7 @@ class _UsernamePageState extends State<UsernamePage> {
           }
         }
 
+        // Reserve username and update user profile atomically.
         txn.set(usernameRef, {
           'uid': user.uid,
           'username': username,
@@ -105,6 +115,7 @@ class _UsernamePageState extends State<UsernamePage> {
         }, SetOptions(merge: true));
       });
 
+      // Keep Firebase Auth display name in sync with Firestore username.
       await user.updateDisplayName(username);
       await user.reload();
       if (!mounted) return;
@@ -124,6 +135,7 @@ class _UsernamePageState extends State<UsernamePage> {
     }
   }
 
+  // This builds the mandatory username onboarding screen.
   @override
   Widget build(BuildContext context) {
     return PopScope(

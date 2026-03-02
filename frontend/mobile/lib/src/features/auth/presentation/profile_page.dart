@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
+  // This builds the profile page and logout action.
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -33,6 +34,7 @@ class ProfilePage extends StatelessWidget {
                 height: 48,
                 child: OutlinedButton(
                   onPressed: () async {
+                    // Sign out from Google first so account chooser appears next time.
                     await GoogleSignIn().signOut();
                     await FirebaseAuth.instance.signOut();
                     if (!context.mounted) return;

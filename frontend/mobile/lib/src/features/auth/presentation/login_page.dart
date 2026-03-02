@@ -11,6 +11,7 @@ import 'username_page.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
+  // This creates the mutable state for login form and auth actions.
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -21,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
+  // This logs auth flow messages to terminal and debug tools.
   void _logAuth(String message) {
     final line = '[AUTH_LOG] $message';
     debugPrint(line);
@@ -28,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     stdout.writeln(line);
   }
 
+  // This prints user/token details after a successful login.
   Future<void> _printAuthInfo(User user, String providerLabel) async {
     _logAuth('=== $providerLabel LOGIN SUCCESS ===');
     final token = await user.getIdToken(true);
@@ -51,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
     _logAuth('=== END $providerLabel TOKEN ===');
   }
 
+  // This disposes text controllers to avoid memory leaks.
   @override
   void dispose() {
     _emailController.dispose();
@@ -58,11 +62,13 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  // This shows a user-friendly message on the current page.
   void _showMessage(String text) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
+  // This routes users to username setup if profile name is missing.
   Future<void> _closeOnSuccess(UserCredential credential) async {
     final user = credential.user;
     if (user == null) return;
@@ -76,6 +82,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  // This handles email/password login or anonymous-account linking.
   Future<void> _signInWithEmailPassword() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -86,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final currentUser = auth.currentUser;
+      // Link credential to anonymous user so UID/data are preserved.
       if (currentUser != null && currentUser.isAnonymous) {
         final credential = EmailAuthProvider.credential(
           email: email,
@@ -97,6 +105,7 @@ class _LoginPageState extends State<LoginPage> {
         }
         await _closeOnSuccess(linked);
       } else {
+        // Regular email/password sign-in for existing users.
         final signedIn = await auth.signInWithEmailAndPassword(
           email: email,
           password: password,
@@ -110,6 +119,7 @@ class _LoginPageState extends State<LoginPage> {
       if (e.code == 'email-already-in-use' ||
           e.code == 'credential-already-in-use') {
         try {
+          // Fallback to sign-in if credential already exists.
           final signedIn = await auth.signInWithEmailAndPassword(
             email: email,
             password: password,
@@ -129,11 +139,13 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  // This handles Google sign-in and upgrades anonymous users when needed.
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     final auth = FirebaseAuth.instance;
     final googleSignIn = GoogleSignIn();
 
+    // This forces account picker to appear every login attempt.
     Future<GoogleSignInAccount?> pickGoogleUser() async {
       // Clear last selected Google account so chooser appears every time.
       await googleSignIn.signOut();
@@ -154,6 +166,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       final currentUser = auth.currentUser;
+      // Link Google credential to anonymous user to keep same account.
       if (currentUser != null && currentUser.isAnonymous) {
         final linked = await currentUser.linkWithCredential(credential);
         if (linked.user != null) {
@@ -164,6 +177,7 @@ class _LoginPageState extends State<LoginPage> {
           MaterialPageRoute(builder: (_) => const UsernamePage()),
         );
       } else {
+        // Regular Google login flow for non-anonymous users.
         final signedIn = await auth.signInWithCredential(credential);
         if (signedIn.user != null) {
           await _printAuthInfo(signedIn.user!, 'Google');
@@ -177,6 +191,7 @@ class _LoginPageState extends State<LoginPage> {
       if (e.code == 'credential-already-in-use' ||
           e.code == 'provider-already-linked') {
         try {
+          // Fallback to direct credential sign-in when linking is not allowed.
           final googleUser = await pickGoogleUser();
           if (googleUser == null) return;
           final googleAuth = await googleUser.authentication;
@@ -203,6 +218,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  // This builds the login form UI and actions.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

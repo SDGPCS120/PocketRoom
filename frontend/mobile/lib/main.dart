@@ -11,6 +11,7 @@ import 'src/features/auth/presentation/username_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+// This logs auth debug messages to terminal and debug tools.
 void _logAuth(String message) {
   final line = '[AUTH_LOG] $message';
   debugPrint(line);
@@ -18,6 +19,7 @@ void _logAuth(String message) {
   stdout.writeln(line);
 }
 
+// This prints the current startup user and token details for debugging.
 Future<void> _printCurrentAuthInfo(FirebaseAuth auth) async {
   final user = auth.currentUser;
   if (user == null) {
@@ -43,6 +45,7 @@ Future<void> _printCurrentAuthInfo(FirebaseAuth auth) async {
   }
 }
 
+// This initializes Firebase, ensures an anonymous session exists, then starts the app.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -69,6 +72,7 @@ Future<void> main() async {
 class PocketRoomApp extends StatelessWidget {
   const PocketRoomApp({super.key});
 
+  // This builds the root app shell and routes through the auth gate.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -83,6 +87,7 @@ class PocketRoomApp extends StatelessWidget {
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
+  // This decides whether to show home or force username setup.
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -90,15 +95,18 @@ class AuthGate extends StatelessWidget {
       initialData: FirebaseAuth.instance.currentUser,
       builder: (context, snapshot) {
         final user = snapshot.data ?? FirebaseAuth.instance.currentUser;
+        // Anonymous users can browse home but still see "Get started".
         if (user == null || user.isAnonymous) {
           return const HomePage();
         }
 
         final hasAuthDisplayName = (user.displayName ?? '').trim().isNotEmpty;
+        // If Auth profile already has a name, onboarding is complete.
         if (hasAuthDisplayName) {
           return const HomePage();
         }
 
+        // Fallback to Firestore profile in case displayName sync is delayed.
         return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection('users')
@@ -110,10 +118,12 @@ class AuthGate extends StatelessWidget {
                 (docData?['username'] as String? ?? '').trim();
             final hasFirestoreUsername = firestoreUsername.isNotEmpty;
 
+            // If Firestore has a username, treat user as fully onboarded.
             if (hasFirestoreUsername) {
               return const HomePage();
             }
 
+            // Show a loader while waiting on the profile doc state.
             if (userDocSnapshot.connectionState == ConnectionState.waiting) {
               return const Scaffold(
                 body: Center(child: CircularProgressIndicator()),
