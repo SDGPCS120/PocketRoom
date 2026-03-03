@@ -32,7 +32,7 @@ class _ProductPageState extends State<ProductPage> {
             const SizedBox(height: 20),
             // Image Carousel Section
             SizedBox(
-              height: 300, 
+              height: 300,
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: widget.imageUrls.length,
@@ -53,7 +53,9 @@ class _ProductPageState extends State<ProductPage> {
                             const Center(child: Icon(Icons.error)),
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         },
                       ),
                     ),
@@ -71,6 +73,8 @@ class _ProductPageState extends State<ProductPage> {
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   height: 8,
                   width: _currentPage == index ? 24 : 8,
+
+                  // This is for the indicator dots below the carousel
                   decoration: BoxDecoration(
                     color: _currentPage == index
                         ? const Color(0xFFFF8A3D)

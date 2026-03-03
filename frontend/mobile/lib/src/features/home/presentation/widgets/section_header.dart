@@ -21,6 +21,8 @@ class SectionHeader extends StatelessWidget {
               fontSize: 26, // Keep original size
             ),
           ),
+
+          // This is the filter button 
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.tune, size: 20),
