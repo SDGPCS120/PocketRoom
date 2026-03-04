@@ -13,6 +13,18 @@ class ProductCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ratingLabel =
+        furniture.rating.isNaN ? 'N/A' : furniture.rating.toString();
+    final priceLabel = furniture.price.isNaN
+        ? 'N/A'
+        : "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+    final brandLabel = furniture.brand.trim().isEmpty
+        ? 'N/A'
+        : furniture.brand.toUpperCase();
+    final availabilityLabel = furniture.availability.trim().isEmpty
+        ? 'N/A'
+        : furniture.availability;
+
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.background,
@@ -71,7 +83,7 @@ class ProductCard extends ConsumerWidget {
               const SizedBox(height: 8),
               // Title
               Text(
-                furniture.name,
+                furniture.name.trim().isEmpty ? 'N/A' : furniture.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -95,7 +107,7 @@ class ProductCard extends ConsumerWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        furniture.rating.toString(),
+                        ratingLabel,
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
@@ -106,7 +118,7 @@ class ProductCard extends ConsumerWidget {
                     ],
                   ),
                   Text(
-                    furniture.brand.toUpperCase(),
+                    '$brandLabel • $availabilityLabel',
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 9,
@@ -124,7 +136,7 @@ class ProductCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
+                    priceLabel,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
