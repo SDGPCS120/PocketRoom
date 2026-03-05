@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_theme.dart';
 import 'login_page.dart';
 import '../../home/presentation/home_page.dart';
 
-/// Signup / Create Account screen. Placeholder auth logic.
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -21,6 +22,7 @@ class _SignupPageState extends State<SignupPage> {
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
   bool _loading = false;
+  final _usernameAllowedRegex = RegExp(r'^[a-z0-9_]+$');
 
   @override
   void dispose() {
@@ -31,15 +33,106 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  void _submit() {
-    // TEMPORARY signup gate — replace with real auth when backend is ready.
-    // Any values in the fields are accepted; navigate directly to the home screen.
+  String _normalizeUsername(String value) => value.trim().toLowerCase();
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const HomePage()),
-      (_) => false, // clear the auth stack
-    );
+
+    final username = _nameController.text.trim();
+    if (username.contains(' ')) {
+      _showMessage('No spaces are allowed in username');
+      return;
+    }
+    if (!_usernameAllowedRegex.hasMatch(username.toLowerCase())) {
+      _showMessage('Username can only use letters, numbers, and underscores');
+      return;
+    }
+    if (username.length < 3 || username.length > 20) {
+      _showMessage('Username must be between 3 and 20 characters');
+      return;
+    }
+
+    setState(() => _loading = true);
+
+    final auth = FirebaseAuth.instance;
+    final db = FirebaseFirestore.instance;
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final normalized = _normalizeUsername(username);
+
+    try {
+      UserCredential credential;
+      final currentUser = auth.currentUser;
+
+      if (currentUser != null && currentUser.isAnonymous) {
+        final emailCredential = EmailAuthProvider.credential(email: email, password: password);
+        credential = await currentUser.linkWithCredential(emailCredential);
+      } else {
+        credential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+      }
+
+      final user = credential.user;
+      if (user == null) {
+        _showMessage('Failed to create account');
+        return;
+      }
+
+      final usersRef = db.collection('users').doc(user.uid);
+      final usernameRef = db.collection('usernames').doc(normalized);
+
+      await db.runTransaction((txn) async {
+        final usernameSnap = await txn.get(usernameRef);
+        if (usernameSnap.exists) {
+          final existingUid = usernameSnap.data()?['uid'] as String?;
+          if (existingUid != null && existingUid != user.uid) {
+            throw StateError('USERNAME_TAKEN');
+          }
+        }
+
+        txn.set(usernameRef, {
+          'uid': user.uid,
+          'username': username,
+          'usernameNormalized': normalized,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+
+        txn.set(usersRef, {
+          'uid': user.uid,
+          'email': user.email,
+          'username': username,
+          'usernameNormalized': normalized,
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      });
+
+      await user.updateDisplayName(username);
+      await user.reload();
+
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const HomePage()),
+        (_) => false,
+      );
+    } on StateError catch (e) {
+      if (e.message == 'USERNAME_TAKEN') {
+        _showMessage('That username is already taken');
+      } else {
+        _showMessage('Account creation failed');
+      }
+    } on FirebaseAuthException catch (e) {
+      _showMessage(e.message ?? 'Account creation failed');
+    } on FirebaseException catch (e) {
+      _showMessage(e.message ?? 'Account creation failed');
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override
@@ -72,77 +165,54 @@ class _SignupPageState extends State<SignupPage> {
                 const SizedBox(height: 6),
                 Text(
                   'Join PocketRoom and start exploring',
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+                  style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 36),
-
-                // Full name field
                 _AuthTextField(
                   controller: _nameController,
-                  label: 'Full name',
-                  hint: 'Your name',
-                  validator: (v) => (v == null || v.trim().isEmpty)
-                      ? 'Enter your name'
-                      : null,
+                  label: 'Username',
+                  hint: 'your_username',
+                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter a username' : null,
                 ),
                 const SizedBox(height: 16),
-
-                // Email field
                 _AuthTextField(
                   controller: _emailController,
                   label: 'Email',
                   hint: 'you@example.com',
                   keyboardType: TextInputType.emailAddress,
-                  validator: (v) => (v == null || !v.contains('@'))
-                      ? 'Enter a valid email'
-                      : null,
+                  validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
                 ),
                 const SizedBox(height: 16),
-
-                // Password field
                 _AuthTextField(
                   controller: _passwordController,
                   label: 'Password',
-                  hint: '••••••••',
+                  hint: '********',
                   obscureText: _obscurePassword,
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
                       color: AppColors.textSecondary,
                     ),
-                    onPressed: () =>
-                        setState(() => _obscurePassword = !_obscurePassword),
+                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
-                  validator: (v) =>
-                      (v == null || v.length < 6) ? 'Min 6 characters' : null,
+                  validator: (v) => (v == null || v.length < 6) ? 'Min 6 characters' : null,
                 ),
                 const SizedBox(height: 16),
-
-                // Confirm password field
                 _AuthTextField(
                   controller: _confirmController,
                   label: 'Confirm password',
-                  hint: '••••••••',
+                  hint: '********',
                   obscureText: _obscureConfirm,
                   suffixIcon: IconButton(
                     icon: Icon(
                       _obscureConfirm ? Icons.visibility_off : Icons.visibility,
                       color: AppColors.textSecondary,
                     ),
-                    onPressed: () =>
-                        setState(() => _obscureConfirm = !_obscureConfirm),
+                    onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
                   ),
-                  validator: (v) => (v != _passwordController.text)
-                      ? 'Passwords do not match'
-                      : null,
+                  validator: (v) => (v != _passwordController.text) ? 'Passwords do not match' : null,
                 ),
                 const SizedBox(height: 32),
-
-                // Create account button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -151,36 +221,24 @@ class _SignupPageState extends State<SignupPage> {
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
                     child: _loading
                         ? const SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
+                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                           )
-                        : Text(
-                            'Create account',
-                            style: GoogleFonts.fredoka(fontSize: 18),
-                          ),
+                        : Text('Create account', style: GoogleFonts.fredoka(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // Already have account → Log in
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       'Already have an account? ',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                      style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pushReplacement(
@@ -206,8 +264,6 @@ class _SignupPageState extends State<SignupPage> {
   }
 }
 
-/// Reusable styled text field (same widget defined in login_page.dart;
-/// redeclared locally here to avoid cross-file private-class coupling).
 class _AuthTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
+import 'package:pocketroom/src/features/home/presentation/home_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage>
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const GetStartedPage()),
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     });

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
@@ -12,7 +11,6 @@ class GetStartedPage extends StatelessWidget {
 
   // Brand colours (matching AppColors in app_theme.dart but kept local
   // to avoid coupling to theme for pixel accuracy)
-  static const _cardBg = Color(0xFFEFA07A);
   static const _textDark = Color(0xFF333333);
   static const _textMid = Color(0xFF555555);
 
