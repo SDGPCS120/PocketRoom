@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  final _usernameAllowedRegex = RegExp(r'^[a-z0-9_]+$');
 
   void _logAuth(String message) {
     final line = '[AUTH_LOG] $message';
@@ -76,22 +77,21 @@ class _LoginPageState extends State<LoginPage> {
     final user = credential.user;
     if (user == null || !mounted) return;
 
-    var authDisplayName = (user.displayName ?? '').trim();
     final firestoreUsername = await _getFirestoreUsername(user.uid);
-    if (firestoreUsername != null) {
-      if (firestoreUsername != authDisplayName) {
-        await user.updateDisplayName(firestoreUsername);
-        await user.reload();
-      }
-      authDisplayName = firestoreUsername;
-    }
+    final isValidFirestoreUsername =
+        firestoreUsername != null &&
+        _usernameAllowedRegex.hasMatch(firestoreUsername.toLowerCase());
 
-    if (authDisplayName.isEmpty) {
+    if (!isValidFirestoreUsername) {
       if (!mounted) return;
       await Navigator.of(
         context,
       ).pushReplacement(MaterialPageRoute(builder: (_) => const UsernamePage()));
     } else {
+      if ((user.displayName ?? '').trim() != firestoreUsername) {
+        await user.updateDisplayName(firestoreUsername);
+        await user.reload();
+      }
       if (!mounted) return;
       Navigator.of(context).popUntil((route) => route.isFirst);
     }

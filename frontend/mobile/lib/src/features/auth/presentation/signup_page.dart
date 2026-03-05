@@ -34,6 +34,7 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   String _normalizeUsername(String value) => value.trim().toLowerCase();
+  String _sanitizeUsername(String value) => value.trim().replaceAll(RegExp(r'\s+'), '_');
 
   void _showMessage(String message) {
     if (!mounted) return;
@@ -43,11 +44,8 @@ class _SignupPageState extends State<SignupPage> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final username = _nameController.text.trim();
-    if (username.contains(' ')) {
-      _showMessage('No spaces are allowed in username');
-      return;
-    }
+    final username = _sanitizeUsername(_nameController.text);
+    _nameController.text = username;
     if (!_usernameAllowedRegex.hasMatch(username.toLowerCase())) {
       _showMessage('Username can only use letters, numbers, and underscores');
       return;

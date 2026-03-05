@@ -13,17 +13,15 @@ class ProductCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ratingLabel =
-        furniture.rating.isNaN ? 'N/A' : furniture.rating.toString();
+    final ratingLabel = furniture.rating.isNaN
+        ? 'N/A'
+        : furniture.rating.toString();
     final priceLabel = furniture.price.isNaN
         ? 'N/A'
         : "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
     final brandLabel = furniture.brand.trim().isEmpty
         ? 'N/A'
         : furniture.brand.toUpperCase();
-    final availabilityLabel = furniture.availability.trim().isEmpty
-        ? 'N/A'
-        : furniture.availability;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -38,9 +36,7 @@ class ProductCard extends ConsumerWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductPage(
-                imageUrls: furniture.images,
-              ),
+              builder: (context) => ProductPage(imageUrls: furniture.images),
             ),
           );
         },
@@ -55,10 +51,7 @@ class ProductCard extends ConsumerWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppColors.cardBorder,
-                      width: 0.6,
-                    ),
+                    border: Border.all(color: AppColors.cardBorder, width: 0.6),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -68,14 +61,26 @@ class ProductCard extends ConsumerWidget {
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return const DecoratedBox(
-                                decoration: BoxDecoration(color: AppColors.secondary),
-                                child: Icon(Icons.chair, size: 50, color: AppColors.textSecondary),
+                                decoration: BoxDecoration(
+                                  color: AppColors.secondary,
+                                ),
+                                child: Icon(
+                                  Icons.chair,
+                                  size: 50,
+                                  color: AppColors.textSecondary,
+                                ),
                               );
                             },
                           )
                         : const DecoratedBox(
-                            decoration: BoxDecoration(color: AppColors.secondary),
-                            child: Icon(Icons.chair, size: 50, color: AppColors.textSecondary),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary,
+                            ),
+                            child: Icon(
+                              Icons.chair,
+                              size: 50,
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                   ),
                 ),
@@ -96,9 +101,8 @@ class ProductCard extends ConsumerWidget {
               const SizedBox(height: 4),
               // Brand and Rating
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                   Row(
+                  Row(
                     children: [
                       const Icon(
                         Icons.star,
@@ -117,14 +121,21 @@ class ProductCard extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  Text(
-                    '$brandLabel • $availabilityLabel',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 9,
-                      height: 1.67,
-                      letterSpacing: 1,
-                      color: AppColors.textSecondary,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      brandLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      textAlign: TextAlign.right,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 9,
+                        height: 1.67,
+                        letterSpacing: 1,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ),
                 ],
@@ -152,7 +163,9 @@ class ProductCard extends ConsumerWidget {
                           content: Text('${furniture.name} added to cart'),
                           duration: const Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           backgroundColor: AppColors.primary,
                         ),
                       );
