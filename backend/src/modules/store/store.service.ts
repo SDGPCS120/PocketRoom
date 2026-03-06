@@ -16,8 +16,8 @@ export class StoreService {
 
         const data = {
             storeId: docRef.id,
-            sellerId: sellerId,
             ...dto,
+            sellerId: sellerId,
             createdAt: new Date(),
         };
 
