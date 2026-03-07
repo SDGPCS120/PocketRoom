@@ -12,7 +12,16 @@ export class FirebaseAuthGuard implements CanActivate {
   constructor(private readonly firebaseService: FirebaseService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const req = context.switchToHttp().getRequest<Request & { user?: any }>();
+    const req = context.switchToHttp().getRequest<
+      Request & {
+        user?: {
+          uid: string;
+          email: string | null;
+          claims: Record<string, unknown>;
+          isAnonymous: boolean;
+        };
+      }
+    >();
 
     const authHeader = req.headers['authorization'];
     if (!authHeader || Array.isArray(authHeader)) {
@@ -26,12 +35,17 @@ export class FirebaseAuthGuard implements CanActivate {
 
     try {
       const decoded = await this.firebaseService.auth.verifyIdToken(token);
+      const signInProvider =
+        typeof decoded.firebase?.sign_in_provider === 'string'
+          ? decoded.firebase.sign_in_provider
+          : null;
 
       // Attach decoded user to request
       req.user = {
         uid: decoded.uid,
         email: decoded.email ?? null,
         claims: decoded as unknown as Record<string, unknown>,
+        isAnonymous: signInProvider === 'anonymous',
       };
 
       return true;

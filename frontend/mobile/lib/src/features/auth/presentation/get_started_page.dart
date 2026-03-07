@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
@@ -12,7 +11,6 @@ class GetStartedPage extends StatelessWidget {
 
   // Brand colours (matching AppColors in app_theme.dart but kept local
   // to avoid coupling to theme for pixel accuracy)
-  static const _cardBg = Color(0xFFEFA07A);
   static const _textDark = Color(0xFF333333);
   static const _textMid = Color(0xFF555555);
 
@@ -21,7 +19,7 @@ class GetStartedPage extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFD4B49A), // warm tan behind illustration
+      backgroundColor: const Color(0xFFFFF8DE), // warm tan behind illustration
       body: Stack(
         children: [
           // ── Hero illustration fills the top 55 % of the screen ──────────
@@ -53,33 +51,33 @@ class GetStartedPage extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Pocket',
-                            style: GoogleFonts.fredoka(
-                              fontSize: 48,
-                              fontWeight: FontWeight.bold,
-                              color: _textDark,
-                              height: 1.0,
-                            ),
-                          ),
+                          // Text(
+                          //   'Pocket',
+                          //   style: GoogleFonts.fredoka(
+                          //     fontSize: 48,
+                          //     fontWeight: FontWeight.bold,
+                          //     color: _textDark,
+                          //     height: 1.0,
+                          //   ),
+                          // ),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'Room',
-                                style: GoogleFonts.fredoka(
-                                  fontSize: 48,
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xFFFF8A3D),
-                                  height: 1.0,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
+                              // Text(
+                              //   'Room',
+                              //   style: GoogleFonts.fredoka(
+                              //     fontSize: 48,
+                              //     fontWeight: FontWeight.bold,
+                              //     color: const Color(0xFFFF8A3D),
+                              //     height: 1.0,
+                              //   ),
+                              // ),
+                              // const SizedBox(width: 6),
                               // AR/3D box icon
-                              SvgPicture.asset(
-                                'assets/logo.svg',
-                                width: 36,
-                                height: 36,
+                              Image.asset(
+                                'assets/logo.png',
+                                width: 250,
+                                height: 250,
                               ),
                             ],
                           ),
@@ -87,13 +85,16 @@ class GetStartedPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'A CS-120 project',
-                    style: GoogleFonts.fredoka(
-                      fontSize: 14,
-                      color: _textMid,
-                      letterSpacing: 0.5,
+                  Transform.translate(
+                    offset: const Offset(0, -50), // negative y moves up
+                    child: Text(
+                      'A CS-120 project',
+                      style: GoogleFonts.fredoka(
+                        fontSize: 20,
+                        color: _textMid,
+                        letterSpacing: 0.5,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -103,7 +104,7 @@ class GetStartedPage extends StatelessWidget {
 
           // ── Bottom card ──────────────────────────────────────────────────
           Positioned(
-            bottom: 0,
+            bottom: 40,
             left: 0,
             right: 0,
             child: Container(
@@ -111,7 +112,7 @@ class GetStartedPage extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 32, left: 20, right: 20),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
               decoration: BoxDecoration(
-                color: _cardBg,
+                color: Color.fromRGBO(255, 212, 184, 1),
                 borderRadius: BorderRadius.circular(28),
               ),
               child: Column(

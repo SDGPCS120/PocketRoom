@@ -5,6 +5,7 @@ import 'username_page.dart';
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
 
+  // This creates mutable state for account creation form handling.
   @override
   State<CreateAccountPage> createState() => _CreateAccountPageState();
 }
@@ -16,6 +17,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
 
+  // This disposes form controllers when the page is removed.
   @override
   void dispose() {
     _emailController.dispose();
@@ -24,11 +26,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     super.dispose();
   }
 
+  // This shows a feedback message to the user.
   void _showMessage(String text) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
+  // This creates an account or links credentials to an anonymous user.
   Future<void> _createAccount() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -39,6 +43,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
     try {
       final currentUser = auth.currentUser;
+      // Link to keep the same UID when user started anonymously.
       if (currentUser != null && currentUser.isAnonymous) {
         final credential = EmailAuthProvider.credential(
           email: email,
@@ -46,6 +51,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         );
         await currentUser.linkWithCredential(credential);
       } else {
+        // Create a brand-new Firebase auth account.
         await auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
@@ -65,6 +71,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     }
   }
 
+  // This builds the create account form UI.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

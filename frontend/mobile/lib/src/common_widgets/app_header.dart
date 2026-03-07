@@ -5,18 +5,12 @@ import '../core/theme/app_theme.dart';
 import '../features/auth/presentation/login_page.dart';
 import '../features/auth/presentation/profile_page.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
-import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
-
-class AppHeader extends ConsumerWidget {
+class AppHeader extends StatelessWidget {
   const AppHeader({super.key});
 
+  // This renders the top header and switches actions by auth/onboarding state.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final cartItems = ref.watch(cartProvider);
-    final itemCount = cartItems.length;
-
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
@@ -28,6 +22,7 @@ class AppHeader extends ConsumerWidget {
             initialData: FirebaseAuth.instance.currentUser,
             builder: (context, snapshot) {
               final user = snapshot.data ?? FirebaseAuth.instance.currentUser;
+              // Anonymous users see a CTA to start auth.
               if (user == null || user.isAnonymous) {
                 return SizedBox(
                   height: 38,
@@ -54,8 +49,35 @@ class AppHeader extends ConsumerWidget {
 
               final hasAuthDisplayName =
                   (user.displayName ?? '').trim().isNotEmpty;
+              // Fully onboarded users (name already in auth profile) see icons.
               if (hasAuthDisplayName) {
-                return _buildUserActions(context, ref, itemCount);
+                return Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.shopping_cart_outlined, size: 22),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.secondary,
+                        shape: const CircleBorder(),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ProfilePage(),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.person_outline, size: 22),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.secondary,
+                        shape: const CircleBorder(),
+                      ),
+                    ),
+                  ],
+                );
               }
 
               return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -69,6 +91,7 @@ class AppHeader extends ConsumerWidget {
                       (docData?['username'] as String? ?? '').trim();
                   final hasFirestoreUsername = firestoreUsername.isNotEmpty;
 
+                  // If onboarding is still incomplete, keep showing the CTA.
                   if (!hasFirestoreUsername) {
                     return SizedBox(
                       height: 38,
@@ -93,78 +116,40 @@ class AppHeader extends ConsumerWidget {
                     );
                   }
 
-                  return _buildUserActions(context, ref, itemCount);
+                  // If username exists in Firestore, show cart/profile actions.
+                  return Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.shopping_cart_outlined, size: 22),
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppColors.secondary,
+                          shape: const CircleBorder(),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ProfilePage(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.person_outline, size: 22),
+                        style: IconButton.styleFrom(
+                          backgroundColor: AppColors.secondary,
+                          shape: const CircleBorder(),
+                        ),
+                      ),
+                    ],
+                  );
                 },
               );
             },
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildUserActions(BuildContext context, WidgetRef ref, int itemCount) {
-    return Row(
-      children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CartPage()),
-                );
-              },
-              icon: const Icon(Icons.shopping_cart_outlined, size: 22),
-              style: IconButton.styleFrom(
-                backgroundColor: AppColors.secondary,
-                shape: const CircleBorder(),
-              ),
-            ),
-            if (itemCount > 0)
-              Positioned(
-                right: 0,
-                top: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  constraints: const BoxConstraints(
-                    minWidth: 16,
-                    minHeight: 16,
-                  ),
-                  child: Text(
-                    itemCount.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(width: 4),
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const ProfilePage(),
-              ),
-            );
-          },
-          icon: const Icon(Icons.person_outline, size: 22),
-          style: IconButton.styleFrom(
-            backgroundColor: AppColors.secondary,
-            shape: const CircleBorder(),
-          ),
-        ),
-      ],
     );
   }
 }
