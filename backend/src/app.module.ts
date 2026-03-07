@@ -5,10 +5,11 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { OrderModule } from './modules/order/order.module.js';
+import { StoreModule } from './modules/store/store.module';
 
 @Module({
   imports: [AppConfigModule, FirebaseModule, AuthModule, OrderModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
