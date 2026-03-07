@@ -6,9 +6,10 @@ import { AppService } from './app.service.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { OrderModule } from './modules/order/order.module.js';
 import { StoreModule } from './modules/store/store.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
-  imports: [AppConfigModule, FirebaseModule, AuthModule, OrderModule],
+  imports: [AppConfigModule, FirebaseModule, AuthModule, OrderModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })

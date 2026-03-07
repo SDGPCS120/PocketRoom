@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException, ConflictException } from "@nestjs/common";
-import { Firestore } from "firebase-admin/firestore";
 import { CreateUserDto, UserRole } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { FirebaseService } from "../../firebase/firebase.service";
@@ -20,47 +19,40 @@ type UserDoc = {
 
 @Injectable()
 export class UserService {
-  private db: Firestore;
-  private colName = "users";
+  private readonly colName = "users";
 
-  constructor(private readonly firebaseService: FirebaseService) {
-    this.db = this.firebaseService.firestore; // ✅ getter from your FirebaseService
-  }
+  constructor(private readonly firebaseService: FirebaseService) {}
 
   private col() {
-    return this.db.collection(this.colName);
+    return this.firebaseService.firestore.collection(this.colName);
   }
 
-  async create(dto: CreateUserDto) {
-    const existing = await this.col()
-      .where("email", "==", dto.email)
-      .where("isDeleted", "==", false)
-      .limit(1)
-      .get();
+ async create(dto: CreateUserDto) {
+  const ref = this.col().doc();
 
-    if (!existing.empty) {
-      throw new ConflictException("User with this email already exists");
-    }
+  const data: any = {
+    id: ref.id,
+    email: dto.email,
+    fullName: dto.fullName,
+    role: dto.role ?? UserRole.CUSTOMER,
+    isActive: dto.isActive ?? true,
+    isDeleted: false,
+    createdAt: this.firebaseService.fieldValue.serverTimestamp(),
+    updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
+  };
 
-    const ref = this.col().doc();
-
-    const data: UserDoc = {
-      id: ref.id,
-      email: dto.email,
-      fullName: dto.fullName,
-      phoneNumber: dto.phoneNumber,
-      photoURL: dto.photoURL,
-      role: dto.role ?? UserRole.CUSTOMER,
-      isActive: dto.isActive ?? true,
-      isDeleted: false,
-      createdAt: this.firebaseService.fieldValue.serverTimestamp(),
-      updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
-    };
-
-    await ref.set(data);
-    const created = await ref.get();
-    return created.data();
+  if (dto.phoneNumber !== undefined) {
+    data.phoneNumber = dto.phoneNumber;
   }
+
+  if (dto.photoURL !== undefined) {
+    data.photoURL = dto.photoURL;
+  }
+
+  await ref.set(data);
+  const created = await ref.get();
+  return created.data();
+}
 
   async findAll(role?: UserRole, isActive?: boolean) {
     let q = this.col().where("isDeleted", "==", false);
@@ -85,32 +77,33 @@ export class UserService {
   }
 
   async update(id: string, dto: UpdateUserDto) {
-    const ref = this.col().doc(id);
-    const snap = await ref.get();
+  const ref = this.col().doc(id);
+  const snap = await ref.get();
 
-    if (!snap.exists) throw new NotFoundException("User not found");
+  if (!snap.exists) throw new NotFoundException("User not found");
 
-    const current = snap.data() as any;
-    if (current?.isDeleted) throw new NotFoundException("User not found");
+  const current = snap.data() as any;
+  if (current?.isDeleted) throw new NotFoundException("User not found");
 
-    if (dto.email && dto.email !== current.email) {
-      const existing = await this.col()
-        .where("email", "==", dto.email)
-        .where("isDeleted", "==", false)
-        .limit(1)
-        .get();
-      if (!existing.empty) throw new ConflictException("Email already in use");
-    }
+  const updateData: any = {
+    updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
+  };
 
-    await ref.update({
-      ...dto,
-      updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
-    });
-
-    const updated = await ref.get();
-    return updated.data();
+  if (dto.email !== undefined && dto.email !== current.email) {
+    updateData.email = dto.email;
   }
 
+  if (dto.fullName !== undefined) updateData.fullName = dto.fullName;
+  if (dto.phoneNumber !== undefined) updateData.phoneNumber = dto.phoneNumber;
+  if (dto.photoURL !== undefined) updateData.photoURL = dto.photoURL;
+  if (dto.role !== undefined) updateData.role = dto.role;
+  if (dto.isActive !== undefined) updateData.isActive = dto.isActive;
+
+  await ref.update(updateData);
+
+  const updated = await ref.get();
+  return updated.data();
+}
   async remove(id: string) {
     await this.findOne(id);
 
