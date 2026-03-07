@@ -1,67 +1,43 @@
-import {
-  IsBoolean,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsPhoneNumber,
-  IsString,
-  MaxLength,
-} from 'class-validator';
-
-export enum AddressType {
-  BILLING = 'BILLING',
-  SHIPPING = 'SHIPPING',
-}
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsPhoneNumber } from 'class-validator';
 
 export class CreateAddressDto {
   @IsString()
   @IsNotEmpty()
-  customerId: string;
-
-  @IsEnum(AddressType)
-  addressType: AddressType;
+  userId: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(120)
-  recipientName: string;
+  fullName: string;
 
   @IsString()
   @IsNotEmpty()
-  // If you want strict phone format by region, replace with IsPhoneNumber('LK') etc.
-  phone: string;
+  phoneNumber: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(200)
   addressLine1: string;
 
-  @IsString()
   @IsOptional()
-  @MaxLength(200)
+  @IsString()
   addressLine2?: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(80)
   city: string;
 
   @IsString()
-  @IsOptional()
-  @MaxLength(80)
-  state?: string;
+  @IsNotEmpty()
+  district: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(80)
-  country: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(20)
   postalCode: string;
 
-  @IsBoolean()
+  @IsString()
+  @IsNotEmpty()
+  country: string;
+
   @IsOptional()
+  @IsBoolean()
   isDefault?: boolean;
 }

@@ -5,12 +5,19 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { OrderModule } from './modules/order/order.module.js';
-import { StoreModule } from './modules/store/store.module';
-import { UserModule } from './modules/user/user.module';
+import { UserModule } from './modules/user/user.module.js';
+import { AddressModule } from './modules/address/address.module';
 
 @Module({
-  imports: [AppConfigModule, FirebaseModule, AuthModule, OrderModule, UserModule],
+  imports: [
+    AppConfigModule,
+    FirebaseModule,
+    AuthModule,
+    OrderModule,
+    UserModule,
+    AddressModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
