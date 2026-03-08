@@ -18,6 +18,7 @@ class _UsernamePageState extends State<UsernamePage> {
 
   // This normalizes username into a case-insensitive key.
   String _normalizeUsername(String value) => value.trim().toLowerCase();
+  String _sanitizeUsername(String value) => value.trim().replaceAll(RegExp(r'\s+'), '_');
 
   // This pre-fills username input if a name already exists.
   @override
@@ -42,13 +43,10 @@ class _UsernamePageState extends State<UsernamePage> {
 
   // This validates and saves a unique username to Auth + Firestore.
   Future<void> _saveUsername() async {
-    final username = _controller.text.trim();
+    final username = _sanitizeUsername(_controller.text);
+    _controller.text = username;
     if (username.isEmpty) {
       _showMessage('Username is required');
-      return;
-    }
-    if (username.contains(' ')) {
-      _showMessage('No spaces are allowed in username');
       return;
     }
     if (!_usernameAllowedRegex.hasMatch(username.toLowerCase())) {

@@ -25,7 +25,7 @@ class CategoryIconsRow extends ConsumerWidget {
 
     return Container(
       height: 100, // Increased height to accommodate icon + text
-      margin: const EdgeInsets.symmetric(vertical: 12),
+      margin: const EdgeInsets.only(top: 12, bottom: 4),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),

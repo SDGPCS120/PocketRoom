@@ -9,7 +9,6 @@ import {
 import { RoomType } from '../enums/room-type.enum';
 
 export class CreateBudgetSessionDto {
-
   @IsNumber()
   @Min(0)
   budgetMin: number;

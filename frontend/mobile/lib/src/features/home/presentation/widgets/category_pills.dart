@@ -24,9 +24,11 @@ class CategoryPills extends ConsumerWidget {
             label: category,
             isActive: activeCategory == category,
             onTap: () {
-              final notifier = ref.read(selectedGeneralCategoryProvider.notifier);
+              final notifier = ref.read(
+                selectedGeneralCategoryProvider.notifier,
+              );
               if (notifier.state == category) {
-                notifier.state = 'Best sellers'; 
+                notifier.state = 'Best sellers';
               } else {
                 notifier.state = category;
               }
@@ -59,6 +61,8 @@ class CategoryChip extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(right: 10),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+
+        //this is for the category pills in category page
         decoration: BoxDecoration(
           // Use centralized colors
           color: isActive ? AppColors.primary : AppColors.secondary,
@@ -73,6 +77,7 @@ class CategoryChip extends StatelessWidget {
                 ]
               : [],
         ),
+
         child: Center(
           child: Text(
             label,

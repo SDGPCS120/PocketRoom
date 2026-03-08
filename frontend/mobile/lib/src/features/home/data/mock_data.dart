@@ -2,7 +2,7 @@ import './models/furniture_model.dart';
 
 final furnitureData = [
   Furniture(
-    id: 1,
+    id: '1',
     name: "The sofa",
     price: 88000,
     brand: "FurnitureMan",
@@ -16,7 +16,7 @@ final furnitureData = [
     dimensions: "H:90 W:200 D:100",
   ),
   Furniture(
-    id: 1,
+    id: '1',
     name: "The sofa",
     price: 88000,
     brand: "FurnitureMan",
@@ -30,7 +30,7 @@ final furnitureData = [
     dimensions: "H:90 W:200 D:100",
   ),
   Furniture(
-    id: 1,
+    id: '1',
     name: "The sofa",
     price: 88000,
     brand: "FurnitureMan",
@@ -44,7 +44,7 @@ final furnitureData = [
     dimensions: "H:90 W:200 D:100",
   ),
   Furniture(
-    id: 1,
+    id: '1',
     name: "The sofa",
     price: 88000,
     brand: "FurnitureMan",
@@ -58,7 +58,7 @@ final furnitureData = [
     dimensions: "H:90 W:200 D:100",
   ),
   Furniture(
-    id: 2,
+    id: '2',
     name: "Sofa Max",
     price: 100000,
     brand: "Arpico",
@@ -71,7 +71,7 @@ final furnitureData = [
     dimensions: "H:95 W:220 D:105",
   ),
   Furniture(
-    id: 2,
+    id: '2',
     name: "Super Sofa Max",
     price: 1000,
     brand: "Damro",
@@ -84,7 +84,7 @@ final furnitureData = [
     dimensions: "H:95 W:220 D:105",
   ),
   Furniture(
-    id: 2,
+    id: '2',
     name: "Lite Sofa ",
     price: 100000,
     brand: "Damro",
@@ -97,7 +97,7 @@ final furnitureData = [
     dimensions: "H:95 W:220 D:105",
   ),
   Furniture(
-    id: 2,
+    id: '2',
     name: "Sofa ultra Max",
     price: 100000,
     brand: "Arpico",
@@ -110,7 +110,7 @@ final furnitureData = [
     dimensions: "H:95 W:220 D:105",
   ),
   Furniture(
-    id: 2,
+    id: '2',
     name: "Sofa pro Max",
     price: 100000,
     brand: "Arpico",
@@ -123,7 +123,7 @@ final furnitureData = [
     dimensions: "H:95 W:220 D:105",
   ),
   Furniture(
-    id: 3,
+    id: '3',
     name: "Sofa Lite",
     price: 54000,
     brand: "Damro",
@@ -137,7 +137,7 @@ final furnitureData = [
     dimensions: "H:85 W:180 D:90",
   ),
   Furniture(
-    id: 4,
+    id: '4',
     name: "Classic Chair",
     price: 12000,
     brand: "WoodWorks",
@@ -149,7 +149,7 @@ final furnitureData = [
     dimensions: "H:90 W:50 D:50",
   ),
   Furniture(
-    id: 5,
+    id: '5',
     name: "Modern Table",
     price: 45000,
     brand: "Ikea",
@@ -161,7 +161,7 @@ final furnitureData = [
     dimensions: "H:75 W:120 D:80",
   ),
   Furniture(
-    id: 6,
+    id: '6',
     name: "Reading Lamp",
     price: 8500,
     brand: "LumiLux",

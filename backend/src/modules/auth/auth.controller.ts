@@ -29,6 +29,7 @@ export class AuthController {
       properties: {
         uid: { type: 'string', example: 'firebase-uid-123' },
         email: { type: 'string', nullable: true, example: 'user@example.com' },
+        isAnonymous: { type: 'boolean', example: false },
         claims: {
           type: 'object',
           additionalProperties: true,
@@ -63,13 +64,13 @@ export class AuthController {
               nullable: true,
               example: 'user@example.com',
             },
-            roles: {
-              type: 'array',
-              items: { type: 'string' },
-              example: ['user'],
+            role: {
+              type: 'string',
+              enum: ['anonymous', 'customer', 'vendor'],
+              example: 'customer',
             },
           },
-          required: ['uid', 'email', 'roles'],
+          required: ['uid', 'email', 'role'],
         },
       },
       required: ['status', 'user'],
@@ -81,6 +82,6 @@ export class AuthController {
     if (!u) return { status: 'error', message: 'No user on request' };
 
     // Return the Promise directly (no need for async/await)
-    return this.authService.syncUser(u.uid, u.email ?? null);
+    return this.authService.syncUser(u.uid, u.email ?? null, u.isAnonymous ?? false);
   }
 }
