@@ -6,7 +6,6 @@ export enum AccessMode {
 }
 
 export class GenerateRoomCodeDto {
-
   @IsEnum(AccessMode)
   accessMode: AccessMode;
 

@@ -10,16 +10,18 @@ class AppColors {
   static const Color primary = Color(0xFFFF8A3D);
   static const Color secondary = Color(0xFFFFE5D3);
   static const Color background = Color(0xFFFFF8F3);
-  
+
   // Text colors
   static const Color textPrimary = Color(0xFF2D2D2D);
-  static const Color textSecondary = Color(0xFF757575); // A slightly lighter grey
+  static const Color textSecondary = Color(
+    0xFF757575,
+  ); // A slightly lighter grey
 
   // Gradient for cards
   static const Gradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFFFE5D3), Color(0xFFFFD4B8)],
+    colors: [Color(0xFFFFE5D3), Color.fromRGBO(255, 212, 184, 1)],
   );
 }
 

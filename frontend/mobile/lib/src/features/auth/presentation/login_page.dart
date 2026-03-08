@@ -1,28 +1,30 @@
 import 'dart:developer' as developer;
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../core/theme/app_theme.dart';
-import 'create_account_page.dart';
+import 'signup_page.dart';
 import 'username_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
-  // This creates the mutable state for login form and auth actions.
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  bool _obscurePassword = true;
+  final _usernameAllowedRegex = RegExp(r'^[a-z0-9_]+$');
 
-  // This logs auth flow messages to terminal and debug tools.
   void _logAuth(String message) {
     final line = '[AUTH_LOG] $message';
     debugPrint(line);
@@ -30,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
     stdout.writeln(line);
   }
 
-  // This prints user/token details after a successful login.
   Future<void> _printAuthInfo(User user, String providerLabel) async {
     _logAuth('=== $providerLabel LOGIN SUCCESS ===');
     final token = await user.getIdToken(true);
@@ -43,18 +44,15 @@ class _LoginPageState extends State<LoginPage> {
     _logAuth('$providerLabel isAnonymous: ${user.isAnonymous}');
     _logAuth('$providerLabel Email: ${user.email ?? "(no email)"}');
     _logAuth('$providerLabel TOKEN LENGTH: ${token.length}');
-
-    const chunkSize = 600;
+    const chunkSize = 800;
     for (int i = 0; i < token.length; i += chunkSize) {
       final end = (i + chunkSize < token.length) ? i + chunkSize : token.length;
       _logAuth(
         '${providerLabel.toUpperCase()}_TOKEN_PART ${i ~/ chunkSize}: ${token.substring(i, end)}',
       );
     }
-    _logAuth('=== END $providerLabel TOKEN ===');
   }
 
-  // This disposes text controllers to avoid memory leaks.
   @override
   void dispose() {
     _emailController.dispose();
@@ -62,27 +60,118 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // This shows a user-friendly message on the current page.
   void _showMessage(String text) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
-  // This routes users to username setup if profile name is missing.
+  Future<String?> _getFirestoreUsername(String uid) async {
+    final snap = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final data = snap.data();
+    final username = (data?['username'] as String?)?.trim();
+    if (username == null || username.isEmpty) return null;
+    return username;
+  }
+
   Future<void> _closeOnSuccess(UserCredential credential) async {
     final user = credential.user;
-    if (user == null) return;
-    if (!mounted) return;
-    if ((user.displayName ?? '').trim().isEmpty) {
-      await Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const UsernamePage()),
-      );
+    if (user == null || !mounted) return;
+
+    final firestoreUsername = await _getFirestoreUsername(user.uid);
+    final isValidFirestoreUsername =
+        firestoreUsername != null &&
+        _usernameAllowedRegex.hasMatch(firestoreUsername.toLowerCase());
+
+    if (!isValidFirestoreUsername) {
+      if (!mounted) return;
+      await Navigator.of(
+        context,
+      ).pushReplacement(MaterialPageRoute(builder: (_) => const UsernamePage()));
     } else {
-      Navigator.of(context).pop();
+      if ((user.displayName ?? '').trim() != firestoreUsername) {
+        await user.updateDisplayName(firestoreUsername);
+        await user.reload();
+      }
+      if (!mounted) return;
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
 
-  // This handles email/password login or anonymous-account linking.
+  Future<String?> _promptPasswordForLink(String email) async {
+    final controller = TextEditingController();
+    var obscure = true;
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text('Confirm account'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Enter password for $email to link Google login.'),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: controller,
+                    obscureText: obscure,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () => setDialogState(() => obscure = !obscure),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(controller.text.trim()),
+                  child: const Text('Continue'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    controller.dispose();
+    return result;
+  }
+
+  Future<UserCredential?> _signInExistingAndLinkGoogle({
+    required String email,
+    required AuthCredential googleCredential,
+  }) async {
+    final auth = FirebaseAuth.instance;
+    var password = _passwordController.text.trim();
+    if (password.isEmpty) {
+      password = (await _promptPasswordForLink(email)) ?? '';
+    }
+    if (password.isEmpty) return null;
+
+    final signedIn = await auth.signInWithEmailAndPassword(email: email, password: password);
+    final user = signedIn.user;
+    if (user != null) {
+      try {
+        await user.linkWithCredential(googleCredential);
+      } on FirebaseAuthException catch (e) {
+        if (e.code != 'provider-already-linked' && e.code != 'credential-already-in-use') {
+          rethrow;
+        }
+      }
+    }
+    return signedIn;
+  }
+
   Future<void> _signInWithEmailPassword() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -93,61 +182,37 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final currentUser = auth.currentUser;
-      // Link credential to anonymous user so UID/data are preserved.
       if (currentUser != null && currentUser.isAnonymous) {
-        final credential = EmailAuthProvider.credential(
-          email: email,
-          password: password,
-        );
-        final linked = await currentUser.linkWithCredential(credential);
-        if (linked.user != null) {
-          await _printAuthInfo(linked.user!, 'EmailPassword');
+        try {
+          final credential = EmailAuthProvider.credential(email: email, password: password);
+          final linked = await currentUser.linkWithCredential(credential);
+          if (linked.user != null) await _printAuthInfo(linked.user!, 'EmailPassword');
+          await _closeOnSuccess(linked);
+        } on FirebaseAuthException {
+          final signedIn = await auth.signInWithEmailAndPassword(email: email, password: password);
+          if (signedIn.user != null) await _printAuthInfo(signedIn.user!, 'EmailPassword');
+          await _closeOnSuccess(signedIn);
         }
-        await _closeOnSuccess(linked);
       } else {
-        // Regular email/password sign-in for existing users.
-        final signedIn = await auth.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        if (signedIn.user != null) {
-          await _printAuthInfo(signedIn.user!, 'EmailPassword');
-        }
+        final signedIn = await auth.signInWithEmailAndPassword(email: email, password: password);
+        if (signedIn.user != null) await _printAuthInfo(signedIn.user!, 'EmailPassword');
         await _closeOnSuccess(signedIn);
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use' ||
-          e.code == 'credential-already-in-use') {
-        try {
-          // Fallback to sign-in if credential already exists.
-          final signedIn = await auth.signInWithEmailAndPassword(
-            email: email,
-            password: password,
-          );
-          if (signedIn.user != null) {
-            await _printAuthInfo(signedIn.user!, 'EmailPassword');
-          }
-          await _closeOnSuccess(signedIn);
-        } on FirebaseAuthException catch (fallback) {
-          _showMessage(fallback.message ?? 'Email/password login failed');
-        }
-      } else {
-        _showMessage(e.message ?? 'Email/password login failed');
-      }
+      _showMessage(e.message ?? 'Email/password login failed');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  // This handles Google sign-in and upgrades anonymous users when needed.
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     final auth = FirebaseAuth.instance;
     final googleSignIn = GoogleSignIn();
+    String? pendingEmail;
+    AuthCredential? pendingGoogleCredential;
 
-    // This forces account picker to appear every login attempt.
     Future<GoogleSignInAccount?> pickGoogleUser() async {
-      // Clear last selected Google account so chooser appears every time.
       await googleSignIn.signOut();
       return googleSignIn.signIn();
     }
@@ -164,49 +229,59 @@ class _LoginPageState extends State<LoginPage> {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+      pendingEmail = googleUser.email.trim();
+      pendingGoogleCredential = credential;
+
+      // ignore: deprecated_member_use
+      final methods = await auth.fetchSignInMethodsForEmail(pendingEmail);
+      final hasPassword = methods.contains('password');
+      final hasGoogle = methods.contains('google.com');
+      if (hasPassword && !hasGoogle) {
+        final existing = await _signInExistingAndLinkGoogle(
+          email: pendingEmail,
+          googleCredential: credential,
+        );
+        if (existing == null) {
+          _showMessage('Password required to link Google to existing account');
+          return;
+        }
+        if (existing.user != null) await _printAuthInfo(existing.user!, 'Google');
+        await _closeOnSuccess(existing);
+        return;
+      }
 
       final currentUser = auth.currentUser;
-      // Link Google credential to anonymous user to keep same account.
       if (currentUser != null && currentUser.isAnonymous) {
-        final linked = await currentUser.linkWithCredential(credential);
-        if (linked.user != null) {
-          await _printAuthInfo(linked.user!, 'Google');
+        try {
+          final linked = await currentUser.linkWithCredential(credential);
+          if (linked.user != null) await _printAuthInfo(linked.user!, 'Google');
+          await _closeOnSuccess(linked);
+        } on FirebaseAuthException {
+          final signedIn = await auth.signInWithCredential(credential);
+          if (signedIn.user != null) await _printAuthInfo(signedIn.user!, 'Google');
+          await _closeOnSuccess(signedIn);
         }
-        if (!mounted) return;
-        await Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const UsernamePage()),
-        );
       } else {
-        // Regular Google login flow for non-anonymous users.
         final signedIn = await auth.signInWithCredential(credential);
-        if (signedIn.user != null) {
-          await _printAuthInfo(signedIn.user!, 'Google');
-        }
-        if (!mounted) return;
-        await Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const UsernamePage()),
-        );
+        if (signedIn.user != null) await _printAuthInfo(signedIn.user!, 'Google');
+        await _closeOnSuccess(signedIn);
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'credential-already-in-use' ||
-          e.code == 'provider-already-linked') {
+      if ((e.code == 'account-exists-with-different-credential' ||
+              e.code == 'email-already-in-use') &&
+          pendingEmail != null &&
+          pendingGoogleCredential != null) {
         try {
-          // Fallback to direct credential sign-in when linking is not allowed.
-          final googleUser = await pickGoogleUser();
-          if (googleUser == null) return;
-          final googleAuth = await googleUser.authentication;
-          final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken,
-            idToken: googleAuth.idToken,
+          final existing = await _signInExistingAndLinkGoogle(
+            email: pendingEmail,
+            googleCredential: pendingGoogleCredential,
           );
-          final signedIn = await auth.signInWithCredential(credential);
-          if (signedIn.user != null) {
-            await _printAuthInfo(signedIn.user!, 'Google');
+          if (existing == null) {
+            _showMessage('Password required to link Google to existing account');
+            return;
           }
-          if (!mounted) return;
-          await Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const UsernamePage()),
-          );
+          if (existing.user != null) await _printAuthInfo(existing.user!, 'Google');
+          await _closeOnSuccess(existing);
         } on FirebaseAuthException catch (fallback) {
           _showMessage(fallback.message ?? 'Google login failed');
         }
@@ -218,102 +293,177 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // This builds the login form UI and actions.
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: const BackButton(color: AppColors.textPrimary),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                const Text(
-                  'Welcome back',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Sign in with email/password or continue with Google.',
-                ),
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Email is required';
-                    }
-                    if (!value.contains('@')) return 'Enter a valid email';
-                    return null;
-                  },
-                ),
                 const SizedBox(height: 12),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
+                Text(
+                  'Welcome back',
+                  style: textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required';
-                    }
-                    return null;
-                  },
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Log in to your PocketRoom account',
+                  style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 36),
+                _AuthTextField(
+                  controller: _emailController,
+                  label: 'Email',
+                  hint: 'you@example.com',
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
                 ),
                 const SizedBox(height: 16),
+                _AuthTextField(
+                  controller: _passwordController,
+                  label: 'Password',
+                  hint: '********',
+                  obscureText: _obscurePassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      color: AppColors.textSecondary,
+                    ),
+                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                  ),
+                  validator: (v) => (v == null || v.isEmpty) ? 'Enter your password' : null,
+                ),
+                const SizedBox(height: 28),
                 SizedBox(
-                  height: 48,
+                  width: double.infinity,
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _signInWithEmailPassword,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    child: const Text('Login'),
+                    child: _isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          )
+                        : Text('Log in', style: GoogleFonts.fredoka(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
-                  height: 48,
+                  width: double.infinity,
                   child: OutlinedButton(
                     onPressed: _isLoading ? null : _signInWithGoogle,
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.primary),
+                      side: const BorderSide(color: AppColors.primary),
+                      foregroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     ),
-                    child: const Text('Login with Google'),
+                    child: Text('Login with Google', style: GoogleFonts.fredoka(fontSize: 16)),
                   ),
                 ),
-                const SizedBox(height: 8),
-                TextButton(
-                  onPressed: _isLoading
-                      ? null
-                      : () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const CreateAccountPage(),
-                            ),
-                          );
-                        },
-                  child: const Text('Create an account'),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have an account? ",
+                      style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                    ),
+                    GestureDetector(
+                      onTap: _isLoading
+                          ? null
+                          : () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const SignupPage()),
+                              ),
+                      child: Text(
+                        'Create one',
+                        style: GoogleFonts.fredoka(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                if (_isLoading) ...[
-                  const SizedBox(height: 20),
-                  const Center(child: CircularProgressIndicator()),
-                ],
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AuthTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final bool obscureText;
+  final TextInputType keyboardType;
+  final Widget? suffixIcon;
+  final String? Function(String?)? validator;
+
+  const _AuthTextField({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    this.obscureText = false,
+    this.keyboardType = TextInputType.text,
+    this.suffixIcon,
+    this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: AppColors.secondary,
+        labelStyle: const TextStyle(color: AppColors.textSecondary),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.red, width: 1.5),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.red, width: 1.5),
         ),
       ),
     );

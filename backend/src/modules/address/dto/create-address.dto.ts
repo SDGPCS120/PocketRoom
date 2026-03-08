@@ -1,4 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsPhoneNumber } from 'class-validator';
+
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsPhoneNumber, IsEnum,  MaxLength } from 'class-validator';
+export enum AddressType {
+  BILLING = 'BILLING',
+  SHIPPING = 'SHIPPING',
+}
+
 
 export class CreateAddressDto {
   @IsString()

@@ -7,7 +7,6 @@ export enum Platform {
 }
 
 export class ConnectRealtimeDto {
-
   @IsString()
   roomId: string;
 

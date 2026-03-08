@@ -1,6 +1,5 @@
 import { IsString, IsNumber } from 'class-validator';
 export class UpdateRoomItemTransformDto {
-
   @IsString()
   roomItemId: string;
 

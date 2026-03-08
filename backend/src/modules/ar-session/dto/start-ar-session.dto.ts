@@ -1,7 +1,6 @@
 import { IsString, IsOptional } from 'class-validator';
 
 export class StartArSessionDto {
-
   @IsString()
   variantId: string;
 
