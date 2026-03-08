@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocketroom/src/features/home/presentation/home_page.dart';
 
 class SplashPage extends StatefulWidget {
@@ -69,8 +68,8 @@ class _SplashPageState extends State<SplashPage>
               ),
             );
           },
-          child: SvgPicture.asset(
-            'assets/logo.svg',
+          child: Image.asset(
+            'assets/logo.png',
             width: 150, // Adjust size as needed
             height: 150,
           ),
