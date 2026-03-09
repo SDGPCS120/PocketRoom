@@ -1,8 +1,64 @@
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
+import { ResponseTransformInterceptor } from './common/interceptors/response-transform.interceptor.js';
+import { AppModule } from './app.module.js';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+
+  app.enableCors();
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  );
+  app.useGlobalInterceptors(new ResponseTransformInterceptor());
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('PocketRoom Backend API')
+    .setDescription('API documentation for PocketRoom backend services')
+    .setVersion('1.0.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Firebase ID token in format: Bearer <token>',
+      },
+      'firebase-auth',
+    )
+    .addTag('System', 'Health and basic system endpoints')
+    .addTag('Auth', 'Authentication and user synchronization endpoints')
+    .build();
+
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('docs', app, swaggerDocument, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      displayRequestDuration: true,
+      docExpansion: 'none',
+      tagsSorter: 'alpha',
+      operationsSorter: 'alpha',
+    },
+  });
+
+  const configService = app.get<ConfigService>(ConfigService);
+  const port = configService.get<number>('PORT') ?? 3000;
+  const host = process.env.HOST ?? '0.0.0.0';
+  await app.listen(port, host);
+
+  const externalHost = host === '0.0.0.0' ? 'localhost' : host;
+  const baseUrl = `http://${externalHost}:${port}`;
+  logger.log(`Application URL: ${baseUrl}`);
+  logger.log(`Swagger UI: ${baseUrl}/docs`);
 }
-bootstrap();
+
+void bootstrap();

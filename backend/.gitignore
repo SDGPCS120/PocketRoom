@@ -1,7 +1,15 @@
+# env
+.env
+.env.local
+service-account.json
+
 # compiled output
 /dist
 /node_modules
 /build
+
+dist/
+node_modules/
 
 # Logs
 logs

@@ -22,7 +22,9 @@ class HomePage extends StatelessWidget {
                 slivers: [
                   SliverToBoxAdapter(child: FeaturedCollectionCard()),
                   SliverToBoxAdapter(child: CategoryIconsRow()),
-                  SliverToBoxAdapter(child: SectionHeader(title: "Trending Now")),
+                  SliverToBoxAdapter(
+                    child: SectionHeader(title: "Trending Now"),
+                  ),
                   ProductList(),
                 ],
               ),
