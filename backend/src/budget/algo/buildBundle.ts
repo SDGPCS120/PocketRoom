@@ -1,4 +1,4 @@
-import { MOCK_FURNITURE, FurnitureItem } from '../../furniture/furniture.mock';
+import { FurnitureItem } from '../../furniture/furniture.mock';
 import { BudgetBundleRequestDto, BudgetBundleResponseDto, BundleVariantDto } from '../dto/budget-bundle.dto';
 import { norm, scoreItem } from './scoring';
 import { Candidate, mckp, minCostRequired } from './mckp';
@@ -42,7 +42,10 @@ function toPicked(c: Candidate) {
   };
 }
 
-export function buildBundle(req: BudgetBundleRequestDto): BudgetBundleResponseDto {
+export function buildBundle(
+  req: BudgetBundleRequestDto,
+  furnitureItems: FurnitureItem[],
+): BudgetBundleResponseDto {
   const pref = req.preferences ?? {};
   const cons = req.constraints ?? {};
 
@@ -54,8 +57,7 @@ export function buildBundle(req: BudgetBundleRequestDto): BudgetBundleResponseDt
   const required = req.requiredCategories.map(norm);
   const optional = (req.optionalCategories ?? []).map(norm);
 
-  // Hard filter
-  const filtered = MOCK_FURNITURE.filter((p) => {
+  const filtered = furnitureItems.filter((p) => {
     if (typeof p.price !== 'number' || p.price <= 0) return false;
     if (typeof p.rating === 'number' && p.rating < minRating) return false;
     if (p.inStock === false) return false;
@@ -99,14 +101,12 @@ export function buildBundle(req: BudgetBundleRequestDto): BudgetBundleResponseDt
     const totalCost = requiredCost + optRes.spent;
     const remaining = req.totalBudget - totalCost;
 
-    // Check for duplicates
     const signature = [
-      ...dpRes.picks.map(p => p.product.id),
-      ...optRes.picks.map(p => p.product.id)
+      ...dpRes.picks.map((p) => p.product.id),
+      ...optRes.picks.map((p) => p.product.id),
     ].sort().join(',');
 
     if (generatedSignatures.has(signature)) {
-      // If we generated the exact same set of items, we are in a loop. Break out.
       break;
     }
     generatedSignatures.add(signature);
@@ -131,7 +131,6 @@ export function buildBundle(req: BudgetBundleRequestDto): BudgetBundleResponseDt
       explanations,
     });
 
-    // Penalize the selected required items so the next iteration finds alternatives
     for (const c of dpRes.picks) {
       const cat = norm(c.product.category);
       if (requiredGroups[cat]) {

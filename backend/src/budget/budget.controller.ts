@@ -6,8 +6,10 @@ import { BudgetBundleRequestDto, BudgetBundleResponseDto } from './dto/budget-bu
 export class BudgetController {
   constructor(private readonly budgetService: BudgetService) {}
 
-  @Post('bundle')
-  generate(@Body() dto: BudgetBundleRequestDto): BudgetBundleResponseDto {
-    return this.budgetService.generateBundle(dto);
-  }
+  @Post('generate')
+async generateBundle(
+  @Body() dto: BudgetBundleRequestDto,
+): Promise<BudgetBundleResponseDto> {
+  return this.budgetService.generateBundle(dto);
+}
 }

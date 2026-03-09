@@ -52,5 +52,7 @@ pids
 *.seed
 *.pid.lock
 
+config/pocketroom-80f62-firebase-adminsdk-fbsvc-f7c34c2e27.json
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
