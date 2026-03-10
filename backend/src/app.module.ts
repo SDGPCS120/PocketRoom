@@ -8,6 +8,8 @@ import { ProductModule } from './modules/product/product.module.js';
 import { OrderModule } from './modules/order/order.module.js';
 import { UserModule } from './modules/user/user.module.js';
 import { AddressModule } from './modules/address/address.module';
+import { CategoryModule } from './modules/category/category.module';
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
 
@@ -18,8 +20,6 @@ import { AddressModule } from './modules/address/address.module';
     OrderModule,
     UserModule,
     AddressModule,
-    ProductModule,
-  StoreModule  
   ],
   controllers: [AppController],
   providers: [AppService],

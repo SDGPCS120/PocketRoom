@@ -1,4 +1,5 @@
-import { IsInt, IsOptional, Min } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateCartDto } from './create-cart.dto';
 
 export class UpdateCartItemDto {
   @IsInt()

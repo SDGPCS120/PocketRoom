@@ -1,17 +1,26 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export enum CartStatus {
   ACTIVE = 'ACTIVE',
+  CHECKED_OUT = 'CHECKED_OUT',
   ABANDONED = 'ABANDONED',
-  CONVERTED = 'CONVERTED',
 }
 
 export class CreateCartDto {
   @IsString()
   @IsNotEmpty()
-  customerId: string;
+  userId: string;
 
-  @IsEnum(CartStatus)
   @IsOptional()
-  cartStatus?: CartStatus; // default ACTIVE in service
+  @IsEnum(CartStatus)
+  status?: CartStatus;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  totalAmount?: number;
+
+  @IsOptional()
+  @IsString()
+  currency?: string;
 }
