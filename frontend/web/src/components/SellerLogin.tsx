@@ -1,71 +1,249 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import './SellerLogin.css';
 
 const SellerLogin: React.FC = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleLogin = (e: React.FormEvent) => {
-        e.preventDefault();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
 
-        // As requested: take the username and password and save it in a meaningful variable
-        const credentials = {
-            username: username,
-            password: password,
-            timestamp: new Date().toISOString()
-        };
+  // Pre-fill from registration if present
+  useEffect(() => {
+    const reg = localStorage.getItem('sellerRegistration');
+    if (reg) {
+      try {
+        const data = JSON.parse(reg);
+        if (data.email) setEmail(data.email);
+      } catch {/* ignore */}
+    }
+    // Restore "remember me" email
+    const remembered = localStorage.getItem('sellerRememberedEmail');
+    if (remembered) setEmail(remembered);
+  }, []);
 
-        console.log('Login attempt with:', credentials);
+  const validate = (): boolean => {
+    const newErrors: typeof errors = {};
+    if (!email.trim()) {
+      newErrors.email = 'Email is required.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Please enter a valid email address.';
+    }
+    if (!password) {
+      newErrors.password = 'Password is required.';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters.';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-        // For now, simple validation and redirect
-        if (username && password) {
-            // Mock saving to variable/state or localStorage if persistent mock needed
-            localStorage.setItem('currentUser', JSON.stringify(credentials));
-            navigate('/dashboard');
-        } else {
-            setError('Please enter both username and password.');
-        }
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
 
-    return (
-        <div className="login-container">
-            <div className="login-card">
-                <div className="login-header">
-                    <h1>PocketRoom</h1>
-                    <p>Seller Portal</p>
-                </div>
-                <form onSubmit={handleLogin} className="login-form">
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="Enter your username"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter your password"
-                        />
-                    </div>
-                    {error && <p className="error-message">{error}</p>}
-                    <button type="submit" className="login-button">
-                        Login to Dashboard
-                    </button>
-                </form>
-            </div>
+    setIsLoading(true);
+    setErrors({});
+
+    // Simulate API call — replace with real Firebase/backend auth
+    await new Promise((res) => setTimeout(res, 1000));
+
+    // Check against stored registration (mock auth)
+    const reg = localStorage.getItem('sellerRegistration');
+    let authenticated = false;
+
+    if (reg) {
+      try {
+        const data = JSON.parse(reg);
+        if (data.email === email) authenticated = true;
+      } catch {/* ignore */}
+    }
+
+    // Also allow any email/password combo (demo mode)
+    if (!authenticated) authenticated = true;
+
+    if (authenticated) {
+      if (rememberMe) {
+        localStorage.setItem('sellerRememberedEmail', email);
+      } else {
+        localStorage.removeItem('sellerRememberedEmail');
+      }
+
+      const session = {
+        email,
+        username: email.split('@')[0],
+        loggedInAt: new Date().toISOString(),
+      };
+      localStorage.setItem('currentUser', JSON.stringify(session));
+      navigate('/dashboard');
+    } else {
+      setErrors({ general: 'Invalid email or password. Please try again.' });
+    }
+
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="login-page">
+      {/* Left panel */}
+      <div className="login-left">
+        <div className="login-brand">
+          <div className="brand-logo">PR</div>
+          <h1>PocketRoom</h1>
+          <p>Seller Portal</p>
         </div>
-    );
+
+        <div className="login-illustration">
+          <div className="illu-circle illu-circle--1" />
+          <div className="illu-circle illu-circle--2" />
+          <div className="illu-circle illu-circle--3" />
+          <div className="illu-card">
+            <div className="illu-card__row">
+              <span className="illu-dot" />
+              <span className="illu-bar illu-bar--long" />
+            </div>
+            <div className="illu-card__row">
+              <span className="illu-dot" />
+              <span className="illu-bar illu-bar--medium" />
+            </div>
+            <div className="illu-card__row">
+              <span className="illu-dot" />
+              <span className="illu-bar illu-bar--short" />
+            </div>
+            <div className="illu-chart">
+              <span className="illu-bar-v" style={{ height: '40%' }} />
+              <span className="illu-bar-v" style={{ height: '65%' }} />
+              <span className="illu-bar-v" style={{ height: '55%' }} />
+              <span className="illu-bar-v" style={{ height: '80%' }} />
+              <span className="illu-bar-v" style={{ height: '70%' }} />
+            </div>
+          </div>
+        </div>
+
+        <p className="login-tagline">
+          "Manage your products, track your sales,<br />
+          and grow your store — all in one place."
+        </p>
+      </div>
+
+      {/* Right: Login form */}
+      <div className="login-right">
+        <div className="login-card">
+          <div className="login-header">
+            <h2>Welcome back</h2>
+            <p>Sign in to your seller account to continue.</p>
+          </div>
+
+          {errors.general && (
+            <div className="alert-error" role="alert">
+              <span className="alert-icon">⚠</span>
+              {errors.general}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} noValidate>
+            {/* Email */}
+            <div className="form-group">
+              <label htmlFor="email">Email Address</label>
+              <div className={`input-wrapper ${errors.email ? 'input-wrapper--error' : ''}`}>
+                <span className="input-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </span>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors(p => ({ ...p, email: '' })); }}
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                />
+              </div>
+              {errors.email && <span className="error-msg">{errors.email}</span>}
+            </div>
+
+            {/* Password */}
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="password">Password</label>
+                <a href="#" className="forgot-link" onClick={(e) => e.preventDefault()}>
+                  Forgot password?
+                </a>
+              </div>
+              <div className={`input-wrapper ${errors.password ? 'input-wrapper--error' : ''}`}>
+                <span className="input-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </span>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors(p => ({ ...p, password: '' })); }}
+                  placeholder="Your password"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                      <line x1="1" y1="1" x2="23" y2="23"/>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  )}
+                </button>
+              </div>
+              {errors.password && <span className="error-msg">{errors.password}</span>}
+            </div>
+
+            {/* Remember me */}
+            <div className="remember-row">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  id="rememberMe"
+                />
+                <span className="checkbox-custom" />
+                Remember me
+              </label>
+            </div>
+
+            <button type="submit" className="btn-login" disabled={isLoading} id="loginBtn">
+              {isLoading ? <span className="spinner" /> : 'Sign In to Dashboard'}
+            </button>
+          </form>
+
+          <div className="login-divider">
+            <span>New to PocketRoom?</span>
+          </div>
+
+          <Link to="/register" className="btn-register">
+            Create a Seller Account
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default SellerLogin;
