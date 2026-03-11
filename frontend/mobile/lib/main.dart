@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/splash/presentation/splash_page.dart';
+import 'src/common_widgets/responsive_wrapper.dart';
 
 void _logAuth(String message) {
   final line = '[AUTH_LOG] $message';
@@ -71,6 +72,7 @@ class PocketRoomApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: const SplashPage(),
+      builder: (context, child) => ResponsiveWrapper(child: child!),
     );
   }
 }
