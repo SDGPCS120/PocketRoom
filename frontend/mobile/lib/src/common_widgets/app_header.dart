@@ -18,12 +18,33 @@ class AppHeader extends ConsumerWidget {
     final cartItems = ref.watch(cartProvider);
     final itemCount = cartItems.length;
 
+    final isDesktop = MediaQuery.of(context).size.width > 600;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset('assets/logo.png', height: 40),
+          if (isDesktop)
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search furniture...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Color(0xFFFFE5D3),
+                    contentPadding: EdgeInsets.symmetric(vertical: 0),
+                  ),
+                ),
+              ),
+            ),
           StreamBuilder<User?>(
             stream: FirebaseAuth.instance.idTokenChanges(),
             initialData: FirebaseAuth.instance.currentUser,
