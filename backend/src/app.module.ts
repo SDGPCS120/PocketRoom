@@ -10,7 +10,7 @@ import { UserModule } from './modules/user/user.module.js';
 import { AddressModule } from './modules/address/address.module';
 import { CategoryModule } from './modules/category/category.module';
 //import { CartModule } from './modules/cart/cart.module';
-
+import { PaymentModule } from './modules/payment/payment.module';
 @Module({
 
   imports: [
@@ -18,6 +18,7 @@ import { CategoryModule } from './modules/category/category.module';
     FirebaseModule,
     AuthModule,
     OrderModule,
+    PaymentModule,
     UserModule,
     AddressModule,
   ],
