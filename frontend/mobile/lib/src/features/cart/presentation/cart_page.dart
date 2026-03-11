@@ -15,7 +15,7 @@ class CartPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'My Cart',
+          'My Orders',
           style: TextStyle(
             fontFamily: 'Fredoka',
             fontWeight: FontWeight.w600,
@@ -26,15 +26,23 @@ class CartPage extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: cartItems.isEmpty
           ? const Center(
               child: Text(
-                'Your cart is empty',
-                style: TextStyle(fontFamily: 'Fredoka', fontSize: 18, color: AppColors.textSecondary),
+                'No Orders to show',
+                style: TextStyle(
+                  fontFamily: 'Fredoka',
+                  fontSize: 18,
+                  color: AppColors.textSecondary,
+                ),
               ),
             )
           : Column(
@@ -52,7 +60,10 @@ class CartPage extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.cardBorder.withOpacity(0.3), width: 0.6),
+                            border: Border.all(
+                              color: AppColors.cardBorder.withOpacity(0.3),
+                              width: 0.6,
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.02),
@@ -114,10 +125,16 @@ class CartPage extends ConsumerWidget {
                                     children: [
                                       _QuantityButton(
                                         icon: Icons.remove,
-                                        onPressed: () => ref.read(cartProvider.notifier).decrementQuantity(item.furniture.id),
+                                        onPressed: () => ref
+                                            .read(cartProvider.notifier)
+                                            .decrementQuantity(
+                                              item.furniture.id,
+                                            ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                        ),
                                         child: Text(
                                           item.quantity.toString(),
                                           style: const TextStyle(
@@ -129,14 +146,24 @@ class CartPage extends ConsumerWidget {
                                       ),
                                       _QuantityButton(
                                         icon: Icons.add,
-                                        onPressed: () => ref.read(cartProvider.notifier).incrementQuantity(item.furniture.id),
+                                        onPressed: () => ref
+                                            .read(cartProvider.notifier)
+                                            .incrementQuantity(
+                                              item.furniture.id,
+                                            ),
                                       ),
                                     ],
                                   ),
                                   const SizedBox(height: 8),
                                   GestureDetector(
-                                    onTap: () => ref.read(cartProvider.notifier).removeItem(item.furniture.id),
-                                    child: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+                                    onTap: () => ref
+                                        .read(cartProvider.notifier)
+                                        .removeItem(item.furniture.id),
+                                    child: const Icon(
+                                      Icons.delete_outline,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -152,7 +179,9 @@ class CartPage extends ConsumerWidget {
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(30),
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.05),
@@ -194,7 +223,9 @@ class CartPage extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           minimumSize: const Size(double.infinity, 56),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                           elevation: 0,
                         ),
                         child: const Text(
