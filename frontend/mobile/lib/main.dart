@@ -72,7 +72,7 @@ class PocketRoomApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: const SplashPage(),
-      builder: (context, child) => ResponsiveWrapper(child: child!),
+      builder: (context, child) => ResponsiveWrapper(child: child ?? const SizedBox.shrink()),
     );
   }
 }
