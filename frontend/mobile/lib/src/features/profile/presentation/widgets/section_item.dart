@@ -6,6 +6,8 @@ class SectionItem extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final bool isDestructive;
+  /// When non-null, replaces the trailing chevron with this value text.
+  final String? value;
 
   const SectionItem({
     super.key,
@@ -13,6 +15,7 @@ class SectionItem extends StatelessWidget {
     required this.label,
     this.onTap,
     this.isDestructive = false,
+    this.value,
   });
 
   @override
@@ -45,12 +48,22 @@ class SectionItem extends StatelessWidget {
                 ),
               ),
             ),
-            // Chevron
-            const Icon(
-              Icons.chevron_right_rounded,
-              size: 20,
-              color: Color(0xFF9E9E9E),
-            ),
+            // Value text OR chevron — mutually exclusive
+            if (value != null)
+              Text(
+                value!,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF9E9E9E),
+                ),
+              )
+            else
+              const Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
+                color: Color(0xFF9E9E9E),
+              ),
           ],
         ),
       ),

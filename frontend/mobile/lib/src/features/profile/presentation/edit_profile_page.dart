@@ -2,21 +2,37 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  final String? initialName;
+  final String? initialEmail;
+  final String? initialPhone;
+  final String? initialAddress;
+
+  const EditProfilePage({
+    super.key,
+    this.initialName,
+    this.initialEmail,
+    this.initialPhone,
+    this.initialAddress,
+  });
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController _nameController = TextEditingController(
-    text: 'John Doe',
-  );
-  final TextEditingController _emailController = TextEditingController(
-    text: 'johndoe@gmail.com',
-  );
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = widget.initialName ?? 'John Doe';
+    _emailController.text = widget.initialEmail ?? 'johndoe@gmail.com';
+    _phoneController.text = widget.initialPhone ?? '';
+    _addressController.text = widget.initialAddress ?? '';
+  }
 
   @override
   void dispose() {
@@ -140,8 +156,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     height: 52,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Frontend only — no backend call yet
-                        Navigator.of(context).pop();
+                        // Frontend only — return updated values to caller
+                        Navigator.of(context).pop({
+                          'name': _nameController.text.trim(),
+                          'email': _emailController.text.trim(),
+                          'phone': _phoneController.text.trim(),
+                          'address': _addressController.text.trim(),
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,

@@ -3,8 +3,45 @@ import '../../../core/theme/app_theme.dart';
 import 'edit_profile_page.dart';
 import 'widgets/section_item.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+// ── Lightweight local user data state ──────────────────────────────────────────
+class _UserData {
+  String name = 'John Doe';
+  String email = 'johndoe@gmail.com';
+  String phone = '';
+  String address = '';
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final _user = _UserData();
+
+  /// Opens EditProfilePage and applies any returned changes to local state.
+  Future<void> _openEditProfile() async {
+    final result = await Navigator.of(context).push<Map<String, dynamic>>(
+      MaterialPageRoute(
+        builder: (context) => EditProfilePage(
+          initialName: _user.name,
+          initialEmail: _user.email,
+          initialPhone: _user.phone,
+          initialAddress: _user.address,
+        ),
+      ),
+    );
+    if (result != null) {
+      setState(() {
+        _user.name = (result['name'] as String?) ?? _user.name;
+        _user.email = (result['email'] as String?) ?? _user.email;
+        _user.phone = (result['phone'] as String?) ?? _user.phone;
+        _user.address = (result['address'] as String?) ?? _user.address;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +98,7 @@ class ProfilePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // ── Peach Header Card ────────────────────────────────────────
-            _ProfileHeaderCard(),
+            _ProfileHeaderCard(onEditProfile: _openEditProfile),
 
             // ── Body Content ─────────────────────────────────────────────
             Padding(
@@ -77,19 +114,26 @@ class ProfilePage extends StatelessWidget {
                       SectionItem(
                         icon: Icons.email_outlined,
                         label: 'Email',
-                        onTap: () {},
+                        value: _user.email.isEmpty ? 'Add email' : _user.email,
+                        onTap: _openEditProfile,
                       ),
                       _Divider(),
                       SectionItem(
                         icon: Icons.phone_outlined,
                         label: 'Phone Number',
-                        onTap: () {},
+                        value: _user.phone.isEmpty
+                            ? 'Add phone number'
+                            : _user.phone,
+                        onTap: _openEditProfile,
                       ),
                       _Divider(),
                       SectionItem(
                         icon: Icons.home_outlined,
                         label: 'Address',
-                        onTap: () {},
+                        value: _user.address.isEmpty
+                            ? 'Add address'
+                            : _user.address,
+                        onTap: _openEditProfile,
                       ),
                     ],
                   ),
@@ -153,6 +197,9 @@ class ProfilePage extends StatelessWidget {
 
 // ── Profile Header Card (Peach background with avatar) ─────────────────────────
 class _ProfileHeaderCard extends StatelessWidget {
+  final VoidCallback? onEditProfile;
+  const _ProfileHeaderCard({this.onEditProfile});
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -191,13 +238,16 @@ class _ProfileHeaderCard extends StatelessWidget {
 
               const SizedBox(height: 14),
 
-              // Name
-              const Text(
-                'John Doe',
-                style: TextStyle(
-                  color: Color(0xFF2D1B0E),
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
+              // Name (tappable → opens Edit Profile)
+              GestureDetector(
+                onTap: onEditProfile,
+                child: Text(
+                  'John Doe',
+                  style: TextStyle(
+                    color: Color(0xFF2D1B0E),
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
 
@@ -217,13 +267,7 @@ class _ProfileHeaderCard extends StatelessWidget {
 
               // Edit Profile
               GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const EditProfilePage(),
-                    ),
-                  );
-                },
+                onTap: onEditProfile,
                 child: const Text(
                   'Edit Profile',
                   style: TextStyle(
