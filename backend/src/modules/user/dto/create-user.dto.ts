@@ -12,7 +12,6 @@ export enum UserRole {
   SELLER = 'SELLER',
   ADMIN = 'ADMIN',
 }
-
 export class CreateUserDto {
   @IsEmail()
   email: string;

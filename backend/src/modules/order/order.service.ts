@@ -1,76 +1,157 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { CreateOrderDto, OrderStatus } from './dto/create-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
+import { UpdateOrderFulfillmentDto } from './dto/update-order-fulfillment.dto';
 
 @Injectable()
 export class OrderService {
-    constructor(private readonly firebase: FirebaseService) { }
+  constructor(private readonly firebase: FirebaseService) {}
 
-    private collection() {
-        return this.firebase.firestore.collection('orders');
+  private collection() {
+    return this.firebase.firestore.collection('orders');
+  }
+
+  async createOrder(userId: string, dto: CreateOrderDto) {
+    let totalAmount = dto.totalAmount;
+
+    if (totalAmount === undefined) {
+      totalAmount = dto.items.reduce((sum, item) => {
+        const itemTotal = item.itemTotal ?? (item.unitPrice ?? 0) * item.quantity;
+        return sum + itemTotal;
+      }, 0);
     }
 
-    async createOrder(userId: string, dto: CreateOrderDto) {
-        // Calculate total if not provided
-        let totalAmount = dto.totalAmount;
-        if (totalAmount === undefined) {
-            totalAmount = dto.items.reduce((sum, item) => {
-                const itemTotal = item.itemTotal ?? (item.unitPrice ?? 0) * item.quantity;
-                return sum + itemTotal;
-            }, 0);
-        }
+    const docRef = this.collection().doc();
 
-        const docRef = this.collection().doc();
-        const data = {
-            orderId: docRef.id,
-            ...dto,
-            customerId: userId, // Enforce the authenticated user as the customer
-            orderStatus: OrderStatus.PENDING,
-            totalAmount,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        };
+    const data = {
+      orderId: docRef.id,
+      ...dto,
+      customerId: userId,
+      orderStatus: OrderStatus.PENDING_PAYMENT,
+      totalAmount,
+      trackingNumber: null,
+      courierName: null,
+      estimatedDelivery: dto.estimatedDelivery ?? null,
+      shippedAt: null,
+      deliveredAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-        try {
-            await docRef.set(data);
-            return data;
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to create order');
-        }
+    try {
+      await docRef.set(data);
+      return data;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to create order');
+    }
+  }
+
+  async getUserOrders(userId: string) {
+    const snapshot = await this.collection()
+      .where('customerId', '==', userId)
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    return snapshot.docs.map((doc) => doc.data());
+  }
+
+  async getAllOrders() {
+    const snapshot = await this.collection().orderBy('createdAt', 'desc').get();
+    return snapshot.docs.map((doc) => doc.data());
+  }
+
+  async getOrderById(orderId: string) {
+    const doc = await this.collection().doc(orderId).get();
+
+    if (!doc.exists) {
+      throw new NotFoundException('Order not found');
     }
 
-    async getUserOrders(userId: string) {
-        const snapshot = await this.collection()
-            .where('customerId', '==', userId)
-            .orderBy('createdAt', 'desc')
-            .get();
+    return doc.data();
+  }
 
-        return snapshot.docs.map((doc) => doc.data());
+  async updateOrder(orderId: string, dto: UpdateOrderDto) {
+    const docRef = this.collection().doc(orderId);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      throw new NotFoundException('Order not found');
     }
 
-    async getOrderById(orderId: string) {
-        const doc = await this.collection().doc(orderId).get();
+    const updateData = {
+      ...dto,
+      updatedAt: new Date(),
+    };
 
-        if (!doc.exists) {
-            throw new NotFoundException('Order not found');
-        }
+    try {
+      await docRef.update(updateData);
+      const updatedDoc = await docRef.get();
+      return updatedDoc.data();
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to update order');
+    }
+  }
 
-        return doc.data();
+  async updateOrderFulfillment(orderId: string, dto: UpdateOrderFulfillmentDto) {
+    const docRef = this.collection().doc(orderId);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      throw new NotFoundException('Order not found');
     }
 
-    async updateOrderStatus(orderId: string, status: OrderStatus) {
-        const docRef = this.collection().doc(orderId);
-        const doc = await docRef.get();
+    const updateData: any = {
+      orderStatus: dto.orderStatus,
+      updatedAt: new Date(),
+    };
 
-        if (!doc.exists) {
-            throw new NotFoundException('Order not found');
-        }
-
-        await docRef.update({
-            orderStatus: status,
-            updatedAt: new Date(),
-        });
-
-        return { message: 'Order status updated successfully', status };
+    if (dto.trackingNumber !== undefined) {
+      updateData.trackingNumber = dto.trackingNumber;
     }
+
+    if (dto.courierName !== undefined) {
+      updateData.courierName = dto.courierName;
+    }
+
+    if (dto.estimatedDelivery !== undefined) {
+      updateData.estimatedDelivery = dto.estimatedDelivery;
+    }
+
+    if (dto.orderStatus === OrderStatus.SHIPPED) {
+      updateData.shippedAt = new Date();
+    }
+
+    if (dto.orderStatus === OrderStatus.DELIVERED) {
+      updateData.deliveredAt = new Date();
+    }
+
+    try {
+      await docRef.update(updateData);
+      const updatedDoc = await docRef.get();
+      return updatedDoc.data();
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to update order fulfillment');
+    }
+  }
+
+  async deleteOrder(orderId: string) {
+    const docRef = this.collection().doc(orderId);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      throw new NotFoundException('Order not found');
+    }
+
+    try {
+      await docRef.delete();
+      return { message: 'Order deleted successfully' };
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete order');
+    }
+  }
 }

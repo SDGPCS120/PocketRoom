@@ -1,30 +1,25 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
   Req,
-  UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
-import { FirebaseAuthGuard } from '../auth/guards/firebase-auth.guard';
+import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OrderService } from './order.service';
+import { UpdateOrderFulfillmentDto } from './dto/update-order-fulfillment.dto';
 
-@Controller('order')
-@UseGuards(FirebaseAuthGuard)
+@Controller('orders')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) { }
+  constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  createOrder(
-    @Req() req: Request & { user?: { uid: string } },
-    @Body() dto: CreateOrderDto,
-  ) {
-    const userId = req.user!.uid;
+  createOrder(@Req() req, @Body() dto: CreateOrderDto) {
+    const userId = req.user.uid;
     return this.orderService.createOrder(userId, dto);
   }
 
@@ -33,28 +28,37 @@ export class OrderController {
     return { message: 'Order endpoint is online' };
   }
 
-  @Get('me')
-  getUserOrders(@Req() req: Request & { user?: { uid: string } }) {
-    const userId = req.user!.uid;
+  @Get('my-orders')
+  getUserOrders(@Req() req) {
+    const userId = req.user.uid;
     return this.orderService.getUserOrders(userId);
   }
 
-  @Get(':id')
-  getOrderById(@Param('id') orderId: string) {
+  @Get()
+  getAllOrders() {
+    return this.orderService.getAllOrders();
+  }
+
+  @Get(':orderId')
+  getOrderById(@Param('orderId') orderId: string) {
     return this.orderService.getOrderById(orderId);
   }
 
-  @Patch(':id/status')
-  updateOrderStatus(
-    @Param('id') orderId: string,
-    @Body() dto: UpdateOrderDto,
+  @Patch(':orderId')
+  updateOrder(@Param('orderId') orderId: string, @Body() dto: UpdateOrderDto) {
+    return this.orderService.updateOrder(orderId, dto);
+  }
+
+  @Patch(':orderId/fulfillment')
+  updateOrderFulfillment(
+    @Param('orderId') orderId: string,
+    @Body() dto: UpdateOrderFulfillmentDto,
   ) {
-    // Assuming UpdateOrderDto contains the orderStatus field.
-    // In a real scenario, you might want a specific DTO for status updates
-    // if 'orderStatus' isn't reliably present in PartialType(CreateOrderDto).
-    if (!dto.orderStatus) {
-      throw new Error('orderStatus is required for this endpoint');
-    }
-    return this.orderService.updateOrderStatus(orderId, dto.orderStatus);
+    return this.orderService.updateOrderFulfillment(orderId, dto);
+  }
+
+  @Delete(':orderId')
+  deleteOrder(@Param('orderId') orderId: string) {
+    return this.orderService.deleteOrder(orderId);
   }
 }
