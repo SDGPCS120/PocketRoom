@@ -1,33 +1,24 @@
-import {
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsPositive,
-  IsString,
-  Min,
-} from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, Min } from 'class-validator';
 
 export class CreateOrderItemDto {
   @IsString()
   @IsNotEmpty()
-  variantId: string;
+  productId: string;
+
+  @IsString()
+  @IsOptional()
+  variantId?: string;
 
   @IsString()
   @IsNotEmpty()
-  storeId: string;
+  productName: string;
+
+  @IsPositive()
+  unitPrice: number;
 
   @IsInt()
   @Min(1)
   quantity: number;
-
-  // Usually computed server-side, but included if needed:
-  @IsPositive()
-  @IsOptional()
-  unitPrice?: number;
-
-  @IsPositive()
-  @IsOptional()
-  taxAmount?: number;
 
   @IsPositive()
   @IsOptional()
