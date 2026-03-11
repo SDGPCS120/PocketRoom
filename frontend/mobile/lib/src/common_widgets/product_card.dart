@@ -6,13 +6,21 @@ import '../features/home/presentation/product_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 
-class ProductCard extends ConsumerWidget {
+class ProductCard extends ConsumerStatefulWidget {
   final Furniture furniture;
 
   const ProductCard({super.key, required this.furniture});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends ConsumerState<ProductCard> {
+  bool _isWishlisted = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final furniture = widget.furniture;
     final ratingLabel = furniture.rating.isNaN
         ? 'N/A'
         : furniture.rating.toString();
@@ -141,7 +149,7 @@ class ProductCard extends ConsumerWidget {
                 ],
               ),
               const Spacer(),
-              // Price and Add to Cart
+              // Price, Wishlist heart, and Add to Cart
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -155,36 +163,76 @@ class ProductCard extends ConsumerWidget {
                       color: AppColors.priceColor,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      ref.read(cartProvider.notifier).addItem(furniture);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${furniture.name} added to cart'),
-                          duration: const Duration(seconds: 1),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                  // Heart + Cart icons grouped on the right
+                  Row(
+                    children: [
+                      // Wishlist heart button
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isWishlisted = !_isWishlisted;
+                          });
+                        },
+                        child: Container(
+                          width: 22,
+                          height: 22,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: _isWishlisted
+                                  ? Colors.red
+                                  : AppColors.primary,
+                              width: 1,
+                            ),
                           ),
-                          backgroundColor: AppColors.primary,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: 22,
-                      height: 22,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary, width: 1),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.add_shopping_cart,
-                          size: 12,
-                          color: AppColors.primary,
+                          child: Center(
+                            child: Icon(
+                              _isWishlisted
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              size: 12,
+                              color: _isWishlisted
+                                  ? Colors.red
+                                  : AppColors.primary,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 6),
+                      // Cart button
+                      GestureDetector(
+                        onTap: () {
+                          ref.read(cartProvider.notifier).addItem(furniture);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${furniture.name} added to cart'),
+                              duration: const Duration(seconds: 1),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              backgroundColor: AppColors.primary,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 22,
+                          height: 22,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border:
+                                Border.all(color: AppColors.primary, width: 1),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.add_shopping_cart,
+                              size: 12,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
