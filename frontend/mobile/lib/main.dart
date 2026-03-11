@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,7 +12,6 @@ void _logAuth(String message) {
   final line = '[AUTH_LOG] $message';
   debugPrint(line);
   developer.log(line, name: 'AuthFlow');
-  stdout.writeln(line);
 }
 
 Future<void> _printCurrentAuthInfo(FirebaseAuth auth) async {

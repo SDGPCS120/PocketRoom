@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
     final line = '[AUTH_LOG] $message';
     debugPrint(line);
     developer.log(line, name: 'AuthFlow');
-    stdout.writeln(line);
   }
 
   Future<void> _printAuthInfo(User user, String providerLabel) async {
