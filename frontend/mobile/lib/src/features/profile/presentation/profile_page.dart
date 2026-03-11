@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
 import '../../../core/theme/app_theme.dart';
 import 'edit_profile_page.dart';
 import 'widgets/section_item.dart';
@@ -152,8 +153,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       _Divider(),
                       SectionItem(
                         icon: Icons.shopping_cart_outlined,
-                        label: 'My Cart',
-                        onTap: () {},
+                        label: 'My Orders',
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const CartPage(),
+                            ),
+                          );
+                        },
                       ),
                       _Divider(),
                       SectionItem(
