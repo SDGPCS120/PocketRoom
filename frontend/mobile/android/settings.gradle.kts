@@ -27,3 +27,22 @@ plugins {
 }
 
 include(":app")
+
+// Include Unity export module only when present so normal Flutter builds still work.
+val unityLibraryDir = file("unityLibrary")
+if (unityLibraryDir.exists()) {
+    include(":unityLibrary")
+    project(":unityLibrary").projectDir = unityLibraryDir
+
+    val xrManifestDir = file("unityLibrary/xrmanifest.androidlib")
+    if (xrManifestDir.exists()) {
+        include(":unityLibrary:xrmanifest.androidlib")
+        project(":unityLibrary:xrmanifest.androidlib").projectDir = xrManifestDir
+    }
+
+    val firebaseAppDir = file("unityLibrary/FirebaseApp.androidlib")
+    if (firebaseAppDir.exists()) {
+        include(":unityLibrary:FirebaseApp.androidlib")
+        project(":unityLibrary:FirebaseApp.androidlib").projectDir = firebaseAppDir
+    }
+}

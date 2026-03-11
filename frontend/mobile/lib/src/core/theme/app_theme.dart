@@ -16,6 +16,9 @@ class AppColors {
   static const Color textSecondary = Color(
     0xFF757575,
   ); // A slightly lighter grey
+  static const Color textRating = Color(0xFF444D5C);
+  static const Color priceColor = Color(0xFFE79742);
+  static const Color cardBorder = Color(0xFFE79742);
 
   // Gradient for cards
   static const Gradient cardGradient = LinearGradient(
@@ -23,6 +26,22 @@ class AppColors {
     end: Alignment.bottomRight,
     colors: [Color(0xFFFFE5D3), Color.fromRGBO(255, 212, 184, 1)],
   );
+
+  // Shadow used by product cards.
+  static List<BoxShadow> productCardShadow = [
+    BoxShadow(
+      color: const Color(0xFFE79742).withOpacity(0.12),
+      offset: const Offset(0, 10),
+      blurRadius: 25,
+      spreadRadius: -5,
+    ),
+    BoxShadow(
+      color: Colors.black.withOpacity(0.02),
+      offset: const Offset(0, 8),
+      blurRadius: 10,
+      spreadRadius: -6,
+    ),
+  ];
 }
 
 class AppTheme {
