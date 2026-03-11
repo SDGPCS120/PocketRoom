@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import 'edit_profile_page.dart';
 import 'widgets/section_item.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -216,7 +217,13 @@ class _ProfileHeaderCard extends StatelessWidget {
 
               // Edit Profile
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfilePage(),
+                    ),
+                  );
+                },
                 child: const Text(
                   'Edit Profile',
                   style: TextStyle(
