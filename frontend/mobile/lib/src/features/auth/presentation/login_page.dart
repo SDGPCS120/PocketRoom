@@ -322,7 +322,6 @@ class _LoginPageState extends State<LoginPage> {
                     style: textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.textPrimary,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -330,7 +329,6 @@ class _LoginPageState extends State<LoginPage> {
                     'Log in to your PocketRoom account',
                     style: textTheme.bodyMedium?.copyWith(
                       color: AppColors.textSecondary,
-                      fontFamily: GoogleFonts.poppins().fontFamily,
                     ),
                   ),
                   const SizedBox(height: 36),
@@ -368,7 +366,6 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
                         ),
                       ),
                     ),
@@ -391,7 +388,7 @@ class _LoginPageState extends State<LoginPage> {
                               width: 20,
                               child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                             )
-                          : Text('Log in', style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600)),
+                          : const Text('Log in', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -406,7 +403,6 @@ class _LoginPageState extends State<LoginPage> {
                             color: AppColors.textSecondary,
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            fontFamily: GoogleFonts.poppins().fontFamily,
                           ),
                         ),
                       ),
@@ -430,9 +426,9 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           const Icon(Icons.login, size: 20), // Placeholder for Google icon
                           const SizedBox(width: 12),
-                          Text(
+                          const Text(
                             'Continue with Google', 
-                            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500)
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)
                           ),
                         ],
                       ),
@@ -446,7 +442,6 @@ class _LoginPageState extends State<LoginPage> {
                         "Don't have an account? ",
                         style: textTheme.bodyMedium?.copyWith(
                           color: AppColors.textSecondary,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
                         ),
                       ),
                       GestureDetector(
@@ -456,9 +451,9 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                   MaterialPageRoute(builder: (_) => const SignupPage()),
                                 ),
-                        child: Text(
+                        child: const Text(
                           'Create one',
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
