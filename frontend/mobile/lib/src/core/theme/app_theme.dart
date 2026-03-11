@@ -17,6 +17,20 @@ class AppColors {
     0xFF757575,
   ); // A slightly lighter grey
 
+  // Card styling
+  static const Color cardBorder = Color(0xFFE0D5CC);
+  static const List<BoxShadow> productCardShadow = [
+    BoxShadow(
+      color: Color(0x0D000000), // ~5% black
+      blurRadius: 8,
+      offset: Offset(0, 2),
+    ),
+  ];
+
+  // Rating and price text colors
+  static const Color textRating = Color(0xFF2D2D2D);
+  static const Color priceColor = Color(0xFFFF8A3D);
+
   // Gradient for cards
   static const Gradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
