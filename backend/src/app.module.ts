@@ -7,10 +7,11 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { ProductModule } from './modules/product/product.module.js';
 import { OrderModule } from './modules/order/order.module.js';
 import { UserModule } from './modules/user/user.module.js';
-import { AddressModule } from './modules/address/address.module';
+import { AddressModule } from './modules/address/address.module.js';
+import { StoreModule } from './modules/store/store.module.js';
+import { CartModule } from './modules/cart/cart.module.js';
 
 @Module({
-
   imports: [
     AppConfigModule,
     FirebaseModule,
@@ -19,7 +20,8 @@ import { AddressModule } from './modules/address/address.module';
     UserModule,
     AddressModule,
     ProductModule,
-  StoreModule  
+    StoreModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
 import '../data/cart_provider.dart';
+import '../../AR/ar_view_page.dart';
 
 class CartPage extends ConsumerWidget {
   const CartPage({super.key});
@@ -203,6 +204,32 @@ class CartPage extends ConsumerWidget {
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ArViewPage(),
+                            ),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          side: const BorderSide(color: AppColors.primary),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text(
+                          'View in AR',
+                          style: TextStyle(
+                            fontFamily: 'Fredoka',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
                           ),
                         ),
                       ),

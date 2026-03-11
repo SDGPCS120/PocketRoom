@@ -26,6 +26,8 @@ export class OrderController {
   ) {
     const userId = req.user!.uid;
     return this.orderService.createOrder(userId, dto);
+  }
+
   @Get()
   ping() {
     return { message: 'Order endpoint is online' };

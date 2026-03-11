@@ -2,6 +2,13 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("${rootDir}/../unity/pocketroom/Assets/GeneratedLocalRepo/Firebase/m2repository")
+        }
+        // Unity export keeps local AAR/JAR artifacts here (unity-classes, ARCore bridge, etc.).
+        flatDir {
+            dirs("${rootDir}/unityLibrary/libs")
+        }
     }
 }
 

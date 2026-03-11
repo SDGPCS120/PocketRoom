@@ -45,3 +45,10 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // Attach Unity runtime only if the exported module is available.
+    if (findProject(":unityLibrary") != null) {
+        implementation(project(":unityLibrary"))
+    }
+}
