@@ -1,11 +1,4 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, IsBoolean } from "class-validator";
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MinLength,
-} from 'class-validator';
 
 export enum UserRole {
   CUSTOMER = "CUSTOMER",
@@ -36,6 +29,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean; // default true in service
-}
-  role?: 'CUSTOMER' | 'SELLER' | 'ADMIN';
 }

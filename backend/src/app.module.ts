@@ -9,7 +9,7 @@ import { OrderModule } from './modules/order/order.module.js';
 import { UserModule } from './modules/user/user.module.js';
 import { AddressModule } from './modules/address/address.module';
 import { CategoryModule } from './modules/category/category.module';
-import { CartModule } from './modules/cart/cart.module';
+//import { CartModule } from './modules/cart/cart.module';
 
 @Module({
 
