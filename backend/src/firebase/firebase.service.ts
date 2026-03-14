@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import * as serviceAccount from '../../config/pocketroom-80f62-firebase-adminsdk-fbsvc-f7c34c2e27.json';
-
+import * as serviceAccount from '../../config/pocketroom-80f62-firebase-adminsdk-fbsvc-f90f627b46.json';
 @Injectable()
 export class FirebaseService {
   public firestore: FirebaseFirestore.Firestore;
