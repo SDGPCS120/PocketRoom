@@ -1,5 +1,4 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
@@ -50,13 +49,10 @@ async function bootstrap() {
     },
   });
 
-  const configService = app.get<ConfigService>(ConfigService);
-  const port = configService.get<number>('PORT') ?? 3000;
-  const host = process.env.HOST ?? '0.0.0.0';
-  await app.listen(port, host);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 
-  const externalHost = host === '0.0.0.0' ? 'localhost' : host;
-  const baseUrl = `http://${externalHost}:${port}`;
+  const baseUrl = `http://localhost:${port}`;
   logger.log(`Application URL: ${baseUrl}`);
   logger.log(`Swagger UI: ${baseUrl}/docs`);
 }
