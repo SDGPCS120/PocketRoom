@@ -47,12 +47,30 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                   children: [
                     // Sofa Image on the right
                     Positioned(
-                      right: -20,
-                      bottom: -10,
+                      right: -30,
+                      bottom: -20,
                       child: Image.asset(
                         'assets/bannerSofa.png',
-                        height: 180,
+                        height: 240,
                         fit: BoxFit.contain,
+                      ),
+                    ),
+                    // Gradient overlay to fade the sofa into the background
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [
+                              const Color(0xFF5A4A3A), // Fully solid on left
+                              const Color(0xFF5A4A3A).withValues(alpha: 0.8), // Solid mid left
+                              const Color(0xFF5A4A3A).withValues(alpha: 0.3), // Far fade
+                              Colors.transparent, // Only clear at the very right
+                            ],
+                            stops: const [0.0, 0.4, 0.75, 1.0],
+                          ),
+                        ),
                       ),
                     ),
                     // Text Content
