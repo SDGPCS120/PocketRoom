@@ -45,4 +45,8 @@ if (unityLibraryDir.exists()) {
         include(":unityLibrary:FirebaseApp.androidlib")
         project(":unityLibrary:FirebaseApp.androidlib").projectDir = firebaseAppDir
     }
+} else {
+    include(":unityLibrary")
+    project(":unityLibrary").projectDir =
+        file("../../../backend/src/modules/unityLibrary-stub")
 }

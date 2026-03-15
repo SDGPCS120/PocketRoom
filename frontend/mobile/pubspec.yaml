@@ -29,6 +29,10 @@ dev_dependencies:
 
   flutter_lints: ^5.0.0
 
+dependency_overrides:
+  flutter_unity_widget_2:
+    path: plugins/flutter_unity_widget_2
+
 flutter:
   uses-material-design: true
   assets:
