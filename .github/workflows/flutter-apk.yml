@@ -1,6 +1,6 @@
 name: Flutter CI
 
-#Triggers: run on push or pull request to dev branch
+# Triggers: run on push or pull request to dev branch
 on:
   push:
     branches:
@@ -13,50 +13,64 @@ jobs:
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
+    
+    # Set the working directory for all 'run' commands in this job
+    defaults:
+      run:
+        working-directory: ./frontend/mobile
 
     steps:
       # Step 1: Checkout repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup Flutter
+      # Step 2: Setup Java (Required for Android build)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17' # Java 17 is generally required for newer Flutter/AGP versions
+
+      # Step 3: Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.41.2'
+          flutter-version: '3.41.2' # Ensure this matches your local Flutter version
           channel: 'stable'
           cache: true
 
-      # Step 3: Install dependencies
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # Step 4: Analyze code
+      # Step 5: Analyze code
       - name: Analyze code (errors only)
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
-      # Step 5: Run tests
+      # Step 6: Run tests
       - name: Run tests
         run: flutter test
 
-      # Step 6: Build debug APK
+      # Step 7: Build debug APK
       - name: Build debug APK
         run: flutter build apk --debug
 
-      # Step 7: Build release APK
+      # Step 8: Build release APK
       - name: Build release APK
         run: flutter build apk --release
 
-      # Step 8: Upload debug APK as artifact
+      # Step 9: Upload debug APK as artifact
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
           name: debug-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          # Update path to point fully inside frontend/mobile
+          path: frontend/mobile/build/app/outputs/flutter-apk/app-debug.apk
 
-      # Step 9: Upload release APK as artifact
+      # Step 10: Upload release APK as artifact
       - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          # Update path to point fully inside frontend/mobile
+          path: frontend/mobile/build/app/outputs/flutter-apk/app-release-unsigned.apk # Usually adds "-unsigned" if not signed
