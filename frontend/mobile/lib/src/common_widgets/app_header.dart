@@ -23,7 +23,14 @@ class AppHeader extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset('assets/logo.png', height: 40),
+          GestureDetector(
+            onTap: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+            },
+            child: Image.asset('assets/logo.png', height: 40),
+          ),
           StreamBuilder<User?>(
             stream: FirebaseAuth.instance.idTokenChanges(),
             initialData: FirebaseAuth.instance.currentUser,
