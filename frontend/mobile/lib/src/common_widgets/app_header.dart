@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/theme/app_theme.dart';
 import '../features/auth/presentation/get_started_page.dart';
 import '../features/auth/presentation/profile_page.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
