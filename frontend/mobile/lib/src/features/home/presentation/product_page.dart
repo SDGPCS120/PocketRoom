@@ -78,8 +78,8 @@ class _ProductPageState extends ConsumerState<ProductPage> {
     final hasColors = f.colorOptions.isNotEmpty;
 
     // Watch the reviews map; fall back to the seed list without mutating state.
-    // State is seeded safely in initState via addPostFrameCallback.
-    final reviews = ref.watch(reviewsProvider)[f.id] ?? const [defaultSeedReview];
+    final reviews = ref.watch(reviewsProvider)[f.id] ??
+        ref.read(reviewsProvider.notifier).getInitialReviews(f.id);
 
     return Scaffold(
       backgroundColor: AppColors.background,
