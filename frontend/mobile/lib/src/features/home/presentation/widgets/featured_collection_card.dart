@@ -41,9 +41,21 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                   ),
                 ],
               ),
-              child: Stack(
-                children: [
-                  // Text Content
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Stack(
+                  children: [
+                    // Sofa Image on the right
+                    Positioned(
+                      right: -20,
+                      bottom: -10,
+                      child: Image.asset(
+                        'assets/bannerSofa.png',
+                        height: 180,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    // Text Content
                   Positioned(
                     left: 24,
                     bottom: 24,
@@ -102,6 +114,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                     ),
                   ),
                 ],
+              ),
               ),
             )
           : const SizedBox.shrink(), // Takes up zero space when hidden
