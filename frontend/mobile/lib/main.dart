@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/splash/presentation/splash_page.dart';
+import 'src/common_widgets/responsive_wrapper.dart';
 
 void _logAuth(String message) {
   final line = '[AUTH_LOG] $message';
   debugPrint(line);
   developer.log(line, name: 'AuthFlow');
-  stdout.writeln(line);
 }
 
 Future<void> _printCurrentAuthInfo(FirebaseAuth auth) async {
@@ -73,6 +72,7 @@ class PocketRoomApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: const SplashPage(),
+      builder: (context, child) => ResponsiveWrapper(child: child ?? const SizedBox.shrink()),
     );
   }
 }

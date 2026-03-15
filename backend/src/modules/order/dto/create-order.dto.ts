@@ -5,15 +5,16 @@ import {
   IsEnum,
   IsNotEmpty,
   IsOptional,
-  IsString,
   IsPositive,
+  IsString,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateOrderItemDto } from './create-order-item.dto';
 
 export enum OrderStatus {
-  PENDING = 'PENDING',
+  PENDING_PAYMENT = 'PENDING_PAYMENT',
+  CONFIRMED = 'CONFIRMED',
   PROCESSING = 'PROCESSING',
   SHIPPED = 'SHIPPED',
   DELIVERED = 'DELIVERED',
@@ -23,24 +24,19 @@ export enum OrderStatus {
 export class CreateOrderDto {
   @IsString()
   @IsNotEmpty()
-  customerId: string;
-
-  @IsString()
-  @IsNotEmpty()
   shippingAddressId: string;
 
   @IsString()
   @IsNotEmpty()
   billingAddressId: string;
 
-  // Often generated server-side; keep optional if you want to create it on server.
   @IsString()
   @IsOptional()
   orderNumber?: string;
 
   @IsEnum(OrderStatus)
   @IsOptional()
-  orderStatus?: OrderStatus; // default PENDING
+  orderStatus?: OrderStatus;
 
   @IsArray()
   @ArrayMinSize(1)
@@ -48,7 +44,6 @@ export class CreateOrderDto {
   @Type(() => CreateOrderItemDto)
   items: CreateOrderItemDto[];
 
-  // Totals usually computed on server, but optional if your flow needs them:
   @IsPositive()
   @IsOptional()
   subtotal?: number;
@@ -72,10 +67,6 @@ export class CreateOrderDto {
   @IsString()
   @IsOptional()
   currency?: string;
-
-  @IsString()
-  @IsOptional()
-  paymentStatus?: string;
 
   @IsDateString()
   @IsOptional()

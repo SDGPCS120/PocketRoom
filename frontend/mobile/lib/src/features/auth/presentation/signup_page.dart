@@ -139,123 +139,209 @@ class _SignupPageState extends State<SignupPage> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        elevation: 0,
-        leading: const BackButton(color: AppColors.textPrimary),
-      ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 12),
-                Text(
-                  'Create account',
-                  style: textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Join PocketRoom and start exploring',
-                  style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-                ),
-                const SizedBox(height: 36),
-                _AuthTextField(
-                  controller: _nameController,
-                  label: 'Username',
-                  hint: 'your_username',
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter a username' : null,
-                ),
-                const SizedBox(height: 16),
-                _AuthTextField(
-                  controller: _emailController,
-                  label: 'Email',
-                  hint: 'you@example.com',
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
-                ),
-                const SizedBox(height: 16),
-                _AuthTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  hint: '********',
-                  obscureText: _obscurePassword,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                      color: AppColors.textSecondary,
-                    ),
-                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                  ),
-                  validator: (v) => (v == null || v.length < 6) ? 'Min 6 characters' : null,
-                ),
-                const SizedBox(height: 16),
-                _AuthTextField(
-                  controller: _confirmController,
-                  label: 'Confirm password',
-                  hint: '********',
-                  obscureText: _obscureConfirm,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscureConfirm ? Icons.visibility_off : Icons.visibility,
-                      color: AppColors.textSecondary,
-                    ),
-                    onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
-                  ),
-                  validator: (v) => (v != _passwordController.text) ? 'Passwords do not match' : null,
-                ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _loading ? null : _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                    ),
-                    child: _loading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                          )
-                        : Text('Create account', style: GoogleFonts.fredoka(fontSize: 18)),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account? ',
-                      style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginPage()),
-                      ),
-                      child: Text(
-                        'Log in',
-                        style: GoogleFonts.fredoka(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+        child: Stack(
+          children: [
+            // Back Button at the top left
+            Positioned(
+              top: 16,
+              left: 16,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+                onPressed: () => Navigator.pop(context),
+              ),
             ),
-          ),
+            // The Main Content Layout
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isDesktop = constraints.maxWidth > 800;
+                
+                final content = SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isDesktop ? 40 : 28, 
+                    // Add extra top padding on mobile since the back button is floating above it
+                    vertical: isDesktop ? 40 : (56 + 16) 
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Join PocketRoom',
+                          style: textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Create an account to buy your favorite furniture',
+                          style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                        ),
+                        const SizedBox(height: 36),
+                        _AuthTextField(
+                          controller: _nameController,
+                          label: 'Username',
+                          hint: 'your_username',
+                          validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter a username' : null,
+                        ),
+                        const SizedBox(height: 16),
+                        _AuthTextField(
+                          controller: _emailController,
+                          label: 'Email',
+                          hint: 'you@example.com',
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+                        ),
+                        const SizedBox(height: 16),
+                        _AuthTextField(
+                          controller: _passwordController,
+                          label: 'Password',
+                          hint: '********',
+                          obscureText: _obscurePassword,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                              color: AppColors.textSecondary,
+                            ),
+                            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                          ),
+                          validator: (v) => (v == null || v.length < 6) ? 'Min 6 characters' : null,
+                        ),
+                        const SizedBox(height: 16),
+                        _AuthTextField(
+                          controller: _confirmController,
+                          label: 'Confirm password',
+                          hint: '********',
+                          obscureText: _obscureConfirm,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureConfirm ? Icons.visibility_off : Icons.visibility,
+                              color: AppColors.textSecondary,
+                            ),
+                            onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                          ),
+                          validator: (v) => (v != _passwordController.text) ? 'Passwords do not match' : null,
+                        ),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _loading ? null : _submit,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              elevation: 0,
+                            ),
+                            child: _loading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                  )
+                                : const Text('Create account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            const Expanded(child: Divider(color: AppColors.cardBorder)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            const Expanded(child: Divider(color: AppColors.cardBorder)),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: _loading ? null : () {}, 
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: AppColors.cardBorder),
+                              foregroundColor: AppColors.textPrimary,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              backgroundColor: Colors.white,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.login, size: 20), // Placeholder for Google icon
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Continue with Google', 
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Already have an account? ',
+                              style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+                            ),
+                            GestureDetector(
+                              onTap: () => Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) => const LoginPage()),
+                              ),
+                              child: Text(
+                                'Log in',
+                                style: GoogleFonts.fredoka(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+
+                if (!isDesktop) {
+                  return content;
+                }
+
+                return Center(
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 480),
+                    margin: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 40,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: content,
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
