@@ -7,14 +7,39 @@ import '../features/profile/presentation/profile_page.dart'; // <-- Using Dev's 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
+import 'package:pocketroom/src/features/home/data/providers.dart';
 
-class AppHeader extends ConsumerWidget {
+class AppHeader extends ConsumerStatefulWidget {
   const AppHeader({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppHeader> createState() => _AppHeaderState();
+}
+
+class _AppHeaderState extends ConsumerState<AppHeader> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    // It's safe to read the provider in initState
+    _searchController = TextEditingController(text: ref.read(searchQueryProvider));
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watch cart state
     final cartItems = ref.watch(cartProvider);
     final itemCount = cartItems.length;
+
+    // Watch search query
+    final currentQuery = ref.watch(searchQueryProvider);
 
     final isDesktop = MediaQuery.of(context).size.width > 600;
 
@@ -35,20 +60,33 @@ class AppHeader extends ConsumerWidget {
           // 2. keep Dev's / our websafe layout logic!
           // --- BEGIN OUR WEBSAFE LAYOUT ---
           if (isDesktop)
-            const Expanded(
+            Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    ref.read(searchQueryProvider.notifier).state = value;
+                  },
                   decoration: InputDecoration(
                     hintText: 'Search furniture...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: currentQuery.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, color: Colors.grey),
+                            onPressed: () {
+                              _searchController.clear();
+                              ref.read(searchQueryProvider.notifier).state = '';
+                            },
+                          )
+                        : null,
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Color(0xFFFFE5D3),
-                    contentPadding: EdgeInsets.symmetric(vertical: 0),
+                    fillColor: const Color(0xFFFFE5D3),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   ),
                 ),
               ),
