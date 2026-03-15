@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/theme/app_theme.dart';
 import '../features/auth/presentation/get_started_page.dart';
-import '../features/auth/presentation/profile_page.dart';
-
+import '../features/profile/presentation/profile_page.dart'; // <-- Using Dev's new path
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
@@ -12,11 +11,12 @@ import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
 class AppHeader extends ConsumerWidget {
   const AppHeader({super.key});
 
-  // This renders the top header and switches actions by auth/onboarding state.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cartItems = ref.watch(cartProvider);
     final itemCount = cartItems.length;
+
+    final isDesktop = MediaQuery.of(context).size.width > 600;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -24,6 +24,26 @@ class AppHeader extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset('assets/logo.png', height: 40),
+          // --- BEGIN OUR WEBSAFE LAYOUT ---
+          if (isDesktop)
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search furniture...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Color(0xFFFFE5D3),
+                    contentPadding: EdgeInsets.symmetric(vertical: 0),
+                  ),
+                ),
+              ),
+            ),
           StreamBuilder<User?>(
             stream: FirebaseAuth.instance.idTokenChanges(),
             initialData: FirebaseAuth.instance.currentUser,
@@ -99,6 +119,7 @@ class AppHeader extends ConsumerWidget {
               );
             },
           ),
+          // --- END OUR WEBSAFE LAYOUT ---
         ],
       ),
     );

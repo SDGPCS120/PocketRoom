@@ -1,9 +1,18 @@
-import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
+
+import {IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
-  categoryName: string;
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  slug: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 
   @IsOptional()
   @IsString()
@@ -11,10 +20,9 @@ export class CreateCategoryDto {
 
   @IsOptional()
   @IsString()
-  categoryDescription?: string;
+  imageURL?: string;
 
   @IsOptional()
-  @IsInt()
-  @Min(0)
-  displayOrder?: number;
+  @IsBoolean()
+  isActive?: boolean;
 }
