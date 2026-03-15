@@ -27,19 +27,6 @@ export class RelevanceScorer {
             tags.push(`ml=${mlProbability.toFixed(3)}`);
         }
 
-        // Product type matching (CRITICAL)
-        if (parsedQuery.productType) {
-            const productCategory = (product.category || '').toLowerCase();
-            if (productCategory === parsedQuery.productType) {
-                score += 50;
-                tags.push('category_match');
-            } else {
-                // Strong penalty for category mismatch
-                score -= 100;
-                tags.push('category_mismatch');
-            }
-        }
-
         // Color matching
         if (parsedQuery.colors && parsedQuery.colors.length > 0) {
             const productColor = product.color || '';
@@ -104,13 +91,6 @@ export class RelevanceScorer {
     }
 
     public shouldInclude(product: any, parsedQuery: ParsedQuery): boolean {
-        // Hard constraint: product type must match if specified
-        if (parsedQuery.productType) {
-            const productCategory = (product.category || '').toLowerCase();
-            if (productCategory !== parsedQuery.productType) {
-                return false;
-            }
-        }
 
         // Hard constraint: color must match (exact or similar) if specified
         if (parsedQuery.colors && parsedQuery.colors.length > 0) {
