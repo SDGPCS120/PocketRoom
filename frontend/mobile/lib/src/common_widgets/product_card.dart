@@ -36,7 +36,7 @@ class ProductCard extends ConsumerWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductPage(imageUrls: furniture.images),
+              builder: (context) => ProductPage(furniture: furniture),
             ),
           );
         },
