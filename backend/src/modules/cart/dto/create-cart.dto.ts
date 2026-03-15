@@ -1,26 +1,26 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
-
-export enum CartStatus {
-  ACTIVE = 'ACTIVE',
-  CHECKED_OUT = 'CHECKED_OUT',
-  ABANDONED = 'ABANDONED',
-}
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsNotEmpty, IsObject, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateCartDto {
+  @ApiProperty({ example: 'product-123' })
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  id: string;
 
+  @ApiPropertyOptional({ example: 2, default: 1 })
   @IsOptional()
-  @IsEnum(CartStatus)
-  status?: CartStatus;
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  quantity?: number;
 
+  @ApiPropertyOptional({
+    type: 'object',
+    additionalProperties: true,
+    example: { id: 'product-123', name: 'Accent Chair', price: 45000 },
+  })
   @IsOptional()
-  @IsNumber()
-  @Min(0)
-  totalAmount?: number;
-
-  @IsOptional()
-  @IsString()
-  currency?: string;
+  @IsObject()
+  furniture?: Record<string, unknown>;
 }

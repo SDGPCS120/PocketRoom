@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
     final line = '[AUTH_LOG] $message';
     debugPrint(line);
     developer.log(line, name: 'AuthFlow');
-    stdout.writeln(line);
   }
 
   Future<void> _printAuthInfo(User user, String providerLabel) async {
@@ -304,113 +302,193 @@ class _LoginPageState extends State<LoginPage> {
         elevation: 0,
         leading: const BackButton(color: AppColors.textPrimary),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 12),
-                Text(
-                  'Welcome back',
-                  style: textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 800;
+          
+          final content = SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: isDesktop ? 40 : 28, 
+              vertical: isDesktop ? 40 : 16
+            ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Welcome back',
+                    style: textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Log in to your PocketRoom account',
-                  style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-                ),
-                const SizedBox(height: 36),
-                _AuthTextField(
-                  controller: _emailController,
-                  label: 'Email',
-                  hint: 'you@example.com',
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
-                ),
-                const SizedBox(height: 16),
-                _AuthTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  hint: '********',
-                  obscureText: _obscurePassword,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                  const SizedBox(height: 6),
+                  Text(
+                    'Log in to your PocketRoom account',
+                    style: textTheme.bodyMedium?.copyWith(
                       color: AppColors.textSecondary,
                     ),
-                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                   ),
-                  validator: (v) => (v == null || v.isEmpty) ? 'Enter your password' : null,
-                ),
-                const SizedBox(height: 28),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _signInWithEmailPassword,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                          )
-                        : Text('Log in', style: GoogleFonts.fredoka(fontSize: 18)),
+                  const SizedBox(height: 36),
+                  _AuthTextField(
+                    controller: _emailController,
+                    label: 'Email',
+                    hint: 'you@example.com',
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
                   ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: _isLoading ? null : _signInWithGoogle,
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: AppColors.primary),
-                      foregroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  const SizedBox(height: 16),
+                  _AuthTextField(
+                    controller: _passwordController,
+                    label: 'Password',
+                    hint: '********',
+                    obscureText: _obscurePassword,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        color: AppColors.textSecondary,
+                      ),
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
-                    child: Text('Login with Google', style: GoogleFonts.fredoka(fontSize: 16)),
+                    validator: (v) => (v == null || v.isEmpty) ? 'Enter your password' : null,
                   ),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have an account? ",
-                      style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
-                    ),
-                    GestureDetector(
-                      onTap: _isLoading
-                          ? null
-                          : () => Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) => const SignupPage()),
-                              ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        // Handle forgot password
+                      },
                       child: Text(
-                        'Create one',
-                        style: GoogleFonts.fredoka(
+                        'Forgot Password?',
+                        style: TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _signInWithEmailPassword,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        elevation: 0,
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Text('Log in', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Expanded(child: Divider(color: AppColors.cardBorder)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          'OR',
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const Expanded(child: Divider(color: AppColors.cardBorder)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: _isLoading ? null : _signInWithGoogle,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.cardBorder),
+                        foregroundColor: AppColors.textPrimary,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        backgroundColor: Colors.white,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.login, size: 20), // Placeholder for Google icon
+                          const SizedBox(width: 12),
+                          const Text(
+                            'Continue with Google', 
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account? ",
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: _isLoading
+                            ? null
+                            : () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const SignupPage()),
+                                ),
+                        child: const Text(
+                          'Create one',
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
+          );
+
+          if (!isDesktop) {
+            return SafeArea(child: content);
+          }
+
+          return Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 480),
+              margin: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 40,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: content,
+            ),
+          );
+        },
       ),
     );
   }

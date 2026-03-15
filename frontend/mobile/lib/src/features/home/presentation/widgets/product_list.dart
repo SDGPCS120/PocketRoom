@@ -27,12 +27,19 @@ class ProductList extends ConsumerWidget {
         return SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           sliver: SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 177 / 253,
-            ),
+            gridDelegate: MediaQuery.of(context).size.width > 600
+                ? const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 250,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 177 / 253,
+                  )
+                : const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 177 / 253,
+                  ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 return ProductCard(furniture: filteredList[index]);

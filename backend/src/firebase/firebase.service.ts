@@ -40,6 +40,7 @@ export class FirebaseService implements OnModuleInit {
       });
     }
 
+    this.app.firestore().settings({ ignoreUndefinedProperties: true });
     this.logger.log('Firebase Admin initialized successfully');
   }
 
