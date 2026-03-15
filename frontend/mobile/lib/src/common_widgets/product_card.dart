@@ -78,7 +78,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.cardBorder, width: 0.6),
+                    // border: Border.all(color: AppColors.cardBorder, width: 0.6),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),

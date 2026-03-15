@@ -12,19 +12,19 @@ class AppColors {
   static const Color background = Color(0xFFFFF8F3);
 
   // New colours
-  static const Color cardBorder = background;
-  static const Color textRating = secondary;
-  static const Color priceColor = primary;
+  // static const Color cardBorder = background;
+  // static const Color textRating = secondary;
+  // static const Color priceColor = primary;
 
   // Card shadow
-  static const List<BoxShadow> productCardShadow = [
-    BoxShadow(
-      color: Color(0x14FF8A3D), // ~8% opacity primary
-      blurRadius: 8,
-      spreadRadius: 0,
-      offset: Offset(0, 4),
-    ),
-  ];
+  // static const List<BoxShadow> productCardShadow = [
+  //   BoxShadow(
+  //     color: Color(0x14FF8A3D), // ~8% opacity primary
+  //     blurRadius: 8,
+  //     spreadRadius: 0,
+  //     offset: Offset(0, 4),
+  //   ),
+  // ];
 
   // Text colors
   static const Color textPrimary = Color(0xFF2D2D2D);
@@ -32,7 +32,7 @@ class AppColors {
   static const Color textRating = Color(0xFFFFA726);
 
   // Product card
-  static const Color cardBorder = Color(0xFFE0E0E0);
+  static const Color cardBorder = Color(0xFFE79742);
   static const Color priceColor = Color(0xFFFF8A3D);
   static const List<BoxShadow> productCardShadow = [
     BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 2)),
