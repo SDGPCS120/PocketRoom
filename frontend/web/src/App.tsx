@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import SellerWelcome from './components/SellerWelcome';
 import SellerLogin from './components/SellerLogin';
+import SellerRegister from './components/SellerRegister';
 import SellerDashboard from './components/SellerDashboard';
+import SellerAddProduct from './components/SellerAddProduct';
 import './App.css';
 
 function App() {
@@ -8,12 +11,13 @@ function App() {
     <Router>
       <div className="app">
         <Routes>
+          <Route path="/" element={<SellerWelcome />} />
+          <Route path="/register" element={<SellerRegister />} />
           <Route path="/login" element={<SellerLogin />} />
           <Route path="/dashboard" element={<SellerDashboard />} />
-          {/* Default to login page */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          {/* Catch all - redirect to login */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/add-product" element={<SellerAddProduct />} />
+          {/* Catch all - redirect to welcome */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </Router>
