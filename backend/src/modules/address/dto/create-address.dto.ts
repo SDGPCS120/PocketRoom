@@ -1,4 +1,3 @@
-
 import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsPhoneNumber, IsEnum,  MaxLength } from 'class-validator';
 export enum AddressType {
   BILLING = 'BILLING',

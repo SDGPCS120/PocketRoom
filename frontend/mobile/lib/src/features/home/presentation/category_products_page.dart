@@ -19,7 +19,8 @@ class CategoryProductsPage extends ConsumerWidget {
         child: Column(
           children: [
             const AppHeader(),
-            const SearchBarWidget(),
+            if (MediaQuery.of(context).size.width <= 600)
+              const SearchBarWidget(),
             const CategoryPills(),
             SectionHeader(title: activeCategory), // Dynamic title
             const Expanded(

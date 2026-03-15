@@ -42,3 +42,11 @@ ios/Flutter/app.flx
 
 # Generated files
 app.*.symbols
+
+# Unity project
+unity/
+
+# Unity export build artifacts
+android/build/
+android/unityLibrary/
+android/kotlin_unity.log

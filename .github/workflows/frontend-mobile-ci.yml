@@ -1,11 +1,23 @@
 jobs:
-  build:
+  analyze-and-test:
+    name: Build & Test
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Install Flutter
-        run: ... // installation commands
-      - name: Analyze code (don't fail job)
-        run: flutter analyze || true
-      // Other steps...
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.2'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze code (errors only)
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Run tests
+        run: flutter test
