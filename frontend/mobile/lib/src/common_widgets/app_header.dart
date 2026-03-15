@@ -23,7 +23,16 @@ class AppHeader extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset('assets/logo.png', height: 40),
+          // 1. keep product-details' clickable logo
+          GestureDetector(
+            onTap: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+            },
+            child: Image.asset('assets/logo.png', height: 40),
+          ),
+          // 2. keep Dev's / our websafe layout logic!
           // --- BEGIN OUR WEBSAFE LAYOUT ---
           if (isDesktop)
             const Expanded(
@@ -119,7 +128,7 @@ class AppHeader extends ConsumerWidget {
               );
             },
           ),
-          // --- END OUR WEBSAFE LAYOUT ---
+          // --- END THE WEBSAFE LAYOUT ---
         ],
       ),
     );

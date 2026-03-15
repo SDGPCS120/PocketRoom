@@ -63,7 +63,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductPage(imageUrls: furniture.images),
+              builder: (context) => ProductPage(furniture: furniture),
             ),
           );
         },

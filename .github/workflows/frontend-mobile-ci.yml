@@ -1,23 +1,7 @@
-name: Frontend Mobile CI
-
-on:
-  push:
-    branches: [Dev]
-    paths:
-      - 'frontend/mobile/**'
-  pull_request:
-    branches: [Dev]
-    paths:
-      - 'frontend/mobile/**'
-
 jobs:
   analyze-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend/mobile
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

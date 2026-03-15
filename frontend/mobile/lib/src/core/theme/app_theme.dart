@@ -11,6 +11,21 @@ class AppColors {
   static const Color secondary = Color(0xFFFFE5D3);
   static const Color background = Color(0xFFFFF8F3);
 
+  // New colours
+  static const Color cardBorder = background;
+  static const Color textRating = secondary;
+  static const Color priceColor = primary;
+
+  // Card shadow
+  static const List<BoxShadow> productCardShadow = [
+    BoxShadow(
+      color: Color(0x14FF8A3D), // ~8% opacity primary
+      blurRadius: 8,
+      spreadRadius: 0,
+      offset: Offset(0, 4),
+    ),
+  ];
+
   // Text colors
   static const Color textPrimary = Color(0xFF2D2D2D);
   static const Color textSecondary = Color(0xFF757575);
