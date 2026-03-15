@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/theme/app_theme.dart';
 import '../features/auth/presentation/get_started_page.dart';
-import '../features/auth/presentation/profile_page.dart';
+import '../features/profile/presentation/profile_page.dart'; // <-- Using Dev's new path
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
@@ -11,7 +11,6 @@ import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
 class AppHeader extends ConsumerWidget {
   const AppHeader({super.key});
 
-  // This renders the top header and switches actions by auth/onboarding state.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cartItems = ref.watch(cartProvider);
@@ -25,6 +24,7 @@ class AppHeader extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset('assets/logo.png', height: 40),
+          // --- BEGIN OUR WEBSAFE LAYOUT ---
           if (isDesktop)
             const Expanded(
               child: Padding(
@@ -119,6 +119,7 @@ class AppHeader extends ConsumerWidget {
               );
             },
           ),
+          // --- END OUR WEBSAFE LAYOUT ---
         ],
       ),
     );

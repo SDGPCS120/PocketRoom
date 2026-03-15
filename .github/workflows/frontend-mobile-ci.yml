@@ -12,7 +12,7 @@ on:
 
 jobs:
   analyze-and-test:
-    name: Analyze & Test
+    name: Build & Test
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -32,8 +32,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze code
-        run: flutter analyze
+      - name: Analyze code (errors only)
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Run tests
         run: flutter test

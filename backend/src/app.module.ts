@@ -7,20 +7,26 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { ProductModule } from './modules/product/product.module.js';
 import { OrderModule } from './modules/order/order.module.js';
 import { UserModule } from './modules/user/user.module.js';
-import { AddressModule } from './modules/address/address.module';
-
+import { AddressModule } from './modules/address/address.module.js';
+import { StoreModule } from './modules/store/store.module.js';
+import { CartModule } from './modules/cart/cart.module.js';
+import { CategoryModule } from './modules/category/category.module';
+import { PaymentModule } from './modules/payment/payment.module';
 @Module({
-
   imports: [
     AppConfigModule,
     FirebaseModule,
     AuthModule,
     OrderModule,
+    PaymentModule,
     UserModule,
     AddressModule,
     ProductModule,
-  StoreModule  
+    StoreModule,
+    CartModule,
+    CategoryModule,
   ],
+
   controllers: [AppController],
   providers: [AppService],
 })
