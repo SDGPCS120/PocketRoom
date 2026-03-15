@@ -54,7 +54,7 @@ const statusColor: Record<Order['status'], string> = {
 const NAV_LINKS = [
   { path: '/dashboard',        label: 'Dashboard',       icon: <GridIcon /> },
   { path: '/analytics',        label: 'Analytics',       icon: <ChartIcon /> },
-  { path: '/products/upload',  label: 'Upload Product',  icon: <UploadIcon /> },
+  { path: '/add-product',      label: 'Upload Product',  icon: <UploadIcon /> },
 ];
 
 /* ─── Icon components ─── */
@@ -209,7 +209,7 @@ const SellerDashboard: React.FC = () => {
               <h2>Welcome back, {user.username}! 👋</h2>
               <p>Here's what's happening with your store today.</p>
             </div>
-            <Link to="/products/upload" className="btn-add-product">
+            <Link to="/add-product" className="btn-add-product">
               + Add New Product
             </Link>
           </div>
@@ -337,7 +337,7 @@ const SellerDashboard: React.FC = () => {
               <h3>Quick Actions</h3>
             </div>
             <div className="quick-actions">
-              <Link to="/products/upload" className="qa-btn">
+              <Link to="/add-product" className="qa-btn">
                 <span className="qa-icon">📦</span>
                 <span>Add Product</span>
               </Link>
