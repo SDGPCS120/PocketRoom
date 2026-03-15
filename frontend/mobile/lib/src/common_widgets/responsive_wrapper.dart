@@ -14,35 +14,11 @@ class ResponsiveWrapper extends StatelessWidget {
       return child;
     }
 
+    // Let the web app expand to fill the available screen width instead of 
+    // constraining it to a max width.
     return Material(
       color: Colors.white,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 600) {
-            return child;
-          }
-
-          return Container(
-            color: const Color(0xFFF5F5F5),
-            child: Center(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 1100),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 20,
-                      offset: const Offset(0, 0),
-                    ),
-                  ],
-                ),
-                child: child,
-              ),
-            ),
-          );
-        },
-      ),
+      child: child,
     );
   }
 }
