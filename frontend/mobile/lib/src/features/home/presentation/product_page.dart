@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../features/cart/data/cart_provider.dart';
 import '../data/models/furniture_model.dart';
+import '../data/reviews_provider.dart';
 
 class ProductPage extends ConsumerStatefulWidget {
   final Furniture furniture;
@@ -18,9 +19,29 @@ class _ProductPageState extends ConsumerState<ProductPage> {
   int _currentPage = 0;
   int _quantity = 1;
 
+  // ── Add Review form state ─────────────────────────────────────────────────
+  final _reviewFormKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _reviewController = TextEditingController();
+  int _newRating = 5;
+
+  @override
+  void initState() {
+    super.initState();
+    // Seed this product's review list AFTER the first build completes.
+    // Never call state-mutating methods directly inside build().
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(reviewsProvider.notifier).ensureSeeded(widget.furniture.id);
+      }
+    });
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
+    _nameController.dispose();
+    _reviewController.dispose();
     super.dispose();
   }
 
@@ -33,6 +54,21 @@ class _ProductPageState extends ConsumerState<ProductPage> {
         )}";
   }
 
+  void _submitReview() {
+    if (!(_reviewFormKey.currentState?.validate() ?? false)) return;
+    ref.read(reviewsProvider.notifier).addReview(
+          widget.furniture.id,
+          Review(
+            reviewerName: _nameController.text.trim(),
+            text: _reviewController.text.trim(),
+            rating: _newRating,
+          ),
+        );
+    _nameController.clear();
+    _reviewController.clear();
+    setState(() => _newRating = 5);
+  }
+
   @override
   Widget build(BuildContext context) {
     final f = widget.furniture;
@@ -41,16 +77,20 @@ class _ProductPageState extends ConsumerState<ProductPage> {
     final hasDescription = f.description.isNotEmpty;
     final hasColors = f.colorOptions.isNotEmpty;
 
+    // Watch the reviews map; fall back to the seed list without mutating state.
+    // State is seeded safely in initState via addPostFrameCallback.
+    final reviews = ref.watch(reviewsProvider)[f.id] ?? const [defaultSeedReview];
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // ─── Scrollable body ───────────────────────────────────────────
+          // ─── Scrollable body ─────────────────────────────────────────
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── Image carousel ──────────────────────────────────────
+                // ── Image carousel ────────────────────────────────────
                 SizedBox(
                   height: 340,
                   child: hasImages
@@ -89,7 +129,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                         ),
                 ),
 
-                // ── White details card that slides over the image ────────
+                // ── White details card ────────────────────────────────
                 Transform.translate(
                   offset: const Offset(0, -24),
                   child: Container(
@@ -104,20 +144,20 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // ── Dot indicators ───────────────────────────
+                          // ── Dot indicators ──────────────────────────
                           if (hasImages && f.images.length > 1) ...[
                             Center(
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
-                                children: List.generate(f.images.length, (i) {
+                                children:
+                                    List.generate(f.images.length, (i) {
                                   return AnimatedContainer(
                                     duration:
                                         const Duration(milliseconds: 300),
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 3),
                                     height: 7,
-                                    width:
-                                        _currentPage == i ? 22 : 7,
+                                    width: _currentPage == i ? 22 : 7,
                                     decoration: BoxDecoration(
                                       color: _currentPage == i
                                           ? AppColors.primary
@@ -132,7 +172,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                             const SizedBox(height: 20),
                           ],
 
-                          // ── Name + Brand row ─────────────────────────
+                          // ── Name + Brand + Rating ────────────────────
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -162,7 +202,6 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                                   ],
                                 ),
                               ),
-                              // Star rating badge
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 6),
@@ -193,7 +232,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          // ── Price row ────────────────────────────────
+                          // ── Price ────────────────────────────────────
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.baseline,
                             textBaseline: TextBaseline.alphabetic,
@@ -236,11 +275,10 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                             const SizedBox(height: 20),
                           ],
 
-                          // ── Colors + Quantity row ────────────────────
+                          // ── Colors + Quantity ────────────────────────
                           Row(
                             children: [
-                              // Color swatches
-                              if (hasColors) ...[
+                              if (hasColors)
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
@@ -257,7 +295,8 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                                       const SizedBox(height: 8),
                                       Wrap(
                                         spacing: 8,
-                                        children: f.colorOptions.map((c) {
+                                        children:
+                                            f.colorOptions.map((c) {
                                           return Container(
                                             width: 26,
                                             height: 26,
@@ -274,9 +313,6 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                                     ],
                                   ),
                                 ),
-                              ],
-
-                              // Quantity stepper
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
@@ -324,7 +360,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                           ),
                           const SizedBox(height: 28),
 
-                          // ── Add to cart button ───────────────────────
+                          // ── Add to cart ──────────────────────────────
                           SizedBox(
                             width: double.infinity,
                             height: 52,
@@ -369,7 +405,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                           ),
                           const SizedBox(height: 12),
 
-                          // ── View in AR button ────────────────────────
+                          // ── View in AR ───────────────────────────────
                           SizedBox(
                             width: double.infinity,
                             height: 52,
@@ -405,44 +441,58 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                           ),
                           const SizedBox(height: 10),
                           _SpecSection(
-                            title: 'Dimensions',
-                            bullets: [f.dimensions],
-                          ),
+                              title: 'Dimensions',
+                              bullets: [f.dimensions]),
                           _SpecSection(
-                            title: 'Category',
-                            bullets: [f.furnitureType],
-                          ),
+                              title: 'Category',
+                              bullets: [f.furnitureType]),
                           if (f.styleTags.isNotEmpty)
                             _SpecSection(
-                              title: 'Style Tags',
-                              bullets: f.styleTags,
-                            ),
+                                title: 'Style Tags', bullets: f.styleTags),
                           const SizedBox(height: 32),
 
-                          // ── Reviews ──────────────────────────────────
-                          const Text(
-                            'Reviews',
-                            style: TextStyle(
+                          // ── Reviews (dynamic, per-product) ───────────
+                          Text(
+                            'Reviews (${reviews.length})',
+                            style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.w700,
                               color: AppColors.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 12),
-                          const _ReviewTile(
-                            name: 'Stephan Russell',
-                            review:
-                                'This chair adds such a warm vibe to my living room. The detailing on the edges makes it look way more expensive.',
-                          ),
-                          const _ReviewTile(
-                            name: 'Stephan Russell',
-                            review:
-                                'This chair adds such a warm vibe to my living room. The detailing on the edges makes it look way more expensive.',
-                          ),
-                          const _ReviewTile(
-                            name: 'Stephan Russell',
-                            review:
-                                'This chair adds such a warm vibe to my living room. The detailing on the edges makes it look way more expensive.',
+
+                          if (reviews.isEmpty)
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 16),
+                              child: Text(
+                                'No reviews yet. Be the first to review!',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            )
+                          else
+                            ...reviews.map(
+                              (r) => _ReviewTile(
+                                name: r.reviewerName,
+                                review: r.text,
+                                rating: r.rating,
+                              ),
+                            ),
+
+                          const SizedBox(height: 24),
+
+                          // ── Add Review form ──────────────────────────
+                          _AddReviewForm(
+                            formKey: _reviewFormKey,
+                            nameController: _nameController,
+                            reviewController: _reviewController,
+                            rating: _newRating,
+                            onRatingChanged: (v) =>
+                                setState(() => _newRating = v),
+                            onSubmit: _submitReview,
                           ),
                         ],
                       ),
@@ -458,7 +508,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Material(
-                color: Colors.white.withOpacity(0.85),
+                color: Colors.white.withValues(alpha: 0.85),
                 shape: const CircleBorder(),
                 elevation: 2,
                 child: InkWell(
@@ -479,7 +529,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
   }
 }
 
-// ─── Small helper widget: quantity +/- button ──────────────────────────────────
+// ─── Quantity +/- button ──────────────────────────────────────────────────────
 class _QtyButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
@@ -503,7 +553,7 @@ class _QtyButton extends StatelessWidget {
   }
 }
 
-// ─── Specification section with bullet list ────────────────────────────────────
+// ─── Specification section ────────────────────────────────────────────────────
 class _SpecSection extends StatelessWidget {
   final String title;
   final List<String> bullets;
@@ -558,8 +608,13 @@ class _SpecSection extends StatelessWidget {
 class _ReviewTile extends StatelessWidget {
   final String name;
   final String review;
+  final int rating;
 
-  const _ReviewTile({required this.name, required this.review});
+  const _ReviewTile({
+    required this.name,
+    required this.review,
+    this.rating = 5,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -568,7 +623,6 @@ class _ReviewTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Avatar
           Container(
             width: 40,
             height: 40,
@@ -598,7 +652,7 @@ class _ReviewTile extends StatelessWidget {
                     ),
                     Row(
                       children: List.generate(
-                        5,
+                        rating.clamp(0, 5),
                         (_) => const Icon(Icons.star,
                             color: AppColors.primary, size: 12),
                       ),
@@ -618,6 +672,163 @@ class _ReviewTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Add Review form card ─────────────────────────────────────────────────────
+class _AddReviewForm extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController nameController;
+  final TextEditingController reviewController;
+  final int rating;
+  final ValueChanged<int> onRatingChanged;
+  final VoidCallback onSubmit;
+
+  const _AddReviewForm({
+    required this.formKey,
+    required this.nameController,
+    required this.reviewController,
+    required this.rating,
+    required this.onRatingChanged,
+    required this.onSubmit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.secondary, width: 1.2),
+        boxShadow: AppColors.productCardShadow,
+      ),
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            const Text(
+              'Add a Review',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Name field
+            TextFormField(
+              controller: nameController,
+              textCapitalization: TextCapitalization.words,
+              decoration: _inputDecoration('Your name'),
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+            ),
+            const SizedBox(height: 12),
+
+            // Review text field
+            TextFormField(
+              controller: reviewController,
+              maxLines: 3,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: _inputDecoration('Write your review…'),
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Review cannot be empty' : null,
+            ),
+            const SizedBox(height: 16),
+
+            // Star rating selector
+            const Text(
+              'Your rating',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: List.generate(5, (i) {
+                final starIndex = i + 1;
+                return GestureDetector(
+                  onTap: () => onRatingChanged(starIndex),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Icon(
+                      starIndex <= rating ? Icons.star : Icons.star_border,
+                      color: AppColors.primary,
+                      size: 26,
+                    ),
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 18),
+
+            // Submit button
+            SizedBox(
+              width: double.infinity,
+              height: 46,
+              child: ElevatedButton(
+                onPressed: onSubmit,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Submit Review',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: const TextStyle(
+        color: AppColors.textSecondary,
+        fontSize: 13.5,
+      ),
+      filled: true,
+      fillColor: AppColors.background,
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.secondary, width: 1),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.secondary, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 1),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red, width: 1.5),
       ),
     );
   }
