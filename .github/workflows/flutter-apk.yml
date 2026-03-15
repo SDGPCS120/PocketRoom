@@ -1,5 +1,6 @@
 name: Flutter CI
 
+#Triggers: run on push or pull request to dev branch
 on:
   push:
     branches:
