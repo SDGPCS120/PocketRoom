@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
+
 class Furniture {
   final String id;
   final String name;
   final double price;
+  final double? oldPrice;
   final String brand;
   final double rating;
   final List<String> images;
@@ -9,11 +12,14 @@ class Furniture {
   final String dimensions;
   final String availability;
   final List<String> styleTags;
+  final String description;
+  final List<Color> colorOptions;
 
   Furniture({
     required this.id,
     required this.name,
     required this.price,
+    this.oldPrice,
     required this.brand,
     required this.rating,
     required this.images,
@@ -21,6 +27,8 @@ class Furniture {
     required this.dimensions,
     this.availability = 'N/A',
     this.styleTags = const [],
+    this.description = '',
+    this.colorOptions = const [],
   });
 
   factory Furniture.fromJson(Map<String, dynamic> json) {
@@ -32,6 +40,9 @@ class Furniture {
       price: (json['price'] is num)
           ? (json['price'] as num).toDouble()
           : double.nan,
+      oldPrice: (json['oldPrice'] is num)
+          ? (json['oldPrice'] as num).toDouble()
+          : null,
       brand: (json['brand']?.toString().trim().isNotEmpty ?? false)
           ? json['brand'].toString()
           : 'N/A',
@@ -62,6 +73,8 @@ class Furniture {
                 .where((e) => e.isNotEmpty)
                 .toList()
           : const [],
+      description: json['description']?.toString() ?? '',
+      colorOptions: const [],
     );
   }
 }
