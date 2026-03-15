@@ -1,12 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs';
-import path from 'path';
 import natural from 'natural';
 
 import { QueryParser } from './query-parser';
 import { ColorMatcher } from './color-matcher';
 import { RelevanceScorer } from './relevance-scorer';
+import { loadProductsFromFirestore } from './product-loader';
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -17,41 +16,40 @@ app.use(express.json());
 // -------------------------
 // Load dataset
 // -------------------------
-const DATA_PATH = path.join(__dirname, '..', 'data', 'products.json');
 let products: any[] = [];
-try {
-    const data = fs.readFileSync(DATA_PATH, 'utf-8');
-    products = JSON.parse(data);
-    console.log(`Loaded ${products.length} products`);
-} catch (e) {
-    console.error('Failed to load products.json', e);
-}
+let docs: string[] = [];
+const TfIdf = natural.TfIdf;
+let tfidf = new TfIdf();
+
 
 // Build a "document" per product for semantic search
 function getProductDoc(p: any): string {
     const dims = p.dimensions_cm || {};
     const parts = [
         String(p.name || ''),
-        String(p.category || ''),
         String(p.color || ''),
         String(p.material || ''),
         String(p.style || ''),
         String(p.description || ''),
+        String(p.brand || ''),
+        `rating ${p.rating || ''}`,
         `price ${p.price || ''}`,
         `dimensions ${dims.l || ''} ${dims.w || ''} ${dims.h || ''}`,
     ];
+
     return parts.join(' ').trim();
 }
 
-const docs = products.map(getProductDoc);
+async function rebuildSearchIndex() {
+    products = await loadProductsFromFirestore();
+    docs = products.map(getProductDoc);
 
-// -------------------------
-// Semantic Engine (TF-IDF fallback)
-// -------------------------
-const TfIdf = natural.TfIdf;
-const tfidf = new TfIdf();
+    tfidf = new TfIdf();
+    docs.forEach((doc) => tfidf.addDocument(doc));
 
-docs.forEach((doc) => tfidf.addDocument(doc));
+    console.log(`Loaded ${products.length} products from Firestore`);
+}
+
 
 function getQuerySimilarities(query: string): number[] {
     const similarities: number[] = new Array(products.length).fill(0);
@@ -81,6 +79,10 @@ const SYNONYMS: Record<string, string[]> = {
     sofa: ['couch'],
     grey: ['gray'],
     gray: ['grey'],
+    shelf: ['shelves', 'bookshelf', 'bookcase'],
+    shelves: ['shelf', 'bookshelf', 'bookcase'],
+    bookshelf: ['shelf', 'shelves', 'bookcase'],
+    bookcase: ['shelf', 'shelves', 'bookshelf'],
 };
 
 function normalize(s: string): string {
@@ -111,18 +113,16 @@ function heuristicMLProbability(queryKw: string[], p: any, sim: number): number 
     // Rather than running a full sklearn Logistic Regression,
     // we approximate the probability based on feature match density.
 
-    const cat = normalize(String(p.category || ''));
     const col = normalize(String(p.color || ''));
     const mat = normalize(String(p.material || ''));
     const sty = normalize(String(p.style || ''));
 
     const colorHit = queryKw.includes(col) ? 1.0 : 0.0;
-    const catHit = queryKw.includes(cat) ? 1.0 : 0.0;
     const matHit = queryKw.includes(mat) ? 1.0 : 0.0;
     const styHit = queryKw.includes(sty) ? 1.0 : 0.0;
 
     // A rough approximation of the feature weights the ML model learned
-    let score = (sim * 2.0) + (catHit * 1.5) + (colorHit * 1.0) + (matHit * 0.5) + (styHit * 0.5);
+    let score = (sim * 2.0) + (colorHit * 1.0) + (matHit * 0.5) + (styHit * 0.5);
 
     // normalize to roughly 0-1
     return Math.min(Math.max(score / 5.0, 0), 1);
@@ -224,7 +224,7 @@ app.post('/search', (req, res) => {
 
     // Sort by highest score first
     scored.sort((a, b) => b.score - a.score);
-    const top = scored.slice(0, topK);
+    const top = scored.filter(item => item.score > 0).slice(0, topK);
 
     const response: any = {
         query: query,
@@ -258,8 +258,46 @@ app.post('/search', (req, res) => {
     res.json(response);
 });
 
-app.listen(port, () => {
-    console.log(`TypeScript AI Search Server running on http://localhost:${port}`);
-    console.log(`✅ ML Ranker replaced with local heuristic probability`);
-    console.log(`✅ SemanticEngine: Using TF-IDF via "natural" package`);
+// Reload products from Firestore
+app.post('/reload-products', async (req, res) => {
+    try {
+        await rebuildSearchIndex();
+
+        res.json({
+            message: 'Products reloaded successfully',
+            count: products.length
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to reload products' });
+    }
 });
+
+app.get('/products', (req, res) => {
+    const debug = products.map((p) => ({
+        name: p.name,
+        style: p.style,
+        color: p.color,
+        category: p.category,
+        searchDoc: getProductDoc(p),
+    }));
+
+    res.json(debug);
+});
+
+
+async function startServer() {
+    try {
+        await rebuildSearchIndex();
+
+        app.listen(port, () => {
+            console.log(`Server running on http://localhost:${port}`);
+        });
+
+    } catch (error) {
+        console.error('Failed to start server:', error);
+    }
+}
+
+startServer();
