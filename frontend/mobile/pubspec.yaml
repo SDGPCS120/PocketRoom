@@ -39,6 +39,7 @@ flutter:
     - assets/logo.png
     - assets/logo.svg
     - assets/get_started_hero.png
+    - assets/bannerSofa.png
 
 flutter_launcher_icons:
   android: true

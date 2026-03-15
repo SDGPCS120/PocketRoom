@@ -1,184 +1,223 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/theme/app_theme.dart';
 import 'login_page.dart';
 import 'signup_page.dart';
 
-/// Get Started screen — first screen after splash.
-/// Visual design matches the Figma spec: hero illustration on top half,
-/// orange rounded card on the bottom with Log In / Create Account buttons.
 class GetStartedPage extends StatelessWidget {
   const GetStartedPage({super.key});
 
-  // Brand colours (matching AppColors in app_theme.dart but kept local
-  // to avoid coupling to theme for pixel accuracy)
-  static const _textDark = Color(0xFF333333);
-  static const _textMid = Color(0xFF555555);
-
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8DE), // warm tan behind illustration
-      body: Stack(
-        children: [
-          // ── Hero illustration fills the top 55 % of the screen ──────────
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: size.height * 0.55,
+      backgroundColor: AppColors.background,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth > 800;
+          
+          if (isDesktop) {
+            return _buildDesktopLayout(context, textTheme);
+          }
+          return _buildMobileLayout(context, textTheme);
+        },
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout(BuildContext context, TextTheme textTheme) {
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 500),
+        margin: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(48),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(32),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 40,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset('assets/logo.png', height: 120),
+            const SizedBox(height: 32),
+            Text(
+              "Let's get started",
+              style: textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Experience the future of furniture shopping with PocketRoom.",
+              textAlign: TextAlign.center,
+              style: textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 48),
+            _AuthButton(
+              label: 'Log in',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginPage()),
+              ),
+            ),
+            const SizedBox(height: 16),
+            _AuthButton(
+              label: 'Create Account',
+              isPrimary: false,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SignupPage()),
+              ),
+            ),
+            const SizedBox(height: 24),
+            TextButton(
+              onPressed: () {},
+              child: Text(
+                'Get started as seller',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  decoration: TextDecoration.underline,
+                  fontSize: 14,
+                  fontFamily: GoogleFonts.fredoka().fontFamily,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileLayout(BuildContext context, TextTheme textTheme) {
+    final size = MediaQuery.of(context).size;
+    
+    return Stack(
+      children: [
+        // Hero Image
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: size.height * 0.6,
+          child: Container(
+            color: const Color(0xFFFFF8DE),
             child: Image.asset(
               'assets/get_started_hero.png',
               fit: BoxFit.cover,
             ),
           ),
-
-          // ── PocketRoom logo overlaid on the illustration ─────────────────
-          Positioned(
-            top: size.height * 0.17,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Logo text row: "Pocket" (dark) + "Room" (orange) + AR icon
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Text(
-                          //   'Pocket',
-                          //   style: GoogleFonts.fredoka(
-                          //     fontSize: 48,
-                          //     fontWeight: FontWeight.bold,
-                          //     color: _textDark,
-                          //     height: 1.0,
-                          //   ),
-                          // ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              // Text(
-                              //   'Room',
-                              //   style: GoogleFonts.fredoka(
-                              //     fontSize: 48,
-                              //     fontWeight: FontWeight.bold,
-                              //     color: const Color(0xFFFF8A3D),
-                              //     height: 1.0,
-                              //   ),
-                              // ),
-                              // const SizedBox(width: 6),
-                              // AR/3D box icon
-                              Image.asset(
-                                'assets/logo.png',
-                                width: 250,
-                                height: 250,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+        ),
+        
+        // Logo Overlay
+        Positioned(
+          top: size.height * 0.15,
+          left: 0,
+          right: 0,
+          child: Column(
+            children: [
+              Image.asset('assets/logo.png', width: 200),
+              Transform.translate(
+                offset: const Offset(0, -30),
+                child: Text(
+                  'A CS-120 project',
+                  style: textTheme.titleMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Transform.translate(
-                    offset: const Offset(0, -50), // negative y moves up
-                    child: Text(
-                      'A CS-120 project',
-                      style: GoogleFonts.fredoka(
-                        fontSize: 20,
-                        color: _textMid,
-                        letterSpacing: 0.5,
-                        fontWeight: FontWeight.bold,
-                      ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Bottom Card
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: AppColors.secondary,
+              borderRadius: BorderRadius.circular(32),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Let's get started",
+                  style: textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                _AuthButton(
+                  label: 'Log in',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _AuthButton(
+                  label: 'Create account',
+                  isPrimary: false,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SignupPage()),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Get started as seller',
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      decoration: TextDecoration.underline,
+                      fontSize: 14,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-
-          // ── Bottom card ──────────────────────────────────────────────────
-          Positioned(
-            bottom: 40,
-            left: 0,
-            right: 0,
-            child: Container(
-              // Slightly overlaps the illustration (wave-like illusion via border radius)
-              margin: const EdgeInsets.only(bottom: 32, left: 20, right: 20),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 212, 184, 1),
-                borderRadius: BorderRadius.circular(28),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Card title
-                  Text(
-                    "Let's get started",
-                    style: GoogleFonts.fredoka(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: _textDark,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Log In button
-                  _CardButton(
-                    label: 'Log in',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const LoginPage()),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Create Account button
-                  _CardButton(
-                    label: 'Create account',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SignupPage()),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // "Get started as seller" underlined link
-                  GestureDetector(
-                    onTap: () {
-                      // TODO: wire seller onboarding when available
-                    },
-                    child: Text(
-                      'Get started as seller',
-                      style: GoogleFonts.fredoka(
-                        fontSize: 14,
-                        color: _textDark,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-/// Reusable button inside the orange card on the Get Started screen.
-class _CardButton extends StatelessWidget {
+class _AuthButton extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
+  final bool isPrimary;
 
-  const _CardButton({required this.label, required this.onTap});
+  const _AuthButton({
+    required this.label,
+    required this.onTap,
+    this.isPrimary = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -187,14 +226,22 @@ class _CardButton extends StatelessWidget {
       child: TextButton(
         onPressed: onTap,
         style: TextButton.styleFrom(
-          backgroundColor: const Color(0xFFF5C9A8),
-          foregroundColor: const Color(0xFF333333),
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: isPrimary ? AppColors.primary : Colors.white.withOpacity(0.5),
+          foregroundColor: isPrimary ? Colors.white : AppColors.textPrimary,
+          padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
+            side: isPrimary ? BorderSide.none : const BorderSide(color: AppColors.primary, width: 1),
+          ),
+          elevation: isPrimary ? 2 : 0,
+        ),
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        child: Text(label, style: GoogleFonts.fredoka(fontSize: 18)),
       ),
     );
   }

@@ -6,13 +6,21 @@ import '../features/home/presentation/product_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 
-class ProductCard extends ConsumerWidget {
+class ProductCard extends ConsumerStatefulWidget {
   final Furniture furniture;
 
   const ProductCard({super.key, required this.furniture});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends ConsumerState<ProductCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final furniture = widget.furniture;
     final ratingLabel = furniture.rating.isNaN
         ? 'N/A'
         : furniture.rating.toString();
@@ -23,13 +31,32 @@ class ProductCard extends ConsumerWidget {
         ? 'N/A'
         : furniture.brand.toUpperCase();
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        border: Border.all(color: AppColors.cardBorder, width: 0.6),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: AppColors.productCardShadow,
-      ),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        transform: _isHovered 
+            ? (Matrix4.identity()..translate(0, -4, 0))
+            : Matrix4.identity(),
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          border: Border.all(
+            color: _isHovered ? AppColors.primary : AppColors.cardBorder, 
+            width: _isHovered ? 1.0 : 0.6,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: _isHovered 
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.15),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  )
+                ]
+              : AppColors.productCardShadow,
+        ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
@@ -190,6 +217,7 @@ class ProductCard extends ConsumerWidget {
               ),
             ],
           ),
+        ),
         ),
       ),
     );
