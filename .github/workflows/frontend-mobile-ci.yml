@@ -1,11 +1,41 @@
+name: Flutter CI
+
+# Triggers: run on push or pull request to Dev branch
+on:
+  push:
+    branches:
+      - Dev
+    paths:
+      - 'frontend/mobile/**'
+  pull_request:
+    branches:
+      - Dev
+    paths:
+      - 'frontend/mobile/**'
+
 jobs:
-  analyze-and-test:
+  build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
+    
+    # Set the working directory for all 'run' commands in this job
+    defaults:
+      run:
+        working-directory: ./frontend/mobile
+
     steps:
+      # Step 1: Checkout repo
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Step 2: Setup Java (Required for Android build)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Step 3: Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -13,11 +43,36 @@ jobs:
           channel: 'stable'
           cache: true
 
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
+      # Step 5: Analyze code
       - name: Analyze code (errors only)
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
+      # Step 6: Run tests
       - name: Run tests
         run: flutter test
+
+      # Step 7: Build debug APK
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      # Step 8: Build release APK
+      - name: Build release APK
+        run: flutter build apk --release
+
+      # Step 9: Upload debug APK as artifact
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: frontend/mobile/build/app/outputs/flutter-apk/app-debug.apk
+
+      # Step 10: Upload release APK as artifact
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: frontend/mobile/build/app/outputs/flutter-apk/app-release-unsigned.apk
