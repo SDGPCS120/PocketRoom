@@ -139,35 +139,27 @@ class _SignupPageState extends State<SignupPage> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: const BackButton(color: AppColors.textPrimary),
+      ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            // Back Button at the top left
-            Positioned(
-              top: 16,
-              left: 16,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-                onPressed: () => Navigator.pop(context),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isDesktop = constraints.maxWidth > 800;
+
+            final content = SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 40 : 28,
+                vertical: isDesktop ? 40 : 16,
               ),
-            ),
-            // The Main Content Layout
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final isDesktop = constraints.maxWidth > 800;
-                
-                final content = SingleChildScrollView(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isDesktop ? 40 : 28, 
-                    // Add extra top padding on mobile since the back button is floating above it
-                    vertical: isDesktop ? 40 : (56 + 16) 
-                  ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                         Text(
                           'Join PocketRoom',
                           style: textTheme.headlineMedium?.copyWith(
@@ -313,35 +305,33 @@ class _SignupPageState extends State<SignupPage> {
                           ],
                         ),
                       ],
-                    ),
-                  ),
-                );
+                ),
+              ),
+            );
 
-                if (!isDesktop) {
-                  return content;
-                }
+            if (!isDesktop) {
+              return content;
+            }
 
-                return Center(
-                  child: Container(
-                    constraints: const BoxConstraints(maxWidth: 480),
-                    margin: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 40,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
+            return Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 480),
+                margin: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 40,
+                      offset: const Offset(0, 10),
                     ),
-                    child: content,
-                  ),
-                );
-              },
-            ),
-          ],
+                  ],
+                ),
+                child: content,
+              ),
+            );
+          },
         ),
       ),
     );

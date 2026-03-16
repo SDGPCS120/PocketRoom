@@ -13,11 +13,11 @@ class GetStartedPage extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color.fromARGB(255, 255, 245, 239),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isDesktop = constraints.maxWidth > 800;
-          
+
           if (isDesktop) {
             return _buildDesktopLayout(context, textTheme);
           }
@@ -102,7 +102,7 @@ class GetStartedPage extends StatelessWidget {
 
   Widget _buildMobileLayout(BuildContext context, TextTheme textTheme) {
     final size = MediaQuery.of(context).size;
-    
+
     return Stack(
       children: [
         // Hero Image
@@ -119,17 +119,17 @@ class GetStartedPage extends StatelessWidget {
             ),
           ),
         ),
-        
+
         // Logo Overlay
         Positioned(
-          top: size.height * 0.15,
+          top: size.height * 0.25,
           left: 0,
           right: 0,
           child: Column(
             children: [
-              Image.asset('assets/logo.png', width: 200),
+              Image.asset('assets/logo.png', width: 250),
               Transform.translate(
-                offset: const Offset(0, -30),
+                offset: const Offset(0, 0),
                 child: Text(
                   'A CS-120 project',
                   style: textTheme.titleMedium?.copyWith(
@@ -226,21 +226,22 @@ class _AuthButton extends StatelessWidget {
       child: TextButton(
         onPressed: onTap,
         style: TextButton.styleFrom(
-          backgroundColor: isPrimary ? AppColors.primary : Colors.white.withOpacity(0.5),
+          backgroundColor: isPrimary
+              ? AppColors.primary
+              : Colors.white.withOpacity(0.5),
           foregroundColor: isPrimary ? Colors.white : AppColors.textPrimary,
           padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: isPrimary ? BorderSide.none : const BorderSide(color: AppColors.primary, width: 1),
+            side: isPrimary
+                ? BorderSide.none
+                : const BorderSide(color: AppColors.primary, width: 1),
           ),
           elevation: isPrimary ? 2 : 0,
         ),
         child: Text(
           label,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
     );
