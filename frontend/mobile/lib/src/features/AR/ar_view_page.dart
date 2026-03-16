@@ -1,10 +1,9 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_unity_widget_2/flutter_unity_widget_2.dart';
-import 'package:http/http.dart' as http;
-import 'package:pocketroom/src/core/api_config.dart';
 
 class ArViewPage extends StatefulWidget {
   const ArViewPage({super.key});
@@ -43,24 +42,19 @@ class _ArViewPageState extends State<ArViewPage> {
     }
 
     try {
-      final token = await user.getIdToken(true);
-      final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/cart/me'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode != 200) {
-        throw Exception('Failed to load cart (status ${response.statusCode})');
-      }
-
-      final body = jsonDecode(response.body);
-      final items =
-          body is Map<String, dynamic> && body['data'] is List<dynamic>
-          ? body['data'] as List<dynamic>
-          : (body is List<dynamic> ? body : const <dynamic>[]);
+      final cartSnapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(user.uid)
+              .collection('cart')
+              .get();
+      final items = cartSnapshot.docs.map((doc) {
+        final data = Map<String, dynamic>.from(doc.data());
+        return {
+          'id': doc.id,
+          ...data,
+        };
+      }).toList();
 
       _cartPayload = {
         'uid': user.uid,

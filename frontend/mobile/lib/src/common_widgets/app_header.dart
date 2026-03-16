@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
+import '../features/auth/presentation/get_started_page.dart';
 import '../features/profile/presentation/profile_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,13 +22,24 @@ class AppHeader extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset('assets/logo.png', height: 40),
-          _buildUserActions(context, ref, itemCount),
+          StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            initialData: FirebaseAuth.instance.currentUser,
+            builder: (context, snapshot) {
+              final user = snapshot.data;
+              final isSignedIn = user != null && !user.isAnonymous;
+              if (!isSignedIn) {
+                return _buildGetStartedButton(context);
+              }
+              return _buildUserActions(context, itemCount);
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildUserActions(BuildContext context, WidgetRef ref, int itemCount) {
+  Widget _buildUserActions(BuildContext context, int itemCount) {
     return Row(
       children: [
         Stack(
@@ -88,6 +101,35 @@ class AppHeader extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildGetStartedButton(BuildContext context) {
+    return SizedBox(
+      height: 42,
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const GetStartedPage()),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFD84B3E),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+        ),
+        child: const Text(
+          'Get Started',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
     );
   }
 }

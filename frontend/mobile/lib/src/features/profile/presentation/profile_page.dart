@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
+import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import '../../../core/theme/app_theme.dart';
 import 'edit_profile_page.dart';
 import 'widgets/section_item.dart';
@@ -11,18 +14,79 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-// ── Lightweight local user data state ──────────────────────────────────────────
 class _UserData {
-  String name = 'John Doe';
-  String email = 'johndoe@gmail.com';
+  String name = '';
+  String email = '';
   String phone = '';
   String address = '';
+  String role = 'customer';
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   final _user = _UserData();
+  bool _isLoading = true;
+  bool _isAnonymousUser = false;
 
-  /// Opens EditProfilePage and applies any returned changes to local state.
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    _isAnonymousUser = user.isAnonymous;
+    _user.email = user.email ?? '';
+    _user.name = (user.displayName ?? '').trim();
+    _user.role = _isAnonymousUser ? 'anonymous' : 'customer';
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final data = snapshot.data();
+      if (data != null) {
+        final username = (data['username'] as String? ?? '').trim();
+        final phone = (data['phone'] as String? ?? '').trim();
+        final address = (data['address'] as String? ?? '').trim();
+        final role = (data['role'] as String? ?? '').trim();
+
+        if (username.isNotEmpty) {
+          _user.name = username;
+        }
+        _user.phone = phone;
+        _user.address = address;
+        if (role.isNotEmpty) {
+          _user.role = role;
+        }
+      }
+    } catch (_) {
+      // Keep Firebase Auth fallback values when Firestore is unavailable.
+    }
+
+    if (_user.name.isEmpty) {
+      if (_user.email.isNotEmpty && _user.email.contains('@')) {
+        _user.name = _user.email.split('@').first;
+      } else {
+        _user.name = 'Profile';
+      }
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   Future<void> _openEditProfile() async {
     final result = await Navigator.of(context).push<Map<String, dynamic>>(
       MaterialPageRoute(
@@ -34,6 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+
     if (result != null) {
       setState(() {
         _user.name = (result['name'] as String?) ?? _user.name;
@@ -98,20 +163,31 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // ── Peach Header Card ────────────────────────────────────────
-            _ProfileHeaderCard(onEditProfile: _openEditProfile),
-
-            // ── Body Content ─────────────────────────────────────────────
+            _ProfileHeaderCard(
+              name: _user.name,
+              email: _user.email,
+              onEditProfile: _openEditProfile,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   const SizedBox(height: 24),
-
-                  // ── Personal Information Card ──────────────────────────
+                  if (_isLoading)
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: LinearProgressIndicator(),
+                    ),
                   _SectionCard(
                     title: 'Personal Information',
                     items: [
+                      SectionItem(
+                        icon: Icons.badge_outlined,
+                        label: 'Role',
+                        value: _user.role,
+                        onTap: () {},
+                      ),
+                      _Divider(),
                       SectionItem(
                         icon: Icons.email_outlined,
                         label: 'Email',
@@ -138,10 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
-
-                  // ── My Activity Card ───────────────────────────────────
                   _SectionCard(
                     title: 'My Activity',
                     items: [
@@ -170,10 +243,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
-
-                  // ── Settings & Support Card ────────────────────────────
                   _SectionCard(
                     title: 'Settings & Support',
                     items: [
@@ -190,7 +260,37 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-
+                  if (_isAnonymousUser) ...[
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const GetStartedPage(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(28),
+                          ),
+                        ),
+                        child: const Text(
+                          'Get Started',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 32),
                 ],
               ),
@@ -202,17 +302,22 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-// ── Profile Header Card (Peach background with avatar) ─────────────────────────
 class _ProfileHeaderCard extends StatelessWidget {
+  final String name;
+  final String email;
   final VoidCallback? onEditProfile;
-  const _ProfileHeaderCard({this.onEditProfile});
+
+  const _ProfileHeaderCard({
+    required this.name,
+    required this.email,
+    this.onEditProfile,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // Peach background card
         Container(
           width: double.infinity,
           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -228,7 +333,6 @@ class _ProfileHeaderCard extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Avatar circle
               Container(
                 width: 100,
                 height: 100,
@@ -242,37 +346,28 @@ class _ProfileHeaderCard extends StatelessWidget {
                   color: Color(0xFF4A3728),
                 ),
               ),
-
               const SizedBox(height: 14),
-
-              // Name (tappable → opens Edit Profile)
               GestureDetector(
                 onTap: onEditProfile,
                 child: Text(
-                  'John Doe',
-                  style: TextStyle(
+                  name,
+                  style: const TextStyle(
                     color: Color(0xFF2D1B0E),
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-
               const SizedBox(height: 4),
-
-              // Email
-              const Text(
-                'johndoe@gmail.com',
-                style: TextStyle(
+              Text(
+                email.isEmpty ? 'No email on file' : email,
+                style: const TextStyle(
                   color: Color(0xFF5C3D2E),
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
                 ),
               ),
-
               const SizedBox(height: 10),
-
-              // Edit Profile
               GestureDetector(
                 onTap: onEditProfile,
                 child: const Text(
@@ -287,8 +382,6 @@ class _ProfileHeaderCard extends StatelessWidget {
             ],
           ),
         ),
-
-        // Camera icon (top-right of the card)
         Positioned(
           top: 12,
           right: 28,
@@ -306,7 +399,6 @@ class _ProfileHeaderCard extends StatelessWidget {
   }
 }
 
-// ── Section Card ───────────────────────────────────────────────────────────────
 class _SectionCard extends StatelessWidget {
   final String title;
   final List<Widget> items;
@@ -318,7 +410,6 @@ class _SectionCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section title above the card
         Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 10),
           child: Text(
@@ -330,8 +421,6 @@ class _SectionCard extends StatelessWidget {
             ),
           ),
         ),
-
-        // Light grey card
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
@@ -348,7 +437,6 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
-// ── Inner divider ──────────────────────────────────────────────────────────────
 class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
