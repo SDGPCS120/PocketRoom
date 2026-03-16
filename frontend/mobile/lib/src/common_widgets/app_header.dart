@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../core/theme/app_theme.dart';
-import '../features/auth/presentation/get_started_page.dart';
-import '../features/profile/presentation/profile_page.dart'; // <-- Using Dev's new path
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
+import '../core/theme/app_theme.dart';
+import '../features/auth/presentation/get_started_page.dart';
+import '../features/profile/presentation/profile_page.dart';
 
 class AppHeader extends ConsumerWidget {
   const AppHeader({super.key});
@@ -15,7 +14,6 @@ class AppHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cartItems = ref.watch(cartProvider);
     final itemCount = cartItems.length;
-
     final isDesktop = MediaQuery.of(context).size.width > 600;
 
     return Padding(
@@ -23,7 +21,6 @@ class AppHeader extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // 1. keep product-details' clickable logo
           GestureDetector(
             onTap: () {
               if (Navigator.canPop(context)) {
@@ -32,8 +29,6 @@ class AppHeader extends ConsumerWidget {
             },
             child: Image.asset('assets/logo.png', height: 40),
           ),
-          // 2. keep Dev's / our websafe layout logic!
-          // --- BEGIN OUR WEBSAFE LAYOUT ---
           if (isDesktop)
             const Expanded(
               child: Padding(
@@ -54,87 +49,23 @@ class AppHeader extends ConsumerWidget {
               ),
             ),
           StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.idTokenChanges(),
+            stream: FirebaseAuth.instance.authStateChanges(),
             initialData: FirebaseAuth.instance.currentUser,
             builder: (context, snapshot) {
-              final user = snapshot.data ?? FirebaseAuth.instance.currentUser;
-              // Anonymous users see a CTA to start auth.
-              if (user == null || user.isAnonymous) {
-                return SizedBox(
-                  height: 38,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const GetStartedPage(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text('Get started'),
-                  ),
-                );
+              final user = snapshot.data;
+              final isSignedIn = user != null && !user.isAnonymous;
+              if (!isSignedIn) {
+                return _buildGetStartedButton(context);
               }
-              final usernameAllowedRegex = RegExp(r'^[a-z0-9_]+$');
-
-              return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(user.uid)
-                    .snapshots(),
-                builder: (context, userDocSnapshot) {
-                  final docData = userDocSnapshot.data?.data();
-                  final firestoreUsername =
-                      (docData?['username'] as String? ?? '').trim();
-                  final hasFirestoreUsername = firestoreUsername.isNotEmpty &&
-                      usernameAllowedRegex.hasMatch(
-                        firestoreUsername.toLowerCase(),
-                      );
-
-                  // If onboarding is still incomplete, keep showing the CTA.
-                  if (!hasFirestoreUsername) {
-                    return SizedBox(
-                      height: 38,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const GetStartedPage(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text('Get started'),
-                      ),
-                    );
-                  }
-
-                  return _buildUserActions(context, ref, itemCount);
-                },
-              );
+              return _buildUserActions(context, itemCount);
             },
           ),
-          // --- END THE WEBSAFE LAYOUT ---
         ],
       ),
     );
   }
 
-  Widget _buildUserActions(BuildContext context, WidgetRef ref, int itemCount) {
+  Widget _buildUserActions(BuildContext context, int itemCount) {
     return Row(
       children: [
         Stack(
@@ -183,11 +114,9 @@ class AppHeader extends ConsumerWidget {
         const SizedBox(width: 4),
         IconButton(
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const ProfilePage(),
-              ),
-            );
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const ProfilePage()));
           },
           icon: const Icon(Icons.person_outline, size: 22),
           style: IconButton.styleFrom(
@@ -196,6 +125,32 @@ class AppHeader extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildGetStartedButton(BuildContext context) {
+    return SizedBox(
+      height: 42,
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFD84B3E),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: const Text(
+          'Get Started',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+        ),
+      ),
     );
   }
 }

@@ -104,6 +104,7 @@ class _SignupPageState extends State<SignupPage> {
           'email': user.email,
           'username': username,
           'usernameNormalized': normalized,
+          'role': 'customer',
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
