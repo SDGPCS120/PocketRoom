@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ea2f19a-29b2-4120-811a-ac778383b768" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/common_widgets/product_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/common_widgets/product_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/cart/data/cart_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/cart/data/cart_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/home/data/models/furniture_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/home/data/models/furniture_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/home/presentation/widgets/section_header.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/home/presentation/widgets/section_header.dart" afterDir="false" />
-    </list>
+    <list default="true" id="6ea2f19a-29b2-4120-811a-ac778383b768" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
