@@ -198,7 +198,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          backgroundColor: isFavorite ? Colors.grey[800] : Colors.red,
+                          backgroundColor: isFavorite ? Colors.grey[800] : AppColors.primary,
                         ),
                       );
                     },
@@ -207,9 +207,9 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isFavorite ? Colors.red.withOpacity(0.1) : Colors.transparent,
+                        color: isFavorite ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
                         border: Border.all(
-                          color: isFavorite ? Colors.red : AppColors.cardBorder, 
+                          color: isFavorite ? AppColors.primary : AppColors.cardBorder, 
                           width: 1
                         ),
                       ),
@@ -217,7 +217,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                         child: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
                           size: 16,
-                          color: isFavorite ? Colors.red : Colors.grey,
+                          color: isFavorite ? AppColors.primary : Colors.grey,
                         ),
                       ),
                     ),
