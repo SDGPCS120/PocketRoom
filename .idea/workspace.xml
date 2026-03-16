@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ea2f19a-29b2-4120-811a-ac778383b768" name="Changes" comment="" />
+    <list default="true" id="6ea2f19a-29b2-4120-811a-ac778383b768" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/cart/presentation/cart_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/cart/presentation/cart_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/profile/presentation/profile_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/profile/presentation/profile_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/splash/presentation/splash_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/splash/presentation/splash_page.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

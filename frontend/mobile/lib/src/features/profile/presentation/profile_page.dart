@@ -52,27 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: AppColors.background,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
-              color: AppColors.textPrimary,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-        ),
+        automaticallyImplyLeading: false,
         title: Text(
           'Profile',
           style: TextStyle(
