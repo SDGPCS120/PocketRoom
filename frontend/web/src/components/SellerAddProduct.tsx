@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../lib/firebase';
+import api from '../lib/api';
 import './SellerAddProduct.css';
 
 const SellerAddProduct: React.FC = () => {
@@ -29,16 +32,64 @@ const SellerAddProduct: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // In a real application, you would use FormData to send files to a backend
-    console.log('Product Data:', formData);
-    console.log('Image File:', imageFile?.name);
-    console.log('3D Model File:', modelFile?.name);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    alert('Product added successfully! (Simulation)');
-    navigate('/dashboard');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!imageFile) {
+      alert('Display image is required.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const userStr = localStorage.getItem('currentUser');
+      const storeId = userStr ? JSON.parse(userStr).storeId : null;
+
+      if (!storeId) {
+        alert('Could not find your store ID. Please log in again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 1. Upload Image
+      const imageRef = ref(storage, `products/images/${Date.now()}_${imageFile.name}`);
+      await uploadBytes(imageRef, imageFile);
+      const imageUrl = await getDownloadURL(imageRef);
+
+      // 2. Upload Model (Optional)
+      let modelUrl = '';
+      if (modelFile) {
+        const modelRef = ref(storage, `products/models/${Date.now()}_${modelFile.name}`);
+        await uploadBytes(modelRef, modelFile);
+        modelUrl = await getDownloadURL(modelRef);
+      }
+
+      // 3. Save Product to Backend
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        furnitureType: formData.category,
+        dimensions: `${formData.width}x${formData.height}x${formData.depth}`,
+        images: [imageUrl],
+        modelUrl: modelUrl || undefined,
+      };
+
+      await api.post(`/products/store/${storeId}`, payload);
+
+      alert('Product published successfully!');
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Failed to add product:', err);
+      alert('Failed to add product. Please check console.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGenerateModel = () => {
+    alert('AI 3D Model Generation Pipeline coming soon!');
   };
 
   return (
@@ -116,16 +167,25 @@ const SellerAddProduct: React.FC = () => {
 
             <div className="file-upload-group">
               <label className="file-label file-label-ar">
-                <span className="file-title">3D AR Model *</span>
+                <span className="file-title">3D AR Model (Optional)</span>
                 <span className="file-desc">Upload a .glb or .gltf file for AR placement</span>
-                <input type="file" accept=".glb,.gltf" required onChange={(e) => handleFileChange(e, 'model')} className="file-input" />
+                <input type="file" accept=".glb,.gltf" onChange={(e) => handleFileChange(e, 'model')} className="file-input" />
               </label>
+              
+              <div className="generate-model-box" style={{ marginTop: '1rem', textAlign: 'center' }}>
+                <p style={{ fontSize: '0.9rem', color: '#757575', marginBottom: '0.5rem' }}>Don't have a 3D model?</p>
+                <button type="button" className="btn-secondary" onClick={handleGenerateModel}>
+                  ✨ Generate 3D Model from Image
+                </button>
+              </div>
             </div>
           </section>
 
           <div className="form-actions">
-            <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')}>Cancel</button>
-            <button type="submit" className="btn-primary">Publish Product</button>
+            <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')} disabled={isSubmitting}>Cancel</button>
+            <button type="submit" className="btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Publishing...' : 'Publish Product'}
+            </button>
           </div>
         </form>
       </div>

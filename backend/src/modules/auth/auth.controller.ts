@@ -1,14 +1,15 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards, Query } from '@nestjs/common';
 import { Request } from 'express';
 import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiQuery,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { FirebaseAuthGuard } from './guards/firebase-auth.guard';
-import { AuthService } from './auth.service';
+import { AuthService, UserRole } from './auth.service';
 import { AuthUser } from './types/auth-user.type';
 
 type AuthedRequest = Request & { user?: AuthUser };
@@ -49,6 +50,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Sync authenticated user into Firestore users collection',
   })
+  @ApiQuery({ name: 'role', required: false, enum: ['customer', 'vendor'] })
   @ApiOkResponse({
     description: 'User was created or already existed in Firestore',
     schema: {
@@ -77,11 +79,12 @@ export class AuthController {
     },
   })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid Firebase token' })
-  sync(@Req() req: AuthedRequest) {
+  sync(@Req() req: AuthedRequest, @Query('role') role?: string) {
     const u = req.user;
     if (!u) return { status: 'error', message: 'No user on request' };
 
-    // Return the Promise directly (no need for async/await)
-    return this.authService.syncUser(u.uid, u.email ?? null, u.isAnonymous ?? false);
+    const requestedRole = (role === 'vendor' || role === 'customer') ? role as UserRole : undefined;
+
+    return this.authService.syncUser(u.uid, u.email ?? null, u.isAnonymous ?? false, requestedRole);
   }
 }

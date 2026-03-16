@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../lib/firebase';
+import api from '../lib/api';
 import './SellerRegister.css';
 
 interface FormData {
@@ -112,26 +115,41 @@ const SellerRegister: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // Simulate API call — replace with real backend call later
-    await new Promise((res) => setTimeout(res, 1200));
+    try {
+      // 1. Create Firebase User
+      const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+      const user = userCredential.user;
 
-    const sellerData = {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      phone: form.phone || null,
-      storeName: form.storeName,
-      storeSlug: form.storeSlug,
-      storeDescription: form.storeDescription || null,
-      businessRegistrationNumber: form.businessRegistrationNumber || null,
-      registeredAt: new Date().toISOString(),
-    };
+      // 2. Sync user to Backend database with vendor role
+      await api.get('/auth/sync?role=vendor');
 
-    localStorage.setItem('sellerRegistration', JSON.stringify(sellerData));
-    setIsSubmitting(false);
-    setSuccess(true);
+      // 3. Create the Store in the Backend
+      await api.post('/stores', {
+        sellerId: user.uid,
+        storeName: form.storeName,
+        storeSlug: form.storeSlug,
+        storeDescription: form.storeDescription || undefined,
+        isActive: true,
+      });
 
-    setTimeout(() => navigate('/login'), 2000);
+      // Maintain a simplified local cache for immediate UI renders if necessary
+      const sellerData = {
+        uid: user.uid,
+        email: user.email,
+        username: `${form.firstName} ${form.lastName}`,
+        storeName: form.storeName,
+      };
+      
+      localStorage.setItem('currentUser', JSON.stringify(sellerData));
+      
+      setSuccess(true);
+      setTimeout(() => navigate('/dashboard'), 2000);
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      setErrors((prev) => ({ ...prev, general: error.message || 'Registration failed' }));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (success) {

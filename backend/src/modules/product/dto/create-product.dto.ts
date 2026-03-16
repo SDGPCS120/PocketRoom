@@ -47,4 +47,8 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   dimensions?: string;
+
+  @IsOptional()
+  @IsString()
+  modelUrl?: string;
 }

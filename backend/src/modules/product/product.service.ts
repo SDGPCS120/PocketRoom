@@ -27,6 +27,7 @@ export class ProductService {
         const data = {
             productId: docRef.id,
             storeId,
+            storeName: store?.storeName || 'Unknown Store',
             ...dto,
             createdAt: new Date(),
             updatedAt: new Date(),

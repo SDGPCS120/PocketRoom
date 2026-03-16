@@ -61,9 +61,16 @@ export class AuthService {
     uid: string,
     email: string | null,
     isAnonymous: boolean,
+    requestedRole?: UserRole,
   ): Promise<SyncResult> {
+    console.log(`[SyncUser] uid: ${uid}, reqRole: ${requestedRole}`);
     const db = this.firebaseService.firestore;
-    const defaultRole: UserRole = isAnonymous ? 'anonymous' : 'customer';
+    let defaultRole: UserRole = isAnonymous ? 'anonymous' : 'customer';
+
+    if (requestedRole === 'vendor' || requestedRole === 'customer') {
+      defaultRole = requestedRole;
+    }
+    console.log(`[SyncUser] setting defaultRole to: ${defaultRole}`);
 
     const ref = db.collection('users').doc(uid);
     const snap = await ref.get();
@@ -90,6 +97,7 @@ export class AuthService {
       email,
       defaultRole,
     );
+    // If the vendor was already a vendor, keep it vendor, OR if the request specifically upgrades/requests a valid role.
     const preservedRole: UserRole =
       existingUser.role === 'vendor' ? 'vendor' : defaultRole;
 

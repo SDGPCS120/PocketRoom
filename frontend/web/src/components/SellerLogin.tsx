@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../lib/firebase';
+import api from '../lib/api';
 import './SellerLogin.css';
 
 const SellerLogin: React.FC = () => {
@@ -49,24 +52,24 @@ const SellerLogin: React.FC = () => {
     setIsLoading(true);
     setErrors({});
 
-    // Simulate API call — replace with real Firebase/backend auth
-    await new Promise((res) => setTimeout(res, 1000));
+    try {
+      // 1. Authenticate with Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    // Check against stored registration (mock auth)
-    const reg = localStorage.getItem('sellerRegistration');
-    let authenticated = false;
-
-    if (reg) {
+      // 2. Fetch store information from backend (optional enhancement for UI)
+      let storeName = email.split('@')[0];
+      let storeId = undefined;
       try {
-        const data = JSON.parse(reg);
-        if (data.email === email) authenticated = true;
-      } catch {/* ignore */}
-    }
+        const response = await api.get('/stores/me');
+        if (response.data) {
+           storeName = response.data.storeName || storeName;
+           storeId = response.data.storeId;
+        }
+      } catch (storeError) {
+        console.warn('Store profile not found or error fetching:', storeError);
+      }
 
-    // Also allow any email/password combo (demo mode)
-    if (!authenticated) authenticated = true;
-
-    if (authenticated) {
       if (rememberMe) {
         localStorage.setItem('sellerRememberedEmail', email);
       } else {
@@ -74,13 +77,17 @@ const SellerLogin: React.FC = () => {
       }
 
       const session = {
-        email,
-        username: email.split('@')[0],
+        uid: user.uid,
+        email: user.email,
+        username: storeName,
+        storeId: storeId,
         loggedInAt: new Date().toISOString(),
       };
+      
       localStorage.setItem('currentUser', JSON.stringify(session));
       navigate('/dashboard');
-    } else {
+    } catch (error: any) {
+      console.error('Login error:', error);
       setErrors({ general: 'Invalid email or password. Please try again.' });
     }
 
