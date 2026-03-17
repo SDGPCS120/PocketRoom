@@ -53,7 +53,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
   // API base URL:
   // Android emulator -> http://10.0.2.2:3000
   // Chrome/web -> http://localhost:3000
-  String get baseUrl => 'https://slushily-unfostered-skye.ngrok-free.dev';
+  String get baseUrl => 'http://192.168.1.56:3000';
 
   Future<void> _generateBundle() async {
     if (_selectedRequired.isEmpty) {
