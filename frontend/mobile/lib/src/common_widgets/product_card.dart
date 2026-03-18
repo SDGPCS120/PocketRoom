@@ -41,7 +41,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
         transform: _isHovered 
-            ? (Matrix4.identity()..translate(0, -4, 0))
+            ? Matrix4.translationValues(0, -4, 0)
             : Matrix4.identity(),
         decoration: BoxDecoration(
           color: AppColors.background,
@@ -53,7 +53,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
           boxShadow: _isHovered 
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
@@ -207,7 +207,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isFavorite ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
+                        color: isFavorite ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
                         border: Border.all(
                           color: isFavorite ? AppColors.primary : AppColors.cardBorder, 
                           width: 1

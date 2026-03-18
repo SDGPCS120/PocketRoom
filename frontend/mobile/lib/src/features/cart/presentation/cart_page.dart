@@ -54,12 +54,12 @@ class CartPage extends ConsumerWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: AppColors.cardBorder.withOpacity(0.3),
+                              color: AppColors.cardBorder.withValues(alpha: 0.3),
                               width: 0.6,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.02),
+                                color: Colors.black.withValues(alpha: 0.02),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -73,7 +73,7 @@ class CartPage extends ConsumerWidget {
                                 height: 80,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
-                                  color: AppColors.secondary.withOpacity(0.3),
+                                  color: AppColors.secondary.withValues(alpha: 0.3),
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
@@ -177,7 +177,7 @@ class CartPage extends ConsumerWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 20,
                         offset: const Offset(0, -5),
                       ),
@@ -281,7 +281,7 @@ class _QuantityButton extends StatelessWidget {
         width: 28,
         height: 28,
         decoration: BoxDecoration(
-          color: AppColors.secondary.withOpacity(0.5),
+          color: AppColors.secondary.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(icon, size: 16, color: AppColors.primary),
