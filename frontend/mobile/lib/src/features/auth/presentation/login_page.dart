@@ -5,18 +5,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/firebase_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import 'signup_page.dart';
 import 'username_page.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -64,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<String?> _getFirestoreUsername(String uid) async {
-    final snap = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final snap = await ref.read(firestoreProvider).collection('users').doc(uid).get();
     final data = snap.data();
     final username = (data?['username'] as String?)?.trim();
     if (username == null || username.isEmpty) return null;
@@ -149,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
     required String email,
     required AuthCredential googleCredential,
   }) async {
-    final auth = FirebaseAuth.instance;
+    final auth = ref.read(firebaseAuthProvider);
     var password = _passwordController.text.trim();
     if (password.isEmpty) {
       password = (await _promptPasswordForLink(email)) ?? '';
@@ -174,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
-    final auth = FirebaseAuth.instance;
+    final auth = ref.read(firebaseAuthProvider);
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
@@ -205,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
-    final auth = FirebaseAuth.instance;
+    final auth = ref.read(firebaseAuthProvider);
     final googleSignIn = GoogleSignIn();
     String? pendingEmail;
     AuthCredential? pendingGoogleCredential;
@@ -231,12 +233,12 @@ class _LoginPageState extends State<LoginPage> {
       pendingGoogleCredential = credential;
 
       // ignore: deprecated_member_use
-      final methods = await auth.fetchSignInMethodsForEmail(pendingEmail);
+      final methods = await auth.fetchSignInMethodsForEmail(pendingEmail!);
       final hasPassword = methods.contains('password');
       final hasGoogle = methods.contains('google.com');
       if (hasPassword && !hasGoogle) {
         final existing = await _signInExistingAndLinkGoogle(
-          email: pendingEmail,
+          email: pendingEmail!,
           googleCredential: credential,
         );
         if (existing == null) {
