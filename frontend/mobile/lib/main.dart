@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/budget/ui/budget_planner_page.dart';
+import 'src/features/budget/ui/budget_planner_page.dart';
 
 void main() => runApp(const MyApp());
 
