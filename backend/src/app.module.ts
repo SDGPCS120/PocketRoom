@@ -10,6 +10,7 @@ import { UserModule } from './modules/user/user.module.js';
 import { AddressModule } from './modules/address/address.module.js';
 import { StoreModule } from './modules/store/store.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
+import { CartDebugModule } from './modules/cart-debug/cart-debug.module.js';
 import { CategoryModule } from './modules/category/category.module';
 import { PaymentModule } from './modules/payment/payment.module';
 @Module({
@@ -24,6 +25,7 @@ import { PaymentModule } from './modules/payment/payment.module';
     ProductModule,
     StoreModule,
     CartModule,
+    CartDebugModule,
     CategoryModule,
   ],
 

@@ -3,10 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 import '../../../core/firebase_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import 'login_page.dart';
 import '../../home/presentation/home_page.dart';
+import 'username_page.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -144,7 +147,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            // Back Button at the top left
             Positioned(
               top: 16,
               left: 16,
@@ -153,7 +155,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 onPressed: () => Navigator.pop(context),
               ),
             ),
-            // The Main Content Layout
             LayoutBuilder(
               builder: (context, constraints) {
                 final isDesktop = constraints.maxWidth > 800;
@@ -161,7 +162,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                 final content = SingleChildScrollView(
                   padding: EdgeInsets.symmetric(
                     horizontal: isDesktop ? 40 : 28, 
-                    // Add extra top padding on mobile since the back button is floating above it
                     vertical: isDesktop ? 40 : (56 + 16) 
                   ),
                   child: Form(
@@ -256,7 +256,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                               padding: const EdgeInsets.symmetric(horizontal: 16),
                               child: Text(
                                 'OR',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: AppColors.textSecondary,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -281,7 +281,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.login, size: 20), // Placeholder for Google icon
+                                const Icon(Icons.login, size: 20),
                                 const SizedBox(width: 12),
                                 const Text(
                                   'Continue with Google', 
@@ -319,9 +319,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   ),
                 );
 
-                if (!isDesktop) {
-                  return content;
-                }
+                if (!isDesktop) return content;
 
                 return Center(
                   child: Container(

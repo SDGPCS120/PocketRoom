@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6ea2f19a-29b2-4120-811a-ac778383b768" name="Changes" comment="" />
+    <list default="true" id="6ea2f19a-29b2-4120-811a-ac778383b768" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/cart/presentation/cart_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/cart/presentation/cart_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/profile/presentation/profile_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/profile/presentation/profile_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/splash/presentation/splash_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/splash/presentation/splash_page.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,10 +23,10 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="39stLew988xRXeYQVHXoY5nkYeE" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -39,7 +43,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "feat/frontend/websafe",
+    "git-widget-placeholder": "mobileEnhance",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/lehan/tempo/PocketRoom/frontend/mobile",
     "show.migrate.to.gradle.popup": "false"

@@ -7,10 +7,10 @@ class ApiConfig {
   ApiConfig._();
 
   /// USE NGROK for mobile phone testing (works everywhere)
-  static const String baseUrl = 'https://jagless-kristal-appliably.ngrok-free.dev';
+  // static const String baseUrl = 'https://jagless-kristal-appliably.ngrok-free.dev';
 
   /// ALTERNATIVE: Local IP for physical mobile phone (must be on same Wi-Fi)
-  // static const String baseUrl = 'http://10.31.21.205:3000';
+  static const String baseUrl = 'http://192.168.1.6:3000';
 
   /// ALTERNATIVE: Use 10.0.2.2 for Android Emulator
   // static const String baseUrl = 'http://10.0.2.2:3000';
