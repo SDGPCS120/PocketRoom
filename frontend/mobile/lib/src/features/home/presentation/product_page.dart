@@ -24,6 +24,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
   int _selectedColorIndex = 0;
   int _selectedMaterialIndex = 0;
   int _selectedSizeIndex = 0;
+  bool _descExpanded = false;
 
   // ── Add Review form state ─────────────────────────────────────────────────
   final _reviewFormKey = GlobalKey<FormState>();
@@ -60,6 +61,33 @@ class _ProductPageState extends ConsumerState<ProductPage> {
         )}";
   }
 
+  // Parse dimensions string into readable label-value pairs
+  List<_SpecRow> _parseDimensions(String raw) {
+    if (raw.isEmpty || raw == 'N/A') {
+      return [_SpecRow('Dimensions', 'Not specified')];
+    }
+    // Try to extract numeric values from patterns like {width: 25, height: 75, depth: 25}
+    final patterns = {
+      'Height': RegExp(r'height[:\s]*(\d+)', caseSensitive: false),
+      'Width': RegExp(r'width[:\s]*(\d+)', caseSensitive: false),
+      'Depth': RegExp(r'depth[:\s]*(\d+)', caseSensitive: false),
+      'Length': RegExp(r'length[:\s]*(\d+)', caseSensitive: false),
+    };
+    final results = <_SpecRow>[];
+    for (final entry in patterns.entries) {
+      final match = entry.value.firstMatch(raw);
+      if (match != null) {
+        results.add(_SpecRow(entry.key, '${match.group(1)} cm'));
+      }
+    }
+    if (results.isEmpty) {
+      // Fallback: show the raw string cleaned up (no JSON chars)
+      final clean = raw.replaceAll(RegExp(r'[{}]'), '').trim();
+      return [_SpecRow('Size', clean.isEmpty ? 'Not specified' : clean)];
+    }
+    return results;
+  }
+
   void _submitReview() {
     if (!(_reviewFormKey.currentState?.validate() ?? false)) return;
     ref.read(reviewsProvider.notifier).addReview(
@@ -75,7 +103,6 @@ class _ProductPageState extends ConsumerState<ProductPage> {
     setState(() => _newRating = 5);
   }
 
-<<<<<<< HEAD
   bool _redirectGuestToGetStarted() {
     final user = FirebaseAuth.instance.currentUser;
     final isSignedIn = user != null && !user.isAnonymous;
@@ -85,7 +112,6 @@ class _ProductPageState extends ConsumerState<ProductPage> {
       context,
     ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
     return true;
-=======
   List<String> _getDynamicImages(Furniture f) {
     if (f.images.isEmpty) {
       return const [
@@ -145,7 +171,6 @@ class _ProductPageState extends ConsumerState<ProductPage> {
         },
       ),
     );
->>>>>>> 061eec3 (feat(product-page): redesign hero gallery and product details section)
   }
 
   @override
@@ -788,63 +813,149 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
+                          // ── Bottom spacer so content clears sticky bar
+                          const SizedBox(height: 32),
+
+                          // ═══════════════════════════════════════════════
+                          // 1. DIMENSIONS & SPECIFICATIONS
+                          // ═══════════════════════════════════════════════
+                          _SectionHeader(title: 'Specifications'),
+                          const SizedBox(height: 16),
+
+                          // Dimensions card
+                          _SpecCard(
+                            icon: Icons.straighten_rounded,
+                            label: 'Dimensions',
+                            rows: _parseDimensions(f.dimensions),
+                            trailingWidget: Container(
+                              width: 86,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.horizontal(right: Radius.circular(14)),
                               ),
-                              child: const Text(
-                                'Add to cart',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Icon(Icons.chair_alt_outlined, size: 44, color: Colors.grey[300]),
+                                  Positioned(
+                                    left: 12,
+                                    top: 14,
+                                    bottom: 14,
+                                    child: Container(width: 1.5, color: AppColors.primary.withValues(alpha: 0.4)),
+                                  ),
+                                  const Positioned(
+                                    left: 16,
+                                    top: 16,
+                                    child: Text('H', style: TextStyle(fontSize: 10, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                                  ),
+                                  Positioned(
+                                    bottom: 14,
+                                    left: 12,
+                                    right: 12,
+                                    child: Container(height: 1.5, color: AppColors.primary.withValues(alpha: 0.4)),
+                                  ),
+                                  const Positioned(
+                                    bottom: 18,
+                                    right: 14,
+                                    child: Text('W', style: TextStyle(fontSize: 10, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                           const SizedBox(height: 12),
 
-                          // ── View in AR ───────────────────────────────
-                          SizedBox(
-                            width: double.infinity,
-                            height: 52,
-                            child: OutlinedButton(
-                              onPressed: () {},
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.primary,
-                                side: const BorderSide(
-                                    color: AppColors.primary, width: 1.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                              ),
-                              child: const Text(
-                                'View in AR',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
+                          // Materials card
+                          _SpecCard(
+                            icon: Icons.texture_rounded,
+                            label: 'Materials',
+                            rows: [
+                              if (f.material.isNotEmpty)
+                                _SpecRow('Material', f.material)
+                              else
+                                _SpecRow('Frame', 'Steel'),
+                              _SpecRow('Seat', 'High-Density Foam'),
+                              _SpecRow('Finish', 'Matte Powder Coat'),
+                            ],
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 12),
 
-                          // ── Specifications ───────────────────────────
-                          const Text(
-                            'Specifications',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                            ),
+                          // Other card
+                          _SpecCard(
+                            icon: Icons.info_outline_rounded,
+                            label: 'General',
+                            rows: [
+                              _SpecRow('Category', f.furnitureType),
+                              _SpecRow('Brand', f.brand),
+                              _SpecRow('Weight Capacity', '120 kg'),
+                              _SpecRow('Assembly', 'Required (30 min)'),
+                            ],
                           ),
-                          const SizedBox(height: 10),
-                          _SpecSection(
-                              title: 'Dimensions',
-                              bullets: [f.dimensions]),
-                          _SpecSection(
-                              title: 'Category',
-                              bullets: [f.furnitureType]),
-                          if (f.styleTags.isNotEmpty)
-                            _SpecSection(
-                                title: 'Style Tags', bullets: f.styleTags),
                           const SizedBox(height: 32),
+                          Divider(color: Colors.grey[200]),
+                          const SizedBox(height: 28),
+
+                          // ═══════════════════════════════════════════════
+                          // 2. DESCRIPTION (COLLAPSIBLE)
+                          // ═══════════════════════════════════════════════
+                          if (f.description.isNotEmpty) ...[
+                            _SectionHeader(title: 'Description'),
+                            const SizedBox(height: 12),
+                            AnimatedCrossFade(
+                              duration: const Duration(milliseconds: 250),
+                              crossFadeState: _descExpanded
+                                  ? CrossFadeState.showSecond
+                                  : CrossFadeState.showFirst,
+                              firstChild: Text(
+                                f.description,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.textSecondary,
+                                  height: 1.65,
+                                ),
+                              ),
+                              secondChild: Text(
+                                f.description,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.textSecondary,
+                                  height: 1.65,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            GestureDetector(
+                              onTap: () => setState(() => _descExpanded = !_descExpanded),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    _descExpanded ? 'Show less' : 'Read more',
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  AnimatedRotation(
+                                    duration: const Duration(milliseconds: 250),
+                                    turns: _descExpanded ? 0.5 : 0,
+                                    child: const Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      size: 18,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+                            Divider(color: Colors.grey[200]),
+                            const SizedBox(height: 28),
+                          ],
 
                           // ── Reviews (dynamic, per-product) ───────────
                           Text(
@@ -898,7 +1009,7 @@ class _ProductPageState extends ConsumerState<ProductPage> {
             ),
           ),
 
-          // ─── Floating action buttons ──────────────────────────────────────
+          // ─── Top floating glass buttons ────────────────────────────────────
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -923,6 +1034,169 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                     ],
                   ),
                 ],
+              ),
+            ),
+          ),
+
+          // ─── Sticky Bottom Action Bar ────────────────────────────────────────
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: ClipRRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.92),
+                    border: Border(
+                      top: BorderSide(color: Colors.grey[200]!, width: 1),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 24,
+                        offset: const Offset(0, -4),
+                      ),
+                    ],
+                  ),
+                  child: SafeArea(
+                    top: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+
+                          // ── Add to Cart (secondary) ────────────────────
+                          Expanded(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14),
+                                onTap: () {
+                                  for (var i = 0; i < _quantity; i++) {
+                                    ref.read(cartProvider.notifier).addItem(f);
+                                  }
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('${f.name} ×$_quantity added to cart'),
+                                      duration: const Duration(seconds: 1),
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      backgroundColor: AppColors.primary,
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: AppColors.primary,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.shopping_bag_outlined,
+                                        color: AppColors.primary,
+                                        size: 17,
+                                      ),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        'Add to Cart',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(width: 10),
+
+                          // ── View in AR (primary, 65%) ──────────────────
+                          Expanded(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14),
+                                onTap: () {},
+                                child: Container(
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFFFF8C42),
+                                        AppColors.primary,
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: AppColors.primary.withValues(alpha: 0.38),
+                                        blurRadius: 14,
+                                        spreadRadius: 0,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.view_in_ar_rounded,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'View in AR',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w700,
+                                              height: 1.1,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Try in your room',
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 10.5,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -1052,7 +1326,227 @@ class _SpecSection extends StatelessWidget {
   }
 }
 
-// ─── Single review tile ────────────────────────────────────────────────────────
+// ─── Section Header ───────────────────────────────────────────────────────────
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  const _SectionHeader({required this.title});
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 3,
+          height: 18,
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+            letterSpacing: -0.2,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Highlight data + chip ─────────────────────────────────────────────────────
+class _HighlightItem {
+  final IconData icon;
+  final String label;
+  const _HighlightItem(this.icon, this.label);
+}
+
+class _HighlightChip extends StatelessWidget {
+  final _HighlightItem item;
+  const _HighlightChip({required this.item});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.18)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(item.icon, size: 15, color: AppColors.primary),
+          const SizedBox(width: 6),
+          Text(
+            item.label,
+            style: const TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Spec data row + card ──────────────────────────────────────────────────────
+class _SpecRow {
+  final String label;
+  final String value;
+  const _SpecRow(this.label, this.value);
+}
+
+class _SpecCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final List<_SpecRow> rows;
+  final Widget? trailingWidget;
+  const _SpecCard({required this.icon, required this.label, required this.rows, this.trailingWidget});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Card header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+            child: Row(
+              children: [
+                Icon(icon, size: 16, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    letterSpacing: 0.1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Divider(color: Colors.grey[200], height: 1),
+          // Rows and Trailing Diagram
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Column(
+                    children: rows.asMap().entries.map((entry) {
+                      final isLast = entry.key == rows.length - 1;
+                      final row = entry.value;
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    row.label,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    row.value,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (!isLast) Divider(color: Colors.grey[200], height: 1, indent: 14, endIndent: 14),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+                if (trailingWidget != null) ...[
+                  Container(width: 1, color: Colors.grey[200]),
+                  trailingWidget!,
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Room Fit Row ──────────────────────────────────────────────────────────────
+class _RoomFitRow extends StatelessWidget {
+  final String label;
+  final List<String> chips;
+  const _RoomFitRow({required this.label, required this.chips});
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 76,
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: chips.map((chip) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Text(
+                chip,
+                style: const TextStyle(
+                  fontSize: 12.5,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            )).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
 class _ReviewTile extends StatelessWidget {
   final String name;
   final String review;
