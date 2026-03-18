@@ -1,19 +1,44 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocketroom/src/core/theme/app_theme.dart';
+import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
-import '../core/theme/app_theme.dart';
-import '../features/auth/presentation/get_started_page.dart';
-import '../features/profile/presentation/profile_page.dart';
+import 'package:pocketroom/src/features/home/data/providers.dart';
+import 'package:pocketroom/src/features/profile/presentation/profile_page.dart';
 
-class AppHeader extends ConsumerWidget {
+class AppHeader extends ConsumerStatefulWidget {
   const AppHeader({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppHeader> createState() => _AppHeaderState();
+}
+
+class _AppHeaderState extends ConsumerState<AppHeader> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    // It's safe to read the provider in initState
+    _searchController = TextEditingController(text: ref.read(searchQueryProvider));
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watch cart state
     final cartItems = ref.watch(cartProvider);
     final itemCount = cartItems.length;
+
+    // Watch search query
+    final currentQuery = ref.watch(searchQueryProvider);
     final isDesktop = MediaQuery.of(context).size.width > 600;
 
     return Padding(
@@ -30,20 +55,33 @@ class AppHeader extends ConsumerWidget {
             child: Image.asset('assets/logo.png', height: 40),
           ),
           if (isDesktop)
-            const Expanded(
+            Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    ref.read(searchQueryProvider.notifier).state = value;
+                  },
                   decoration: InputDecoration(
                     hintText: 'Search furniture...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: currentQuery.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, color: Colors.grey),
+                            onPressed: () {
+                              _searchController.clear();
+                              ref.read(searchQueryProvider.notifier).state = '';
+                            },
+                          )
+                        : null,
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Color(0xFFFFE5D3),
-                    contentPadding: EdgeInsets.symmetric(vertical: 0),
+                    fillColor: const Color(0xFFFFE5D3),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   ),
                 ),
               ),

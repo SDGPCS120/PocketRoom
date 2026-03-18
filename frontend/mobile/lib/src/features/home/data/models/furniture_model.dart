@@ -118,4 +118,21 @@ class Furniture {
       colorOptions: const [],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'oldPrice': oldPrice,
+      'brand': brand,
+      'rating': rating,
+      'images': images,
+      'furnitureType': furnitureType,
+      'dimensions': dimensions,
+      'availability': availability,
+      'styleTags': styleTags,
+      'description': description,
+    };
+  }
 }

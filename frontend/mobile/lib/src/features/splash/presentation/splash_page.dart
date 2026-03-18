@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pocketroom/src/features/home/presentation/home_page.dart';
+import 'package:pocketroom/src/features/home/presentation/main_screen.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -40,7 +40,7 @@ class _SplashPageState extends State<SplashPage>
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const MainScreen()),
         );
       }
     });

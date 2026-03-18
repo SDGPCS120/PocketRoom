@@ -4,7 +4,7 @@ import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
+import 'package:pocketroom/src/features/favorites/data/favorites_provider.dart';
 
 class ProductCard extends ConsumerStatefulWidget {
   final Furniture furniture;
@@ -21,6 +21,9 @@ class _ProductCardState extends ConsumerState<ProductCard> {
   @override
   Widget build(BuildContext context) {
     final furniture = widget.furniture;
+    final favorites = ref.watch(favoritesProvider);
+    final isFavorite = favorites.any((item) => item.id == furniture.id);
+
     final ratingLabel = furniture.rating.isNaN
         ? 'N/A'
         : furniture.rating.toString();
@@ -78,7 +81,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.cardBorder, width: 0.6),
+                    // border: Border.all(color: AppColors.cardBorder, width: 0.6),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -184,31 +187,37 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      ref.read(cartProvider.notifier).addItem(furniture);
+                      ref.read(favoritesProvider.notifier).toggleFavorite(furniture);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('${furniture.name} added to cart'),
+                          content: Text(isFavorite 
+                              ? '${furniture.name} removed from favorites' 
+                              : '${furniture.name} added to favorites'),
                           duration: const Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: isFavorite ? Colors.grey[800] : AppColors.primary,
                         ),
                       );
                     },
                     child: Container(
-                      width: 22,
-                      height: 22,
+                      width: 28,
+                      height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary, width: 1),
+                        color: isFavorite ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
+                        border: Border.all(
+                          color: isFavorite ? AppColors.primary : AppColors.cardBorder, 
+                          width: 1
+                        ),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Icon(
-                          Icons.add_shopping_cart,
-                          size: 12,
-                          color: AppColors.primary,
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          size: 16,
+                          color: isFavorite ? AppColors.primary : Colors.grey,
                         ),
                       ),
                     ),

@@ -13,7 +13,7 @@ class GetStartedPage extends StatelessWidget {
     final textTheme = theme.textTheme;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 245, 239),
+      backgroundColor: const Color.fromARGB(255, 255, 248, 221),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isDesktop = constraints.maxWidth > 800;
@@ -147,14 +147,14 @@ class GetStartedPage extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: Container(
             width: double.infinity,
-            margin: const EdgeInsets.all(24),
+            margin: const EdgeInsets.fromLTRB(24, 24, 24, 55),
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: AppColors.secondary,
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withOpacity(0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
