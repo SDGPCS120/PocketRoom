@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../features/home/presentation/main_screen.dart';
 import '../../profile/presentation/widgets/section_item.dart';
 import 'privacy_policy_page.dart';
 
@@ -29,7 +30,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     await FirebaseAuth.instance.signOut();
     await FirebaseAuth.instance.signInAnonymously();
     if (!mounted) return;
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const MainScreen()),
+      (route) => false, // remove all previous routes
+    );
   }
 
   @override
