@@ -134,7 +134,7 @@ class CartNotifier extends Notifier<List<CartItem>> {
       final mergedFurniture = existing?.furniture ?? localItem.furniture;
       batch.set(cartCollection.doc(localItem.furniture.id), {
         'quantity': mergedQuantity,
-        'furniture': _furnitureToMap(mergedFurniture),
+        'furniture': mergedFurniture.toJson(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
     }
@@ -161,7 +161,7 @@ class CartNotifier extends Notifier<List<CartItem>> {
       final docRef = cartCollection.doc(item.furniture.id);
       batch.set(docRef, {
         'quantity': item.quantity,
-        'furniture': _furnitureToMap(item.furniture),
+        'furniture': item.furniture.toJson(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
     }
@@ -182,21 +182,6 @@ class CartNotifier extends Notifier<List<CartItem>> {
     final furniture = Furniture.fromJson(furnitureRaw);
     if (furniture.id.isEmpty) return null;
     return CartItem(furniture: furniture, quantity: quantity);
-  }
-
-  Map<String, dynamic> _furnitureToMap(Furniture furniture) {
-    return {
-      'id': furniture.id,
-      'name': furniture.name,
-      'price': furniture.price,
-      'brand': furniture.brand,
-      'rating': furniture.rating,
-      'images': furniture.images,
-      'furnitureType': furniture.furnitureType,
-      'dimensions': furniture.dimensions,
-      'availability': furniture.availability,
-      'styleTags': furniture.styleTags,
-    };
   }
 }
 

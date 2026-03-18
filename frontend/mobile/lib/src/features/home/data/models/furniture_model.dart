@@ -8,6 +8,15 @@ class Furniture {
   final String brand;
   final double rating;
   final List<String> images;
+  final String imageUrl;
+  final String imagePath;
+  final String modelURL;
+  final String material;
+  final String modelStatus;
+  final String modelError;
+  final String primaryColor;
+  final String productID;
+  final bool? stockStatus;
   final String furnitureType;
   final String dimensions;
   final String availability;
@@ -23,6 +32,15 @@ class Furniture {
     required this.brand,
     required this.rating,
     required this.images,
+    this.imageUrl = '',
+    this.imagePath = '',
+    this.modelURL = '',
+    this.material = '',
+    this.modelStatus = '',
+    this.modelError = '',
+    this.primaryColor = '',
+    this.productID = '',
+    this.stockStatus,
     required this.furnitureType,
     required this.dimensions,
     this.availability = 'N/A',
@@ -54,6 +72,29 @@ class Furniture {
           : ((json['imageUrl']?.toString().trim().isNotEmpty ?? false)
                 ? [json['imageUrl'].toString()]
                 : []),
+      imageUrl: (json['imageUrl']?.toString().trim().isNotEmpty ?? false)
+          ? json['imageUrl'].toString()
+          : '',
+      imagePath: (json['imagePath']?.toString().trim().isNotEmpty ?? false)
+          ? json['imagePath'].toString()
+          : '',
+      modelURL: (json['modelURL']?.toString().trim().isNotEmpty ?? false)
+          ? json['modelURL'].toString()
+          : '',
+      material: (json['material']?.toString().trim().isNotEmpty ?? false)
+          ? json['material'].toString()
+          : '',
+      modelStatus: (json['modelStatus']?.toString().trim().isNotEmpty ?? false)
+          ? json['modelStatus'].toString()
+          : '',
+      modelError: json['modelError']?.toString() ?? '',
+      primaryColor: (json['primaryColor']?.toString().trim().isNotEmpty ?? false)
+          ? json['primaryColor'].toString()
+          : '',
+      productID: (json['productID']?.toString().trim().isNotEmpty ?? false)
+          ? json['productID'].toString()
+          : (json['id']?.toString() ?? ''),
+      stockStatus: json['stockStatus'] is bool ? json['stockStatus'] as bool : null,
       furnitureType:
           (json['furnitureType']?.toString().trim().isNotEmpty ?? false)
           ? json['furnitureType'].toString()
@@ -76,5 +117,22 @@ class Furniture {
       description: json['description']?.toString() ?? '',
       colorOptions: const [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'oldPrice': oldPrice,
+      'brand': brand,
+      'rating': rating,
+      'images': images,
+      'furnitureType': furnitureType,
+      'dimensions': dimensions,
+      'availability': availability,
+      'styleTags': styleTags,
+      'description': description,
+    };
   }
 }
