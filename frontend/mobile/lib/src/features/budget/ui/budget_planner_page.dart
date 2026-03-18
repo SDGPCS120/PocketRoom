@@ -39,9 +39,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
   bool _loading = false;
 
   // API base URL:
-  // Android emulator -> http://10.0.2.2:3000
-  // Chrome/web -> http://localhost:3000
-  String get baseUrl => 'http://172.20.10.5:3000';
+  String get baseUrl => 'http://192.168.1.56:3000';
 
   Future<void> _generateBundle() async {
     if (_selectedRequired.isEmpty) {
@@ -72,16 +70,17 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
       if (!mounted) return;
 
       if (res.statusCode >= 200 && res.statusCode < 300) {
-  final Map<String, dynamic> data = jsonDecode(res.body);
+        final Map<String, dynamic> responseBody = jsonDecode(res.body);
+        final resultData = responseBody['data'] ?? responseBody;
 
-  if (!mounted) return;
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => BudgetResultPage(result: data),
-    ),
-  );
-} else {
+        if (!mounted) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => BudgetResultPage(result: resultData),
+          ),
+        );
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed: ${res.statusCode}\n${res.body}')),
         );
@@ -289,6 +288,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                   onPressed: _loading ? null : _generateBundle,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: accent,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                   ),

@@ -13,7 +13,7 @@ import { CartModule } from './modules/cart/cart.module.js';
 import { CartDebugModule } from './modules/cart-debug/cart-debug.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
 import { PaymentModule } from './modules/payment/payment.module.js';
-import { BudgetModule } from './modules/budget/budget.module.js';
+import { BudgetModule } from './features/budget/budget.module.js';
 
 @Module({
   imports: [

@@ -112,6 +112,8 @@ class _ProductPageState extends ConsumerState<ProductPage> {
       context,
     ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
     return true;
+  }
+
   List<String> _getDynamicImages(Furniture f) {
     if (f.images.isEmpty) {
       return const [
@@ -176,7 +178,6 @@ class _ProductPageState extends ConsumerState<ProductPage> {
   @override
   Widget build(BuildContext context) {
     final f = widget.furniture;
-    final hasImages = f.images.isNotEmpty;
     final hasOldPrice = f.oldPrice != null && !f.oldPrice!.isNaN;
     final hasDescription = f.description.isNotEmpty;
     final hasColors = f.colorOptions.isNotEmpty;
@@ -813,6 +814,10 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
+                              ),
+                              child: const Text('Add to Cart'),
+                            ),
+                          ),
                           // ── Bottom spacer so content clears sticky bar
                           const SizedBox(height: 32),
 
@@ -1251,80 +1256,6 @@ class _GlassButton extends StatelessWidget {
 }
 
 
-// ─── Quantity +/- button ──────────────────────────────────────────────────────
-class _QtyButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _QtyButton({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: AppColors.primary, width: 1.5),
-        ),
-        child: Icon(icon, size: 16, color: AppColors.primary),
-      ),
-    );
-  }
-}
-
-// ─── Specification section ────────────────────────────────────────────────────
-class _SpecSection extends StatelessWidget {
-  final String title;
-  final List<String> bullets;
-
-  const _SpecSection({required this.title, required this.bullets});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          const SizedBox(height: 4),
-          ...bullets.map(
-            (b) => Padding(
-              padding: const EdgeInsets.only(left: 8, bottom: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('• ',
-                      style: TextStyle(
-                          color: AppColors.textSecondary, fontSize: 13)),
-                  Expanded(
-                    child: Text(
-                      b,
-                      style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                          height: 1.4),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ─── Section Header ───────────────────────────────────────────────────────────
 class _SectionHeader extends StatelessWidget {
@@ -1357,45 +1288,8 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-// ─── Highlight data + chip ─────────────────────────────────────────────────────
-class _HighlightItem {
-  final IconData icon;
-  final String label;
-  const _HighlightItem(this.icon, this.label);
-}
 
-class _HighlightChip extends StatelessWidget {
-  final _HighlightItem item;
-  const _HighlightChip({required this.item});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.18)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(item.icon, size: 15, color: AppColors.primary),
-          const SizedBox(width: 6),
-          Text(
-            item.label,
-            style: const TextStyle(
-              fontSize: 12.5,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
-// ─── Spec data row + card ──────────────────────────────────────────────────────
 class _SpecRow {
   final String label;
   final String value;
@@ -1499,54 +1393,6 @@ class _SpecCard extends StatelessWidget {
   }
 }
 
-// ─── Room Fit Row ──────────────────────────────────────────────────────────────
-class _RoomFitRow extends StatelessWidget {
-  final String label;
-  final List<String> chips;
-  const _RoomFitRow({required this.label, required this.chips});
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 76,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 13,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: chips.map((chip) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.grey[300]!),
-              ),
-              child: Text(
-                chip,
-                style: const TextStyle(
-                  fontSize: 12.5,
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            )).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-}
 class _ReviewTile extends StatelessWidget {
   final String name;
   final String review;
