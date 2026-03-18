@@ -91,7 +91,6 @@ final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
       sorted.sort((a, b) => b.rating.compareTo(a.rating));
       break;
     case SortOrder.none:
-    default:
       // Keep existing order (which might be the default API order)
       break;
   }

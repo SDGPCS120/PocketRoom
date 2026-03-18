@@ -2,20 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../../core/firebase_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import 'login_page.dart';
 import '../../home/presentation/home_page.dart';
 import 'username_page.dart';
 
-class SignupPage extends StatefulWidget {
+class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  ConsumerState<SignupPage> createState() => _SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _SignupPageState extends ConsumerState<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -166,8 +169,8 @@ class _SignupPageState extends State<SignupPage> {
 
     setState(() => _loading = true);
 
-    final auth = FirebaseAuth.instance;
-    final db = FirebaseFirestore.instance;
+    final auth = ref.read(firebaseAuthProvider);
+    final db = ref.read(firestoreProvider);
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final normalized = _normalizeUsername(username);
@@ -515,7 +518,7 @@ class _SignupPageState extends State<SignupPage> {
                   borderRadius: BorderRadius.circular(28),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withValues(alpha: 0.04),
                       blurRadius: 40,
                       offset: const Offset(0, 10),
                     ),
