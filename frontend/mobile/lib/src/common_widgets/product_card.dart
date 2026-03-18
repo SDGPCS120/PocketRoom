@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart'; // Import the new theme file
+import '../features/auth/presentation/get_started_page.dart';
 import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
 
@@ -17,6 +19,17 @@ class ProductCard extends ConsumerStatefulWidget {
 
 class _ProductCardState extends ConsumerState<ProductCard> {
   bool _isHovered = false;
+
+  bool _redirectGuestToGetStarted() {
+    final user = FirebaseAuth.instance.currentUser;
+    final isSignedIn = user != null && !user.isAnonymous;
+    if (isSignedIn) return false;
+
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +54,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
         transform: _isHovered 
-            ? (Matrix4.identity()..translate(0, -4, 0))
+            ? Matrix4.translationValues(0, -4, 0)
             : Matrix4.identity(),
         decoration: BoxDecoration(
           color: AppColors.background,
@@ -53,7 +66,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
           boxShadow: _isHovered 
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
@@ -187,6 +200,9 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      if (_redirectGuestToGetStarted()) {
+                        return;
+                      }
                       ref.read(favoritesProvider.notifier).toggleFavorite(furniture);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -207,7 +223,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isFavorite ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
+                        color: isFavorite ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
                         border: Border.all(
                           color: isFavorite ? AppColors.primary : AppColors.cardBorder, 
                           width: 1

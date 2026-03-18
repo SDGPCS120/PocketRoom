@@ -38,7 +38,7 @@ class GetStartedPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 40,
               offset: const Offset(0, 10),
             ),
@@ -154,7 +154,7 @@ class GetStartedPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha: 0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
@@ -228,7 +228,7 @@ class _AuthButton extends StatelessWidget {
         style: TextButton.styleFrom(
           backgroundColor: isPrimary
               ? AppColors.primary
-              : Colors.white.withOpacity(0.5),
+              : Colors.white.withValues(alpha: 0.5),
           foregroundColor: isPrimary ? Colors.white : AppColors.textPrimary,
           padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(

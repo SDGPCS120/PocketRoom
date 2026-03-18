@@ -9,7 +9,9 @@ import 'package:pocketroom/src/features/home/data/providers.dart';
 import 'package:pocketroom/src/features/profile/presentation/profile_page.dart';
 
 class AppHeader extends ConsumerStatefulWidget {
-  const AppHeader({super.key});
+  final VoidCallback? onProfileTap;
+
+  const AppHeader({super.key, this.onProfileTap});
 
   @override
   ConsumerState<AppHeader> createState() => _AppHeaderState();
@@ -186,6 +188,11 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
         const SizedBox(width: 4),
         IconButton(
           onPressed: () {
+            final onProfileTap = widget.onProfileTap;
+            if (onProfileTap != null) {
+              onProfileTap();
+              return;
+            }
             Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const ProfilePage()));

@@ -11,7 +11,13 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
+<<<<<<< HEAD
     - plugins/flutter_unity_widget_2/example/**
+=======
+    - plugins/**
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+>>>>>>> b1b39d795f36a7e1aef4245b8c468fa7c9c78743
 
 linter:
   # The lint rules applied to this project can be customized in the

@@ -71,6 +71,13 @@ class FirestoreProductRepository implements IFurnitureRepository {
   }
 
   List<String> _extractImages(Map<String, dynamic> data) {
+    if (data['imageUrl'] is List) {
+      return (data['imageUrl'] as List)
+          .map((e) => e.toString().trim())
+          .where((url) => url.isNotEmpty)
+          .toList();
+    }
+    
     if (data['images'] is List) {
       return (data['images'] as List)
           .map((e) => e.toString().trim())
@@ -79,8 +86,8 @@ class FirestoreProductRepository implements IFurnitureRepository {
     }
 
     final imageUrl = data['imageUrl'];
-    if (imageUrl != null) {
-      final single = imageUrl.toString().trim();
+    if (imageUrl != null && imageUrl is String) {
+      final single = imageUrl.trim();
       if (single.isNotEmpty) {
         return [single];
       }
@@ -90,11 +97,18 @@ class FirestoreProductRepository implements IFurnitureRepository {
   }
 
   String _extractImageUrl(Map<String, dynamic> data) {
-    final imageUrl = data['imageUrl'];
-    if (imageUrl == null) {
-      return '';
+    if (data['imageUrl'] is List) {
+      final arr = data['imageUrl'] as List;
+      if (arr.isNotEmpty) {
+        return arr.first.toString().trim();
+      }
     }
-    return imageUrl.toString().trim();
+    
+    final imageUrl = data['imageUrl'];
+    if (imageUrl != null && imageUrl is String) {
+      return imageUrl.trim();
+    }
+    return '';
   }
 
   List<String> _extractStyleTags(dynamic rawTags) {

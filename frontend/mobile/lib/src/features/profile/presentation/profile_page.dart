@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
 import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/core/api_config.dart';
+import 'package:pocketroom/src/features/home/presentation/main_screen.dart';
 import '../../../core/theme/app_theme.dart';
 import 'edit_profile_page.dart';
 import 'widgets/section_item.dart';
@@ -31,11 +33,22 @@ class _ProfilePageState extends State<ProfilePage> {
   final _user = _UserData();
   bool _isLoading = true;
   bool _isAnonymousUser = false;
+  StreamSubscription<User?>? _authSubscription;
 
   @override
   void initState() {
     super.initState();
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((_) {
+      if (!mounted) return;
+      _loadUserData();
+    });
     _loadUserData();
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadUserData() async {
@@ -43,14 +56,28 @@ class _ProfilePageState extends State<ProfilePage> {
     if (user == null) {
       if (!mounted) return;
       setState(() {
+        _user.name = 'Profile';
+        _user.email = '';
+        _user.phone = '';
+        _user.address = '';
+        _user.role = 'customer';
+        _isAnonymousUser = false;
         _isLoading = false;
       });
       return;
     }
 
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
+
     _isAnonymousUser = user.isAnonymous;
     _user.email = user.email ?? '';
     _user.name = (user.displayName ?? '').trim();
+    _user.phone = '';
+    _user.address = '';
     _user.role = _isAnonymousUser ? 'anonymous' : 'customer';
 
     try {
@@ -120,7 +147,10 @@ class _ProfilePageState extends State<ProfilePage> {
     await FirebaseAuth.instance.signInAnonymously();
 
     if (!mounted) return;
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const MainScreen()),
+      (_) => false,
+    );
   }
 
   Future<void> _showCartDebugJson() async {
