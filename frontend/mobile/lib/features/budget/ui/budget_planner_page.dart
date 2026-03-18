@@ -76,7 +76,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
 
     try {
       final res = await http.post(
-        Uri.parse('$baseUrl/budget/bundle'),
+        Uri.parse('$baseUrl/budget/generate'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(payload),
       );
