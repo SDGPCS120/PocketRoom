@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../auth/presentation/get_started_page.dart';
 import '../../../features/cart/data/cart_provider.dart';
 import '../data/models/furniture_model.dart';
 import '../data/reviews_provider.dart';
@@ -67,6 +69,17 @@ class _ProductPageState extends ConsumerState<ProductPage> {
     _nameController.clear();
     _reviewController.clear();
     setState(() => _newRating = 5);
+  }
+
+  bool _redirectGuestToGetStarted() {
+    final user = FirebaseAuth.instance.currentUser;
+    final isSignedIn = user != null && !user.isAnonymous;
+    if (isSignedIn) return false;
+
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+    return true;
   }
 
   @override
@@ -366,6 +379,9 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                             height: 52,
                             child: ElevatedButton(
                               onPressed: () {
+                                if (_redirectGuestToGetStarted()) {
+                                  return;
+                                }
                                 for (var i = 0; i < _quantity; i++) {
                                   ref
                                       .read(cartProvider.notifier)

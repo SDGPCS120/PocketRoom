@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
+import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/features/home/presentation/home_page.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
 import 'package:pocketroom/src/features/favorites/presentation/favorites_page.dart';
@@ -15,14 +17,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const CartPage(),
-    const FavoritesPage(),
-    const ProfilePage(),
-  ];
-
   void _onItemTapped(int index) {
+    final user = FirebaseAuth.instance.currentUser;
+    final isSignedIn = user != null && !user.isAnonymous;
+
+    if (index == 3 && !isSignedIn) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+      return;
+    }
+
     setState(() {
       _selectedIndex = index;
     });
@@ -34,7 +39,12 @@ class _MainScreenState extends State<MainScreen> {
       extendBody: true,
       body: IndexedStack(
         index: _selectedIndex,
-        children: _pages,
+        children: [
+          HomePage(onProfileTap: () => _onItemTapped(3)),
+          const CartPage(),
+          const FavoritesPage(),
+          const ProfilePage(),
+        ],
       ),
       bottomNavigationBar: _FloatingBottomBar(
         selectedIndex: _selectedIndex,

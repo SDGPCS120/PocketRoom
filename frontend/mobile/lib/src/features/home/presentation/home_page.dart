@@ -7,7 +7,9 @@ import './widgets/section_header.dart';
 import './widgets/product_list.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final VoidCallback? onProfileTap;
+
+  const HomePage({super.key, this.onProfileTap});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,7 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const AppHeader(),
+            AppHeader(onProfileTap: onProfileTap),
             if (MediaQuery.of(context).size.width <= 600)
               const SearchBarWidget(),
             Expanded(

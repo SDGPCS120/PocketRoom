@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart'; // Import the new theme file
+import '../features/auth/presentation/get_started_page.dart';
 import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
 
@@ -17,6 +19,17 @@ class ProductCard extends ConsumerStatefulWidget {
 
 class _ProductCardState extends ConsumerState<ProductCard> {
   bool _isHovered = false;
+
+  bool _redirectGuestToGetStarted() {
+    final user = FirebaseAuth.instance.currentUser;
+    final isSignedIn = user != null && !user.isAnonymous;
+    if (isSignedIn) return false;
+
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +200,9 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      if (_redirectGuestToGetStarted()) {
+                        return;
+                      }
                       ref.read(favoritesProvider.notifier).toggleFavorite(furniture);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
