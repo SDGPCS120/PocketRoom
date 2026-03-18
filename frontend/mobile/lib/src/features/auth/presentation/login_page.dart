@@ -1,9 +1,7 @@
 import 'dart:developer' as developer;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/firebase_providers.dart';
@@ -233,12 +231,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       pendingGoogleCredential = credential;
 
       // ignore: deprecated_member_use
-      final methods = await auth.fetchSignInMethodsForEmail(pendingEmail!);
+      final methods = await auth.fetchSignInMethodsForEmail(pendingEmail);
       final hasPassword = methods.contains('password');
       final hasGoogle = methods.contains('google.com');
       if (hasPassword && !hasGoogle) {
         final existing = await _signInExistingAndLinkGoogle(
-          email: pendingEmail!,
+          email: pendingEmail,
           googleCredential: credential,
         );
         if (existing == null) {
