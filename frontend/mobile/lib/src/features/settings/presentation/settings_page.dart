@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../features/home/presentation/main_screen.dart';
 import '../../profile/presentation/widgets/section_item.dart';
 import 'privacy_policy_page.dart';
+import 'terms_of_service_page.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -174,7 +175,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   SectionItem(
                     icon: Icons.description_outlined,
                     label: 'Terms of Service',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const TermsOfServicePage(),
+                        ),
+                      );
+                    },
                   ),
                   _Divider(),
                   SectionItem(
