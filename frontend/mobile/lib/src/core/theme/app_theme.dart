@@ -26,14 +26,6 @@ class AppColors {
       offset: Offset(0, 2),
     ),
   ];
-  static const List<BoxShadow> productCardShadow = [
-    BoxShadow(
-      color: Color(0x14000000),
-      blurRadius: 8,
-      offset: Offset(0, 2),
-    ),
-  ];
-
   // Gradient for cards
   static const Gradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
