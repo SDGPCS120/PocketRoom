@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../budget/ui/budget_planner_page.dart';
 
 class FeaturedCollectionCard extends StatefulWidget {
   const FeaturedCollectionCard({super.key});
@@ -303,9 +304,10 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                     height: 36,
                     child: ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Budgeting feature coming soon'),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BudgetPlannerPage(),
                           ),
                         );
                       },

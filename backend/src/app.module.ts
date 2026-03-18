@@ -11,8 +11,10 @@ import { AddressModule } from './modules/address/address.module.js';
 import { StoreModule } from './modules/store/store.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
 import { CartDebugModule } from './modules/cart-debug/cart-debug.module.js';
-import { CategoryModule } from './modules/category/category.module';
-import { PaymentModule } from './modules/payment/payment.module';
+import { CategoryModule } from './modules/category/category.module.js';
+import { PaymentModule } from './modules/payment/payment.module.js';
+import { BudgetModule } from './modules/budget/budget.module.js';
+
 @Module({
   imports: [
     AppConfigModule,
@@ -27,9 +29,10 @@ import { PaymentModule } from './modules/payment/payment.module';
     CartModule,
     CartDebugModule,
     CategoryModule,
+    BudgetModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

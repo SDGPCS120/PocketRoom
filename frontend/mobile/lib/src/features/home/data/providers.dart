@@ -66,7 +66,6 @@ final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
       filtered = filtered.where((item) => item.brand.contains('Damro')).toList();
       break;
     case 'Best sellers':
-    default:
       // For "Best sellers" or others, just keep the type-filtered items
       break;
   }
@@ -91,7 +90,6 @@ final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
       sorted.sort((a, b) => b.rating.compareTo(a.rating));
       break;
     case SortOrder.none:
-    default:
       // Keep existing order (which might be the default API order)
       break;
   }
