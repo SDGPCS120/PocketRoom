@@ -22,6 +22,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   bool _pushNotifications = true;
   bool _orderUpdates = true;
 
+  String _selectedLanguage = 'English';
+  static const _languages = ['English', 'Sinhala', 'Tamil'];
+
   Future<void> _launchPocketRoom() async {
     final uri = Uri.parse('https://www.pocketroom.lk');
     await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -87,8 +90,76 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   SectionItem(
                     icon: Icons.language_outlined,
                     label: 'Language',
-                    value: 'English',
-                    onTap: () {},
+                    value: _selectedLanguage,
+                    trailingIcon: Icons.arrow_drop_down_rounded,
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: AppColors.background,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        builder: (_) {
+                          return SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 16,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Language',
+                                    style: TextStyle(
+                                      color: AppColors.textPrimary,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  ..._languages.map((lang) {
+                                    final selected =
+                                        lang == _selectedLanguage;
+                                    return ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Text(
+                                        lang,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: selected
+                                              ? FontWeight.w600
+                                              : FontWeight.w400,
+                                          color: selected
+                                              ? AppColors.primary
+                                              : AppColors.textPrimary,
+                                        ),
+                                      ),
+                                      trailing: selected
+                                          ? const Icon(
+                                              Icons.check_rounded,
+                                              color: AppColors.primary,
+                                              size: 20,
+                                            )
+                                          : null,
+                                      onTap: () {
+                                        setState(
+                                          () => _selectedLanguage = lang,
+                                        );
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                   _Divider(),
                   SectionItem(
