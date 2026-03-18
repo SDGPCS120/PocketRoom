@@ -25,6 +25,48 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
     super.dispose();
   }
 
+  Widget _buildSuffixActions(String currentQuery) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (currentQuery.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.clear, color: Colors.grey),
+            onPressed: () {
+              _controller.clear();
+              ref.read(searchQueryProvider.notifier).state = '';
+            },
+          ),
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: SizedBox(
+            height: 30,
+            child: ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('AI search coming soon')),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFFD84B3E),
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'AI',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Watch to see if we need to show the clear button
@@ -46,15 +88,7 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
             hintText: 'Search',
             hintStyle: TextStyle(color: Colors.grey[600]),
             prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-            suffixIcon: currentQuery.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear, color: Colors.grey),
-                    onPressed: () {
-                      _controller.clear();
-                      ref.read(searchQueryProvider.notifier).state = '';
-                    },
-                  )
-                : null,
+            suffixIcon: _buildSuffixActions(currentQuery),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           ),

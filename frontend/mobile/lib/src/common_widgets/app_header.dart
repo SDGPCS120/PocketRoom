@@ -31,6 +31,48 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
     super.dispose();
   }
 
+  Widget _buildSearchSuffix(String currentQuery) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (currentQuery.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.clear, color: Colors.grey),
+            onPressed: () {
+              _searchController.clear();
+              ref.read(searchQueryProvider.notifier).state = '';
+            },
+          ),
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: SizedBox(
+            height: 30,
+            child: ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('AI search coming soon')),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFFD84B3E),
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'AI',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Watch cart state
@@ -66,15 +108,7 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
                   decoration: InputDecoration(
                     hintText: 'Search furniture...',
                     prefixIcon: const Icon(Icons.search),
-                    suffixIcon: currentQuery.isNotEmpty
-                        ? IconButton(
-                            icon: const Icon(Icons.clear, color: Colors.grey),
-                            onPressed: () {
-                              _searchController.clear();
-                              ref.read(searchQueryProvider.notifier).state = '';
-                            },
-                          )
-                        : null,
+                    suffixIcon: _buildSearchSuffix(currentQuery),
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                       borderSide: BorderSide.none,
