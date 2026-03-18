@@ -4,12 +4,15 @@ import { BudgetBundleRequestDto, BudgetBundleResponseDto } from './dto/budget-bu
 
 @Controller('budget')
 export class BudgetController {
-  constructor(private readonly budgetService: BudgetService) {}
+  constructor(private readonly budgetService: BudgetService) { }
 
   @Post('generate')
-async generateBundle(
-  @Body() dto: BudgetBundleRequestDto,
-): Promise<BudgetBundleResponseDto> {
-  return this.budgetService.generateBundle(dto);
-}
+  async generateBundle(
+    @Body() dto: BudgetBundleRequestDto,
+  ): Promise<BudgetBundleResponseDto> {
+    console.log('[BudgetController] Received Request:', JSON.stringify(dto, null, 2));
+    const res = await this.budgetService.generateBundle(dto);
+    console.log('[BudgetController] Returning Full Response:', JSON.stringify(res, null, 2));
+    return res;
+  }
 }
