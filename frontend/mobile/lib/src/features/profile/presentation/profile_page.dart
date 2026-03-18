@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
 import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
+import 'package:pocketroom/src/core/api_config.dart';
 import '../../../core/theme/app_theme.dart';
 import 'edit_profile_page.dart';
 import 'widgets/section_item.dart';
@@ -117,6 +121,68 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (!mounted) return;
     Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+  Future<void> _showCartDebugJson() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No signed-in user found.')),
+      );
+      return;
+    }
+
+    try {
+      final token = await user.getIdToken(true);
+      final response = await http.get(
+        Uri.parse('${ApiConfig.baseUrl}/cart-debug/me'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Request failed with status ${response.statusCode}');
+      }
+
+      final parsed = jsonDecode(response.body);
+      final prettyJson = const JsonEncoder.withIndent('  ').convert(parsed);
+
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Cart Debug JSON'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: SingleChildScrollView(
+                child: SelectableText(
+                  prettyJson,
+                  style: const TextStyle(
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load cart debug JSON: $error')),
+      );
+    }
   }
 
   @override
@@ -316,6 +382,28 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       child: const Text(
                         'Log out',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: OutlinedButton(
+                      onPressed: _showCartDebugJson,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.textPrimary,
+                        side: const BorderSide(color: AppColors.cardBorder),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(28),
+                        ),
+                      ),
+                      child: const Text(
+                        'View Cart Debug JSON',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

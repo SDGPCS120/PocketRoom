@@ -18,6 +18,7 @@ class _ArViewPageState extends State<ArViewPage> {
   String? _errorMessage;
   bool _isLoadingCart = true;
   bool _didSendInitialCart = false;
+  bool _isSendingCart = false;
 
   @override
   void initState() {
@@ -49,7 +50,7 @@ class _ArViewPageState extends State<ArViewPage> {
               .collection('cart')
               .get();
       final items = cartSnapshot.docs.map((doc) {
-        final data = Map<String, dynamic>.from(doc.data());
+        final data = _toJsonSafeMap(doc.data());
         return {
           'id': doc.id,
           ...data,
@@ -81,16 +82,44 @@ class _ArViewPageState extends State<ArViewPage> {
   Future<void> _sendCartToUnityIfReady() async {
     final controller = _unityController;
     final payload = _cartPayload;
-    if (_didSendInitialCart || controller == null || payload == null) {
+    if (_didSendInitialCart || _isSendingCart || controller == null || payload == null) {
       return;
     }
 
-    await controller.postMessage(
-      'FlutterCartBridge',
-      'ReceiveCartPayload',
-      jsonEncode(payload),
-    );
-    _didSendInitialCart = true;
+    _isSendingCart = true;
+    final payloadJson = jsonEncode(payload);
+
+    try {
+      // Unity can report created before the target scene objects are ready, so retry a few times.
+      for (var attempt = 0; attempt < 5; attempt++) {
+        await controller.postMessage(
+          'FlutterCartBridge',
+          'ReceiveCartPayload',
+          payloadJson,
+        );
+        await Future<void>.delayed(const Duration(milliseconds: 400));
+      }
+      _didSendInitialCart = true;
+    } finally {
+      _isSendingCart = false;
+    }
+  }
+
+  Map<String, dynamic> _toJsonSafeMap(Map<String, dynamic> data) {
+    return data.map((key, value) => MapEntry(key, _toJsonSafeValue(value)));
+  }
+
+  dynamic _toJsonSafeValue(dynamic value) {
+    if (value is Timestamp) {
+      return value.toDate().toIso8601String();
+    }
+    if (value is Map<String, dynamic>) {
+      return _toJsonSafeMap(value);
+    }
+    if (value is List) {
+      return value.map(_toJsonSafeValue).toList();
+    }
+    return value;
   }
 
   @override

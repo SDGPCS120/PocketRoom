@@ -29,6 +29,17 @@ class FirestoreProductRepository implements IFurnitureRepository {
                 : double.nan,
         images:
             _extractImages(data),
+        imageUrl: _extractImageUrl(data),
+        imagePath: _asOptionalText(data['imagePath']),
+        modelURL: _asOptionalText(data['modelURL']),
+        material: _asOptionalText(data['material']),
+        modelStatus: _asOptionalText(data['modelStatus']),
+        modelError: data['modelError']?.toString() ?? '',
+        primaryColor: _asOptionalText(data['primaryColor']),
+        productID: _asOptionalText(data['productID']).isNotEmpty
+            ? _asOptionalText(data['productID'])
+            : doc.id,
+        stockStatus: data['stockStatus'] is bool ? data['stockStatus'] as bool : null,
         furnitureType: _asTextOrNA(data['furnitureType']),
         dimensions: _asTextOrNA(data['dimensions']),
         availability: _availabilityLabel(data['stockStatus']),
@@ -43,6 +54,13 @@ class FirestoreProductRepository implements IFurnitureRepository {
     }
     final text = value.toString().trim();
     return text.isEmpty ? 'N/A' : text;
+  }
+
+  String _asOptionalText(dynamic value) {
+    if (value == null) {
+      return '';
+    }
+    return value.toString().trim();
   }
 
   String _availabilityLabel(dynamic stockStatus) {
@@ -69,6 +87,14 @@ class FirestoreProductRepository implements IFurnitureRepository {
     }
 
     return const [];
+  }
+
+  String _extractImageUrl(Map<String, dynamic> data) {
+    final imageUrl = data['imageUrl'];
+    if (imageUrl == null) {
+      return '';
+    }
+    return imageUrl.toString().trim();
   }
 
   List<String> _extractStyleTags(dynamic rawTags) {
