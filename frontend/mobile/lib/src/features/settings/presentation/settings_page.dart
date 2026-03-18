@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../features/home/presentation/main_screen.dart';
 import '../../profile/presentation/widgets/section_item.dart';
 import 'licenses_page.dart';
+import 'login_sessions_page.dart';
 import 'privacy_policy_page.dart';
 import 'terms_of_service_page.dart';
 
@@ -200,7 +201,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   SectionItem(
                     icon: Icons.devices_outlined,
                     label: 'Login Sessions',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const LoginSessionsPage(),
+                        ),
+                      );
+                    },
                   ),
                   _Divider(),
                   SectionItem(
