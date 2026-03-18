@@ -60,7 +60,11 @@ export class GenerationsService {
       const productDoc = await db.collection('products').doc(productId).get();
 
       if (!productDoc.exists) {
-        throw new Error(`Product with ID ${productId} not found`);
+        await db.collection('products').doc(productId).set({
+          createdAt: new Date(),
+          name: 'Generated Product ' + productId,
+          source: '3d-pipeline'
+        });
       }
 
       // Step 2
