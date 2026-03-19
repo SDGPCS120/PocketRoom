@@ -1,8 +1,7 @@
-```
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../common_widgets/product_card.dart';
-import '../../../../common_widgets/circular_nav_button.dart'; // Finalize the carousel system.
+import '../../../../common_widgets/circular_nav_button.dart';
 import '../../data/providers.dart';
 
 class ProductList extends ConsumerStatefulWidget {
@@ -15,17 +14,35 @@ class ProductList extends ConsumerStatefulWidget {
 
 class _ProductListState extends ConsumerState<ProductList> {
   late final ScrollController _scrollController;
+  bool _showLeftArrow = false;
+  bool _showRightArrow = true;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollListener() {
+    if (!_scrollController.hasClients) return;
+    
+    final showLeft = _scrollController.offset > 10; // Small threshold
+    final showRight = _scrollController.offset < _scrollController.position.maxScrollExtent - 10;
+    
+    if (showLeft != _showLeftArrow || showRight != _showRightArrow) {
+      setState(() {
+        _showLeftArrow = showLeft;
+        _showRightArrow = showRight;
+      });
+    }
   }
 
   void _scroll(double offset) {
@@ -63,6 +80,9 @@ class _ProductListState extends ConsumerState<ProductList> {
           // Calculate cardWidth to show ~2.14 items in the viewport (2 and 1/7)
           final cardWidth = (availableWidth - (itemSpacing * 2)) / 2.14;
 
+          // Initial check for right arrow
+          WidgetsBinding.instance.addPostFrameCallback((_) => _scrollListener());
+
           return SliverToBoxAdapter(
             child: SizedBox(
               height: 260,
@@ -89,20 +109,22 @@ class _ProductListState extends ConsumerState<ProductList> {
                       },
                     ),
                   ),
-                  Positioned(
-                    left: 6,
-                    child: CircularNavButton(
-                      icon: Icons.arrow_back_ios_new_rounded,
-                      onTap: () => _scroll(-(cardWidth + itemSpacing)),
+                  if (_showLeftArrow)
+                    Positioned(
+                      left: 6,
+                      child: CircularNavButton(
+                        icon: Icons.arrow_back_ios_new_rounded,
+                        onTap: () => _scroll(-(cardWidth + itemSpacing)),
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    right: 6,
-                    child: CircularNavButton(
-                      icon: Icons.arrow_forward_ios_rounded,
-                      onTap: () => _scroll(cardWidth + itemSpacing),
+                  if (_showRightArrow)
+                    Positioned(
+                      right: 6,
+                      child: CircularNavButton(
+                        icon: Icons.arrow_forward_ios_rounded,
+                        onTap: () => _scroll(cardWidth + itemSpacing),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
