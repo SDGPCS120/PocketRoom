@@ -31,12 +31,12 @@ class HomePage extends StatelessWidget {
                   const SliverToBoxAdapter(
                     child: SectionHeader(title: "Trending Now", showSort: false),
                   ),
-                  const ProductList(isHorizontal: true, provider: trendingFurnitureProvider),
+                  ProductList(isHorizontal: true, provider: trendingFurnitureProvider),
                   
                   const SliverToBoxAdapter(
                     child: SectionHeader(title: "Budget Friendly", showSort: false),
                   ),
-                  const ProductList(isHorizontal: true, provider: budgetFriendlyFurnitureProvider),
+                  ProductList(isHorizontal: true, provider: budgetFriendlyFurnitureProvider),
 
                   SliverToBoxAdapter(
                     child: SectionHeader(
@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const ProductList(isHorizontal: true, provider: limitedTimeFurnitureProvider),
+                  ProductList(isHorizontal: true, provider: limitedTimeFurnitureProvider),
                   
                   const SliverPadding(padding: EdgeInsets.only(bottom: 24)),
                 ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/models/furniture_model.dart';
 import '../../../../common_widgets/product_card.dart';
 import '../../../../common_widgets/circular_nav_button.dart';
 import '../../data/providers.dart';
