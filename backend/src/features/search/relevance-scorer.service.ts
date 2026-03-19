@@ -1,18 +1,16 @@
-import { ParsedQuery } from './query-parser';
-import { ColorMatcher } from './color-matcher';
+import { Injectable } from '@nestjs/common';
+import { ColorMatcherService } from './color-matcher.service';
+import { ParsedQuery } from './query-parser.service';
 
-export class RelevanceScorer {
-    private colorMatcher: ColorMatcher;
-
-    constructor() {
-        this.colorMatcher = new ColorMatcher();
-    }
+@Injectable()
+export class RelevanceScorerService {
+    constructor(private readonly colorMatcher: ColorMatcherService) { }
 
     public score(
         product: any,
         parsedQuery: ParsedQuery,
         semanticSimilarity: number,
-        mlProbability: number = 0.0
+        mlProbability: number = 0.0,
     ): { score: number; tags: string[] } {
         let score = 0.0;
         const tags: string[] = [];
@@ -30,7 +28,10 @@ export class RelevanceScorer {
         // Color matching
         if (parsedQuery.colors && parsedQuery.colors.length > 0) {
             const productColor = product.color || '';
-            const { matches, matchType } = this.colorMatcher.matches(productColor, parsedQuery.colors);
+            const { matches, matchType } = this.colorMatcher.matches(
+                productColor,
+                parsedQuery.colors,
+            );
 
             if (matches) {
                 if (matchType === 'exact') {
@@ -52,7 +53,10 @@ export class RelevanceScorer {
             const productMaterial = (product.material || '').toLowerCase();
             for (const material of parsedQuery.materials) {
                 const materialLower = material.toLowerCase();
-                if (productMaterial.includes(materialLower) || materialLower.includes(productMaterial)) {
+                if (
+                    productMaterial.includes(materialLower) ||
+                    materialLower.includes(productMaterial)
+                ) {
                     score += 10;
                     tags.push('material_match');
                     break;
@@ -65,7 +69,10 @@ export class RelevanceScorer {
             const productStyle = (product.style || '').toLowerCase();
             for (const style of parsedQuery.styles) {
                 const styleLower = style.toLowerCase();
-                if (productStyle.includes(styleLower) || styleLower.includes(productStyle)) {
+                if (
+                    productStyle.includes(styleLower) ||
+                    styleLower.includes(productStyle)
+                ) {
                     score += 10;
                     tags.push('style_match');
                     break;
@@ -74,7 +81,10 @@ export class RelevanceScorer {
         }
 
         // Price range matching
-        const productPrice = typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0;
+        const productPrice =
+            typeof product.price === 'number'
+                ? product.price
+                : parseFloat(product.price) || 0;
         if (productPrice > 0) {
             if (parsedQuery.priceMin && productPrice < parsedQuery.priceMin) {
                 score -= 30;
@@ -91,18 +101,23 @@ export class RelevanceScorer {
     }
 
     public shouldInclude(product: any, parsedQuery: ParsedQuery): boolean {
-
         // Hard constraint: color must match (exact or similar) if specified
         if (parsedQuery.colors && parsedQuery.colors.length > 0) {
             const productColor = product.color || '';
-            const { matches } = this.colorMatcher.matches(productColor, parsedQuery.colors);
+            const { matches } = this.colorMatcher.matches(
+                productColor,
+                parsedQuery.colors,
+            );
             if (!matches) {
                 return false;
             }
         }
 
         // Hard constraint: price must be within range if specified
-        const productPrice = typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0;
+        const productPrice =
+            typeof product.price === 'number'
+                ? product.price
+                : parseFloat(product.price) || 0;
         if (productPrice > 0) {
             if (parsedQuery.priceMin && productPrice < parsedQuery.priceMin) {
                 return false;

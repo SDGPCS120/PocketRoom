@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 export interface ParsedQuery {
     rawQuery: string;
     productType: string | null;
@@ -8,7 +10,8 @@ export interface ParsedQuery {
     priceMax: number | null;
 }
 
-export class QueryParser {
+@Injectable()
+export class QueryParserService {
     private static readonly PRODUCT_TYPES: Record<string, string[]> = {
         chair: ['chair', 'chairs', 'seating', 'seat'],
         sofa: ['sofa', 'sofas', 'couch', 'couches', 'loveseat', 'loveseats'],
@@ -16,53 +19,115 @@ export class QueryParser {
         desk: ['desk', 'desks', 'workstation', 'workstations'],
         bed: ['bed', 'beds', 'bedframe', 'bedframes'],
         storage: [
-            'storage', 'shelf', 'shelves', 'bookshelf', 'bookshelves',
-            'cabinet', 'cabinets', 'wardrobe', 'wardrobes', 'console',
+            'storage',
+            'shelf',
+            'shelves',
+            'bookshelf',
+            'bookshelves',
+            'cabinet',
+            'cabinets',
+            'wardrobe',
+            'wardrobes',
+            'console',
         ],
         decor: ['decor', 'decoration', 'rug', 'rugs', 'lamp', 'lamps'],
     };
 
     private static readonly COLORS: Set<string> = new Set([
-        'pink', 'magenta', 'fuchsia', 'rose', 'blush',
-        'purple', 'violet', 'lavender', 'plum',
-        'grey', 'gray', 'silver', 'charcoal',
-        'black', 'white', 'cream', 'ivory',
-        'beige', 'tan', 'brown', 'walnut', 'oak', 'teak',
-        'blue', 'navy', 'cyan',
-        'green', 'olive',
-        'red', 'burgundy', 'maroon',
-        'yellow', 'gold', 'golden',
-        'orange', 'coral', 'salmon',
-        'clear', 'transparent',
+        'pink',
+        'magenta',
+        'fuchsia',
+        'rose',
+        'blush',
+        'purple',
+        'violet',
+        'lavender',
+        'plum',
+        'grey',
+        'gray',
+        'silver',
+        'charcoal',
+        'black',
+        'white',
+        'cream',
+        'ivory',
+        'beige',
+        'tan',
+        'brown',
+        'walnut',
+        'oak',
+        'teak',
+        'blue',
+        'navy',
+        'cyan',
+        'green',
+        'olive',
+        'red',
+        'burgundy',
+        'maroon',
+        'yellow',
+        'gold',
+        'golden',
+        'orange',
+        'coral',
+        'salmon',
+        'clear',
+        'transparent',
     ]);
 
     private static readonly MATERIALS: Set<string> = new Set([
-        'wood', 'wooden', 'oak', 'walnut', 'teak',
-        'metal', 'metallic', 'steel', 'iron',
-        'fabric', 'cloth', 'textile',
-        'leather', 'genuine leather',
-        'velvet', 'velvety',
-        'glass', 'tempered glass',
-        'marble', 'stone',
-        'plastic', 'acrylic',
-        'engineered wood', 'mdf',
+        'wood',
+        'wooden',
+        'oak',
+        'walnut',
+        'teak',
+        'metal',
+        'metallic',
+        'steel',
+        'iron',
+        'fabric',
+        'cloth',
+        'textile',
+        'leather',
+        'genuine leather',
+        'velvet',
+        'velvety',
+        'glass',
+        'tempered glass',
+        'marble',
+        'stone',
+        'plastic',
+        'acrylic',
+        'engineered wood',
+        'mdf',
     ]);
 
     private static readonly STYLES: Set<string> = new Set([
-        'modern', 'contemporary',
-        'classic', 'traditional',
-        'minimalist', 'minimal', 'simple',
+        'modern',
+        'contemporary',
+        'classic',
+        'traditional',
+        'minimalist',
+        'minimal',
+        'simple',
         'industrial',
-        'scandinavian', 'scandi', 'nordic',
-        'luxury', 'premium', 'elegant',
-        'casual', 'relaxed',
+        'scandinavian',
+        'scandi',
+        'nordic',
+        'luxury',
+        'premium',
+        'elegant',
+        'casual',
+        'relaxed',
     ]);
 
     private productTypeLookup: Map<string, string>;
 
     constructor() {
         this.productTypeLookup = new Map<string, string>();
-        for (const [canonical, variants] of Object.entries(QueryParser.PRODUCT_TYPES)) {
+        for (const [canonical, variants] of Object.entries(
+            QueryParserService.PRODUCT_TYPES,
+        )) {
             for (const variant of variants) {
                 this.productTypeLookup.set(variant.toLowerCase(), canonical);
             }
@@ -99,7 +164,9 @@ export class QueryParser {
             }
         }
 
-        for (const [canonical, variants] of Object.entries(QueryParser.PRODUCT_TYPES)) {
+        for (const [canonical, variants] of Object.entries(
+            QueryParserService.PRODUCT_TYPES,
+        )) {
             for (const variant of variants) {
                 if (text.includes(variant)) {
                     return canonical;
@@ -113,7 +180,7 @@ export class QueryParser {
     private extractColors(tokens: string[]): string[] {
         const colors: string[] = [];
         for (const token of tokens) {
-            if (QueryParser.COLORS.has(token)) {
+            if (QueryParserService.COLORS.has(token)) {
                 colors.push(token);
             }
         }
@@ -123,14 +190,21 @@ export class QueryParser {
     private extractMaterials(tokens: string[], text: string): string[] {
         const materials: string[] = [];
 
-        for (const material of ['engineered wood', 'genuine leather', 'tempered glass']) {
+        for (const material of [
+            'engineered wood',
+            'genuine leather',
+            'tempered glass',
+        ]) {
             if (text.includes(material)) {
                 materials.push(material);
             }
         }
 
         for (const token of tokens) {
-            if (QueryParser.MATERIALS.has(token) && !materials.includes(token)) {
+            if (
+                QueryParserService.MATERIALS.has(token) &&
+                !materials.includes(token)
+            ) {
                 materials.push(token);
             }
         }
@@ -141,28 +215,37 @@ export class QueryParser {
     private extractStyles(tokens: string[]): string[] {
         const styles: string[] = [];
         for (const token of tokens) {
-            if (QueryParser.STYLES.has(token)) {
+            if (QueryParserService.STYLES.has(token)) {
                 styles.push(token);
             }
         }
         return styles;
     }
 
-    private extractPriceRange(text: string): { priceMin: number | null; priceMax: number | null } {
+    private extractPriceRange(text: string): {
+        priceMin: number | null;
+        priceMax: number | null;
+    } {
         let priceMin: number | null = null;
         let priceMax: number | null = null;
 
-        const underMatch = text.match(/(?:under|below|less than|max)\s+(\d+(?:,\d+)*)/);
+        const underMatch = text.match(
+            /(?:under|below|less than|max)\s+(\d+(?:,\d+)*)/,
+        );
         if (underMatch) {
             priceMax = parseFloat(underMatch[1].replace(/,/g, ''));
         }
 
-        const overMatch = text.match(/(?:over|above|more than|min)\s+(\d+(?:,\d+)*)/);
+        const overMatch = text.match(
+            /(?:over|above|more than|min)\s+(\d+(?:,\d+)*)/,
+        );
         if (overMatch) {
             priceMin = parseFloat(overMatch[1].replace(/,/g, ''));
         }
 
-        const betweenMatch = text.match(/between\s+(\d+(?:,\d+)*)\s+and\s+(\d+(?:,\d+)*)/);
+        const betweenMatch = text.match(
+            /between\s+(\d+(?:,\d+)*)\s+and\s+(\d+(?:,\d+)*)/,
+        );
         if (betweenMatch) {
             priceMin = parseFloat(betweenMatch[1].replace(/,/g, ''));
             priceMax = parseFloat(betweenMatch[2].replace(/,/g, ''));

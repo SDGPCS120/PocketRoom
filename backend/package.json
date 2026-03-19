@@ -1,26 +1,44 @@
 {
-    "name": "ai-search-backend",
-    "version": "1.0.0",
-    "description": "TypeScript port of AI Search backend",
-    "main": "dist/index.js",
-    "scripts": {
-        "dev": "ts-node src/index.ts",
-        "build": "tsc",
-        "start": "node dist/index.js"
-    },
-    "dependencies": {
-        "cors": "^2.8.5",
-        "dotenv": "^17.3.1",
-        "express": "^4.21.0",
-        "firebase-admin": "^13.7.0",
-        "natural": "^8.0.1"
-    },
-    "devDependencies": {
-        "@types/cors": "^2.8.17",
-        "@types/express": "^4.17.21",
-        "@types/natural": "^5.1.5",
-        "@types/node": "^22.5.0",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.5.4"
-    }
+  "name": "ai-search-backend",
+  "version": "1.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js",
+    "dev": "ts-node src/features/main.ts",
+    "start:dev": "ts-node src/features/main.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "firebase-admin": "^13.7.0",
+    "natural": "^8.0.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.1",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.7",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "prettier": "^3.4.2",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.7.3"
+  }
 }

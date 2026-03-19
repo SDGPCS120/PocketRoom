@@ -1,4 +1,7 @@
-export class ColorMatcher {
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
+export class ColorMatcherService {
     private static readonly COLOR_FAMILIES: Record<string, string[]> = {
         pink: ['pink', 'magenta', 'fuchsia', 'rose', 'blush', 'salmon', 'coral'],
         magenta: ['pink', 'magenta', 'fuchsia', 'rose', 'blush'],
@@ -57,8 +60,8 @@ export class ColorMatcher {
 
         for (const color of colors) {
             const colorLower = color.toLowerCase();
-            if (ColorMatcher.COLOR_FAMILIES[colorLower]) {
-                for (const shade of ColorMatcher.COLOR_FAMILIES[colorLower]) {
+            if (ColorMatcherService.COLOR_FAMILIES[colorLower]) {
+                for (const shade of ColorMatcherService.COLOR_FAMILIES[colorLower]) {
                     expanded.add(shade);
                 }
             } else {
@@ -69,7 +72,10 @@ export class ColorMatcher {
         return expanded;
     }
 
-    public matches(productColor: string, queryColors: string[]): { matches: boolean; matchType: 'exact' | 'similar' | '' } {
+    public matches(
+        productColor: string,
+        queryColors: string[],
+    ): { matches: boolean; matchType: 'exact' | 'similar' | '' } {
         if (!queryColors || queryColors.length === 0) {
             return { matches: false, matchType: '' };
         }
@@ -94,6 +100,6 @@ export class ColorMatcher {
 
     public getColorFamily(color: string): string[] {
         const colorLower = color.toLowerCase();
-        return ColorMatcher.COLOR_FAMILIES[colorLower] || [colorLower];
+        return ColorMatcherService.COLOR_FAMILIES[colorLower] || [colorLower];
     }
 }
