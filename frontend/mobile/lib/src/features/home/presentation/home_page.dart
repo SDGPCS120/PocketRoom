@@ -4,7 +4,9 @@ import '../../../common_widgets/search_bar_widget.dart';
 import './widgets/featured_collection_card.dart';
 import './widgets/category_icons_row.dart';
 import './widgets/section_header.dart';
-import './widgets/product_list.dart';
+import 'widgets/product_list.dart';
+import 'widgets/carousel_countdown_timer.dart';
+import '../data/providers.dart';
 
 class HomePage extends StatelessWidget {
   final VoidCallback? onProfileTap;
@@ -23,12 +25,31 @@ class HomePage extends StatelessWidget {
             Expanded(
               child: CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(child: FeaturedCollectionCard()),
-                  SliverToBoxAdapter(child: CategoryIconsRow()),
-                  SliverToBoxAdapter(
-                    child: SectionHeader(title: "Trending Now"),
+                  const SliverToBoxAdapter(child: FeaturedCollectionCard()),
+                  const SliverToBoxAdapter(child: CategoryIconsRow()),
+                  
+                  const SliverToBoxAdapter(
+                    child: SectionHeader(title: "Trending Now", showSort: false),
                   ),
-                  ProductList(),
+                  ProductList(isHorizontal: true, provider: trendingFurnitureProvider),
+                  
+                  const SliverToBoxAdapter(
+                    child: SectionHeader(title: "Budget Friendly", showSort: false),
+                  ),
+                  ProductList(isHorizontal: true, provider: budgetFriendlyFurnitureProvider),
+
+                  SliverToBoxAdapter(
+                    child: SectionHeader(
+                      title: "Limited Time Offers",
+                      showSort: false,
+                      trailing: CarouselCountdownTimer(
+                        endTime: DateTime.now().add(const Duration(hours: 12, minutes: 45)),
+                      ),
+                    ),
+                  ),
+                  ProductList(isHorizontal: true, provider: limitedTimeFurnitureProvider),
+                  
+                  const SliverPadding(padding: EdgeInsets.only(bottom: 24)),
                 ],
               ),
             ),
