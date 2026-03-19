@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: SectionHeader(title: "Trending Now"),
                   ),
-                  ProductList(),
+                  ProductList(isHorizontal: true),
                 ],
               ),
             ),
