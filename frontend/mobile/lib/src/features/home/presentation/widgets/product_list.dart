@@ -6,7 +6,8 @@ import '../../data/providers.dart';
 
 class ProductList extends ConsumerStatefulWidget {
   final bool isHorizontal;
-  const ProductList({super.key, this.isHorizontal = false});
+  final AlwaysAliveProviderBase<AsyncValue<List<Furniture>>>? provider;
+  const ProductList({super.key, this.isHorizontal = false, this.provider});
 
   @override
   ConsumerState<ProductList> createState() => _ProductListState();
@@ -56,16 +57,15 @@ class _ProductListState extends ConsumerState<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch the "fetcher" provider to handle the initial loading/error states.
-    final allFurnitureAsync = ref.watch(allFurnitureProvider);
+    // If a provider is passed, use it; otherwise, use the default filtered selection.
+    final furnitureAsync = widget.provider != null
+        ? ref.watch(widget.provider!)
+        : ref.watch(allFurnitureProvider).whenData((_) => ref.watch(filteredFurnitureProvider));
 
-    return allFurnitureAsync.when(
+    return furnitureAsync.when(
       loading: () => const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
       error: (error, stack) => SliverFillRemaining(child: Center(child: Text('Error: $error'))),
-      data: (_) {
-        // Once the data has loaded, watch the fast "filterer" provider to get
-        // the list that should be displayed.
-        final filteredList = ref.watch(filteredFurnitureProvider);
+      data: (filteredList) {
         
         // If the filtered list is empty, show a message.
         if (filteredList.isEmpty) {
