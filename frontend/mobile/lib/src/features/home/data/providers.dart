@@ -116,6 +116,33 @@ final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
   return sorted;
 });
 
+// 3. Specialized Providers for Homepage Sections
+final trendingFurnitureProvider = Provider<AsyncValue<List<Furniture>>>((ref) {
+  final allFurnitureAsync = ref.watch(allFurnitureProvider);
+  return allFurnitureAsync.whenData((list) {
+    final sorted = List<Furniture>.from(list);
+    // Trending = Highest rated
+    sorted.sort((a, b) => b.rating.compareTo(a.rating));
+    return sorted.take(10).toList();
+  });
+});
+
+final budgetFriendlyFurnitureProvider = Provider<AsyncValue<List<Furniture>>>((ref) {
+  final allFurnitureAsync = ref.watch(allFurnitureProvider);
+  return allFurnitureAsync.whenData((list) {
+    // Budget Friendly = Price < 50,000 (adjust threshold as needed)
+    return list.where((item) => item.price < 50000).toList();
+  });
+});
+
+final limitedTimeFurnitureProvider = Provider<AsyncValue<List<Furniture>>>((ref) {
+  final allFurnitureAsync = ref.watch(allFurnitureProvider);
+  return allFurnitureAsync.whenData((list) {
+    // Limited Time = Items with a discount (oldPrice exists and is > price)
+    return list.where((item) => item.oldPrice != null && item.oldPrice! > item.price).toList();
+  });
+});
+
 bool _matchesFurnitureType(Furniture item, String activeType) {
   final selected = _normalize(activeType);
   final itemType = _normalize(item.furnitureType);
