@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './models/furniture_model.dart';
 import './models/vendor_model.dart';
+import './mock_data.dart';
 import './repositories/furniture_repository.dart';
 import './repositories/firestore_product_repository.dart';
 
@@ -56,64 +57,13 @@ final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
   final searchQuery = ref.watch(searchQueryProvider).trim().toLowerCase();
   final sortOrder = ref.watch(sortOrderProvider);
 
-  // First, filter by Furniture Type (if not "All")
-  var filtered = allFurniture;
-  if (activeType != 'All') {
-    filtered = filtered
-        .where((item) => _matchesFurnitureType(item, activeType))
-        .toList();
-  }
-
-  // Then, filter by General Category
-  // Categories: ["Best sellers", "Arpico", "Modern", "Max", "Minimalistic", "Damro"]
-  switch (activeCategory) {
-    case 'Arpico':
-      filtered = filtered.where((item) => item.brand.contains('Arpico')).toList();
-      break;
-    case 'Modern':
-      filtered = filtered.where((item) => _hasStyleTag(item, 'modern')).toList();
-      break;
-    case 'Max':
-      filtered = filtered.where((item) => _hasStyleTag(item, 'max')).toList();
-      break;
-    case 'Minimalistic':
-      filtered = filtered
-          .where((item) => _hasStyleTag(item, 'minimalistic'))
-          .toList();
-      break;
-    case 'Damro':
-      filtered = filtered.where((item) => item.brand.contains('Damro')).toList();
-      break;
-    case 'Best sellers':
-      // For "Best sellers" or others, just keep the type-filtered items
-      break;
-  }
-
-  // Then, apply search query filter if it's not empty
+  var filtered = _applyCategoryFilters(allFurniture, activeType, activeCategory);
+  
   if (searchQuery.isNotEmpty) {
-    filtered = filtered
-        .where((item) => item.name.toLowerCase().contains(searchQuery) || item.brand.toLowerCase().contains(searchQuery))
-        .toList();
+    filtered = filtered.where((item) => _matchesSearch(item, searchQuery)).toList();
   }
 
-  // Finally, apply sorting
-  final sorted = List<Furniture>.from(filtered);
-  switch (sortOrder) {
-    case SortOrder.priceAsc:
-      sorted.sort((a, b) => a.price.compareTo(b.price));
-      break;
-    case SortOrder.priceDesc:
-      sorted.sort((a, b) => b.price.compareTo(a.price));
-      break;
-    case SortOrder.ratingDesc:
-      sorted.sort((a, b) => b.rating.compareTo(a.rating));
-      break;
-    case SortOrder.none:
-      // Keep existing order (which might be the default API order)
-      break;
-  }
-
-  return sorted;
+  return _applySorting(filtered, sortOrder);
 });
 
 // 3. Specialized Providers for Homepage Sections
@@ -128,86 +78,67 @@ final trendingFurnitureProvider = Provider<AsyncValue<List<Furniture>>>((ref) {
 });
 
 final budgetFriendlyFurnitureProvider = Provider<AsyncValue<List<Furniture>>>((ref) {
-  final allFurnitureAsync = ref.watch(allFurnitureProvider);
-  return allFurnitureAsync.whenData((list) {
-    // Budget Friendly = Price < 50,000
-    var budgetItems = list.where((item) => item.price < 50000).toList();
-    
-    if (budgetItems.length < 2) {
-      budgetItems.addAll([
-        Furniture(
-          id: 'mock_budget_1',
-          name: 'Side Table',
-          brand: 'ARPICO',
-          price: 8500,
-          rating: 4.5,
-          images: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
-          furnitureType: 'Table',
-          dimensions: '45x45x50 cm',
-        ),
-        Furniture(
-          id: 'mock_budget_2',
-          name: 'Study Lamp',
-          brand: 'MAX',
-          price: 3200,
-          rating: 4.7,
-          images: ['https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=400'],
-          furnitureType: 'Lamp',
-          dimensions: '15x15x40 cm',
-        ),
-      ]);
-    }
-    return budgetItems;
+  return ref.watch(allFurnitureProvider).whenData((list) {
+    final budgetItems = list.where((item) => item.price < 50000).toList();
+    return budgetItems.isNotEmpty ? budgetItems : mockBudgetProducts;
   });
 });
 
 final limitedTimeFurnitureProvider = Provider<AsyncValue<List<Furniture>>>((ref) {
-  final allFurnitureAsync = ref.watch(allFurnitureProvider);
-  return allFurnitureAsync.whenData((list) {
-    // Limited Time = Items with a discount (oldPrice exists and is > price)
-    var deals = list.where((item) => item.oldPrice != null && item.oldPrice! > item.price).toList();
-    
-    // Add mock deals if Firestore yields too few (for demonstration)
-    if (deals.length < 2) {
-      deals.addAll([
-        Furniture(
-          id: 'mock_deal_1',
-          name: 'Modern Velvet Sofa',
-          brand: 'DAMRO',
-          price: 95000,
-          oldPrice: 125000,
-          rating: 4.8,
-          images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400'],
-          furnitureType: 'Sofa',
-          dimensions: '210x95x90 cm',
-        ),
-        Furniture(
-          id: 'mock_deal_2',
-          name: 'Ergonomic Office Chair',
-          brand: 'ARPICO',
-          price: 18500,
-          oldPrice: 24000,
-          rating: 4.6,
-          images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400'],
-          furnitureType: 'Chair',
-          dimensions: '60x60x110 cm',
-        ),
-        Furniture(
-          id: 'mock_deal_3',
-          name: 'Minimalist Coffee Table',
-          brand: 'MAX',
-          price: 12000,
-          oldPrice: 18000,
-          rating: 4.4,
-          images: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
-          furnitureType: 'Table',
-          dimensions: '90x90x40 cm',
-        ),
-      ]);
-    }
-    return deals;
+  return ref.watch(allFurnitureProvider).whenData((list) {
+    final deals = list.where((item) => item.oldPrice != null && item.oldPrice! > item.price).toList();
+    return deals.isNotEmpty ? deals : mockLimitedTimeProducts;
   });
 });
+
+List<Furniture> _applyCategoryFilters(List<Furniture> all, String activeType, String activeCategory) {
+  var filtered = all;
+
+  // Filter by Furniture Type
+  if (activeType != 'All') {
+    filtered = filtered.where((item) => _matchesFurnitureType(item, activeType)).toList();
+  }
+
+  // Filter by General Category
+  switch (activeCategory) {
+    case 'Arpico':
+    case 'Damro':
+      filtered = filtered.where((item) => item.brand.contains(activeCategory)).toList();
+      break;
+    case 'Modern':
+    case 'Max':
+    case 'Minimalistic':
+      filtered = filtered.where((item) => _hasStyleTag(item, activeCategory.toLowerCase())).toList();
+      break;
+    default:
+      break;
+  }
+
+  return filtered;
+}
+
+bool _matchesSearch(Furniture item, String query) {
+  return item.name.toLowerCase().contains(query) || 
+         item.brand.toLowerCase().contains(query);
+}
+
+List<Furniture> _applySorting(List<Furniture> items, SortOrder order) {
+  final sorted = List<Furniture>.from(items);
+  switch (order) {
+    case SortOrder.priceAsc:
+      sorted.sort((a, b) => a.price.compareTo(b.price));
+      break;
+    case SortOrder.priceDesc:
+      sorted.sort((a, b) => b.price.compareTo(a.price));
+      break;
+    case SortOrder.ratingDesc:
+      sorted.sort((a, b) => b.rating.compareTo(a.rating));
+      break;
+    case SortOrder.none:
+      break;
+  }
+  return sorted;
+}
 
 bool _matchesFurnitureType(Furniture item, String activeType) {
   final selected = _normalize(activeType);

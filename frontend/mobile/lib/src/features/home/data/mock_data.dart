@@ -262,3 +262,62 @@ final furnitureData = [
 final furnitureTypes = ["All", "Sofa", "Chair", "Table", "Lamp"];
 
 final categories = ["Best sellers", "Arpico", "Modern", "Max", "Minimalistic", "Damro"];
+
+final mockBudgetProducts = [
+  Furniture(
+    id: 'mock_budget_1',
+    name: 'Side Table',
+    brand: 'ARPICO',
+    price: 8500,
+    rating: 4.5,
+    images: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Table',
+    dimensions: '45x45x50 cm',
+  ),
+  Furniture(
+    id: 'mock_budget_2',
+    name: 'Study Lamp',
+    brand: 'MAX',
+    price: 3200,
+    rating: 4.7,
+    images: ['https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Lamp',
+    dimensions: '15x15x40 cm',
+  ),
+];
+
+final mockLimitedTimeProducts = [
+  Furniture(
+    id: 'mock_deal_1',
+    name: 'Modern Velvet Sofa',
+    brand: 'DAMRO',
+    price: 95000,
+    oldPrice: 125000,
+    rating: 4.8,
+    images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Sofa',
+    dimensions: '210x95x90 cm',
+  ),
+  Furniture(
+    id: 'mock_deal_2',
+    name: 'Ergonomic Office Chair',
+    brand: 'ARPICO',
+    price: 18500,
+    oldPrice: 24000,
+    rating: 4.6,
+    images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Chair',
+    dimensions: '60x60x110 cm',
+  ),
+  Furniture(
+    id: 'mock_deal_3',
+    name: 'Minimalist Coffee Table',
+    brand: 'MAX',
+    price: 12000,
+    oldPrice: 18000,
+    rating: 4.4,
+    images: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Table',
+    dimensions: '90x90x40 cm',
+  ),
+];
