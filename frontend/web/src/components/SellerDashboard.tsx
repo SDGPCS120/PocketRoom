@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useSellerSession } from '../auth/sellerSession';
 import './SellerDashboard.css';
 
 /* ─── Types ─── */
@@ -53,6 +54,7 @@ const statusColor: Record<Order['status'], string> = {
 /* ─── Sidebar links ─── */
 const NAV_LINKS = [
   { path: '/dashboard',        label: 'Dashboard',       icon: <GridIcon /> },
+  { path: '/products',         label: 'Store Catalog',   icon: <BoxIcon /> },
   { path: '/analytics',        label: 'Analytics',       icon: <ChartIcon /> },
   { path: '/add-product',      label: 'Upload Product',  icon: <UploadIcon /> },
 ];
@@ -82,6 +84,15 @@ function UploadIcon() {
     </svg>
   );
 }
+function BoxIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+      <line x1="12" y1="22.08" x2="12" y2="12"/>
+    </svg>
+  );
+}
 function BellIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -95,20 +106,23 @@ function BellIcon() {
 const SellerDashboard: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState<{ email: string; username: string } | null>(null);
+  const { session, logout } = useSellerSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const unreadCount = NOTIFICATIONS.filter((n) => !n.read).length;
 
-  useEffect(() => {
-    const session = localStorage.getItem('currentUser');
-    if (!session) { navigate('/login'); return; }
-    setUser(JSON.parse(session));
-  }, [navigate]);
+  const user = useMemo(() => {
+    if (!session) return null;
+    const cached = localStorage.getItem('currentUser');
+    const username = cached ? (JSON.parse(cached).username as string | undefined) : undefined;
+    return {
+      email: session.email ?? '',
+      username: username ?? session.storeName ?? session.email ?? 'Seller',
+    };
+  }, [session]);
 
   const handleLogout = () => {
-    localStorage.removeItem('currentUser');
-    navigate('/login');
+    void logout().then(() => navigate('/login'));
   };
 
   if (!user) return null;

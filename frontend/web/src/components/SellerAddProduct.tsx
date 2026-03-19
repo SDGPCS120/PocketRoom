@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../lib/firebase';
+import api from '../lib/api';
+import { useSellerSession } from '../auth/sellerSession';
 import './SellerAddProduct.css';
 
 const SellerAddProduct: React.FC = () => {
   const navigate = useNavigate();
+  const { session, refreshStore } = useSellerSession();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
