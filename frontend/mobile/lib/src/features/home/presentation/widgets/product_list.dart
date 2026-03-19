@@ -26,20 +26,29 @@ class ProductList extends ConsumerWidget {
         }
 
         if (isHorizontal) {
+          final horizontalPadding = 20.0;
+          final itemSpacing = 16.0;
+          final screenWidth = MediaQuery.of(context).size.width;
+          final availableWidth = screenWidth - (horizontalPadding * 2);
+          // Calculate cardWidth to show ~2.14 items in the viewport (2 and 1/7)
+          final cardWidth = (availableWidth - (itemSpacing * 2)) / 2.14;
+
           return SliverToBoxAdapter(
             child: SizedBox(
-              height: 280,
+              height: 260,
               child: ScrollConfiguration(
                 behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 8),
                   itemCount: filteredList.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.only(right: 16),
+                      padding: EdgeInsets.only(
+                        right: index == filteredList.length - 1 ? 0 : itemSpacing,
+                      ),
                       child: SizedBox(
-                        width: 180,
+                        width: cardWidth,
                         child: ProductCard(furniture: filteredList[index]),
                       ),
                     );

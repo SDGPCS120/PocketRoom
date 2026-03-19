@@ -85,7 +85,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
           );
         },
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -94,11 +94,11 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 aspectRatio: 156.26 / 147,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     // border: Border.all(color: AppColors.cardBorder, width: 0.6),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     child: furniture.images.isNotEmpty
                         ? Image.network(
                             furniture.images.first,
@@ -194,7 +194,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                 ],
               ),
-              const Spacer(),
+              const SizedBox(height: 10),
               // Price and Add to Cart
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
