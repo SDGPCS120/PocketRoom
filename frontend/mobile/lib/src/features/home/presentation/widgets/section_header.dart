@@ -4,7 +4,15 @@ import '../../data/providers.dart';
 
 class SectionHeader extends ConsumerWidget {
   final String title;
-  const SectionHeader({super.key, this.title = "Sofas"});
+  final Widget? trailing;
+  final bool showSort;
+
+  const SectionHeader({
+    super.key,
+    this.title = "Sofas",
+    this.trailing,
+    this.showSort = true,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,17 +24,27 @@ class SectionHeader extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF2D2D2D),
-              fontSize: 26, // Keep original size
+          Expanded(
+            child: Row(
+              children: [
+                Text(
+                  title,
+                  style: textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF2D2D2D),
+                    fontSize: 22,
+                  ),
+                ),
+                if (trailing != null) ...[
+                  const SizedBox(width: 12),
+                  trailing!,
+                ],
+              ],
             ),
           ),
 
-          // This is the sort/filter button 
-          PopupMenuButton<SortOrder>(
+          if (showSort)
+            PopupMenuButton<SortOrder>(
             initialValue: currentSortOrder,
             onSelected: (SortOrder order) {
               ref.read(sortOrderProvider.notifier).state = order;

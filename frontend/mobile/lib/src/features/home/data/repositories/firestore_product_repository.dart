@@ -20,16 +20,11 @@ class FirestoreProductRepository implements IFurnitureRepository {
       return Furniture(
         id: doc.id,
         name: _asTextOrNA(data['name']),
-        price: (data['price'] is num)
-            ? (data['price'] as num).toDouble()
-            : double.nan,
+        price: (data['price'] is num) ? (data['price'] as num).toDouble() : double.nan,
+        oldPrice: (data['oldPrice'] is num) ? (data['oldPrice'] as num).toDouble() : null,
         brand: _asTextOrNA(data['brand']),
-        rating:
-            (data['rating'] is num)
-                ? (data['rating'] as num).toDouble()
-                : double.nan,
-        images:
-            _extractImages(data),
+        rating: (data['rating'] is num) ? (data['rating'] as num).toDouble() : double.nan,
+        images: _extractImages(data),
         imageUrl: _extractImageUrl(data),
         imagePath: _asOptionalText(data['imagePath']),
         modelURL: _asOptionalText(data['modelURL']),
@@ -45,6 +40,7 @@ class FirestoreProductRepository implements IFurnitureRepository {
         dimensions: _asTextOrNA(data['dimensions']),
         availability: _availabilityLabel(data['stockStatus']),
         styleTags: _extractStyleTags(data['styleTags']),
+        description: _asOptionalText(data['description']),
       );
     }).toList();
   }
