@@ -1008,23 +1008,20 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                           const SizedBox(height: 28),
 
                           // ── Reviews (dynamic, per-product) ───────────
-                          Text(
-                            'Reviews (${reviews.length})',
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                            ),
+                          _ReviewSummarySection(
+                            reviews: reviews,
+                            averageRating: widget.furniture.rating,
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 28),
 
+                          // ── User Reviews List ───────────
                           if (reviews.isEmpty)
                             const Padding(
-                              padding: EdgeInsets.only(bottom: 16),
+                              padding: EdgeInsets.only(bottom: 24),
                               child: Text(
                                 'No reviews yet. Be the first to review!',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   color: AppColors.textSecondary,
                                 ),
                               ),
@@ -1035,10 +1032,11 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                                 name: r.reviewerName,
                                 review: r.text,
                                 rating: r.rating,
+                                date: '2 days ago', // Mocked date as requested
                               ),
                             ),
 
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 32),
 
                           // ── Add Review form ──────────────────────────
                           _AddReviewForm(
@@ -1438,70 +1436,175 @@ class _SpecCard extends StatelessWidget {
   }
 }
 
-class _ReviewTile extends StatelessWidget {
-  final String name;
-  final String review;
-  final int rating;
+// ─── Reviews Summary Section ──────────────────────────────────────────────────
+class _ReviewSummarySection extends StatelessWidget {
+  final List<Review> reviews;
+  final double averageRating;
 
-  const _ReviewTile({
-    required this.name,
-    required this.review,
-    this.rating = 5,
+  const _ReviewSummarySection({
+    required this.reviews,
+    required this.averageRating,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppColors.secondary,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.cardBorder, width: 1),
-            ),
-            child: const Icon(Icons.person,
-                size: 22, color: AppColors.textSecondary),
+    final ratingValue = averageRating.isNaN ? 4.9 : averageRating; // Fallback for mockup if NaN
+    final totalReviews = reviews.isNotEmpty ? reviews.length : 128; // Fallback mock
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Customer Reviews',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+            letterSpacing: -0.2,
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
+        ),
+        const SizedBox(height: 16),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left score block
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Row(
-                      children: List.generate(
-                        rating.clamp(0, 5),
-                        (_) => const Icon(Icons.star,
-                            color: AppColors.primary, size: 12),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
                 Text(
-                  review,
+                  ratingValue.toStringAsFixed(1),
                   style: const TextStyle(
-                    fontSize: 12.5,
+                    fontSize: 42,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                    height: 1.1,
+                    letterSpacing: -1,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: List.generate(
+                    5,
+                    (i) => Icon(
+                      i < ratingValue.round() ? Icons.star : Icons.star_border,
+                      color: AppColors.primary,
+                      size: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '$totalReviews reviews',
+                  style: const TextStyle(
+                    fontSize: 12,
                     color: AppColors.textSecondary,
-                    height: 1.45,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
+            ),
+            const SizedBox(width: 28),
+            // Right bars block
+            Expanded(
+              child: Column(
+                children: const [
+                  _RatingBarRow(label: '5', percentage: 0.70),
+                  _RatingBarRow(label: '4', percentage: 0.20),
+                  _RatingBarRow(label: '3', percentage: 0.07),
+                  _RatingBarRow(label: '2', percentage: 0.02),
+                  _RatingBarRow(label: '1', percentage: 0.01),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        // Mock Photo Reviews
+        const Text(
+          'Photos from buyers',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 64,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: 4,
+            separatorBuilder: (_, __) => const SizedBox(width: 10),
+            itemBuilder: (context, index) {
+              final mockImages = [
+                'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&fit=crop',
+                'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=200&fit=crop',
+                'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&fit=crop',
+                'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=200&fit=crop',
+              ];
+              return Container(
+                width: 64,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey[200]!),
+                  image: DecorationImage(
+                    image: NetworkImage(mockImages[index]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RatingBarRow extends StatelessWidget {
+  final String label;
+  final double percentage;
+
+  const _RatingBarRow({required this.label, required this.percentage});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(width: 4),
+          const Icon(Icons.star, color: AppColors.textSecondary, size: 10),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: percentage,
+                minHeight: 6,
+                backgroundColor: Colors.grey[200],
+                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 32,
+            child: Text(
+              '${(percentage * 100).toInt()}%',
+              style: const TextStyle(
+                fontSize: 11,
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.right,
             ),
           ),
         ],
@@ -1510,7 +1613,109 @@ class _ReviewTile extends StatelessWidget {
   }
 }
 
-// ─── Add Review form card ─────────────────────────────────────────────────────
+// ─── Individual Review Card ───────────────────────────────────────────────────
+class _ReviewTile extends StatelessWidget {
+  final String name;
+  final String review;
+  final int rating;
+  final String? date;
+
+  const _ReviewTile({
+    required this.name,
+    required this.review,
+    this.rating = 5,
+    this.date,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.grey[200]!, width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header row with avatar, name, date
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                    style: const TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        letterSpacing: -0.1,
+                      ),
+                    ),
+                    if (date != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        date!,
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Row(
+                children: List.generate(
+                  5,
+                  (i) => Icon(
+                    i < rating ? Icons.star : Icons.star_border,
+                    color: AppColors.primary,
+                    size: 14,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            review,
+            style: const TextStyle(
+              fontSize: 13.5,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Add Review Form (Lightweight) ───────────────────────────────────────────
 class _AddReviewForm extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController nameController;
@@ -1531,96 +1736,106 @@ class _AddReviewForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.secondary, width: 1.2),
-        boxShadow: AppColors.productCardShadow,
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey[200]!, width: 1),
       ),
       child: Form(
         key: formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             const Text(
-              'Add a Review',
+              'Write a Review',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 16),
-
-            // Name field
-            TextFormField(
-              controller: nameController,
-              textCapitalization: TextCapitalization.words,
-              decoration: _inputDecoration('Your name'),
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'Name is required' : null,
-            ),
-            const SizedBox(height: 12),
-
-            // Review text field
-            TextFormField(
-              controller: reviewController,
-              maxLines: 3,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: _inputDecoration('Write your review…'),
-              validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'Review cannot be empty' : null,
-            ),
-            const SizedBox(height: 16),
-
-            // Star rating selector
+            const SizedBox(height: 4),
             const Text(
-              'Your rating',
+              'Share your thoughts with other customers.',
               style: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
                 color: AppColors.textSecondary,
               ),
             ),
-            const SizedBox(height: 6),
-            Row(
-              children: List.generate(5, (i) {
-                final starIndex = i + 1;
-                return GestureDetector(
-                  onTap: () => onRatingChanged(starIndex),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 4),
-                    child: Icon(
-                      starIndex <= rating ? Icons.star : Icons.star_border,
-                      color: AppColors.primary,
-                      size: 26,
-                    ),
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 20),
 
-            // Submit button
-            SizedBox(
-              width: double.infinity,
-              height: 46,
+            // Rating
+            Row(
+              children: [
+                const Text(
+                  'Your rating',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Row(
+                  children: List.generate(5, (i) {
+                    final starIndex = i + 1;
+                    return GestureDetector(
+                      onTap: () => onRatingChanged(starIndex),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: Icon(
+                          starIndex <= rating ? Icons.star : Icons.star_border,
+                          color: AppColors.primary,
+                          size: 24,
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Inputs
+            TextFormField(
+              controller: nameController,
+              textCapitalization: TextCapitalization.words,
+              style: const TextStyle(fontSize: 14),
+              decoration: _inputDecoration('Your Name'),
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Required' : null,
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: reviewController,
+              maxLines: 3,
+              style: const TextStyle(fontSize: 14),
+              textCapitalization: TextCapitalization.sentences,
+              decoration: _inputDecoration('What did you like or dislike?'),
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Required' : null,
+            ),
+            const SizedBox(height: 20),
+
+            // Submit
+            Align(
+              alignment: Alignment.centerRight,
               child: ElevatedButton(
                 onPressed: onSubmit,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColors.textPrimary, // Neutral/Dark organic look
                   foregroundColor: Colors.white,
                   elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: const Text(
-                  'Submit Review',
+                  'Submit',
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 13.5,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -1640,27 +1855,26 @@ class _AddReviewForm extends StatelessWidget {
         fontSize: 13.5,
       ),
       filled: true,
-      fillColor: AppColors.background,
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      fillColor: Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: AppColors.secondary, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: AppColors.secondary, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: AppColors.textPrimary, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: Colors.red, width: 1),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: Colors.red, width: 1.5),
       ),
     );
