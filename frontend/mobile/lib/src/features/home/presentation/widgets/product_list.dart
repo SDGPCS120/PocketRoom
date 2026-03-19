@@ -29,19 +29,22 @@ class ProductList extends ConsumerWidget {
           return SliverToBoxAdapter(
             child: SizedBox(
               height: 300,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                itemCount: filteredList.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: SizedBox(
-                      width: 180,
-                      child: ProductCard(furniture: filteredList[index]),
-                    ),
-                  );
-                },
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  itemCount: filteredList.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: SizedBox(
+                        width: 180,
+                        child: ProductCard(furniture: filteredList[index]),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           );
