@@ -1,14 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../common_widgets/product_card.dart';
+import '../../../../common_widgets/circular_nav_button.dart';
 import '../../data/providers.dart';
 
-class ProductList extends ConsumerWidget {
+class ProductList extends ConsumerStatefulWidget {
   final bool isHorizontal;
   const ProductList({super.key, this.isHorizontal = false});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductList> createState() => _ProductListState();
+}
+
+class _ProductListState extends ConsumerState<ProductList> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scroll(double offset) {
+    if (!_scrollController.hasClients) return;
+    _scrollController.animateTo(
+      _scrollController.offset + offset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Watch the "fetcher" provider to handle the initial loading/error states.
     final allFurnitureAsync = ref.watch(allFurnitureProvider);
 
@@ -25,9 +54,9 @@ class ProductList extends ConsumerWidget {
           return const SliverFillRemaining(child: Center(child: Text('No items found in this category.')));
         }
 
-        if (isHorizontal) {
-          final horizontalPadding = 20.0;
-          final itemSpacing = 16.0;
+        if (widget.isHorizontal) {
+          const horizontalPadding = 20.0;
+          const itemSpacing = 16.0;
           final screenWidth = MediaQuery.of(context).size.width;
           final availableWidth = screenWidth - (horizontalPadding * 2);
           // Calculate cardWidth to show ~2.14 items in the viewport (2 and 1/7)
@@ -36,24 +65,44 @@ class ProductList extends ConsumerWidget {
           return SliverToBoxAdapter(
             child: SizedBox(
               height: 260,
-              child: ScrollConfiguration(
-                behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 8),
-                  itemCount: filteredList.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        right: index == filteredList.length - 1 ? 0 : itemSpacing,
-                      ),
-                      child: SizedBox(
-                        width: cardWidth,
-                        child: ProductCard(furniture: filteredList[index]),
-                      ),
-                    );
-                  },
-                ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 8),
+                      itemCount: filteredList.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            right: index == filteredList.length - 1 ? 0 : itemSpacing,
+                          ),
+                          child: SizedBox(
+                            width: cardWidth,
+                            child: ProductCard(furniture: filteredList[index]),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    left: 6,
+                    child: CircularNavButton(
+                      icon: Icons.arrow_back_ios_new_rounded,
+                      onTap: () => _scroll(-(cardWidth + itemSpacing)),
+                    ),
+                  ),
+                  Positioned(
+                    right: 6,
+                    child: CircularNavButton(
+                      icon: Icons.arrow_forward_ios_rounded,
+                      onTap: () => _scroll(cardWidth + itemSpacing),
+                    ),
+                  ),
+                ],
               ),
             ),
           );
