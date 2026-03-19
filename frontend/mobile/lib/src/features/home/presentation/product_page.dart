@@ -962,6 +962,51 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                             const SizedBox(height: 28),
                           ],
 
+                          // ═══════════════════════════════════════════════
+                          // 3. DELIVERY, RETURNS & WARRANTY
+                          // ═══════════════════════════════════════════════
+                          const _SectionHeader(title: 'Delivery, Returns & Warranty'),
+                          const SizedBox(height: 16),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.grey[200]!),
+                            ),
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 4),
+                                const _InfoRow(
+                                  icon: Icons.local_shipping_outlined,
+                                  title: 'Islandwide delivery',
+                                  subtitle: 'Estimated time: 3–5 working days',
+                                ),
+                                Divider(color: Colors.grey[100], height: 1, indent: 56),
+                                const _InfoRow(
+                                  icon: Icons.refresh_rounded,
+                                  title: '7-day return policy',
+                                  subtitle: 'Easy returns if unused and in original condition',
+                                ),
+                                Divider(color: Colors.grey[100], height: 1, indent: 56),
+                                const _InfoRow(
+                                  icon: Icons.verified_user_outlined,
+                                  title: '1-year warranty',
+                                  subtitle: 'Covers manufacturing defects',
+                                ),
+                                Divider(color: Colors.grey[100], height: 1, indent: 56),
+                                const _InfoRow(
+                                  icon: Icons.handyman_outlined,
+                                  title: 'Assembly required: Yes',
+                                  subtitle: 'Free installation available',
+                                ),
+                                const SizedBox(height: 4),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          Divider(color: Colors.grey[200]),
+                          const SizedBox(height: 28),
+
                           // ── Reviews (dynamic, per-product) ───────────
                           Text(
                             'Reviews (${reviews.length})',
@@ -1617,6 +1662,67 @@ class _AddReviewForm extends StatelessWidget {
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Colors.red, width: 1.5),
+      ),
+    );
+  }
+}
+
+// ─── Info Row for Delivery & Warranty ──────────────────────────────────────────
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _InfoRow({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              size: 20,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
