@@ -11,6 +11,7 @@ import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart'
 import 'package:pocketroom/src/core/api_config.dart';
 import 'package:pocketroom/src/features/home/presentation/main_screen.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../settings/presentation/settings_page.dart';
 import 'edit_profile_page.dart';
 import 'widgets/section_item.dart';
 
@@ -236,10 +237,19 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
-            child: Icon(
-              Icons.settings_outlined,
-              color: AppColors.textPrimary,
-              size: 24,
+            child: IconButton(
+              icon: const Icon(
+                Icons.settings_outlined,
+                color: AppColors.textPrimary,
+                size: 24,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const SettingsPage(),
+                  ),
+                );
+              },
             ),
           ),
         ],

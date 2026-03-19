@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../settings/presentation/settings_page.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String? initialName;
@@ -84,10 +85,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
-            child: Icon(
-              Icons.settings_outlined,
-              color: AppColors.textPrimary,
-              size: 24,
+            child: IconButton(
+              icon: const Icon(
+                Icons.settings_outlined,
+                color: AppColors.textPrimary,
+                size: 24,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const SettingsPage(),
+                  ),
+                );
+              },
             ),
           ),
         ],
