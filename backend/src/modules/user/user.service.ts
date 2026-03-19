@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, ConflictException } from "@nestjs/common";
+import { generateMeaningfulId } from "../../common/utils/generate-id.util";
 import { CreateUserDto, UserRole } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { FirebaseService } from "../../firebase/firebase.service";
@@ -28,7 +29,8 @@ export class UserService {
   }
 
  async create(dto: CreateUserDto) {
-  const ref = this.col().doc();
+  const customId = generateMeaningfulId(dto.fullName ?? dto.email);
+  const ref = this.col().doc(customId);
 
   const data: any = {
     id: ref.id,

@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { generateMeaningfulId } from '../../common/utils/generate-id.util';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import {
@@ -30,7 +31,8 @@ export class PaymentService {
       throw new NotFoundException('Order not found');
     }
 
-    const docRef = this.paymentCollection().doc();
+    const customId = generateMeaningfulId('payment-' + Date.now());
+    const docRef = this.paymentCollection().doc(customId);
 
     const data = {
       paymentId: docRef.id,

@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { generateMeaningfulId } from '../../common/utils/generate-id.util';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { StoreService } from '../store/store.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -22,10 +23,11 @@ export class ProductService {
             throw new ForbiddenException('You do not own this store');
         }
 
-        const docRef = this.collection().doc();
+        const customId = generateMeaningfulId(dto.name);
+        const docRef = this.collection().doc(customId);
 
         const data = {
-            productId: docRef.id,
+            productID: docRef.id,
             storeId,
             storeName: store?.storeName || 'Unknown Store',
             ...dto,

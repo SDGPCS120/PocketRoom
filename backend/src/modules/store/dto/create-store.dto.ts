@@ -26,6 +26,10 @@ export class CreateStoreDto {
   storeDescription?: string;
 
   @IsOptional()
+  @IsString()
+  storeLogo?: string;
+
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }

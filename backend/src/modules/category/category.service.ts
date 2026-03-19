@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { generateMeaningfulId } from '../../common/utils/generate-id.util';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FirebaseService } from '../../firebase/firebase.service';
@@ -38,7 +39,8 @@ export class CategoryService {
       throw new ConflictException('Category slug already exists');
     }
 
-    const ref = this.col().doc();
+    const customId = generateMeaningfulId(dto.name);
+    const ref = this.col().doc(customId);
 
     const data: any = {
       id: ref.id,

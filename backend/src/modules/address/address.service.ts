@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { generateMeaningfulId } from '../../common/utils/generate-id.util';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { FirebaseService } from '../../firebase/firebase.service';
@@ -32,7 +33,8 @@ export class AddressService {
   }
 
   async create(dto: CreateAddressDto) {
-    const ref = this.col().doc();
+    const customId = generateMeaningfulId('address');
+    const ref = this.col().doc(customId);
 
     const data: any = {
       id: ref.id,
