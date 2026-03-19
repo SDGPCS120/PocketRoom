@@ -4,7 +4,8 @@ import '../../../../common_widgets/product_card.dart';
 import '../../data/providers.dart';
 
 class ProductList extends ConsumerWidget {
-  const ProductList({super.key});
+  final bool isHorizontal;
+  const ProductList({super.key, this.isHorizontal = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
