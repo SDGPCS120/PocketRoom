@@ -4,6 +4,7 @@ import '../core/theme/app_theme.dart'; // Import the new theme file
 import '../features/auth/presentation/get_started_page.dart';
 import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
+import '../features/home/presentation/vendor_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/favorites/data/favorites_provider.dart';
@@ -166,18 +167,28 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      brandLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 9,
-                        height: 1.67,
-                        letterSpacing: 1,
-                        color: AppColors.textSecondary,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VendorPage(vendorName: furniture.brand),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        brandLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 9,
+                          height: 1.67,
+                          letterSpacing: 1,
+                          color: AppColors.primary, // Changed to primary to show it's clickable
+                        ),
                       ),
                     ),
                   ),
