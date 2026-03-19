@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
-import api from '../lib/api';
+import api, { toUserFacingApiError } from '../lib/api';
 import './SellerLogin.css';
 
 const SellerLogin: React.FC = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => {
+    // Pre-fill from registration if present
+    const reg = localStorage.getItem('sellerRegistration');
+    if (reg) {
+      try {
+        const data = JSON.parse(reg) as { email?: string };
+        if (data.email) return data.email;
+      } catch {
+        // ignore
+      }
+    }
+    // Restore "remember me" email
+    const remembered = localStorage.getItem('sellerRememberedEmail');
+    return remembered ?? '';
+  });
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
-
-  // Pre-fill from registration if present
-  useEffect(() => {
-    const reg = localStorage.getItem('sellerRegistration');
-    if (reg) {
-      try {
-        const data = JSON.parse(reg);
-        if (data.email) setEmail(data.email);
-      } catch {/* ignore */}
-    }
-    // Restore "remember me" email
-    const remembered = localStorage.getItem('sellerRememberedEmail');
-    if (remembered) setEmail(remembered);
-  }, []);
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
@@ -86,9 +86,11 @@ const SellerLogin: React.FC = () => {
       
       localStorage.setItem('currentUser', JSON.stringify(session));
       navigate('/dashboard');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
-      setErrors({ general: 'Invalid email or password. Please try again.' });
+      // Firebase auth errors are usually credential-related; axios errors are connectivity/CORS/back-end.
+      const message = toUserFacingApiError(error);
+      setErrors({ general: message.includes('API error') || message.includes('Network error') ? message : 'Invalid email or password. Please try again.' });
     }
 
     setIsLoading(false);

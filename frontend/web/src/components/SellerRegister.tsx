@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
-import api from '../lib/api';
+import api, { toUserFacingApiError } from '../lib/api';
 import './SellerRegister.css';
 
 interface FormData {
@@ -124,7 +124,7 @@ const SellerRegister: React.FC = () => {
       await api.get('/auth/sync?role=vendor');
 
       // 3. Create the Store in the Backend
-      await api.post('/stores', {
+      const storeRes = await api.post('/stores', {
         sellerId: user.uid,
         storeName: form.storeName,
         storeSlug: form.storeSlug,
@@ -138,15 +138,16 @@ const SellerRegister: React.FC = () => {
         email: user.email,
         username: `${form.firstName} ${form.lastName}`,
         storeName: form.storeName,
+        storeId: storeRes.data?.storeId,
       };
       
       localStorage.setItem('currentUser', JSON.stringify(sellerData));
       
       setSuccess(true);
       setTimeout(() => navigate('/dashboard'), 2000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration error:', error);
-      setErrors((prev) => ({ ...prev, general: error.message || 'Registration failed' }));
+      setErrors((prev) => ({ ...prev, general: toUserFacingApiError(error) }));
     } finally {
       setIsSubmitting(false);
     }
@@ -158,7 +159,7 @@ const SellerRegister: React.FC = () => {
         <div className="register-card success-card">
           <div className="success-icon">✓</div>
           <h2>Registration Successful!</h2>
-          <p>Your seller account has been created. Redirecting to login…</p>
+          <p>Your seller account has been created. Redirecting to dashboard…</p>
         </div>
       </div>
     );
@@ -224,6 +225,11 @@ const SellerRegister: React.FC = () => {
             onSubmit={step === 1 ? (e) => { e.preventDefault(); handleNext(); } : handleSubmit}
             noValidate
           >
+            {errors.general && (
+              <div className="alert-error" role="alert">
+                {errors.general}
+              </div>
+            )}
             {/* ── STEP 1: Personal Info ── */}
             {step === 1 && (
               <div className="form-step">

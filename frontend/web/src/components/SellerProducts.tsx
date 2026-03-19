@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
+import { useSellerSession } from '../auth/sellerSession';
 import './SellerProducts.css';
 
 interface Product {
@@ -16,6 +17,7 @@ interface Product {
 
 const SellerProducts: React.FC = () => {
   const navigate = useNavigate();
+  const { session, refreshStore } = useSellerSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -23,24 +25,14 @@ const SellerProducts: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const userStr = localStorage.getItem('currentUser');
-        if (!userStr) {
-          navigate('/login');
-          return;
-        }
-
-        const user = JSON.parse(userStr);
-        let storeId = user.storeId;
+        let storeId = session?.storeId;
 
         if (!storeId) {
           try {
-            const meRes = await api.get('/stores/me');
-            if (meRes.data && meRes.data.storeId) {
-                storeId = meRes.data.storeId;
-                const updatedUser = { ...user, storeId };
-                localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-            }
-          } catch(e) {
+            await refreshStore();
+            const cached = localStorage.getItem('currentUser');
+            storeId = cached ? (JSON.parse(cached).storeId as string | undefined) : undefined;
+          } catch (e) {
             console.error(e);
           }
         }
@@ -53,7 +45,7 @@ const SellerProducts: React.FC = () => {
 
         const response = await api.get(`/products/store/${storeId}`);
         setProducts(response.data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Failed to load products:', err);
         setError('Failed to load your catalog. Please try again later.');
       } finally {
@@ -62,7 +54,7 @@ const SellerProducts: React.FC = () => {
     };
 
     fetchProducts();
-  }, [navigate]);
+  }, [refreshStore, session?.storeId]);
 
   return (
     <div className="seller-products-page">

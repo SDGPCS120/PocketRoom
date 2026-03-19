@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../lib/firebase';
 import api from '../lib/api';
+import { useSellerSession } from '../auth/sellerSession';
 import './SellerAddProduct.css';
 
 const SellerAddProduct: React.FC = () => {
   const navigate = useNavigate();
+  const { session, refreshStore } = useSellerSession();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -43,8 +45,12 @@ const SellerAddProduct: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const userStr = localStorage.getItem('currentUser');
-      const storeId = userStr ? JSON.parse(userStr).storeId : null;
+      let storeId = session?.storeId;
+      if (!storeId) {
+        await refreshStore();
+        const cached = localStorage.getItem('currentUser');
+        storeId = cached ? (JSON.parse(cached).storeId as string | undefined) : undefined;
+      }
 
       if (!storeId) {
         alert('Could not find your store ID. Please log in again.');

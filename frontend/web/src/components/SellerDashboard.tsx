@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useSellerSession } from '../auth/sellerSession';
 import './SellerDashboard.css';
 
 /* ─── Types ─── */
@@ -105,20 +106,23 @@ function BellIcon() {
 const SellerDashboard: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState<{ email: string; username: string } | null>(null);
+  const { session, logout } = useSellerSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const unreadCount = NOTIFICATIONS.filter((n) => !n.read).length;
 
-  useEffect(() => {
-    const session = localStorage.getItem('currentUser');
-    if (!session) { navigate('/login'); return; }
-    setUser(JSON.parse(session));
-  }, [navigate]);
+  const user = useMemo(() => {
+    if (!session) return null;
+    const cached = localStorage.getItem('currentUser');
+    const username = cached ? (JSON.parse(cached).username as string | undefined) : undefined;
+    return {
+      email: session.email ?? '',
+      username: username ?? session.storeName ?? session.email ?? 'Seller',
+    };
+  }, [session]);
 
   const handleLogout = () => {
-    localStorage.removeItem('currentUser');
-    navigate('/login');
+    void logout().then(() => navigate('/login'));
   };
 
   if (!user) return null;
