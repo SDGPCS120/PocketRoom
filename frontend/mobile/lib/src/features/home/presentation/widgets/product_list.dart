@@ -1,7 +1,8 @@
+```
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../common_widgets/product_card.dart';
-import '../../../../common_widgets/circular_nav_button.dart';
+import '../../../../common_widgets/circular_nav_button.dart'; // Finalize the carousel system.
 import '../../data/providers.dart';
 
 class ProductList extends ConsumerStatefulWidget {
