@@ -28,7 +28,7 @@ class ProductList extends ConsumerWidget {
         if (isHorizontal) {
           return SliverToBoxAdapter(
             child: SizedBox(
-              height: 300,
+              height: 280,
               child: ScrollConfiguration(
                 behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                 child: ListView.builder(
