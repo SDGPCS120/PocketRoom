@@ -15,8 +15,11 @@ jobs:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
         working-directory: frontend/web
+        env:
+          VITE_API_URL: https://pocketroom-backend-93470454666.asia-south1.run.app
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_POCKETROOM_80F62 }}
           projectId: pocketroom-80f62
+          entryPoint: frontend/web
