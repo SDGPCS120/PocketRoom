@@ -41,9 +41,14 @@ class _ProductCardState extends ConsumerState<ProductCard> {
     final ratingLabel = furniture.rating.isNaN
         ? 'N/A'
         : furniture.rating.toString();
+    String formatPrice(double p) => "LKR ${p.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+
     final priceLabel = furniture.price.isNaN
         ? 'N/A'
-        : "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+        : formatPrice(furniture.price);
+    final oldPriceLabel = (furniture.oldPrice != null && !furniture.oldPrice!.isNaN)
+        ? formatPrice(furniture.oldPrice!)
+        : null;
     final brandLabel = furniture.brand.trim().isEmpty
         ? 'N/A'
         : furniture.brand.toUpperCase();
@@ -200,14 +205,29 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    priceLabel,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      height: 1.5,
-                      color: AppColors.priceColor,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (oldPriceLabel != null)
+                        Text(
+                          oldPriceLabel,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            decoration: TextDecoration.lineThrough,
+                            color: AppColors.textSecondary,
+                            height: 1.1,
+                          ),
+                        ),
+                      Text(
+                        priceLabel,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.2,
+                          color: AppColors.priceColor,
+                        ),
+                      ),
+                    ],
                   ),
                   GestureDetector(
                     onTap: () {
