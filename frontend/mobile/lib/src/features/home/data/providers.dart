@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import './models/furniture_model.dart';
+import './models/vendor_model.dart';
 import './repositories/furniture_repository.dart';
 import './repositories/firestore_product_repository.dart';
 
@@ -27,6 +28,24 @@ final furnitureRepositoryProvider = Provider<IFurnitureRepository>((ref) {
 final allFurnitureProvider = FutureProvider<List<Furniture>>((ref) {
   final repository = ref.watch(furnitureRepositoryProvider);
   return repository.fetchFurniture();
+});
+
+// 1b. Vendors Fetcher: Fetches all vendors.
+final vendorsProvider = FutureProvider<List<Vendor>>((ref) {
+  final repository = ref.watch(furnitureRepositoryProvider);
+  return repository.fetchVendors();
+});
+
+// 1c. Vendor by Name Fetcher: Fetches a single vendor detail.
+final vendorByNameProvider = FutureProvider.family<Vendor?, String>((ref, name) {
+  final repository = ref.watch(furnitureRepositoryProvider);
+  return repository.fetchVendorByName(name);
+});
+
+// 1d. Vendor Products Fetcher: Fetches products for a specific vendor.
+final vendorFurnitureProvider = FutureProvider.family<List<Furniture>, String>((ref, vendorName) {
+  final repository = ref.watch(furnitureRepositoryProvider);
+  return repository.fetchFurnitureByVendor(vendorName);
 });
 
 // 2. "Filterer" Provider: Filters by Type, Category, Search Query and Apply Sorting
