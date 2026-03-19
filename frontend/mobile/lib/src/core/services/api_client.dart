@@ -8,7 +8,7 @@ class ApiClient {
   // For Android emulator: use http://10.0.2.2:8000
   // For iOS simulator: use http://localhost:8000
   // For physical device: use your computer's IP address (e.g., http://192.168.1.100:8000)
-  static const String baseUrl = 'http://localhost:8000';
+  static const String baseUrl = 'http://192.168.1.56:8000';
 
   ApiClient({String? customBaseUrl}) {
     _dio = Dio(
