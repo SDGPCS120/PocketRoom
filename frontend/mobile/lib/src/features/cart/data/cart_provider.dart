@@ -3,17 +3,18 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocketroom/src/core/firebase_providers.dart';
 import 'package:pocketroom/src/features/home/data/models/furniture_model.dart';
 import './models/cart_item.dart';
 
 class CartNotifier extends Notifier<List<CartItem>> {
-  StreamSubscription<User?>? _authSubscription;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _cartSubscription;
+  StreamSubscription? _authSubscription;
+  StreamSubscription? _cartSubscription;
   String? _activeUid;
 
   @override
   List<CartItem> build() {
-    _authSubscription ??= FirebaseAuth.instance.authStateChanges().listen(
+    _authSubscription ??= ref.watch(firebaseAuthProvider).authStateChanges().listen(
       _handleAuthChanged,
     );
     ref.onDispose(() async {
@@ -94,7 +95,7 @@ class CartNotifier extends Notifier<List<CartItem>> {
       await _mergeLocalItemsIntoRemoteCart(user.uid, localItemsBeforeSync);
     }
 
-    _cartSubscription = FirebaseFirestore.instance
+    _cartSubscription = ref.read(firestoreProvider)
         .collection('users')
         .doc(user.uid)
         .collection('cart')
@@ -113,7 +114,7 @@ class CartNotifier extends Notifier<List<CartItem>> {
     String uid,
     List<CartItem> localItems,
   ) async {
-    final cartCollection = FirebaseFirestore.instance
+    final cartCollection = ref.read(firestoreProvider)
         .collection('users')
         .doc(uid)
         .collection('cart');
@@ -126,14 +127,14 @@ class CartNotifier extends Notifier<List<CartItem>> {
       }
     }
 
-    final batch = FirebaseFirestore.instance.batch();
+    final batch = ref.read(firestoreProvider).batch();
     for (final localItem in localItems) {
       final existing = existingById[localItem.furniture.id];
       final mergedQuantity = (existing?.quantity ?? 0) + localItem.quantity;
       final mergedFurniture = existing?.furniture ?? localItem.furniture;
       batch.set(cartCollection.doc(localItem.furniture.id), {
         'quantity': mergedQuantity,
-        'furniture': _furnitureToMap(mergedFurniture),
+        'furniture': mergedFurniture.toJson(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
     }
@@ -145,11 +146,11 @@ class CartNotifier extends Notifier<List<CartItem>> {
     final uid = _activeUid;
     if (uid == null) return;
 
-    final cartCollection = FirebaseFirestore.instance
+    final cartCollection = ref.read(firestoreProvider)
         .collection('users')
         .doc(uid)
         .collection('cart');
-    final batch = FirebaseFirestore.instance.batch();
+    final batch = ref.read(firestoreProvider).batch();
 
     final existingDocs = await cartCollection.get();
     for (final doc in existingDocs.docs) {
@@ -160,7 +161,7 @@ class CartNotifier extends Notifier<List<CartItem>> {
       final docRef = cartCollection.doc(item.furniture.id);
       batch.set(docRef, {
         'quantity': item.quantity,
-        'furniture': _furnitureToMap(item.furniture),
+        'furniture': item.furniture.toJson(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
     }
@@ -181,21 +182,6 @@ class CartNotifier extends Notifier<List<CartItem>> {
     final furniture = Furniture.fromJson(furnitureRaw);
     if (furniture.id.isEmpty) return null;
     return CartItem(furniture: furniture, quantity: quantity);
-  }
-
-  Map<String, dynamic> _furnitureToMap(Furniture furniture) {
-    return {
-      'id': furniture.id,
-      'name': furniture.name,
-      'price': furniture.price,
-      'brand': furniture.brand,
-      'rating': furniture.rating,
-      'images': furniture.images,
-      'furnitureType': furniture.furnitureType,
-      'dimensions': furniture.dimensions,
-      'availability': furniture.availability,
-      'styleTags': furniture.styleTags,
-    };
   }
 }
 

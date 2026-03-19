@@ -10,8 +10,13 @@ import { UserModule } from './modules/user/user.module.js';
 import { AddressModule } from './modules/address/address.module.js';
 import { StoreModule } from './modules/store/store.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
-import { CategoryModule } from './modules/category/category.module';
-import { PaymentModule } from './modules/payment/payment.module';
+import { CartDebugModule } from './modules/cart-debug/cart-debug.module.js';
+import { CategoryModule } from './modules/category/category.module.js';
+import { PaymentModule } from './modules/payment/payment.module.js';
+import { BullModule } from '@nestjs/bullmq';
+import { ModelGenerationModule } from './features/modelGenerationPipeline/generation/generations.module.js';
+import { BudgetModule } from './features/budget/budget.module.js';
+
 @Module({
   imports: [
     AppConfigModule,
@@ -24,10 +29,19 @@ import { PaymentModule } from './modules/payment/payment.module';
     ProductModule,
     StoreModule,
     CartModule,
+    CartDebugModule,
     CategoryModule,
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379', 10),
+      },
+    }),
+    ModelGenerationModule,
+    BudgetModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

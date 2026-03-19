@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart'; // Import the new theme file
+import '../features/auth/presentation/get_started_page.dart';
 import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
+import '../features/home/presentation/vendor_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
+import 'package:pocketroom/src/features/favorites/data/favorites_provider.dart';
 
 class ProductCard extends ConsumerStatefulWidget {
   final Furniture furniture;
@@ -18,9 +21,23 @@ class ProductCard extends ConsumerStatefulWidget {
 class _ProductCardState extends ConsumerState<ProductCard> {
   bool _isHovered = false;
 
+  bool _redirectGuestToGetStarted() {
+    final user = FirebaseAuth.instance.currentUser;
+    final isSignedIn = user != null && !user.isAnonymous;
+    if (isSignedIn) return false;
+
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final furniture = widget.furniture;
+    final favorites = ref.watch(favoritesProvider);
+    final isFavorite = favorites.any((item) => item.id == furniture.id);
+
     final ratingLabel = furniture.rating.isNaN
         ? 'N/A'
         : furniture.rating.toString();
@@ -38,7 +55,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
         transform: _isHovered 
-            ? (Matrix4.identity()..translate(0, -4, 0))
+            ? Matrix4.translationValues(0, -4, 0)
             : Matrix4.identity(),
         decoration: BoxDecoration(
           color: AppColors.background,
@@ -50,7 +67,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
           boxShadow: _isHovered 
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
@@ -63,7 +80,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductPage(imageUrls: furniture.images),
+              builder: (context) => ProductPage(furniture: furniture),
             ),
           );
         },
@@ -78,7 +95,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.cardBorder, width: 0.6),
+                    // border: Border.all(color: AppColors.cardBorder, width: 0.6),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -150,18 +167,28 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      brandLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 9,
-                        height: 1.67,
-                        letterSpacing: 1,
-                        color: AppColors.textSecondary,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VendorPage(vendorName: furniture.brand),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        brandLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 9,
+                          height: 1.67,
+                          letterSpacing: 1,
+                          color: AppColors.primary, // Changed to primary to show it's clickable
+                        ),
                       ),
                     ),
                   ),
@@ -184,31 +211,40 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      ref.read(cartProvider.notifier).addItem(furniture);
+                      if (_redirectGuestToGetStarted()) {
+                        return;
+                      }
+                      ref.read(favoritesProvider.notifier).toggleFavorite(furniture);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('${furniture.name} added to cart'),
+                          content: Text(isFavorite 
+                              ? '${furniture.name} removed from favorites' 
+                              : '${furniture.name} added to favorites'),
                           duration: const Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: isFavorite ? Colors.grey[800] : AppColors.primary,
                         ),
                       );
                     },
                     child: Container(
-                      width: 22,
-                      height: 22,
+                      width: 28,
+                      height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary, width: 1),
+                        color: isFavorite ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
+                        border: Border.all(
+                          color: isFavorite ? AppColors.primary : AppColors.cardBorder, 
+                          width: 1
+                        ),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Icon(
-                          Icons.add_shopping_cart,
-                          size: 12,
-                          color: AppColors.primary,
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          size: 16,
+                          color: isFavorite ? AppColors.primary : Colors.grey,
                         ),
                       ),
                     ),

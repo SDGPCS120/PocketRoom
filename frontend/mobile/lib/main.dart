@@ -62,15 +62,18 @@ Future<void> main() async {
   runApp(const ProviderScope(child: PocketRoomApp()));
 }
 
-class PocketRoomApp extends StatelessWidget {
+class PocketRoomApp extends ConsumerWidget {
   const PocketRoomApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp(
       title: 'PocketRoom',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
       home: const SplashPage(),
       builder: (context, child) => ResponsiveWrapper(child: child ?? const SizedBox.shrink()),
     );

@@ -19,83 +19,62 @@ const SellerAddProduct: React.FC = () => {
     depth: '',
   });
 
+  const [isPublishing, setIsPublishing] = useState(false);
+
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [modelFile, setModelFile] = useState<File | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'model') => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'image') => {
     if (e.target.files && e.target.files.length > 0) {
       if (type === 'image') setImageFile(e.target.files[0]);
-      if (type === 'model') setModelFile(e.target.files[0]);
     }
   };
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!imageFile) {
-      alert('Display image is required.');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      let storeId = session?.storeId;
-      if (!storeId) {
-        await refreshStore();
-        const cached = localStorage.getItem('currentUser');
-        storeId = cached ? (JSON.parse(cached).storeId as string | undefined) : undefined;
-      }
-
-      if (!storeId) {
-        alert('Could not find your store ID. Please log in again.');
-        setIsSubmitting(false);
+        alert('Please upload a display image to generate the 3D model.');
         return;
-      }
-
-      // 1. Upload Image
-      const imageRef = ref(storage, `products/images/${Date.now()}_${imageFile.name}`);
-      await uploadBytes(imageRef, imageFile);
-      const imageUrl = await getDownloadURL(imageRef);
-
-      // 2. Upload Model (Optional)
-      let modelUrl = '';
-      if (modelFile) {
-        const modelRef = ref(storage, `products/models/${Date.now()}_${modelFile.name}`);
-        await uploadBytes(modelRef, modelFile);
-        modelUrl = await getDownloadURL(modelRef);
-      }
-
-      // 3. Save Product to Backend
-      const payload = {
-        name: formData.name,
-        description: formData.description,
-        price: parseFloat(formData.price),
-        furnitureType: formData.category,
-        dimensions: `${formData.width}x${formData.height}x${formData.depth}`,
-        images: [imageUrl],
-        modelUrl: modelUrl || undefined,
-      };
-
-      await api.post(`/products/store/${storeId}`, payload);
-
-      alert('Product published successfully!');
-      navigate('/dashboard');
-    } catch (err) {
-      console.error('Failed to add product:', err);
-      alert('Failed to add product. Please check console.');
-    } finally {
-      setIsSubmitting(false);
     }
-  };
 
-  const handleGenerateModel = () => {
-    alert('AI 3D Model Generation Pipeline coming soon!');
+    setIsPublishing(true);
+    
+    try {
+        const productId = 'prod_' + Date.now();
+        const payload = new FormData();
+        payload.append('image', imageFile);
+        payload.append('x', formData.width || '10');
+        payload.append('y', formData.height || '10');
+        payload.append('z', formData.depth || '10');
+
+        console.log('Initiating 3D generation for product:', productId);
+        
+        // In a production app, the backend URL should come from an env variable (e.g. import.meta.env.VITE_API_URL)
+        const response = await fetch(`http://localhost:3000/model-generation/${productId}/generate`, {
+            method: 'POST',
+            body: payload,
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to generate 3D model: ' + await response.text());
+        }
+
+        const data = await response.json();
+        console.log('Generation started:', data);
+        
+        alert('Product added successfully and 3D generation started! Job ID: ' + data.jobId);
+        navigate('/dashboard');
+    } catch (error: any) {
+        console.error(error);
+        alert('Error publishing product: ' + error.message);
+    } finally {
+        setIsPublishing(false);
+    }
   };
 
   return (
@@ -170,27 +149,12 @@ const SellerAddProduct: React.FC = () => {
                 <input type="file" accept="image/*" required onChange={(e) => handleFileChange(e, 'image')} className="file-input" />
               </label>
             </div>
-
-            <div className="file-upload-group">
-              <label className="file-label file-label-ar">
-                <span className="file-title">3D AR Model (Optional)</span>
-                <span className="file-desc">Upload a .glb or .gltf file for AR placement</span>
-                <input type="file" accept=".glb,.gltf" onChange={(e) => handleFileChange(e, 'model')} className="file-input" />
-              </label>
-              
-              <div className="generate-model-box" style={{ marginTop: '1rem', textAlign: 'center' }}>
-                <p style={{ fontSize: '0.9rem', color: '#757575', marginBottom: '0.5rem' }}>Don't have a 3D model?</p>
-                <button type="button" className="btn-secondary" onClick={handleGenerateModel}>
-                  ✨ Generate 3D Model from Image
-                </button>
-              </div>
-            </div>
           </section>
 
           <div className="form-actions">
-            <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')} disabled={isSubmitting}>Cancel</button>
-            <button type="submit" className="btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Publishing...' : 'Publish Product'}
+            <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')} disabled={isPublishing}>Cancel</button>
+            <button type="submit" className="btn-primary" disabled={isPublishing}>
+              {isPublishing ? 'Publishing & Generating...' : 'Publish Product'}
             </button>
           </div>
         </form>

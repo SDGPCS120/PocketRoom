@@ -1,21 +1,88 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../core/theme/app_theme.dart';
-import '../features/auth/presentation/get_started_page.dart';
-import '../features/profile/presentation/profile_page.dart'; // <-- Using Dev's new path
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocketroom/src/core/theme/app_theme.dart';
+import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
+import 'package:pocketroom/src/features/home/data/providers.dart';
+import 'package:pocketroom/src/features/profile/presentation/profile_page.dart';
 
-class AppHeader extends ConsumerWidget {
-  const AppHeader({super.key});
+class AppHeader extends ConsumerStatefulWidget {
+  final VoidCallback? onProfileTap;
+
+  const AppHeader({super.key, this.onProfileTap});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppHeader> createState() => _AppHeaderState();
+}
+
+class _AppHeaderState extends ConsumerState<AppHeader> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    // It's safe to read the provider in initState
+    _searchController = TextEditingController(text: ref.read(searchQueryProvider));
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildSearchSuffix(String currentQuery) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (currentQuery.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.clear, color: Colors.grey),
+            onPressed: () {
+              _searchController.clear();
+              ref.read(searchQueryProvider.notifier).state = '';
+            },
+          ),
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: SizedBox(
+            height: 30,
+            child: ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('AI search coming soon')),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFFD84B3E),
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'AI',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Watch cart state
     final cartItems = ref.watch(cartProvider);
     final itemCount = cartItems.length;
 
+    // Watch search query
+    final currentQuery = ref.watch(searchQueryProvider);
     final isDesktop = MediaQuery.of(context).size.width > 600;
 
     return Padding(
@@ -23,109 +90,56 @@ class AppHeader extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Image.asset('assets/logo.png', height: 40),
-          // --- BEGIN OUR WEBSAFE LAYOUT ---
+          GestureDetector(
+            onTap: () {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
+            },
+            child: Image.asset('assets/logo.png', height: 40),
+          ),
           if (isDesktop)
-            const Expanded(
+            Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) {
+                    ref.read(searchQueryProvider.notifier).state = value;
+                  },
                   decoration: InputDecoration(
                     hintText: 'Search furniture...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _buildSearchSuffix(currentQuery),
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Color(0xFFFFE5D3),
-                    contentPadding: EdgeInsets.symmetric(vertical: 0),
+                    fillColor: const Color(0xFFFFE5D3),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   ),
                 ),
               ),
             ),
           StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.idTokenChanges(),
+            stream: FirebaseAuth.instance.authStateChanges(),
             initialData: FirebaseAuth.instance.currentUser,
             builder: (context, snapshot) {
-              final user = snapshot.data ?? FirebaseAuth.instance.currentUser;
-              // Anonymous users see a CTA to start auth.
-              if (user == null || user.isAnonymous) {
-                return SizedBox(
-                  height: 38,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const GetStartedPage(),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text('Get started'),
-                  ),
-                );
+              final user = snapshot.data;
+              final isSignedIn = user != null && !user.isAnonymous;
+              if (!isSignedIn) {
+                return _buildGetStartedButton(context);
               }
-              final usernameAllowedRegex = RegExp(r'^[a-z0-9_]+$');
-
-              return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(user.uid)
-                    .snapshots(),
-                builder: (context, userDocSnapshot) {
-                  final docData = userDocSnapshot.data?.data();
-                  final firestoreUsername =
-                      (docData?['username'] as String? ?? '').trim();
-                  final hasFirestoreUsername = firestoreUsername.isNotEmpty &&
-                      usernameAllowedRegex.hasMatch(
-                        firestoreUsername.toLowerCase(),
-                      );
-
-                  // If onboarding is still incomplete, keep showing the CTA.
-                  if (!hasFirestoreUsername) {
-                    return SizedBox(
-                      height: 38,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const GetStartedPage(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text('Get started'),
-                      ),
-                    );
-                  }
-
-                  return _buildUserActions(context, ref, itemCount);
-                },
-              );
+              return _buildUserActions(context, itemCount);
             },
           ),
-          // --- END OUR WEBSAFE LAYOUT ---
         ],
       ),
     );
   }
 
-  Widget _buildUserActions(BuildContext context, WidgetRef ref, int itemCount) {
+  Widget _buildUserActions(BuildContext context, int itemCount) {
     return Row(
       children: [
         Stack(
@@ -174,11 +188,14 @@ class AppHeader extends ConsumerWidget {
         const SizedBox(width: 4),
         IconButton(
           onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => const ProfilePage(),
-              ),
-            );
+            final onProfileTap = widget.onProfileTap;
+            if (onProfileTap != null) {
+              onProfileTap();
+              return;
+            }
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const ProfilePage()));
           },
           icon: const Icon(Icons.person_outline, size: 22),
           style: IconButton.styleFrom(
@@ -187,6 +204,32 @@ class AppHeader extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildGetStartedButton(BuildContext context) {
+    return SizedBox(
+      height: 42,
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFD84B3E),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: const Text(
+          'Get Started',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+        ),
+      ),
     );
   }
 }
