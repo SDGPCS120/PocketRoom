@@ -1048,6 +1048,13 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                                 setState(() => _newRating = v),
                             onSubmit: _submitReview,
                           ),
+                          const SizedBox(height: 48),
+
+                          // ═══════════════════════════════════════════════
+                          // 5. SMART RECOMMENDATIONS
+                          // ═══════════════════════════════════════════════
+                          const _SmartRecommendationsSection(),
+                          const SizedBox(height: 40),
                         ],
                       ),
                     ),
@@ -1937,6 +1944,443 @@ class _InfoRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Smart Recommendations Section ─────────────────────────────────────────────
+class _SmartRecommendationsSection extends StatelessWidget {
+  const _SmartRecommendationsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header
+        Row(
+          children: [
+            const Text(
+              'Smart picks for your room',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.2,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.auto_awesome_rounded, color: AppColors.primary, size: 12),
+                  SizedBox(width: 4),
+                  Text(
+                    'AI Pick',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Based on your selected product. Optimized for modern office spaces.',
+          style: TextStyle(
+            fontSize: 13,
+            color: AppColors.textSecondary,
+            height: 1.4,
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // ── Bundle Recommendation Card ──
+        const _BundleRecommendationCard(),
+        const SizedBox(height: 40),
+
+        // ── Similar Products Carousel ──
+        const Text(
+          'Complete the Look',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+            letterSpacing: -0.2,
+          ),
+        ),
+        const SizedBox(height: 16),
+        
+        // Horizontal list
+        SizedBox(
+          height: 250,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: 4,
+            separatorBuilder: (_, __) => const SizedBox(width: 16),
+            itemBuilder: (context, index) {
+              final mockImages = [
+                'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=500&fit=crop',
+                'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500&fit=crop',
+                'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=500&fit=crop',
+                'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=500&fit=crop',
+              ];
+              final mockTitles = [
+                'Minimalist Floor Lamp',
+                'Modern Side Table',
+                'Velvet Accent Pillow',
+                'Woven Throw Blanket'
+              ];
+              final mockPrices = ['LKR 12,500', 'LKR 18,900', 'LKR 4,500', 'LKR 7,500'];
+              final mockRatings = [4.8, 4.6, 4.9, 4.5];
+              final tags = ['Best match', 'Popular', null, null];
+
+              return _MiniProductCard(
+                imageUrl: mockImages[index],
+                title: mockTitles[index],
+                price: mockPrices[index],
+                rating: mockRatings[index],
+                tagText: tags[index],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Bundle Recommendation Card ──────────────────────────────────────────────
+class _BundleRecommendationCard extends StatelessWidget {
+  const _BundleRecommendationCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.grey[200]!, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 24,
+            spreadRadius: 2,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Modern Office Bundle',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+              letterSpacing: -0.3,
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Unified Items Row with +
+          SizedBox(
+            height: 90,
+            child: Row(
+              children: [
+                _buildBundleItem(
+                    'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=200&fit=crop'),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Icon(Icons.add, size: 18, color: AppColors.textSecondary),
+                ),
+                _buildBundleItem(
+                    'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=200&fit=crop'),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Icon(Icons.add, size: 18, color: AppColors.textSecondary),
+                ),
+                _buildBundleItem(
+                    'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=200&fit=crop'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          
+          // Description
+          const Text(
+            'Chair  •  Desk  •  Lamp',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Divider(color: Colors.grey[100]),
+          const SizedBox(height: 20),
+          
+          // Price and Add button
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        'LKR 124,500',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Text(
+                          'Save 12%',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'LKR 146,470 originally',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: AppColors.textSecondary,
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                ],
+              ),
+              OutlinedButton(
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: const BorderSide(color: AppColors.primary, width: 1.5),
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Add Bundle',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBundleItem(String imgUrl) {
+    return Expanded(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey[200]!, width: 1),
+          image: DecorationImage(
+            image: NetworkImage(imgUrl),
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Mini Product Card ───────────────────────────────────────────────────────
+class _MiniProductCard extends StatelessWidget {
+  final String imageUrl;
+  final String title;
+  final String price;
+  final double rating;
+  final String? tagText;
+
+  const _MiniProductCard({
+    required this.imageUrl,
+    required this.title,
+    required this.price,
+    required this.rating,
+    this.tagText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 155,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {},
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Strict Aspect Ratio for the image area
+              AspectRatio(
+                aspectRatio: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    color: Colors.grey[50],
+                    border: Border.all(color: Colors.grey[200]!, width: 1),
+                    image: DecorationImage(
+                      image: NetworkImage(imageUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.04),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(Icons.favorite_border_rounded, size: 16, color: AppColors.textSecondary),
+                        ),
+                      ),
+                      if (tagText != null)
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              tagText!,
+                              style: const TextStyle(
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Row(
+                  children: [
+                    const Icon(Icons.star, color: Colors.orange, size: 14),
+                    const SizedBox(width: 4),
+                    Text(
+                      rating.toString(),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      price,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    // Quick Add Button
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey[200]!, width: 1.5),
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.02),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.add_shopping_cart_rounded, size: 16, color: AppColors.primary),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
+            ],
+          ),
+        ),
       ),
     );
   }
