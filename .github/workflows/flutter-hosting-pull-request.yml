@@ -20,8 +20,15 @@ jobs:
         working-directory: frontend/mobile
     steps:
       - uses: actions/checkout@v4
-      - run: flutter pub get && flutter build web
-          --dart-define=API_BASE_URL=https://pocketroom-backend-93470454666.asia-south1.run.app
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Build flutter web
+        run: flutter pub get && flutter build web --dart-define=API_BASE_URL=https://pocketroom-backend-93470454666.asia-south1.run.app
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
