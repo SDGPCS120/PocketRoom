@@ -8,6 +8,7 @@ import '../../auth/presentation/get_started_page.dart';
 import '../../../features/cart/data/cart_provider.dart';
 import '../data/models/furniture_model.dart';
 import '../data/reviews_provider.dart';
+import 'vendor_page.dart';
 
 class ProductPage extends ConsumerStatefulWidget {
   final Furniture furniture;
@@ -402,13 +403,21 @@ class _ProductPageState extends ConsumerState<ProductPage> {
                                       ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      f.brand.toUpperCase(),
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: AppColors.textSecondary.withValues(alpha: 0.5), // Lower opacity
-                                        fontWeight: FontWeight.w900,
-                                        letterSpacing: 1.5, // Greater tracking
+                                    GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () => Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => VendorPage(vendorName: f.brand),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        f.brand.toUpperCase(),
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: AppColors.textSecondary.withValues(alpha: 0.5), // Lower opacity
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 1.5, // Greater tracking
+                                        ),
                                       ),
                                     ),
                                   ],
