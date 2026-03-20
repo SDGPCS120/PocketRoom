@@ -8,7 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../core/firebase_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import 'login_page.dart';
-import '../../home/presentation/home_page.dart';
+import '../../home/presentation/main_screen.dart';
 import 'username_page.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
@@ -228,7 +228,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
+        MaterialPageRoute(builder: (_) => const MainScreen()),
         (_) => false,
       );
     } on StateError catch (e) {
