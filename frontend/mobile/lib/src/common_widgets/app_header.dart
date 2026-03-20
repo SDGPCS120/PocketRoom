@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
 import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
-import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
+import 'package:pocketroom/src/features/cart/presentation/providers/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
-import 'package:pocketroom/src/features/home/data/providers.dart';
+import 'package:pocketroom/src/features/home/presentation/providers/home_provider.dart';
 import 'package:pocketroom/src/features/profile/presentation/profile_page.dart';
 
 class AppHeader extends ConsumerStatefulWidget {
