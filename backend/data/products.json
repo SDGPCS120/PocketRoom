@@ -1,0 +1,580 @@
+[
+  {
+    "id": "P001",
+    "name": "Velvet Accent Chair",
+    "category": "Chair",
+    "color": "Pink",
+    "hex": "#E86AA3",
+    "material": "Velvet",
+    "style": "Modern",
+    "price": 58900,
+    "dimensions_cm": {
+      "l": 70,
+      "w": 68,
+      "h": 85
+    },
+    "description": "Soft velvet accent chair with rounded backrest and gold-tone legs.",
+    "imageUrl": "https://picsum.photos/seed/P001/600/400"
+  },
+  {
+    "id": "P002",
+    "name": "Scandi Dining Chair",
+    "category": "Chair",
+    "color": "Beige",
+    "hex": "#D8C3A5",
+    "material": "Fabric",
+    "style": "Scandinavian",
+    "price": 24500,
+    "dimensions_cm": {
+      "l": 52,
+      "w": 52,
+      "h": 80
+    },
+    "description": "Minimal dining chair with tapered wooden legs and cushioned seat.",
+    "imageUrl": "https://picsum.photos/seed/P002/600/400"
+  },
+  {
+    "id": "P003",
+    "name": "Leather Lounge Chair",
+    "category": "Chair",
+    "color": "Brown",
+    "hex": "#7A4E2D",
+    "material": "Leather",
+    "style": "Classic",
+    "price": 99000,
+    "dimensions_cm": {
+      "l": 78,
+      "w": 74,
+      "h": 92
+    },
+    "description": "Comfort lounge chair with padded arms and genuine leather finish.",
+    "imageUrl": "https://picsum.photos/seed/P003/600/400"
+  },
+  {
+    "id": "P004",
+    "name": "Fuchsia Velvet Armchair",
+    "category": "Chair",
+    "color": "Fuchsia",
+    "hex": "#D1007A",
+    "material": "Velvet",
+    "style": "Contemporary",
+    "price": 64000,
+    "dimensions_cm": {
+      "l": 72,
+      "w": 70,
+      "h": 88
+    },
+    "description": "Bold velvet armchair with plush cushioning and statement color.",
+    "imageUrl": "https://picsum.photos/seed/P004/600/400"
+  },
+  {
+    "id": "P005",
+    "name": "Minimal Coffee Table",
+    "category": "Table",
+    "color": "Oak",
+    "hex": "#C9A77E",
+    "material": "Wood",
+    "style": "Minimalist",
+    "price": 36500,
+    "dimensions_cm": {
+      "l": 90,
+      "w": 55,
+      "h": 40
+    },
+    "description": "Low-profile oak coffee table with clean edges and open shelf.",
+    "imageUrl": "https://picsum.photos/seed/P005/600/400"
+  },
+  {
+    "id": "P006",
+    "name": "Round Marble Coffee Table",
+    "category": "Table",
+    "color": "White",
+    "hex": "#F2F2F2",
+    "material": "Marble",
+    "style": "Luxury",
+    "price": 125000,
+    "dimensions_cm": {
+      "l": 80,
+      "w": 80,
+      "h": 38
+    },
+    "description": "Round marble top with sturdy metal base for a premium look.",
+    "imageUrl": "https://picsum.photos/seed/P006/600/400"
+  },
+  {
+    "id": "P007",
+    "name": "Compact Study Desk",
+    "category": "Desk",
+    "color": "White",
+    "hex": "#FFFFFF",
+    "material": "Engineered Wood",
+    "style": "Minimalist",
+    "price": 31500,
+    "dimensions_cm": {
+      "l": 100,
+      "w": 50,
+      "h": 75
+    },
+    "description": "Small desk for tight spaces with cable hole and drawer.",
+    "imageUrl": "https://picsum.photos/seed/P007/600/400"
+  },
+  {
+    "id": "P008",
+    "name": "Industrial Writing Desk",
+    "category": "Desk",
+    "color": "Black",
+    "hex": "#222222",
+    "material": "Metal",
+    "style": "Industrial",
+    "price": 47500,
+    "dimensions_cm": {
+      "l": 120,
+      "w": 55,
+      "h": 75
+    },
+    "description": "Metal frame desk with wood finish top; sturdy and modern.",
+    "imageUrl": "https://picsum.photos/seed/P008/600/400"
+  },
+  {
+    "id": "P009",
+    "name": "Two-Seater Sofa",
+    "category": "Sofa",
+    "color": "Grey",
+    "hex": "#8B8B8B",
+    "material": "Fabric",
+    "style": "Modern",
+    "price": 155000,
+    "dimensions_cm": {
+      "l": 160,
+      "w": 85,
+      "h": 85
+    },
+    "description": "Comfortable compact sofa with removable cushions.",
+    "imageUrl": "https://picsum.photos/seed/P009/600/400"
+  },
+  {
+    "id": "P010",
+    "name": "Velvet Loveseat",
+    "category": "Sofa",
+    "color": "Purple",
+    "hex": "#6D4C7D",
+    "material": "Velvet",
+    "style": "Contemporary",
+    "price": 179000,
+    "dimensions_cm": {
+      "l": 155,
+      "w": 82,
+      "h": 86
+    },
+    "description": "Elegant velvet loveseat with deep seats and soft texture.",
+    "imageUrl": "https://picsum.photos/seed/P010/600/400"
+  },
+  {
+    "id": "P011",
+    "name": "Sectional Sofa L-Shape",
+    "category": "Sofa",
+    "color": "Beige",
+    "hex": "#D7C6B2",
+    "material": "Fabric",
+    "style": "Modern",
+    "price": 289000,
+    "dimensions_cm": {
+      "l": 260,
+      "w": 160,
+      "h": 88
+    },
+    "description": "Spacious L-shape sectional for living rooms; supportive cushioning.",
+    "imageUrl": "https://picsum.photos/seed/P011/600/400"
+  },
+  {
+    "id": "P012",
+    "name": "Glass Side Table",
+    "category": "Table",
+    "color": "Clear",
+    "hex": "#EAEAEA",
+    "material": "Glass",
+    "style": "Modern",
+    "price": 22000,
+    "dimensions_cm": {
+      "l": 45,
+      "w": 45,
+      "h": 55
+    },
+    "description": "Compact side table with tempered glass top and metal frame.",
+    "imageUrl": "https://picsum.photos/seed/P012/600/400"
+  },
+  {
+    "id": "P013",
+    "name": "Wooden Bed Frame Queen",
+    "category": "Bed",
+    "color": "Walnut",
+    "hex": "#6B4F3A",
+    "material": "Wood",
+    "style": "Classic",
+    "price": 210000,
+    "dimensions_cm": {
+      "l": 210,
+      "w": 160,
+      "h": 105
+    },
+    "description": "Queen bed frame with headboard and strong slats.",
+    "imageUrl": "https://picsum.photos/seed/P013/600/400"
+  },
+  {
+    "id": "P014",
+    "name": "Upholstered Bed Frame",
+    "category": "Bed",
+    "color": "Grey",
+    "hex": "#9B9B9B",
+    "material": "Fabric",
+    "style": "Modern",
+    "price": 235000,
+    "dimensions_cm": {
+      "l": 215,
+      "w": 165,
+      "h": 110
+    },
+    "description": "Soft upholstered headboard; clean modern silhouette.",
+    "imageUrl": "https://picsum.photos/seed/P014/600/400"
+  },
+  {
+    "id": "P015",
+    "name": "TV Console Unit",
+    "category": "Storage",
+    "color": "Oak",
+    "hex": "#C8A77A",
+    "material": "Wood",
+    "style": "Scandinavian",
+    "price": 89000,
+    "dimensions_cm": {
+      "l": 160,
+      "w": 40,
+      "h": 55
+    },
+    "description": "Media console with two drawers and open shelf for devices.",
+    "imageUrl": "https://picsum.photos/seed/P015/600/400"
+  },
+  {
+    "id": "P016",
+    "name": "Modern Bookshelf 5-Tier",
+    "category": "Storage",
+    "color": "Black",
+    "hex": "#1F1F1F",
+    "material": "Engineered Wood",
+    "style": "Modern",
+    "price": 52000,
+    "dimensions_cm": {
+      "l": 80,
+      "w": 30,
+      "h": 180
+    },
+    "description": "Vertical bookshelf with open shelves; minimalist frame.",
+    "imageUrl": "https://picsum.photos/seed/P016/600/400"
+  },
+  {
+    "id": "P017",
+    "name": "Wood Dining Table 6-Seater",
+    "category": "Table",
+    "color": "Teak",
+    "hex": "#B0794B",
+    "material": "Wood",
+    "style": "Classic",
+    "price": 165000,
+    "dimensions_cm": {
+      "l": 180,
+      "w": 90,
+      "h": 75
+    },
+    "description": "Solid look dining table; warm tone and durable finish.",
+    "imageUrl": "https://picsum.photos/seed/P017/600/400"
+  },
+  {
+    "id": "P018",
+    "name": "Round Dining Table 4-Seater",
+    "category": "Table",
+    "color": "White",
+    "hex": "#FAFAFA",
+    "material": "Wood",
+    "style": "Minimalist",
+    "price": 98000,
+    "dimensions_cm": {
+      "l": 110,
+      "w": 110,
+      "h": 75
+    },
+    "description": "Compact round table ideal for apartments and small dining areas.",
+    "imageUrl": "https://picsum.photos/seed/P018/600/400"
+  },
+  {
+    "id": "P019",
+    "name": "Accent Chair (Magenta Tone)",
+    "category": "Chair",
+    "color": "Magenta",
+    "hex": "#C2185B",
+    "material": "Fabric",
+    "style": "Modern",
+    "price": 61000,
+    "dimensions_cm": {
+      "l": 68,
+      "w": 66,
+      "h": 84
+    },
+    "description": "Vibrant accent chair with comfortable seat depth and soft fabric.",
+    "imageUrl": "https://picsum.photos/seed/P019/600/400"
+  },
+  {
+    "id": "P020",
+    "name": "Recliner Chair",
+    "category": "Chair",
+    "color": "Grey",
+    "hex": "#7C7C7C",
+    "material": "Leather",
+    "style": "Classic",
+    "price": 149000,
+    "dimensions_cm": {
+      "l": 90,
+      "w": 85,
+      "h": 105
+    },
+    "description": "Reclining chair with padded headrest and smooth recline mechanism.",
+    "imageUrl": "https://picsum.photos/seed/P020/600/400"
+  },
+  {
+    "id": "P021",
+    "name": "Kids Study Table",
+    "category": "Desk",
+    "color": "Blue",
+    "hex": "#3A78C2",
+    "material": "Engineered Wood",
+    "style": "Modern",
+    "price": 19500,
+    "dimensions_cm": {
+      "l": 80,
+      "w": 45,
+      "h": 70
+    },
+    "description": "Small study table for kids with rounded edges and storage slot.",
+    "imageUrl": "https://picsum.photos/seed/P021/600/400"
+  },
+  {
+    "id": "P022",
+    "name": "Nightstand with Drawer",
+    "category": "Storage",
+    "color": "White",
+    "hex": "#FFFFFF",
+    "material": "Engineered Wood",
+    "style": "Minimalist",
+    "price": 17500,
+    "dimensions_cm": {
+      "l": 45,
+      "w": 38,
+      "h": 55
+    },
+    "description": "Compact bedside unit with drawer and open shelf.",
+    "imageUrl": "https://picsum.photos/seed/P022/600/400"
+  },
+  {
+    "id": "P023",
+    "name": "Wardrobe 2-Door",
+    "category": "Storage",
+    "color": "Walnut",
+    "hex": "#6E4E37",
+    "material": "Engineered Wood",
+    "style": "Classic",
+    "price": 145000,
+    "dimensions_cm": {
+      "l": 120,
+      "w": 52,
+      "h": 190
+    },
+    "description": "Two-door wardrobe with hanging space and top shelf.",
+    "imageUrl": "https://picsum.photos/seed/P023/600/400"
+  },
+  {
+    "id": "P024",
+    "name": "Minimal Shoe Rack",
+    "category": "Storage",
+    "color": "Black",
+    "hex": "#222222",
+    "material": "Metal",
+    "style": "Industrial",
+    "price": 12000,
+    "dimensions_cm": {
+      "l": 80,
+      "w": 30,
+      "h": 70
+    },
+    "description": "Simple open shoe rack with sturdy metal frame.",
+    "imageUrl": "https://picsum.photos/seed/P024/600/400"
+  },
+  {
+    "id": "P025",
+    "name": "Bean Bag Chair",
+    "category": "Chair",
+    "color": "Pink",
+    "hex": "#F28DB2",
+    "material": "Fabric",
+    "style": "Casual",
+    "price": 18500,
+    "dimensions_cm": {
+      "l": 90,
+      "w": 90,
+      "h": 70
+    },
+    "description": "Relaxed bean bag chair with soft fill and washable cover.",
+    "imageUrl": "https://picsum.photos/seed/P025/600/400"
+  },
+  {
+    "id": "P026",
+    "name": "Round Ottoman Pouf",
+    "category": "Chair",
+    "color": "Purple",
+    "hex": "#7B4BB7",
+    "material": "Velvet",
+    "style": "Contemporary",
+    "price": 22500,
+    "dimensions_cm": {
+      "l": 50,
+      "w": 50,
+      "h": 40
+    },
+    "description": "Velvet pouf ottoman; use as footrest or extra seating.",
+    "imageUrl": "https://picsum.photos/seed/P026/600/400"
+  },
+  {
+    "id": "P027",
+    "name": "Standing Lamp Shelf Unit",
+    "category": "Decor",
+    "color": "Black",
+    "hex": "#111111",
+    "material": "Metal",
+    "style": "Modern",
+    "price": 28000,
+    "dimensions_cm": {
+      "l": 35,
+      "w": 35,
+      "h": 160
+    },
+    "description": "Lamp with small shelves for decor; saves space in corners.",
+    "imageUrl": "https://picsum.photos/seed/P027/600/400"
+  },
+  {
+    "id": "P028",
+    "name": "Rug - Neutral Pattern",
+    "category": "Decor",
+    "color": "Beige",
+    "hex": "#DCC9AE",
+    "material": "Fabric",
+    "style": "Scandinavian",
+    "price": 32000,
+    "dimensions_cm": {
+      "l": 200,
+      "w": 140,
+      "h": 1
+    },
+    "description": "Neutral rug with subtle pattern; works with minimalist interiors.",
+    "imageUrl": "https://picsum.photos/seed/P028/600/400"
+  },
+  {
+    "id": "P029",
+    "name": "Coffee Table - Small Round",
+    "category": "Table",
+    "color": "Oak",
+    "hex": "#C9A57C",
+    "material": "Wood",
+    "style": "Minimalist",
+    "price": 29500,
+    "dimensions_cm": {
+      "l": 60,
+      "w": 60,
+      "h": 38
+    },
+    "description": "Small round coffee table for compact living rooms.",
+    "imageUrl": "https://picsum.photos/seed/P029/600/400"
+  },
+  {
+    "id": "P030",
+    "name": "Console Table - Entryway",
+    "category": "Table",
+    "color": "Walnut",
+    "hex": "#6A4B35",
+    "material": "Wood",
+    "style": "Modern",
+    "price": 54000,
+    "dimensions_cm": {
+      "l": 120,
+      "w": 35,
+      "h": 78
+    },
+    "description": "Slim console table for entryways; fits small spaces easily.",
+    "imageUrl": "https://picsum.photos/seed/P030/600/400"
+  },
+  {
+    "id": "P031",
+    "name": "Emerald Green Accent Chair",
+    "category": "Chair",
+    "color": "Green",
+    "hex": "#50C878",
+    "material": "Velvet",
+    "style": "Modern",
+    "price": 67500,
+    "dimensions_cm": {
+      "l": 72,
+      "w": 70,
+      "h": 86
+    },
+    "description": "Vibrant emerald green velvet chair with gold legs and plush cushioning.",
+    "imageUrl": "https://picsum.photos/seed/P031/600/400"
+  },
+  {
+    "id": "P032",
+    "name": "Sage Green Dining Chair",
+    "category": "Chair",
+    "color": "Green",
+    "hex": "#9CAF88",
+    "material": "Fabric",
+    "style": "Scandinavian",
+    "price": 28900,
+    "dimensions_cm": {
+      "l": 54,
+      "w": 54,
+      "h": 82
+    },
+    "description": "Soft sage green dining chair with wooden legs and comfortable seat.",
+    "imageUrl": "https://picsum.photos/seed/P032/600/400"
+  },
+  {
+    "id": "P033",
+    "name": "Navy Blue Armchair",
+    "category": "Chair",
+    "color": "Blue",
+    "hex": "#000080",
+    "material": "Velvet",
+    "style": "Classic",
+    "price": 72000,
+    "dimensions_cm": {
+      "l": 76,
+      "w": 72,
+      "h": 88
+    },
+    "description": "Deep navy blue velvet armchair with tufted backrest and elegant design.",
+    "imageUrl": "https://picsum.photos/seed/P033/600/400"
+  },
+  {
+    "id": "P034",
+    "name": "Sky Blue Lounge Chair",
+    "category": "Chair",
+    "color": "Blue",
+    "hex": "#87CEEB",
+    "material": "Fabric",
+    "style": "Contemporary",
+    "price": 54500,
+    "dimensions_cm": {
+      "l": 70,
+      "w": 68,
+      "h": 84
+    },
+    "description": "Light sky blue lounge chair with modern silhouette and soft upholstery.",
+    "imageUrl": "https://picsum.photos/seed/P034/600/400"
+  }
+]

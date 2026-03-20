@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/home/data/providers.dart';
+import '../features/ai-search/presentation/ai_search_page.dart';
 
 class SearchBarWidget extends ConsumerStatefulWidget {
   const SearchBarWidget({super.key});
@@ -23,48 +24,6 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  Widget _buildSuffixActions(String currentQuery) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (currentQuery.isNotEmpty)
-          IconButton(
-            icon: const Icon(Icons.clear, color: Colors.grey),
-            onPressed: () {
-              _controller.clear();
-              ref.read(searchQueryProvider.notifier).state = '';
-            },
-          ),
-        Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: SizedBox(
-            height: 30,
-            child: ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('AI search coming soon')),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFFD84B3E),
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'AI',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   @override
@@ -90,10 +49,53 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
             prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
             suffixIcon: _buildSuffixActions(currentQuery),
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSuffixActions(String currentQuery) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (currentQuery.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.clear, color: Colors.grey),
+            onPressed: () {
+              _controller.clear();
+              ref.read(searchQueryProvider.notifier).state = '';
+            },
+          ),
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: SizedBox(
+            height: 30,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const AiSearchPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: const Color(0xFFD84B3E),
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                'AI',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

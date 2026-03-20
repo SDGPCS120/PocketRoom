@@ -8,26 +8,33 @@ environment:
   sdk: ^3.9.2
 
 dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # Firebase
   firebase_core: ^3.0.0
   firebase_auth: ^5.0.0
   cloud_firestore: ^5.4.4
   google_sign_in: ^6.2.2
+
+  # Networking
   http: ^1.2.2
+  dio: ^5.4.0
+
+  # UI and Features
   flutter_unity_widget_2: ^6000.0.0
-  flutter_riverpod: ^2.4.9
-  getwidget: ^4.0.0
-  google_fonts: ^6.2.1
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.5.1
+  getwidget: ^7.0.0
+  google_fonts: ^8.0.0
   flutter_svg: ^2.2.3
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
-
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   mockito: ^5.6.3
   build_runner: ^2.13.0
   firebase_auth_mocks: 0.14.2
@@ -44,6 +51,7 @@ flutter:
     - assets/logo.svg
     - assets/get_started_hero.png
     - assets/bannerSofa.png
+    - "assets/" # Include all assets if possible, or list specifically
 
 flutter_launcher_icons:
   android: true

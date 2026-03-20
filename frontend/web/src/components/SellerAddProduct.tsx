@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSellerSession } from '../auth/sellerSession';
 import './SellerAddProduct.css';
 
 const SellerAddProduct: React.FC = () => {
   const navigate = useNavigate();
+  useSellerSession();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -50,7 +52,8 @@ const SellerAddProduct: React.FC = () => {
         console.log('Initiating 3D generation for product:', productId);
         
         // In a production app, the backend URL should come from an env variable (e.g. import.meta.env.VITE_API_URL)
-        const response = await fetch(`http://localhost:3000/model-generation/${productId}/generate`, {
+        const baseUrl = import.meta.env.VITE_API_URL || 'https://pocketroom-backend-93470454666.asia-south1.run.app';
+        const response = await fetch(`${baseUrl}/model-generation/${productId}/generate`, {
             method: 'POST',
             body: payload,
         });

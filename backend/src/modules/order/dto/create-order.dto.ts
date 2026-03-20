@@ -24,11 +24,11 @@ export enum OrderStatus {
 export class CreateOrderDto {
   @IsString()
   @IsNotEmpty()
-  shippingAddressId: string;
+  shippingAddressId!: string;
 
   @IsString()
   @IsNotEmpty()
-  billingAddressId: string;
+  billingAddressId!: string;
 
   @IsString()
   @IsOptional()
@@ -42,7 +42,7 @@ export class CreateOrderDto {
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => CreateOrderItemDto)
-  items: CreateOrderItemDto[];
+  items!: CreateOrderItemDto[];
 
   @IsPositive()
   @IsOptional()

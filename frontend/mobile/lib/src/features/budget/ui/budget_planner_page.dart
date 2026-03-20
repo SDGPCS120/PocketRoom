@@ -1,3 +1,4 @@
+import '../../../core/services/api_client.dart';
 import 'widgets/budget_result_page.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
   bool _loading = false;
 
   // API base URL:
-  String get baseUrl => 'http://192.168.1.56:3000';
+  String get baseUrl => ApiClient.baseUrl;
 
   Future<void> _generateBundle() async {
     if (_selectedRequired.isEmpty) {

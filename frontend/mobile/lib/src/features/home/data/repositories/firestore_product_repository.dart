@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/furniture_model.dart';
+import '../models/vendor_model.dart';
 import 'furniture_repository.dart';
 
 /// Repository that fetches products directly from Cloud Firestore.
@@ -19,16 +20,11 @@ class FirestoreProductRepository implements IFurnitureRepository {
       return Furniture(
         id: doc.id,
         name: _asTextOrNA(data['name']),
-        price: (data['price'] is num)
-            ? (data['price'] as num).toDouble()
-            : double.nan,
+        price: (data['price'] is num) ? (data['price'] as num).toDouble() : double.nan,
+        oldPrice: (data['oldPrice'] is num) ? (data['oldPrice'] as num).toDouble() : null,
         brand: _asTextOrNA(data['brand']),
-        rating:
-            (data['rating'] is num)
-                ? (data['rating'] as num).toDouble()
-                : double.nan,
-        images:
-            _extractImages(data),
+        rating: (data['rating'] is num) ? (data['rating'] as num).toDouble() : double.nan,
+        images: _extractImages(data),
         imageUrl: _extractImageUrl(data),
         imagePath: _asOptionalText(data['imagePath']),
         modelURL: _asOptionalText(data['modelURL']),
@@ -44,8 +40,49 @@ class FirestoreProductRepository implements IFurnitureRepository {
         dimensions: _asTextOrNA(data['dimensions']),
         availability: _availabilityLabel(data['stockStatus']),
         styleTags: _extractStyleTags(data['styleTags']),
+        description: _asOptionalText(data['description']),
       );
     }).toList();
+  }
+
+  @override
+  Future<List<Vendor>> fetchVendors() async {
+    // Try to fetch from 'vendors' collection first
+    try {
+      final snapshot = await _firestore.collection('vendors').get();
+      if (snapshot.docs.isNotEmpty) {
+        return snapshot.docs.map((doc) => Vendor.fromJson({...doc.data(), 'id': doc.id})).toList();
+      }
+    } catch (e) {
+      // Fallback to deriving from products
+    }
+
+    // Derive from products
+    final products = await fetchFurniture();
+    final brands = products.map((p) => p.brand).toSet();
+    
+    return brands.map((brand) => Vendor(
+      id: brand.toLowerCase().replaceAll(' ', '_'),
+      name: brand,
+      description: 'Find the best collection from $brand at PocketRoom.',
+      rating: 4.5, // Default rating
+    )).toList();
+  }
+
+  @override
+  Future<List<Furniture>> fetchFurnitureByVendor(String vendorName) async {
+    final products = await fetchFurniture();
+    return products.where((p) => p.brand.toLowerCase() == vendorName.toLowerCase()).toList();
+  }
+
+  @override
+  Future<Vendor?> fetchVendorByName(String name) async {
+    final vendors = await fetchVendors();
+    try {
+      return vendors.firstWhere((v) => v.name.toLowerCase() == name.toLowerCase());
+    } catch (e) {
+      return null;
+    }
   }
 
   String _asTextOrNA(dynamic value) {

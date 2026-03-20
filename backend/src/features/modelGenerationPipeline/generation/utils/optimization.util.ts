@@ -18,6 +18,7 @@ export async function optimizeGLB(glbBuffer: Buffer): Promise<Buffer> {
     return Buffer.from(result.glb);
   } catch (error) {
     console.error('Error optimizing GLB:', error);
-    throw new Error(`Failed to optimize GLB: ${error.message}`);
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to optimize GLB: ${message}`);
   }
 }

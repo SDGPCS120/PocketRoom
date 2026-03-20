@@ -7,7 +7,7 @@ export enum AccessMode {
 
 export class GenerateRoomCodeDto {
   @IsEnum(AccessMode)
-  accessMode: AccessMode;
+  accessMode!: AccessMode;
 
   @IsOptional()
   @IsInt()

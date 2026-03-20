@@ -8,11 +8,11 @@ export enum PresenceStatus {
 
 export class PresenceUpdateDto {
   @IsEnum(PresenceStatus)
-  status: PresenceStatus;
+  status!: PresenceStatus;
 
   @IsNumber()
-  cursorX: number;
+  cursorX!: number;
 
   @IsNumber()
-  cursorY: number;
+  cursorY!: number;
 }

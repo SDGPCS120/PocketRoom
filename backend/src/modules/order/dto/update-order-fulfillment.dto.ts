@@ -3,7 +3,7 @@ import { OrderStatus } from './create-order.dto';
 
 export class UpdateOrderFulfillmentDto {
   @IsEnum(OrderStatus)
-  orderStatus: OrderStatus;
+  orderStatus!: OrderStatus;
 
   @IsOptional()
   @IsString()

@@ -4,6 +4,7 @@ import '../core/theme/app_theme.dart'; // Import the new theme file
 import '../features/auth/presentation/get_started_page.dart';
 import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
+import '../features/home/presentation/vendor_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/favorites/data/favorites_provider.dart';
@@ -40,9 +41,14 @@ class _ProductCardState extends ConsumerState<ProductCard> {
     final ratingLabel = furniture.rating.isNaN
         ? 'N/A'
         : furniture.rating.toString();
+    String formatPrice(double p) => "LKR ${p.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+
     final priceLabel = furniture.price.isNaN
         ? 'N/A'
-        : "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+        : formatPrice(furniture.price);
+    final oldPriceLabel = (furniture.oldPrice != null && !furniture.oldPrice!.isNaN)
+        ? formatPrice(furniture.oldPrice!)
+        : null;
     final brandLabel = furniture.brand.trim().isEmpty
         ? 'N/A'
         : furniture.brand.toUpperCase();
@@ -53,17 +59,16 @@ class _ProductCardState extends ConsumerState<ProductCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        transform: _isHovered 
-            ? Matrix4.translationValues(0, -4, 0)
-            : Matrix4.identity(),
+        transform:
+            _isHovered ? Matrix4.translationValues(0, -4, 0) : Matrix4.identity(),
         decoration: BoxDecoration(
           color: AppColors.background,
           border: Border.all(
-            color: _isHovered ? AppColors.primary : AppColors.cardBorder, 
+            color: _isHovered ? AppColors.primary : AppColors.cardBorder,
             width: _isHovered ? 1.0 : 0.6,
           ),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: _isHovered 
+          boxShadow: _isHovered
               ? [
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.15),
@@ -84,7 +89,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
           );
         },
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -93,11 +98,11 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 aspectRatio: 156.26 / 147,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     // border: Border.all(color: AppColors.cardBorder, width: 0.6),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     child: furniture.images.isNotEmpty
                         ? Image.network(
                             furniture.images.first,
@@ -166,37 +171,62 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      brandLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 9,
-                        height: 1.67,
-                        letterSpacing: 1,
-                        color: AppColors.textSecondary,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VendorPage(vendorName: furniture.brand),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        brandLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 9,
+                          height: 1.67,
+                          letterSpacing: 1,
+                          color: AppColors.priceColor,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              const Spacer(),
+              const SizedBox(height: 10),
               // Price and Add to Cart
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    priceLabel,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      height: 1.5,
-                      color: AppColors.priceColor,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (oldPriceLabel != null)
+                        Text(
+                          oldPriceLabel,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            decoration: TextDecoration.lineThrough,
+                            color: AppColors.textSecondary,
+                            height: 1.1,
+                          ),
+                        ),
+                      Text(
+                        priceLabel,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.2,
+                          color: AppColors.priceColor,
+                        ),
+                      ),
+                    ],
                   ),
                   GestureDetector(
                     onTap: () {
@@ -223,7 +253,9 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isFavorite ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
+                        color: isFavorite 
+                          ? AppColors.primary.withValues(alpha: 0.1) 
+                          : Colors.transparent,
                         border: Border.all(
                           color: isFavorite ? AppColors.primary : AppColors.cardBorder, 
                           width: 1
@@ -243,8 +275,8 @@ class _ProductCardState extends ConsumerState<ProductCard> {
             ],
           ),
         ),
-        ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

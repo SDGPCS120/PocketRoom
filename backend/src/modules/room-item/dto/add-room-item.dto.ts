@@ -2,31 +2,31 @@ import { IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class AddRoomItemDto {
   @IsString()
-  roomId: string;
+  roomId!: string;
 
   @IsString()
-  variantId: string;
+  variantId!: string;
 
   @IsNumber()
-  posX: number;
+  posX!: number;
 
   @IsNumber()
-  posY: number;
+  posY!: number;
 
   @IsNumber()
-  posZ: number;
+  posZ!: number;
 
   @IsNumber()
-  rotX: number;
+  rotX!: number;
 
   @IsNumber()
-  rotY: number;
+  rotY!: number;
 
   @IsNumber()
-  rotZ: number;
+  rotZ!: number;
 
   @IsNumber()
-  scale: number;
+  scale!: number;
 
   @IsOptional()
   @IsString()

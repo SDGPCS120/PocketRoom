@@ -11,17 +11,17 @@ import { RoomType } from '../enums/room-type.enum';
 export class CreateBudgetSessionDto {
   @IsNumber()
   @Min(0)
-  budgetMin: number;
+  budgetMin!: number;
 
   @IsNumber()
   @Min(0)
-  budgetMax: number;
+  budgetMax!: number;
 
   @IsString()
-  currency: string;
+  currency!: string;
 
   @IsEnum(RoomType)
-  roomType: RoomType;
+  roomType!: RoomType;
 
   @IsOptional()
   @IsString()
@@ -31,3 +31,4 @@ export class CreateBudgetSessionDto {
   @IsObject()
   constraintsJSON?: Record<string, any>;
 }
+

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+/// Controls the app-wide theme mode. Defaults to light.
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.light);
 
 // A dedicated class for holding your app's custom colors.
 class AppColors {
@@ -47,7 +51,20 @@ class AppTheme {
       secondary: AppColors.secondary,
       surface: AppColors.background,
     ),
-    // You could also define a text theme here to use AppColors.textPrimary
-    // as the default text color throughout the app.
+  );
+
+  static final ThemeData darkTheme = ThemeData(
+    brightness: Brightness.dark,
+    primaryColor: AppColors.primary,
+    scaffoldBackgroundColor: const Color(0xFF1A1A1A),
+    textTheme: GoogleFonts.fredokaTextTheme(
+      ThemeData(brightness: Brightness.dark).textTheme,
+    ),
+    colorScheme: const ColorScheme.dark(
+      primary: AppColors.primary,
+      secondary: AppColors.secondary,
+      surface: const Color(0xFF1A1A1A),
+    ),
   );
 }
+

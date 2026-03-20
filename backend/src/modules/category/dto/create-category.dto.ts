@@ -4,11 +4,11 @@ import {IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-va
 export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsString()
   @IsNotEmpty()
-  slug: string;
+  slug!: string;
 
   @IsOptional()
   @IsString()

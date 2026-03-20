@@ -8,6 +8,8 @@ class SectionItem extends StatelessWidget {
   final bool isDestructive;
   /// When non-null, replaces the trailing chevron with this value text.
   final String? value;
+  /// Optional icon shown after the value text (e.g. a dropdown arrow).
+  final IconData? trailingIcon;
 
   const SectionItem({
     super.key,
@@ -16,6 +18,7 @@ class SectionItem extends StatelessWidget {
     this.onTap,
     this.isDestructive = false,
     this.value,
+    this.trailingIcon,
   });
 
   @override
@@ -49,7 +52,7 @@ class SectionItem extends StatelessWidget {
               ),
             ),
             // Value text OR chevron — mutually exclusive
-            if (value != null)
+            if (value != null) ...[  
               Text(
                 value!,
                 style: const TextStyle(
@@ -57,8 +60,16 @@ class SectionItem extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   color: Color(0xFF9E9E9E),
                 ),
-              )
-            else
+              ),
+              if (trailingIcon != null) ...[  
+                const SizedBox(width: 4),
+                Icon(
+                  trailingIcon,
+                  size: 16,
+                  color: const Color(0xFF9E9E9E),
+                ),
+              ],
+            ] else
               const Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
