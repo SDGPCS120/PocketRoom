@@ -40,10 +40,12 @@ class _ProductListState extends ConsumerState<ProductList> {
     final showRight = _scrollController.offset < _scrollController.position.maxScrollExtent - 10;
     
     if (showLeft != _showLeftArrow || showRight != _showRightArrow) {
-      setState(() {
-        _showLeftArrow = showLeft;
-        _showRightArrow = showRight;
-      });
+      if (mounted) {
+        setState(() {
+          _showLeftArrow = showLeft;
+          _showRightArrow = showRight;
+        });
+      }
     }
   }
 
@@ -67,10 +69,10 @@ class _ProductListState extends ConsumerState<ProductList> {
       loading: () => const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
       error: (error, stack) => SliverFillRemaining(child: Center(child: Text('Error: $error'))),
       data: (filteredList) {
-        
         // If the filtered list is empty, show a message.
         if (filteredList.isEmpty) {
-          return const SliverFillRemaining(child: Center(child: Text('No items found in this category.')));
+          return const SliverFillRemaining(
+              child: Center(child: Text('No items found in this category.')));
         }
 
         if (widget.isHorizontal) {
@@ -78,10 +80,8 @@ class _ProductListState extends ConsumerState<ProductList> {
           const itemSpacing = 16.0;
           final screenWidth = MediaQuery.of(context).size.width;
           final availableWidth = screenWidth - (horizontalPadding * 2);
-          // Calculate cardWidth to show ~2.14 items in the viewport (2 and 1/7)
           final cardWidth = (availableWidth - (itemSpacing * 2)) / 2.14;
 
-          // Initial check for right arrow
           WidgetsBinding.instance.addPostFrameCallback((_) => _scrollListener());
 
           return SliverToBoxAdapter(
@@ -132,31 +132,35 @@ class _ProductListState extends ConsumerState<ProductList> {
           );
         }
 
-        return SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          sliver: SliverGrid(
-            gridDelegate: MediaQuery.of(context).size.width > 600
-                ? const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 250,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 177 / 253,
-                  )
-                : const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 177 / 253,
-                  ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return ProductCard(furniture: filteredList[index]);
-              },
-              childCount: filteredList.length,
-            ),
-          ),
-        );
+        return _buildSliverGrid(context, filteredList);
       },
+    );
+  }
+
+  Widget _buildSliverGrid(BuildContext context, List<dynamic> list) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      sliver: SliverGrid(
+        gridDelegate: MediaQuery.of(context).size.width > 600
+            ? const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 250,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 177 / 253,
+              )
+            : const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 177 / 253,
+              ),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return ProductCard(furniture: list[index]);
+          },
+          childCount: list.length,
+        ),
+      ),
     );
   }
 }

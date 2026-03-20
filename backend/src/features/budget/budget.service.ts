@@ -19,9 +19,19 @@ export class BudgetService {
 
     const items = snapshot.docs.map((doc) => {
       const data = doc.data();
+      const name = (data.name || doc.id).toLowerCase();
+      const id = doc.id.toLowerCase();
 
-      // Prioritize explicit category field, fallback to ID-based derivation
-      const category = (data.category || doc.id.split('-')[0]).toUpperCase();
+      let category = (data.category || '').toUpperCase();
+
+      if (!category) {
+        if (name.includes('chair') || id.includes('chair')) category = 'CHAIR';
+        else if (name.includes('sofa') || id.includes('sofa') || name.includes('couch')) category = 'SOFA';
+        else if (name.includes('table') || id.includes('table')) category = 'TABLE';
+        else if (name.includes('bed') || id.includes('bed')) category = 'BED';
+        else if (name.includes('wardrobe') || id.includes('wardrobe')) category = 'WARDROBE';
+        else category = id.split('-')[0].toUpperCase();
+      }
 
       const item = {
         id: doc.id,
@@ -38,14 +48,24 @@ export class BudgetService {
       return item;
     }) as FurnitureItem[];
 
+    const categoriesFound = Array.from(new Set(items.map(it => it.category)));
+    this.logger.log(`Distinct categories found: ${categoriesFound.join(', ')}`);
+
     return items;
   }
+
   async generateBundle(
     dto: BudgetBundleRequestDto
   ): Promise<BudgetBundleResponseDto> {
-
     const furnitureItems = await this.getFurnitureFromDB();
+    this.logger.log(`Generating bundle for ${dto.requiredCategories.join(', ')} with ${furnitureItems.length} items`);
+    const result = buildBundle(dto, furnitureItems);
 
-    return buildBundle(dto, furnitureItems);
+    if (!result.ok && result.reason?.includes('Missing categories')) {
+      const categoriesFound = Array.from(new Set(furnitureItems.map(it => it.category)));
+      this.logger.warn(`Budget generation failed. Missing categories. Categories found in Firestore: ${categoriesFound.join(', ')}`);
+    }
+
+    return result;
   }
 }

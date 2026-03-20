@@ -25,26 +25,32 @@ class FurnitureRepository implements IFurnitureRepository {
   @override
   Future<List<Vendor>> fetchVendors() async {
     final brands = furnitureData.map((p) => p.brand).toSet();
-    return brands.map((brand) => Vendor(
-      id: brand.toLowerCase().replaceAll(' ', '_'),
-      name: brand,
-      description: 'Exclusive furniture collection from $brand.',
-      rating: 4.8,
-    )).toList();
+    return brands
+        .map((brand) => Vendor(
+              id: brand.toLowerCase().replaceAll(' ', '_'),
+              name: brand,
+              description: 'Exclusive furniture collection from $brand.',
+              rating: 4.8,
+            ))
+        .toList();
   }
 
   @override
   Future<List<Furniture>> fetchFurnitureByVendor(String vendorName) async {
-    return furnitureData.where((p) => p.brand.toLowerCase() == vendorName.toLowerCase()).toList();
+    return furnitureData
+        .where((p) => p.brand.toLowerCase() == vendorName.toLowerCase())
+        .toList();
   }
 
   @override
   Future<Vendor?> fetchVendorByName(String name) async {
     final vendors = await fetchVendors();
     try {
-      return vendors.firstWhere((v) => v.name.toLowerCase() == name.toLowerCase());
+      return vendors
+          .firstWhere((v) => v.name.toLowerCase() == name.toLowerCase());
     } catch (e) {
       return null;
     }
   }
 }
+
