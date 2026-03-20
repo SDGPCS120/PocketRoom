@@ -9,7 +9,8 @@ import './repositories/firestore_product_repository.dart';
 final selectedFurnitureTypeProvider = StateProvider<String>((ref) => "All");
 
 // Provider for the active General Category (selected from Category Products Page)
-final selectedGeneralCategoryProvider = StateProvider<String>((ref) => "Best sellers");
+final selectedGeneralCategoryProvider =
+    StateProvider<String>((ref) => "Best sellers");
 
 // Provider for the search query entered in the search bar
 final searchQueryProvider = StateProvider<String>((ref) => "");
@@ -38,13 +39,15 @@ final vendorsProvider = FutureProvider<List<Vendor>>((ref) {
 });
 
 // 1c. Vendor by Name Fetcher: Fetches a single vendor detail.
-final vendorByNameProvider = FutureProvider.family<Vendor?, String>((ref, name) {
+final vendorByNameProvider =
+    FutureProvider.family<Vendor?, String>((ref, name) {
   final repository = ref.watch(furnitureRepositoryProvider);
   return repository.fetchVendorByName(name);
 });
 
 // 1d. Vendor Products Fetcher: Fetches products for a specific vendor.
-final vendorFurnitureProvider = FutureProvider.family<List<Furniture>, String>((ref, vendorName) {
+final vendorFurnitureProvider =
+    FutureProvider.family<List<Furniture>, String>((ref, vendorName) {
   final repository = ref.watch(furnitureRepositoryProvider);
   return repository.fetchFurnitureByVendor(vendorName);
 });

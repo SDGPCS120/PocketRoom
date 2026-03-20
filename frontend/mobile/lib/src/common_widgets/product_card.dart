@@ -59,17 +59,16 @@ class _ProductCardState extends ConsumerState<ProductCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        transform: _isHovered 
-            ? Matrix4.translationValues(0, -4, 0)
-            : Matrix4.identity(),
+        transform:
+            _isHovered ? Matrix4.translationValues(0, -4, 0) : Matrix4.identity(),
         decoration: BoxDecoration(
           color: AppColors.background,
           border: Border.all(
-            color: _isHovered ? AppColors.primary : AppColors.cardBorder, 
+            color: _isHovered ? AppColors.primary : AppColors.cardBorder,
             width: _isHovered ? 1.0 : 0.6,
           ),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: _isHovered 
+          boxShadow: _isHovered
               ? [
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.15),
@@ -192,7 +191,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                           fontSize: 9,
                           height: 1.67,
                           letterSpacing: 1,
-                          color: AppColors.primary, // Changed to primary to show it's clickable
+                          color: AppColors.priceColor,
                         ),
                       ),
                     ),
@@ -254,7 +253,9 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isFavorite ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
+                        color: isFavorite 
+                          ? AppColors.primary.withValues(alpha: 0.1) 
+                          : Colors.transparent,
                         border: Border.all(
                           color: isFavorite ? AppColors.primary : AppColors.cardBorder, 
                           width: 1
@@ -274,8 +275,8 @@ class _ProductCardState extends ConsumerState<ProductCard> {
             ],
           ),
         ),
-        ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
