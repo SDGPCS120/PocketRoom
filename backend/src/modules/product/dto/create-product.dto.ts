@@ -8,6 +8,23 @@ import {
   IsArray,
 } from 'class-validator';
 
+import { Type } from 'class-transformer';
+import { ValidateNested } from 'class-validator';
+
+class DimensionsDto {
+  @IsOptional()
+  @IsNumber()
+  height?: number;
+
+  @IsOptional()
+  @IsNumber()
+  length?: number;
+
+  @IsOptional()
+  @IsNumber()
+  width?: number;
+}
+
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
@@ -38,13 +55,18 @@ export class CreateProductDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  images?: string[];
+  imageUrl?: string[];
 
   @IsOptional()
   @IsString()
   furnitureType?: string;
 
   @IsOptional()
+  @ValidateNested()
+  @Type(() => DimensionsDto)
+  dimensions?: DimensionsDto;
+
+  @IsOptional()
   @IsString()
-  dimensions?: string;
+  modelURL?: string;
 }

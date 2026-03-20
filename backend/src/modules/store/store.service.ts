@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { generateMeaningfulId } from '../../common/utils/generate-id.util';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
@@ -12,7 +13,8 @@ export class StoreService {
     }
 
     async createStore(sellerId: string, dto: CreateStoreDto) {
-        const docRef = this.collection().doc();
+        const customId = generateMeaningfulId(dto.storeName);
+        const docRef = this.collection().doc(customId);
 
         const data = {
             storeId: docRef.id,
