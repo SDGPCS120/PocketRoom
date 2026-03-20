@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/providers.dart';
+import '../providers/home_provider.dart';
 
 class SectionHeader extends ConsumerWidget {
   final String title;

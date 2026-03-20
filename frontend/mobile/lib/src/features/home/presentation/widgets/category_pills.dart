@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart'; // Corrected import path
 import '../../data/mock_data.dart';
-import '../../data/providers.dart';
+import '../providers/home_provider.dart';
 
 class CategoryPills extends ConsumerWidget {
   const CategoryPills({super.key});

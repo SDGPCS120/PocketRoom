@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../common_widgets/product_card.dart';
-import '../../data/providers.dart';
+import '../providers/home_provider.dart';
 
 class ProductList extends ConsumerWidget {
   const ProductList({super.key});

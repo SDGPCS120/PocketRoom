@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../data/mock_data.dart'; 
-import '../../data/providers.dart'; 
+import '../providers/home_provider.dart'; 
 import '../category_products_page.dart';
 
 class CategoryIconsRow extends ConsumerWidget {
