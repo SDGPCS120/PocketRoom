@@ -38,6 +38,75 @@ class AppColors {
   );
 }
 
+class AppSizes {
+  AppSizes._();
+  
+  static const double pagePadding = 20.0;
+  static const double cardRadius = 16.0;
+  static const double buttonRadius = 28.0;
+  static const double buttonHeight = 52.0;
+}
+
+class AppTextStyles {
+  AppTextStyles._();
+  
+  static const TextStyle appBarTitle = TextStyle(
+    color: AppColors.textPrimary,
+    fontWeight: FontWeight.w700,
+    fontSize: 20,
+  );
+  
+  static const TextStyle buttonText = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+  );
+  
+  static const TextStyle sectionTitle = TextStyle(
+    color: AppColors.textPrimary,
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+  );
+  
+  static const TextStyle profileName = TextStyle(
+    color: AppColors.textPrimary,
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
+  );
+  
+  static const TextStyle profileEmail = TextStyle(
+    color: AppColors.textSecondary,
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+  );
+  
+  static const TextStyle profileEdit = TextStyle(
+    color: AppColors.secondary,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+}
+
+class AppButtonStyles {
+  AppButtonStyles._();
+  
+  static final ButtonStyle primaryButton = ElevatedButton.styleFrom(
+    backgroundColor: AppColors.primary,
+    foregroundColor: Colors.white,
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
+    ),
+  );
+  
+  static final ButtonStyle outlinedButton = OutlinedButton.styleFrom(
+    foregroundColor: AppColors.textPrimary,
+    side: const BorderSide(color: AppColors.cardBorder),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
+    ),
+  );
+}
+
 class AppTheme {
   AppTheme._();
 
