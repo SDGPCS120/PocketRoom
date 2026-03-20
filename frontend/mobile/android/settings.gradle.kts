@@ -20,13 +20,17 @@ pluginManagement {
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
     id("com.android.application") version "8.9.1" apply false
+<<<<<<< HEAD
     // START: FlutterFire Configuration
     id("com.google.gms.google-services") version("4.3.15") apply false
     // END: FlutterFire Configuration
+=======
+>>>>>>> ai-search
     id("org.jetbrains.kotlin.android") version "2.1.0" apply false
 }
 
 include(":app")
+<<<<<<< HEAD
 
 // Include Unity export module only when present so normal Flutter builds still work.
 val unityLibraryDir = file("unityLibrary")
@@ -50,3 +54,5 @@ if (unityLibraryDir.exists()) {
     project(":unityLibrary").projectDir =
         file("../../../backend/src/modules/unityLibrary-stub")
 }
+=======
+>>>>>>> ai-search

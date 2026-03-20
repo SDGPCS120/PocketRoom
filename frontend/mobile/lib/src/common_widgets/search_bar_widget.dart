@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/home/data/providers.dart';
+import '../features/home/data/ai_search_provider.dart';
+import 'ai_prompt_panel.dart';
 
 class SearchBarWidget extends ConsumerStatefulWidget {
   const SearchBarWidget({super.key});
@@ -11,6 +13,7 @@ class SearchBarWidget extends ConsumerStatefulWidget {
 
 class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
   late final TextEditingController _controller;
+  bool isAiSearchOpen = false;
 
   @override
   void initState() {
@@ -23,6 +26,17 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _toggleAiSearch() {
+    setState(() {
+      isAiSearchOpen = !isAiSearchOpen;
+
+      // Clear AI search results when switching back to normal search
+      if (!isAiSearchOpen) {
+        ref.read(aiSearchStateProvider.notifier).clearResults();
+      }
+    });
   }
 
   Widget _buildSuffixActions(String currentQuery) {
@@ -42,11 +56,7 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
           child: SizedBox(
             height: 30,
             child: ElevatedButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('AI search coming soon')),
-                );
-              },
+              onPressed: _toggleAiSearch,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: const Color(0xFFD84B3E),
@@ -69,6 +79,10 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (isAiSearchOpen) {
+      return AiPromptPanel(onBackToSearch: _toggleAiSearch);
+    }
+
     // Watch to see if we need to show the clear button
     final currentQuery = ref.watch(searchQueryProvider);
 
@@ -90,7 +104,8 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
             prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
             suffixIcon: _buildSuffixActions(currentQuery),
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
           ),
         ),
       ),

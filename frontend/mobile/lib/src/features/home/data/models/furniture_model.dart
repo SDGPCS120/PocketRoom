@@ -68,9 +68,15 @@ class Furniture {
           ? (json['rating'] as num).toDouble()
           : double.nan,
       images: (json['imageUrl'] is List)
-          ? (json['imageUrl'] as List).map((e) => e.toString().trim()).where((e) => e.isNotEmpty).toList()
+          ? (json['imageUrl'] as List)
+                .map((e) => e.toString().trim())
+                .where((e) => e.isNotEmpty)
+                .toList()
           : ((json['images'] is List)
-              ? (json['images'] as List).map((e) => e.toString().trim()).where((e) => e.isNotEmpty).toList()
+              ? (json['images'] as List)
+                    .map((e) => e.toString().trim())
+                    .where((e) => e.isNotEmpty)
+                    .toList()
               : []),
       imageUrl: (json['imageUrl'] is List && (json['imageUrl'] as List).isNotEmpty)
           ? (json['imageUrl'] as List).first.toString().trim()
@@ -135,4 +141,5 @@ class Furniture {
       'description': description,
     };
   }
+}
 }

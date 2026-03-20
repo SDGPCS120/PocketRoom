@@ -19,9 +19,9 @@ final furnitureData = [
     description:
         "A modern upholstered sofa crafted for everyday comfort. Its deep cushioning and durable fabric finish make it perfect for living rooms, lounges, and open-plan spaces.",
     colorOptions: [
-      Color(0xFF2D2D2D),
-      Color(0xFFFFFFFF),
-      Color(0xFFB5A08A),
+      const Color(0xFF2D2D2D),
+      const Color(0xFFFFFFFF),
+      const Color(0xFFB5A08A),
     ],
   ),
   Furniture(
@@ -40,8 +40,8 @@ final furnitureData = [
     description:
         "Timeless classic lines with contemporary upholstery. Sink into plush comfort after a long day.",
     colorOptions: [
-      Color(0xFF8B7355),
-      Color(0xFFE8D5C4),
+      const Color(0xFF8B7355),
+      const Color(0xFFE8D5C4),
     ],
   ),
   Furniture(
@@ -59,8 +59,8 @@ final furnitureData = [
     description:
         "Space-saving slim profile sofa ideal for apartments and compact living rooms.",
     colorOptions: [
-      Color(0xFF4A4A4A),
-      Color(0xFFD4C5B5),
+      const Color(0xFF4A4A4A),
+      const Color(0xFFD4C5B5),
     ],
   ),
   Furniture(
@@ -80,9 +80,9 @@ final furnitureData = [
     description:
         "L-shaped corner sofa for maximum seating. Great for family rooms and home cinema setups.",
     colorOptions: [
-      Color(0xFF1C1C1C),
-      Color(0xFF7A6552),
-      Color(0xFFF5F0EB),
+      const Color(0xFF1C1C1C),
+      const Color(0xFF7A6552),
+      const Color(0xFFF5F0EB),
     ],
   ),
   Furniture(
@@ -101,9 +101,9 @@ final furnitureData = [
     description:
         "The premium Sofa Max delivers unrivalled support and style. High-resilience foam core with hardwood legs.",
     colorOptions: [
-      Color(0xFF3E2723),
-      Color(0xFF795548),
-      Color(0xFFD7CCC8),
+      const Color(0xFF3E2723),
+      const Color(0xFF795548),
+      const Color(0xFFD7CCC8),
     ],
   ),
   Furniture(
@@ -120,7 +120,7 @@ final furnitureData = [
     dimensions: "H:95 cm  W:220 cm  D:105 cm",
     description: "Entry-level sofa at a budget-friendly price point.",
     colorOptions: [
-      Color(0xFF9E9E9E),
+      const Color(0xFF9E9E9E),
     ],
   ),
   Furniture(
@@ -138,8 +138,8 @@ final furnitureData = [
     description:
         "Lightweight construction makes repositioning easy. Durable microfibre upholstery resists everyday wear.",
     colorOptions: [
-      Color(0xFF5D4037),
-      Color(0xFFEFEBE9),
+      const Color(0xFF5D4037),
+      const Color(0xFFEFEBE9),
     ],
   ),
   Furniture(
@@ -158,8 +158,8 @@ final furnitureData = [
     description:
         "Ultra-wide seating for the whole family. Reinforced frame rated for heavy daily use.",
     colorOptions: [
-      Color(0xFF212121),
-      Color(0xFFBCAAA4),
+      const Color(0xFF212121),
+      const Color(0xFFBCAAA4),
     ],
   ),
   Furniture(
@@ -177,9 +177,9 @@ final furnitureData = [
     description:
         "Professional-grade comfort meets designer aesthetics. Removable, washable cushion covers included.",
     colorOptions: [
-      Color(0xFF37474F),
-      Color(0xFF78909C),
-      Color(0xFFECEFF1),
+      const Color(0xFF37474F),
+      const Color(0xFF78909C),
+      const Color(0xFFECEFF1),
     ],
   ),
   Furniture(
@@ -198,8 +198,8 @@ final furnitureData = [
     description:
         "Compact and versatile, the Sofa Lite fits effortlessly into studios and small apartments without sacrificing style.",
     colorOptions: [
-      Color(0xFFE0E0E0),
-      Color(0xFF9E9E9E),
+      const Color(0xFFE0E0E0),
+      const Color(0xFF9E9E9E),
     ],
   ),
   Furniture(
@@ -216,8 +216,8 @@ final furnitureData = [
     description:
         "Solid kiln-dried hardwood frame with a soft fabric seat. Timeless design that complements any interior style.",
     colorOptions: [
-      Color(0xFF4E342E),
-      Color(0xFF8D6E63),
+      const Color(0xFF4E342E),
+      const Color(0xFF8D6E63),
     ],
   ),
   Furniture(
@@ -234,9 +234,9 @@ final furnitureData = [
     description:
         "Clean Scandinavian lines and matte finish make this dining table the centrepiece of any modern kitchen or dining room.",
     colorOptions: [
-      Color(0xFFFFFFFF),
-      Color(0xFF757575),
-      Color(0xFF3E2723),
+      const Color(0xFFFFFFFF),
+      const Color(0xFF757575),
+      const Color(0xFF3E2723),
     ],
   ),
   Furniture(
@@ -253,12 +253,19 @@ final furnitureData = [
     description:
         "Adjustable arc floor lamp with warm LED output. Energy-efficient and flicker-free for long reading sessions.",
     colorOptions: [
-      Color(0xFF212121),
-      Color(0xFFB0BEC5),
+      const Color(0xFF212121),
+      const Color(0xFFB0BEC5),
     ],
   ),
 ];
 
 final furnitureTypes = ["All", "Sofa", "Chair", "Table", "Lamp"];
 
-final categories = ["Best sellers", "Arpico", "Modern", "Max", "Minimalistic", "Damro"];
+final categories = [
+  "Best sellers",
+  "Arpico",
+  "Modern",
+  "Max",
+  "Minimalistic",
+  "Damro"
+];

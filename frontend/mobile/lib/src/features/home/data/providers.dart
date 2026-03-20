@@ -8,7 +8,8 @@ import './repositories/firestore_product_repository.dart';
 final selectedFurnitureTypeProvider = StateProvider<String>((ref) => "All");
 
 // Provider for the active General Category (selected from Category Products Page)
-final selectedGeneralCategoryProvider = StateProvider<String>((ref) => "Best sellers");
+final selectedGeneralCategoryProvider =
+    StateProvider<String>((ref) => "Best sellers");
 
 // Provider for the search query entered in the search bar
 final searchQueryProvider = StateProvider<String>((ref) => "");
@@ -37,13 +38,15 @@ final vendorsProvider = FutureProvider<List<Vendor>>((ref) {
 });
 
 // 1c. Vendor by Name Fetcher: Fetches a single vendor detail.
-final vendorByNameProvider = FutureProvider.family<Vendor?, String>((ref, name) {
+final vendorByNameProvider =
+    FutureProvider.family<Vendor?, String>((ref, name) {
   final repository = ref.watch(furnitureRepositoryProvider);
   return repository.fetchVendorByName(name);
 });
 
 // 1d. Vendor Products Fetcher: Fetches products for a specific vendor.
-final vendorFurnitureProvider = FutureProvider.family<List<Furniture>, String>((ref, vendorName) {
+final vendorFurnitureProvider =
+    FutureProvider.family<List<Furniture>, String>((ref, vendorName) {
   final repository = ref.watch(furnitureRepositoryProvider);
   return repository.fetchFurnitureByVendor(vendorName);
 });
@@ -68,7 +71,8 @@ final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
   // Categories: ["Best sellers", "Arpico", "Modern", "Max", "Minimalistic", "Damro"]
   switch (activeCategory) {
     case 'Arpico':
-      filtered = filtered.where((item) => item.brand.contains('Arpico')).toList();
+      filtered =
+          filtered.where((item) => item.brand.contains('Arpico')).toList();
       break;
     case 'Modern':
       filtered = filtered.where((item) => _hasStyleTag(item, 'modern')).toList();
@@ -77,9 +81,8 @@ final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
       filtered = filtered.where((item) => _hasStyleTag(item, 'max')).toList();
       break;
     case 'Minimalistic':
-      filtered = filtered
-          .where((item) => _hasStyleTag(item, 'minimalistic'))
-          .toList();
+      filtered =
+          filtered.where((item) => _hasStyleTag(item, 'minimalistic')).toList();
       break;
     case 'Damro':
       filtered = filtered.where((item) => item.brand.contains('Damro')).toList();
@@ -92,7 +95,9 @@ final filteredFurnitureProvider = Provider<List<Furniture>>((ref) {
   // Then, apply search query filter if it's not empty
   if (searchQuery.isNotEmpty) {
     filtered = filtered
-        .where((item) => item.name.toLowerCase().contains(searchQuery) || item.brand.toLowerCase().contains(searchQuery))
+        .where((item) =>
+            item.name.toLowerCase().contains(searchQuery) ||
+            item.brand.toLowerCase().contains(searchQuery))
         .toList();
   }
 

@@ -2,6 +2,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+<<<<<<< HEAD
         maven {
             url = uri("${rootDir}/../unity/pocketroom/Assets/GeneratedLocalRepo/Firebase/m2repository")
         }
@@ -9,6 +10,8 @@ allprojects {
         flatDir {
             dirs("${rootDir}/unityLibrary/libs")
         }
+=======
+>>>>>>> ai-search
     }
 }
 

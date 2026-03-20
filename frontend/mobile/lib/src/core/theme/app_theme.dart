@@ -63,7 +63,8 @@ class AppTheme {
     colorScheme: const ColorScheme.dark(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
-      surface: Color(0xFF1A1A1A),
+      surface: const Color(0xFF1A1A1A),
     ),
   );
 }
+

@@ -18,17 +18,16 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             AppHeader(onProfileTap: onProfileTap),
-            if (MediaQuery.of(context).size.width <= 600)
-              const SearchBarWidget(),
+            const SearchBarWidget(),
             Expanded(
               child: CustomScrollView(
                 slivers: [
-                  SliverToBoxAdapter(child: FeaturedCollectionCard()),
-                  SliverToBoxAdapter(child: CategoryIconsRow()),
-                  SliverToBoxAdapter(
+                  const SliverToBoxAdapter(child: FeaturedCollectionCard()),
+                  const SliverToBoxAdapter(child: CategoryIconsRow()),
+                  const SliverToBoxAdapter(
                     child: SectionHeader(title: "Trending Now"),
                   ),
-                  ProductList(),
+                  const ProductList(),
                 ],
               ),
             ),
@@ -38,3 +37,4 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
