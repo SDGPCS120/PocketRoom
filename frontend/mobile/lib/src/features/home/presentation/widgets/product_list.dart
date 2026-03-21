@@ -97,9 +97,11 @@ class _ProductListState extends ConsumerState<ProductList> {
 
           WidgetsBinding.instance.addPostFrameCallback((_) => _scrollListener());
 
+          final horizontalHeight = screenWidth > 600 ? 380.0 : 260.0;
+
           return SliverToBoxAdapter(
             child: SizedBox(
-              height: 380, // Increased from 260 to prevent overflow
+              height: horizontalHeight,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -152,6 +154,8 @@ class _ProductListState extends ConsumerState<ProductList> {
 
   Widget _buildSliverGrid(BuildContext context, List<dynamic> list) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final gridAspectRatio = screenWidth > 600 ? 0.6 : 177 / 253;
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       sliver: SliverGrid(
@@ -160,13 +164,13 @@ class _ProductListState extends ConsumerState<ProductList> {
                 maxCrossAxisExtent: screenWidth > 1200 ? 200 : 250,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 0.6,
+                childAspectRatio: gridAspectRatio,
               )
-            : const SliverGridDelegateWithFixedCrossAxisCount(
+            : SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 0.6,
+                childAspectRatio: gridAspectRatio,
               ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
