@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../data/models/cart_item.dart';
 import 'cart_quantity_button.dart';
 
@@ -72,7 +73,7 @@ class CartItemCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'LKR ${item.furniture.price.toStringAsFixed(0)}',
+                    item.furniture.price.toLKR(),
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.priceColor,

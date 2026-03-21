@@ -4,6 +4,7 @@ import '../../../../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../../data/models/auth_models.dart';
 import '../auth_text_field.dart';
+import '../auth_confirm_password_dialog.dart';
 import '../../signup_page.dart';
 import '../../username_page.dart';
 import '../../../../home/presentation/home_page.dart';
@@ -62,55 +63,6 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     }
   }
 
-  Future<String?> _promptPasswordForLink(String email) async {
-    final controller = TextEditingController();
-    var obscure = true;
-    final result = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: const Text('Confirm account', style: TextStyle(color: AppColors.textPrimary)),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Enter password for $email to link Google login.', style: const TextStyle(color: AppColors.textSecondary)),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: controller,
-                    obscureText: obscure,
-                    style: const TextStyle(color: AppColors.textPrimary),
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
-                        onPressed: () => setDialogState(() => obscure = !obscure),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(controller.text.trim()),
-                  child: const Text('Continue'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-    controller.dispose();
-    return result;
-  }
 
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
@@ -118,7 +70,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
       final outcome = await ref.read(authControllerProvider).signInWithGoogle();
       _handleOutcome(outcome);
     } on RequiresPasswordException catch(req) {
-      final password = await _promptPasswordForLink(req.email);
+      final password = await AuthConfirmPasswordDialog.show(context, req.email);
       if (password != null && password.isNotEmpty) {
         try {
           final outcome = await ref.read(authControllerProvider).linkExistingAccount(req.email, password, req.credential);

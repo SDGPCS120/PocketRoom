@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/utils/extensions.dart';
 import '../../../AR/ar_view_page.dart';
 
 class CartSummaryBottomBar extends StatelessWidget {
@@ -44,7 +45,7 @@ class CartSummaryBottomBar extends StatelessWidget {
                 ),
               ),
               Text(
-                'LKR ${totalPrice.toStringAsFixed(0).replaceAllMapped(RegExp(r"(\d{1,3})(?=(\d{3})+(?!\d))"), (Match m) => "${m[1]},")}',
+                totalPrice.toLKR(),
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,

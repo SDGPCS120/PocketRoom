@@ -1,4 +1,5 @@
 import '../../../core/services/api_client.dart';
+import '../../../core/utils/extensions.dart';
 import 'widgets/budget_result_page.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -128,10 +129,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
               const SizedBox(height: 6),
               Center(
                 child: Text(
-                  'LKR ${_budget.round().toString().replaceAllMapped(
-                        RegExp(r'\B(?=(\d{3})+(?!\d))'),
-                        (m) => ',',
-                      )}',
+                  _budget.toLKR(),
                   style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
                 ),
               ),

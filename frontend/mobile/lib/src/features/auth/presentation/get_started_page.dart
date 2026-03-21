@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../common_widgets/responsive_layout.dart';
 import 'widgets/get_started/get_started_desktop_layout.dart';
 import 'widgets/get_started/get_started_mobile_layout.dart';
 
@@ -7,17 +8,11 @@ class GetStartedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 248, 221),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isDesktop = constraints.maxWidth > 800;
-
-          if (isDesktop) {
-            return const GetStartedDesktopLayout();
-          }
-          return const GetStartedMobileLayout();
-        },
+    return const Scaffold(
+      backgroundColor: Color.fromARGB(255, 255, 248, 221),
+      body: ResponsiveLayout(
+        mobile: GetStartedMobileLayout(),
+        desktop: GetStartedDesktopLayout(),
       ),
     );
   }

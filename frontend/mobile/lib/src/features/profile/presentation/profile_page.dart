@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../common_widgets/responsive_layout.dart';
 import 'edit_profile_page.dart';
 import 'providers/profile_provider.dart';
 
@@ -95,71 +96,78 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(profileProvider);
 
+    final content = SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ProfileHeaderCard(
+            name: state.name,
+            email: state.email,
+            onEditProfile: () => _openEditProfile(context, ref),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.pagePadding,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 24),
+                if (state.isLoading)
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: LinearProgressIndicator(),
+                  ),
+                ProfilePersonalInfoSection(
+                  role: state.role,
+                  email: state.email,
+                  phone: state.phone,
+                  address: state.address,
+                  onEditProfile: () => _openEditProfile(context, ref),
+                ),
+                const SizedBox(height: 20),
+                const ProfileActivitySection(),
+                const SizedBox(height: 20),
+                const ProfileSettingsSection(),
+                if (state.isAnonymousUser) ...[
+                  const SizedBox(height: 20),
+                  ProfilePrimaryButton(
+                    label: 'Get Started',
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const GetStartedPage(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+                const SizedBox(height: 20),
+                ProfileOutlinedButton(
+                  label: 'Log out', 
+                  onPressed: () => _handleLogout(context, ref)
+                ),
+                const SizedBox(height: 12),
+                ProfileOutlinedButton(
+                  label: 'View Cart Debug JSON',
+                  onPressed: () => _showCartDebugJson(context, ref),
+                ),
+                const SizedBox(height: 32),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const ProfileAppBar(),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ProfileHeaderCard(
-              name: state.name,
-              email: state.email,
-              onEditProfile: () => _openEditProfile(context, ref),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSizes.pagePadding,
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 24),
-                  if (state.isLoading)
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 20),
-                      child: LinearProgressIndicator(),
-                    ),
-                  ProfilePersonalInfoSection(
-                    role: state.role,
-                    email: state.email,
-                    phone: state.phone,
-                    address: state.address,
-                    onEditProfile: () => _openEditProfile(context, ref),
-                  ),
-                  const SizedBox(height: 20),
-                  const ProfileActivitySection(),
-                  const SizedBox(height: 20),
-                  const ProfileSettingsSection(),
-                  if (state.isAnonymousUser) ...[
-                    const SizedBox(height: 20),
-                    ProfilePrimaryButton(
-                      label: 'Get Started',
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => const GetStartedPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                  const SizedBox(height: 20),
-                  ProfileOutlinedButton(
-                    label: 'Log out', 
-                    onPressed: () => _handleLogout(context, ref)
-                  ),
-                  const SizedBox(height: 12),
-                  ProfileOutlinedButton(
-                    label: 'View Cart Debug JSON',
-                    onPressed: () => _showCartDebugJson(context, ref),
-                  ),
-                  const SizedBox(height: 32),
-                ],
-              ),
-            ),
-          ],
-        ),
+      body: ResponsiveLayout(
+        mobile: content,
+        desktop: content,
+        useCardOnDesktop: true,
+        maxDesktopWidth: 600, // Slightly wider for profile
       ),
     );
   }

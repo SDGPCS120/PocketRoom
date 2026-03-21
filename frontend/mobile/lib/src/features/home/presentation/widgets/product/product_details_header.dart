@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/utils/extensions.dart';
 import '../../../data/models/furniture_model.dart';
 import '../../vendor_page.dart';
 
@@ -7,14 +8,6 @@ class ProductDetailsHeader extends StatelessWidget {
   final Furniture furniture;
 
   const ProductDetailsHeader({super.key, required this.furniture});
-
-  String _formatPrice(double price) {
-    if (price.isNaN) return 'N/A';
-    return "LKR ${price.toStringAsFixed(0).replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (m) => '${m[1]},',
-        )}";
-  }
 
   Widget _buildTrustBadge(IconData icon, String label, Color color) {
     return Container(
@@ -135,7 +128,7 @@ class ProductDetailsHeader extends StatelessWidget {
           textBaseline: TextBaseline.alphabetic,
           children: [
             Text(
-              _formatPrice(f.price),
+              f.price.toLKR(),
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w900,
@@ -146,7 +139,7 @@ class ProductDetailsHeader extends StatelessWidget {
             if (hasOldPrice && f.oldPrice! > f.price) ...[
               const SizedBox(width: 12),
               Text(
-                _formatPrice(f.oldPrice!),
+                f.oldPrice!.toLKR(),
                 style: const TextStyle(
                   fontSize: 16,
                   color: AppColors.textSecondary,
@@ -175,7 +168,7 @@ class ProductDetailsHeader extends StatelessWidget {
         ),
         const SizedBox(height: 6),
         Text(
-          'or 3 interest-free installments of ${_formatPrice(f.price / 3)}',
+          'or 3 interest-free installments of ${(f.price / 3).toLKR()}',
           style: TextStyle(
             fontSize: 12.5,
             color: AppColors.textSecondary.withValues(alpha: 0.6),
