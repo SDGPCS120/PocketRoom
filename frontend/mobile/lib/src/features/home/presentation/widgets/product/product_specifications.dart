@@ -39,12 +39,12 @@ class ProductSpecifications extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Specifications',
           style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 16),
@@ -80,19 +80,19 @@ class _SpecTile extends StatelessWidget {
             width: 100,
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textSecondary,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 height: 1.4,
               ),
             ),

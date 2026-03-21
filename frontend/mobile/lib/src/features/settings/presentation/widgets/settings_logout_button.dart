@@ -13,26 +13,21 @@ class SettingsLogoutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       width: double.infinity,
       height: 52,
       child: OutlinedButton(
         onPressed: isLoggingOut ? null : onLogout,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.textPrimary,
-          side: const BorderSide(color: AppColors.cardBorder),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
-        ),
+        style: AppButtonStyles.outlinedButton(context),
         child: isLoggingOut
-            ? const SizedBox(
+            ? SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    AppColors.textPrimary,
+                    colorScheme.onSurface,
                   ),
                 ),
               )

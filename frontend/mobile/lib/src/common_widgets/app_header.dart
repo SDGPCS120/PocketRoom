@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketroom/src/core/theme/app_theme.dart';
 import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/features/cart/presentation/providers/cart_provider.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
@@ -56,8 +55,8 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFFD84B3E),
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                foregroundColor: Theme.of(context).colorScheme.primary,
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 shape: RoundedRectangleBorder(
@@ -116,7 +115,7 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: const Color(0xFFFFE5D3),
+                    fillColor: Theme.of(context).colorScheme.secondaryContainer,
                     contentPadding: const EdgeInsets.symmetric(vertical: 0),
                   ),
                 ),
@@ -154,7 +153,7 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
               },
               icon: const Icon(Icons.shopping_cart_outlined, size: 22),
               style: IconButton.styleFrom(
-                backgroundColor: AppColors.secondary,
+                backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
                 shape: const CircleBorder(),
               ),
             ),
@@ -164,8 +163,8 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
                 top: 0,
                 child: Container(
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
                   constraints: const BoxConstraints(
@@ -174,8 +173,8 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
                   ),
                   child: Text(
                     itemCount.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),
@@ -199,7 +198,7 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
           },
           icon: const Icon(Icons.person_outline, size: 22),
           style: IconButton.styleFrom(
-            backgroundColor: AppColors.secondary,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             shape: const CircleBorder(),
           ),
         ),
@@ -217,8 +216,8 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
           ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFD84B3E),
-          foregroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
           shape: RoundedRectangleBorder(

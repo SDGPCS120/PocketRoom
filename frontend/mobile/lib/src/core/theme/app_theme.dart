@@ -133,57 +133,85 @@ class AppColorSchemes {
 class AppTextStyles {
   AppTextStyles._();
   
-  static const TextStyle appBarTitle = TextStyle(
-    color: AppColors.textPrimary,
+  static TextStyle appBarTitle(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
     fontWeight: FontWeight.w700,
     fontSize: 20,
   );
   
-  static const TextStyle buttonText = TextStyle(
+  static TextStyle buttonText(BuildContext context) => TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
+    color: Theme.of(context).colorScheme.onPrimary,
   );
   
-  static const TextStyle sectionTitle = TextStyle(
-    color: AppColors.textPrimary,
+  static TextStyle sectionTitle(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
     fontSize: 15,
     fontWeight: FontWeight.w700,
   );
   
-  static const TextStyle profileName = TextStyle(
-    color: AppColors.textPrimary,
+  static TextStyle profileName(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
     fontSize: 22,
     fontWeight: FontWeight.w700,
   );
   
-  static const TextStyle profileEmail = TextStyle(
-    color: AppColors.textSecondary,
+  static TextStyle profileEmail(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurfaceVariant,
     fontSize: 13,
     fontWeight: FontWeight.w400,
   );
   
-  static const TextStyle profileEdit = TextStyle(
-    color: AppColors.secondary,
+  static TextStyle profileEdit(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.secondary,
     fontSize: 14,
     fontWeight: FontWeight.w600,
+  );
+
+  static TextStyle h1(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle b1(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle bodyLarge(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle bodyMedium(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Theme.of(context).colorScheme.onSurface,
   );
 }
 
 class AppButtonStyles {
   AppButtonStyles._();
   
-  static final ButtonStyle primaryButton = ElevatedButton.styleFrom(
-    backgroundColor: AppColors.primary,
-    foregroundColor: Colors.white,
+  static ButtonStyle primaryButton(BuildContext context) => ElevatedButton.styleFrom(
+    backgroundColor: Theme.of(context).colorScheme.primary,
+    foregroundColor: Theme.of(context).colorScheme.onPrimary,
     elevation: 0,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
     ),
   );
   
-  static final ButtonStyle outlinedButton = OutlinedButton.styleFrom(
-    foregroundColor: AppColors.textPrimary,
-    side: const BorderSide(color: AppColors.cardBorder),
+  static ButtonStyle outlinedButton(BuildContext context) => OutlinedButton.styleFrom(
+    foregroundColor: Theme.of(context).colorScheme.onSurface,
+    side: BorderSide(
+      color: Theme.of(context).extension<AppThemeExtension>()?.cardBorder ?? 
+             Theme.of(context).colorScheme.outline
+    ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
     ),

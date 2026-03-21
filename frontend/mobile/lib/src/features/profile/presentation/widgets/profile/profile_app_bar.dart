@@ -7,8 +7,9 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return AppBar(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
       leadingWidth: 64, // Provide enough width for margin + button
@@ -34,20 +35,20 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
               padding: EdgeInsets.only(right: 2), // Nudge the icon slightly left
               child: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
             ),
-            color: AppColors.textPrimary,
+            color: colorScheme.onSurface,
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
       ),
-      title: const Text('Profile', style: AppTextStyles.appBarTitle),
+      title: Text('Profile', style: AppTextStyles.appBarTitle(context)),
       centerTitle: true,
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 12),
           child: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.settings_outlined,
-              color: AppColors.textPrimary,
+              color: colorScheme.onSurface,
               size: 24,
             ),
             onPressed: () {

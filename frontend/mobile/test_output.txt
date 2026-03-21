@@ -1,0 +1,77 @@
+00:00 +0: loading C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: AppTheme lightTheme has correct ColorScheme and AppThemeExtension
+00:00 +1: AppTheme darkTheme has correct ColorScheme and AppThemeExtension
+00:00 +1: AppTheme lightTheme has correct ColorScheme and AppThemeExtension
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Exception: GoogleFonts.config.allowRuntimeFetching is false but font Fredoka-Regular was not found in the application assets. Ensure Fredoka-Regular.ttf exists in a folder that is included in your pubspec's assets.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+00:00 +0 -1: AppTheme darkTheme has correct ColorScheme and AppThemeExtension
+00:00 +0 -1: AppTheme lightTheme has correct ColorScheme and AppThemeExtension [E]
+  Exception: GoogleFonts.config.allowRuntimeFetching is false but font Fredoka-Regular was not found in the application assets. Ensure Fredoka-Regular.ttf exists in a folder that is included in your pubspec's assets.
+  package:google_fonts/src/google_fonts_base.dart 177:7            loadFontIfNecessary
+  ===== asynchronous gap ===========================
+  dart:async                                                       _CustomZone.registerUnaryCallback
+  package:google_fonts/src/google_fonts_base.dart 145:23           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 205:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 15:30                        main.<fn>.<fn>
+  
+  This test failed after it had already completed.
+  Make sure to use a matching library which informs the test runner
+  of pending async work.
+  package:google_fonts/src/google_fonts_base.dart 177:7            loadFontIfNecessary
+  ===== asynchronous gap ===========================
+  dart:async                                                       _CustomZone.registerUnaryCallback
+  package:google_fonts/src/google_fonts_base.dart 145:23           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 205:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 15:30                        main.<fn>.<fn>
+  
+00:00 +1 -1: AppTheme darkTheme has correct ColorScheme and AppThemeExtension
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Exception: GoogleFonts.config.allowRuntimeFetching is false but font Fredoka-Regular was not found in the application assets. Ensure Fredoka-Regular.ttf exists in a folder that is included in your pubspec's assets.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+00:00 +0 -2: AppTheme darkTheme has correct ColorScheme and AppThemeExtension [E]
+  Exception: GoogleFonts.config.allowRuntimeFetching is false but font Fredoka-Regular was not found in the application assets. Ensure Fredoka-Regular.ttf exists in a folder that is included in your pubspec's assets.
+  package:google_fonts/src/google_fonts_base.dart 177:7            loadFontIfNecessary
+  ===== asynchronous gap ===========================
+  dart:async                                                       _CustomZone.registerUnaryCallback
+  package:google_fonts/src/google_fonts_base.dart 153:9            loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 227:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 27:30                        main.<fn>.<fn>
+  
+  This test failed after it had already completed.
+  Make sure to use a matching library which informs the test runner
+  of pending async work.
+  package:google_fonts/src/google_fonts_base.dart 177:7            loadFontIfNecessary
+  ===== asynchronous gap ===========================
+  dart:async                                                       _CustomZone.registerUnaryCallback
+  package:google_fonts/src/google_fonts_base.dart 153:9            loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 227:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 27:30                        main.<fn>.<fn>
+  
+00:00 +0 -2: AppTheme AppTextStyles resolve colors correctly in light mode
+00:01 +1 -2: AppTheme AppTextStyles resolve colors correctly in dark mode
+00:02 +2 -2: (tearDownAll)
+00:02 +2 -2: Some tests failed.

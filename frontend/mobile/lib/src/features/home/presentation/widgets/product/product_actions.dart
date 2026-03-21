@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../core/theme/app_theme.dart';
 import '../../../../cart/presentation/providers/cart_provider.dart';
 import '../../../../auth/presentation/get_started_page.dart';
 import '../../../data/models/furniture_model.dart';
@@ -33,6 +32,7 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
   @override
   Widget build(BuildContext context) {
     final f = widget.furniture;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       children: [
@@ -40,17 +40,17 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Quantity',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: colorScheme.onSurface,
               ),
             ),
             Container(
               decoration: BoxDecoration(
-                color: AppColors.secondary,
+                color: colorScheme.secondary,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -68,10 +68,10 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       '$_quantity',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -108,25 +108,25 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: colorScheme.primary,
                 ),
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
+              backgroundColor: colorScheme.primary,
+              foregroundColor: colorScheme.onPrimary,
               elevation: 4,
-              shadowColor: AppColors.primary.withValues(alpha: 0.3),
+              shadowColor: colorScheme.primary.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.shopping_bag_outlined, size: 20),
-                const SizedBox(width: 12),
-                const Text(
+                Icon(Icons.shopping_bag_outlined, size: 20),
+                SizedBox(width: 12),
+                Text(
                   'Add to cart',
                   style: TextStyle(
                     fontSize: 16,
@@ -148,18 +148,18 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
                // AR view logic here
             },
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.primary,
-              side: const BorderSide(color: AppColors.primary, width: 2),
+              foregroundColor: colorScheme.primary,
+              side: BorderSide(color: colorScheme.primary, width: 2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.view_in_ar_rounded, size: 20),
-                const SizedBox(width: 12),
-                const Text(
+                Icon(Icons.view_in_ar_rounded, size: 20),
+                SizedBox(width: 12),
+                Text(
                   'View in AR',
                   style: TextStyle(
                     fontSize: 16,
@@ -183,6 +183,7 @@ class _QtyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -190,9 +191,9 @@ class _QtyButton extends StatelessWidget {
         height: 30,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.primary, width: 1.5),
+          border: Border.all(color: colorScheme.primary, width: 1.5),
         ),
-        child: Icon(icon, size: 16, color: AppColors.primary),
+        child: Icon(icon, size: 16, color: colorScheme.primary),
       ),
     );
   }

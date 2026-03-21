@@ -7,7 +7,7 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text('My Orders', style: AppTextStyles.appBarTitle),
+      title: Text('My Orders', style: AppTextStyles.appBarTitle(context)),
       centerTitle: true,
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -37,7 +37,7 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
               ), // Nudge the icon slightly left
               child: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
             ),
-            color: AppColors.textPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../core/theme/app_theme.dart'; // Import the new theme file
+import 'package:pocketroom/src/core/theme/app_theme.dart';
 import '../features/auth/presentation/get_started_page.dart';
 import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
@@ -36,7 +36,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final appTheme = theme.extension<AppThemeExtension>()!;
+    final appTheme = theme.extension<AppThemeExtension>();
     
     final furniture = widget.furniture;
     final favorites = ref.watch(favoritesProvider);
@@ -68,7 +68,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
         decoration: BoxDecoration(
           color: colorScheme.surface,
           border: Border.all(
-            color: _isHovered ? colorScheme.primary : (appTheme.cardBorder ?? colorScheme.outline),
+          color: _isHovered ? colorScheme.primary : (appTheme?.cardBorder ?? colorScheme.outline),
             width: _isHovered ? 1.0 : 0.6,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -80,7 +80,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                     offset: const Offset(0, 10),
                   )
                 ]
-              : (appTheme.productCardShadow ?? []),
+              : (appTheme?.productCardShadow ?? []),
         ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -167,7 +167,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
                           height: 1.33,
-                          color: appTheme.textRating ?? colorScheme.primary,
+                          color: appTheme?.textRating ?? colorScheme.primary,
                         ),
                       ),
                     ],
@@ -194,7 +194,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                           fontSize: 9,
                           height: 1.67,
                           letterSpacing: 1,
-                          color: appTheme.priceColor ?? colorScheme.primary,
+                          color: appTheme?.priceColor ?? colorScheme.primary,
                         ),
                       ),
                     ),
@@ -226,7 +226,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                           height: 1.2,
-                          color: appTheme.priceColor ?? colorScheme.primary,
+                          color: appTheme?.priceColor ?? colorScheme.primary,
                         ),
                       ),
                     ],
@@ -262,7 +262,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                           ? colorScheme.primary.withValues(alpha: 0.1) 
                           : Colors.transparent,
                         border: Border.all(
-                          color: isFavorite ? colorScheme.primary : (appTheme.cardBorder ?? colorScheme.outline), 
+                          color: isFavorite ? colorScheme.primary : (appTheme?.cardBorder ?? colorScheme.outline), 
                           width: 1
                         ),
                       ),

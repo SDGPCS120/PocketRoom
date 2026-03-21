@@ -6,21 +6,22 @@ class SettingsAppInfoFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
           Icons.info_outline_rounded,
           size: 15,
-          color: AppColors.textSecondary,
+          color: colorScheme.onSurfaceVariant,
         ),
-        SizedBox(width: 6),
+        const SizedBox(width: 6),
         Text(
           'Version 1.2.0 (Build 42)',
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w400,
-            color: AppColors.textSecondary,
+            color: colorScheme.onSurfaceVariant,
           ),
         ),
       ],

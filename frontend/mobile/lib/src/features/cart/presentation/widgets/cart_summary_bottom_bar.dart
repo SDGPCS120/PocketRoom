@@ -36,20 +36,20 @@ class CartSummaryBottomBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Total',
                 style: TextStyle(
                   fontSize: 18,
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Text(
                 totalPrice.toLKR(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],
@@ -57,9 +57,7 @@ class CartSummaryBottomBar extends StatelessWidget {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: onCheckout,
-            style: AppButtonStyles.primaryButton.copyWith(
-              minimumSize: WidgetStateProperty.all(const Size(double.infinity, 56)),
-            ),
+            style: AppButtonStyles.primaryButton(context),
             child: const Text('Checkout'),
           ),
           const SizedBox(height: 12),
@@ -71,10 +69,10 @@ class CartSummaryBottomBar extends StatelessWidget {
                 ),
               );
             },
-            style: AppButtonStyles.outlinedButton.copyWith(
+            style: AppButtonStyles.outlinedButton(context).copyWith(
               minimumSize: WidgetStateProperty.all(const Size(double.infinity, 50)),
-              side: WidgetStateProperty.all(const BorderSide(color: AppColors.primary)),
-              foregroundColor: WidgetStateProperty.all(AppColors.primary),
+              side: WidgetStateProperty.all(BorderSide(color: Theme.of(context).colorScheme.primary)),
+              foregroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
             ),
             child: const Text('View in AR'),
           ),

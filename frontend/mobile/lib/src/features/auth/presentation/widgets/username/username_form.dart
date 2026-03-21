@@ -60,9 +60,9 @@ class _UsernameFormState extends ConsumerState<UsernameForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Choose a username',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
           ),
           const SizedBox(height: 12),
           AuthTextField(
@@ -75,12 +75,12 @@ class _UsernameFormState extends ConsumerState<UsernameForm> {
             height: 48,
             child: ElevatedButton(
               onPressed: _isLoading ? null : _saveUsername,
-              style: AppButtonStyles.primaryButton,
+              style: AppButtonStyles.primaryButton(context),
               child: _isLoading 
-                ? const SizedBox(
+                ? SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Theme.of(context).colorScheme.onPrimary),
                   )
                 : const Text('Continue', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),

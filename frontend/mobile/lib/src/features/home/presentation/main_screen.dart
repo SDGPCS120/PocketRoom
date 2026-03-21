@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pocketroom/src/core/theme/app_theme.dart';
 import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/features/home/presentation/home_page.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
@@ -74,6 +73,7 @@ class _FloatingBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Center(
       heightFactor: 1.0,
       child: Container(
@@ -81,9 +81,9 @@ class _FloatingBottomBar extends StatelessWidget {
         height: 54,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(27),
-          border: Border.all(color: AppColors.primary, width: 1.5),
+          border: Border.all(color: colorScheme.primary, width: 1.5),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.1),
@@ -139,6 +139,7 @@ class _NavBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -146,12 +147,12 @@ class _NavBarItem extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : Colors.transparent,
+          color: isSelected ? colorScheme.primary : Colors.transparent,
           shape: BoxShape.circle,
         ),
         child: Icon(
           icon,
-          color: isSelected ? Colors.white : AppColors.primary,
+          color: isSelected ? colorScheme.onPrimary : colorScheme.primary,
           size: 24,
         ),
       ),

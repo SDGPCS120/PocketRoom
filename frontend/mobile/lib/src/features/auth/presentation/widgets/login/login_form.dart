@@ -91,6 +91,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final isDesktop = MediaQuery.of(context).size.width > 800;
 
     return SingleChildScrollView(
@@ -108,14 +109,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               'Welcome back',
               style: textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 6),
             Text(
-              'Log in to your PocketRoom account',
-              style: textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
+              'Sign In',
+              style: AppTextStyles.h1(context).copyWith(
+                color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 36),
@@ -135,7 +136,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.textSecondary,
+                  color: colorScheme.onSurfaceVariant,
                 ),
                 onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
               ),
@@ -148,10 +149,10 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 onPressed: () {
                   // Handle forgot password
                 },
-                child: const Text(
+                child: Text(
                   'Forgot Password?',
                   style: TextStyle(
-                    color: AppColors.primary,
+                    color: colorScheme.primary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -162,12 +163,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _signInWithEmailPassword,
-                style: AppButtonStyles.primaryButton,
+                style: AppButtonStyles.primaryButton(context),
                 child: _isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        child: CircularProgressIndicator(strokeWidth: 2, color: colorScheme.onPrimary),
                       )
                     : const Text('Log in', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
               ),
@@ -176,12 +177,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
             Row(
               children: [
                 const Expanded(child: Divider(color: AppColors.cardBorder)),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     'OR',
                     style: TextStyle(
-                      color: AppColors.textSecondary,
+                      color: colorScheme.onSurfaceVariant,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
@@ -195,15 +196,13 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithGoogle,
-                style: AppButtonStyles.outlinedButton,
+                style: AppButtonStyles.outlinedButton(context),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.login, size: 20, color: AppColors.textPrimary),
-                    const SizedBox(width: 12),
-                    const Text(
+                    Text(
                       'Continue with Google', 
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textPrimary)
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: colorScheme.onSurface)
                     ),
                   ],
                 ),
@@ -215,8 +214,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               children: [
                 Text(
                   "Don't have an account? ",
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                  style: AppTextStyles.bodyLarge(context).copyWith(
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
                 GestureDetector(
@@ -226,12 +225,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                             context,
                             MaterialPageRoute(builder: (_) => const SignupPage()),
                           ),
-                  child: const Text(
+                  child: Text(
                     'Create one',
-                    style: TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          style: AppTextStyles.bodyMedium(context).copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
                   ),
                 ),
               ],

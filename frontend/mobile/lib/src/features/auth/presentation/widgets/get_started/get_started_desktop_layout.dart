@@ -17,7 +17,7 @@ class GetStartedDesktopLayout extends StatelessWidget {
         margin: const EdgeInsets.all(32),
         padding: const EdgeInsets.all(48),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
@@ -36,7 +36,7 @@ class GetStartedDesktopLayout extends StatelessWidget {
               "Let's get started",
               style: textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 12),
@@ -44,14 +44,14 @@ class GetStartedDesktopLayout extends StatelessWidget {
               "Experience the future of furniture shopping with PocketRoom.",
               textAlign: TextAlign.center,
               style: textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 48),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: AppButtonStyles.primaryButton,
+                style: AppButtonStyles.primaryButton(context),
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -63,12 +63,12 @@ class GetStartedDesktopLayout extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
-                style: AppButtonStyles.outlinedButton,
+                style: AppButtonStyles.outlinedButton(context),
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const SignupPage()),
                 ),
-                child: const Text('Create Account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                child: Text('Create Account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
               ),
             ),
             const SizedBox(height: 24),
@@ -77,7 +77,7 @@ class GetStartedDesktopLayout extends StatelessWidget {
               child: Text(
                 'Get started as seller',
                 style: TextStyle(
-                  color: AppColors.textSecondary,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   decoration: TextDecoration.underline,
                   fontSize: 14,
                   fontFamily: GoogleFonts.fredoka().fontFamily,

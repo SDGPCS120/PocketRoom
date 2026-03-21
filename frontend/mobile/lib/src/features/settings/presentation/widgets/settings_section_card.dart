@@ -16,7 +16,7 @@ class SettingsSectionCard extends StatelessWidget {
           padding: const EdgeInsets.only(left: 4, bottom: 10),
           child: Text(
             title,
-            style: AppTextStyles.sectionTitle,
+            style: AppTextStyles.sectionTitle(context),
           ),
         ),
         Container(
