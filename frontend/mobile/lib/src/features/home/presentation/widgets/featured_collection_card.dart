@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../../../common_widgets/feature_banner.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../budget/ui/budget_planner_page.dart';
 
 class FeaturedCollectionCard extends StatefulWidget {
@@ -57,9 +57,10 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       child: _isVisible
-          ? SizedBox(
+          ? Container(
               width: double.infinity,
-              height: 226,
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              height: MediaQuery.of(context).size.width > 900 ? 300 : 226,
               child: Stack(
                 children: [
                   PageView(
@@ -72,45 +73,8 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                       _startAutoSwitchTimer();
                     },
                     children: [
-                      const FeatureBanner(
-                        title: 'Featured Collection',
-                        subtitle: 'Curated by top local vendors',
-                        tagText: 'NEW ARRIVAL',
-                        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        foregroundWidget: Padding(
-                          padding: EdgeInsets.only(top: 20),
-                          child: Image(
-                            image: AssetImage('assets/bannerSofa.png'),
-                            height: 240,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      FeatureBanner(
-                        title: 'Smart Planning',
-                        subtitle: 'Plan your room within budget before you commit.',
-                        tagText: 'SMART PLANNING',
-                        tagColor: const Color(0xFFFFD27A),
-                        gradientColors: const [
-                          Color.fromARGB(255, 92, 207, 245),
-                          Color.fromARGB(255, 103, 95, 255),
-                        ],
-                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        ctaText: 'Try now',
-                        onCtaTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const BudgetPlannerPage(),
-                            ),
-                          );
-                        },
-                        foregroundWidget: Icon(
-                          Icons.savings_outlined,
-                          size: 120,
-                          color: Colors.white.withValues(alpha: 0.12),
-                        ),
-                      ),
+                      _buildFeaturedCard(),
+                      _buildBudgetingCard(context),
                     ],
                   ),
                   Positioned(
@@ -157,7 +121,206 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                 ],
               ),
             )
-          : const SizedBox.shrink(),
+          : const SizedBox.shrink(), // Takes up zero space when hidden
+    );
+  }
+
+  Widget _buildFeaturedCard() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFFCfb088),
+            Color(0xFF5A4A3A),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
+          children: [
+            Positioned(
+              right: MediaQuery.of(context).size.width > 900 ? 40 : -30,
+              bottom: MediaQuery.of(context).size.width > 900 ? 0 : -20,
+              child: Image.asset(
+                'assets/bannerSofa.png',
+                height: MediaQuery.of(context).size.width > 900 ? 320 : 240,
+                fit: BoxFit.contain,
+              ),
+            ),
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      const Color(0xFF5A4A3A),
+                      const Color(0xFF5A4A3A).withValues(alpha: 0.8),
+                      const Color(0xFF5A4A3A).withValues(alpha: 0.3),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.4, 0.75, 1.0],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 24,
+              right: 120,
+              top: 0,
+              bottom: 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'NEW ARRIVAL',
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFFFF8A3D),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Featured Collection',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Curated by top local vendors',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBudgetingCard(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.fromARGB(255, 92, 207, 245),
+            Color.fromARGB(255, 103, 95, 255),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
+          children: [
+            Positioned(
+              right: -10,
+              top: 22,
+              child: Icon(
+                Icons.savings_outlined,
+                size: 120,
+                color: Colors.white.withValues(alpha: 0.12),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'SMART PLANNING',
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFFFFD27A),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Try out our budgeting feature',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Plan your room within budget before you commit.',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white.withValues(alpha: 0.82),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  SizedBox(
+                    height: 36,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BudgetPlannerPage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFD27A),
+                        foregroundColor: const Color(0xFF183328),
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: const Text(
+                        'Try now',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
