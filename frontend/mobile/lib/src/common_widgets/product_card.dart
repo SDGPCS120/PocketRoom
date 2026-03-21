@@ -34,6 +34,10 @@ class _ProductCardState extends ConsumerState<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final appTheme = theme.extension<AppThemeExtension>()!;
+    
     final furniture = widget.furniture;
     final favorites = ref.watch(favoritesProvider);
     final isFavorite = favorites.any((item) => item.id == furniture.id);
@@ -62,21 +66,21 @@ class _ProductCardState extends ConsumerState<ProductCard> {
         transform:
             _isHovered ? Matrix4.translationValues(0, -4, 0) : Matrix4.identity(),
         decoration: BoxDecoration(
-          color: AppColors.background,
+          color: colorScheme.surface,
           border: Border.all(
-            color: _isHovered ? AppColors.primary : AppColors.cardBorder,
+            color: _isHovered ? colorScheme.primary : (appTheme.cardBorder ?? colorScheme.outline),
             width: _isHovered ? 1.0 : 0.6,
           ),
           borderRadius: BorderRadius.circular(12),
           boxShadow: _isHovered
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.15),
+                    color: colorScheme.primary.withValues(alpha: 0.15),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
                 ]
-              : AppColors.productCardShadow,
+              : (appTheme.productCardShadow ?? []),
         ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -99,7 +103,6 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    // border: Border.all(color: AppColors.cardBorder, width: 0.6),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
@@ -108,26 +111,26 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                             furniture.images.first,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
-                              return const DecoratedBox(
+                              return DecoratedBox(
                                 decoration: BoxDecoration(
-                                  color: AppColors.secondary,
+                                  color: colorScheme.secondary,
                                 ),
                                 child: Icon(
                                   Icons.chair,
                                   size: 50,
-                                  color: AppColors.textSecondary,
+                                  color: colorScheme.onSurfaceVariant,
                                 ),
                               );
                             },
                           )
-                        : const DecoratedBox(
+                        : DecoratedBox(
                             decoration: BoxDecoration(
-                              color: AppColors.secondary,
+                              color: colorScheme.secondary,
                             ),
                             child: Icon(
                               Icons.chair,
                               size: 50,
-                              color: AppColors.textSecondary,
+                              color: colorScheme.onSurfaceVariant,
                             ),
                           ),
                   ),
@@ -139,11 +142,11 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 furniture.name.trim().isEmpty ? 'N/A' : furniture.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                   height: 1.125, // 18/16
-                  color: AppColors.textPrimary,
+                  color: colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 4),
@@ -152,19 +155,19 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.star,
-                        color: AppColors.primary,
+                        color: colorScheme.primary,
                         size: 16,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         ratingLabel,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
                           height: 1.33,
-                          color: AppColors.textRating,
+                          color: appTheme.textRating ?? colorScheme.primary,
                         ),
                       ),
                     ],
@@ -186,12 +189,12 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                         overflow: TextOverflow.ellipsis,
                         softWrap: false,
                         textAlign: TextAlign.right,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 9,
                           height: 1.67,
                           letterSpacing: 1,
-                          color: AppColors.priceColor,
+                          color: appTheme.priceColor ?? colorScheme.primary,
                         ),
                       ),
                     ),
@@ -210,20 +213,20 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       if (oldPriceLabel != null)
                         Text(
                           oldPriceLabel,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
                             decoration: TextDecoration.lineThrough,
-                            color: AppColors.textSecondary,
+                            color: colorScheme.onSurfaceVariant,
                             height: 1.1,
                           ),
                         ),
                       Text(
                         priceLabel,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
                           height: 1.2,
-                          color: AppColors.priceColor,
+                          color: appTheme.priceColor ?? colorScheme.primary,
                         ),
                       ),
                     ],
@@ -238,13 +241,15 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                         SnackBar(
                           content: Text(isFavorite 
                               ? '${furniture.name} removed from favorites' 
-                              : '${furniture.name} added to favorites'),
+                              : '${furniture.name} added to favorites',
+                            style: TextStyle(color: isFavorite ? Colors.white : colorScheme.onPrimary),
+                          ),
                           duration: const Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          backgroundColor: isFavorite ? Colors.grey[800] : AppColors.primary,
+                          backgroundColor: isFavorite ? Colors.grey[800] : colorScheme.primary,
                         ),
                       );
                     },
@@ -254,10 +259,10 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: isFavorite 
-                          ? AppColors.primary.withValues(alpha: 0.1) 
+                          ? colorScheme.primary.withValues(alpha: 0.1) 
                           : Colors.transparent,
                         border: Border.all(
-                          color: isFavorite ? AppColors.primary : AppColors.cardBorder, 
+                          color: isFavorite ? colorScheme.primary : (appTheme.cardBorder ?? colorScheme.outline), 
                           width: 1
                         ),
                       ),
@@ -265,7 +270,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                         child: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
                           size: 16,
-                          color: isFavorite ? AppColors.primary : Colors.grey,
+                          color: isFavorite ? colorScheme.primary : Colors.grey,
                         ),
                       ),
                     ),
