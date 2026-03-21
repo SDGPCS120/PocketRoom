@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocketroom/src/core/theme/app_theme.dart';
 import '../../../profile/presentation/widgets/profile/section_item.dart';
 import 'settings_section_card.dart';
 import 'settings_section_divider.dart';
 import 'settings_section_toggle_item.dart';
 
-class SettingsAppPreferencesSection extends StatefulWidget {
+class SettingsAppPreferencesSection extends ConsumerWidget {
   final String selectedLanguage;
   final VoidCallback onShowLanguagePicker;
 
@@ -15,36 +17,29 @@ class SettingsAppPreferencesSection extends StatefulWidget {
   });
 
   @override
-  State<SettingsAppPreferencesSection> createState() =>
-      _SettingsAppPreferencesSectionState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final isDarkMode = themeMode == ThemeMode.dark;
 
-class _SettingsAppPreferencesSectionState
-    extends State<SettingsAppPreferencesSection> {
-  bool _isDarkMode = false;
-
-  @override
-  Widget build(BuildContext context) {
     return SettingsSectionCard(
       title: 'App Preferences',
       items: [
         SettingsSectionToggleItem(
-          icon: Icons.dark_mode_outlined,
+          icon: isDarkMode ? Icons.dark_mode : Icons.dark_mode_outlined,
           label: 'Dark Mode',
-          value: _isDarkMode,
+          value: isDarkMode,
           onChanged: (val) {
-            setState(() {
-              _isDarkMode = val;
-            });
+            ref.read(themeModeProvider.notifier).state =
+                val ? ThemeMode.dark : ThemeMode.light;
           },
         ),
         const SettingsSectionDivider(),
         SectionItem(
           icon: Icons.language_outlined,
           label: 'Language',
-          value: widget.selectedLanguage,
+          value: selectedLanguage,
           trailingIcon: Icons.arrow_drop_down_rounded,
-          onTap: widget.onShowLanguagePicker,
+          onTap: onShowLanguagePicker,
         ),
         const SettingsSectionDivider(),
         SectionItem(

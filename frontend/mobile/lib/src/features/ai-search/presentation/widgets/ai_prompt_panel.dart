@@ -61,9 +61,10 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFFFE5D3),
+        color: colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -80,7 +81,7 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFD9D9D9).withValues(alpha: 0.5),
+                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(20),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -92,14 +93,14 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
                 decoration: InputDecoration(
                   hintText: 'What kind of room are you designing?',
                   hintStyle: TextStyle(
-                    color: Colors.grey[600],
+                    color: colorScheme.onSurfaceVariant,
                     fontSize: 15,
                   ),
                   border: InputBorder.none,
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                style: const TextStyle(fontSize: 15),
+                style: TextStyle(fontSize: 15, color: colorScheme.onSurface),
               ),
             ),
           ),
@@ -109,15 +110,15 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
             children: [
               _buildIconButton(
                 icon: Icons.graphic_eq,
-                color: Colors.white,
-                iconColor: Colors.grey[800]!,
+                color: colorScheme.surface,
+                iconColor: colorScheme.onSurface,
                 onTap: _onVoiceTap,
               ),
               const SizedBox(height: 8),
               _buildIconButton(
                 icon: Icons.send,
-                color: Colors.black,
-                iconColor: Colors.white,
+                color: colorScheme.primary,
+                iconColor: colorScheme.onPrimary,
                 isLoading: _isLoading,
                 onTap: _onSendPrompt,
               ),

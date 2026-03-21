@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('AppTheme ColorScheme & Extensions', () {
     test('lightTheme has correct ColorScheme and AppThemeExtension defaults', () {
       final theme = AppTheme.lightTheme;

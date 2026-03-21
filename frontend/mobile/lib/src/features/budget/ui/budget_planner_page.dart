@@ -99,20 +99,20 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFFE39A3B);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black54),
+          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onSurfaceVariant),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Budget Planner',
-          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+          style: TextStyle(color: colorScheme.onSurface, fontWeight: FontWeight.w600),
         ),
         centerTitle: true,
       ),
@@ -123,30 +123,30 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 4),
-              const Center(
-                child: Text('Total Budget', style: TextStyle(color: Colors.black54)),
+              Center(
+                child: Text('Total Budget', style: TextStyle(color: colorScheme.onSurfaceVariant)),
               ),
               const SizedBox(height: 6),
               Center(
                 child: Text(
                   _budget.toLKR(),
-                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: colorScheme.onSurface),
                 ),
               ),
               const SizedBox(height: 12),
               Row(
-                children: const [
-                  Text('25K', style: TextStyle(color: Colors.black38, fontSize: 12)),
-                  Spacer(),
-                  Text('500K', style: TextStyle(color: Colors.black38, fontSize: 12)),
+                children: [
+                  Text('25K', style: TextStyle(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6), fontSize: 12)),
+                  const Spacer(),
+                  Text('500K', style: TextStyle(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6), fontSize: 12)),
                 ],
               ),
               SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  activeTrackColor: accent,
-                  inactiveTrackColor: const Color(0xFFEDEDED),
-                  thumbColor: Colors.white,
-                  overlayColor: accent.withValues(alpha: 0.15),
+                  activeTrackColor: colorScheme.primary,
+                  inactiveTrackColor: colorScheme.secondaryContainer,
+                  thumbColor: colorScheme.surface,
+                  overlayColor: colorScheme.primary.withValues(alpha: 0.15),
                   thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
                 ),
                 child: Slider(
@@ -157,8 +157,8 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                 ),
               ),
               const SizedBox(height: 18),
-              const Text('Select Required Items',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              Text('Select Required Items',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: colorScheme.onSurface)),
               const SizedBox(height: 10),
               SizedBox(
                 height: 86,
@@ -185,20 +185,24 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                         width: 86,
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
-                          color: selected ? const Color(0xFFFFF5EA) : Colors.white,
+                          color: selected ? colorScheme.primaryContainer : colorScheme.surface,
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: selected ? accent : const Color(0xFFE6E6E6),
+                            color: selected ? colorScheme.primary : colorScheme.outlineVariant,
                             width: 1.5,
                           ),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(item.icon, color: Colors.black87),
+                            Icon(item.icon, color: selected ? colorScheme.onPrimaryContainer : colorScheme.onSurface),
                             const SizedBox(height: 8),
                             Text(item.label,
-                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                                style: TextStyle(
+                                  fontSize: 12, 
+                                  fontWeight: FontWeight.w600,
+                                  color: selected ? colorScheme.onPrimaryContainer : colorScheme.onSurface,
+                                )),
                           ],
                         ),
                       ),
@@ -207,35 +211,35 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                 ),
               ),
               const SizedBox(height: 18),
-              const Text('Style Preference',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              Text('Style Preference',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: colorScheme.onSurface)),
               const SizedBox(height: 4),
-              const Text('What is your style preference?',
-                  style: TextStyle(color: Colors.black54)),
+              Text('What is your style preference?',
+                  style: TextStyle(color: colorScheme.onSurfaceVariant)),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                initialValue: _selectedStyle,
+                value: _selectedStyle,
                 items: _styles
                     .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                     .toList(),
                 onChanged: (v) => setState(() => _selectedStyle = v ?? _selectedStyle),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: colorScheme.surface,
                   contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Color(0xFFE6E6E6)),
+                    borderSide: BorderSide(color: colorScheme.outlineVariant),
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
               const SizedBox(height: 18),
-              const Text('Preferred Colours',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              Text('Preferred Colours',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: colorScheme.onSurface)),
               const SizedBox(height: 4),
-              const Text('Select the colours you’d like to see in your bundle.',
-                  style: TextStyle(color: Colors.black54)),
+              Text('Select the colours you’d like to see in your bundle.',
+                  style: TextStyle(color: colorScheme.onSurfaceVariant)),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 18,
@@ -263,17 +267,17 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                             shape: BoxShape.circle,
                             color: opt.color,
                             border: Border.all(
-                              color: opt.border ?? (selected ? accent : const Color(0xFFE0E0E0)),
+                              color: opt.border ?? (selected ? colorScheme.primary : colorScheme.outlineVariant),
                               width: selected ? 2 : 1.2,
                             ),
                           ),
                           child: selected
                               ? Icon(Icons.check,
-                                  color: opt.color == Colors.white ? Colors.black : Colors.white)
+                                  color: opt.color.computeLuminance() > 0.5 ? Colors.black : Colors.white)
                               : null,
                         ),
                         const SizedBox(height: 6),
-                        Text(opt.name, style: const TextStyle(fontSize: 12)),
+                        Text(opt.name, style: TextStyle(fontSize: 12, color: colorScheme.onSurface)),
                       ],
                     ),
                   );
@@ -286,14 +290,14 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                 child: ElevatedButton(
                   onPressed: _loading ? null : _generateBundle,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: accent,
-                    foregroundColor: Colors.white,
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                   ),
                   child: _loading
-                      ? const SizedBox(
-                          width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2),
+                      ? SizedBox(
+                          width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: colorScheme.onPrimary),
                         )
                       : const Text('Generate Bundle',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),

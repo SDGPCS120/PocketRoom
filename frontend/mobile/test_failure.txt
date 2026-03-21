@@ -1,0 +1,920 @@
+00:00 +0: loading C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart
+00:00 +0: AppTheme ColorScheme & Extensions lightTheme has correct ColorScheme and AppThemeExtension defaults
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Binding has not yet been initialized.
+The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+00:00 +0 -1: AppTheme ColorScheme & Extensions lightTheme has correct ColorScheme and AppThemeExtension defaults [E]
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4864:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4864:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4865:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4865:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4866:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4866:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4867:23  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4867:23  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4868:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4868:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4869:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4869:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4870:20  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4870:20  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4871:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4871:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4872:18  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4872:18  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4873:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4873:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4874:18  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4874:18  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4875:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4875:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4876:20  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4876:20  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4877:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4877:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 8:30                         main.<fn>.<fn>
+  
+00:00 +0 -1: AppTheme ColorScheme & Extensions darkTheme has correct ColorScheme and AppThemeExtension overrides
+00:01 +0 -2: AppTheme ColorScheme & Extensions darkTheme has correct ColorScheme and AppThemeExtension overrides [E]
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4864:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4864:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4865:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4865:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4866:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4866:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4867:23  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4867:23  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4868:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4868:22  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4869:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4869:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4870:20  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4870:20  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4871:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4871:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4872:18  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4872:18  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4873:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4873:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4874:18  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4874:18  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4875:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4875:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4876:20  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4876:20  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+  Binding has not yet been initialized.
+  The "instance" getter on the ServicesBinding binding mixin is only available once that binding has been initialized.
+  Typically, this is done by calling "WidgetsFlutterBinding.ensureInitialized()" or "runApp()" (the latter calls the former). Typically this call is done in the "void main()" method. The "ensureInitialized" method is idempotent; calling it multiple times is not harmful. After calling that method, the "instance" getter will return the binding.
+  In a test, one can call "TestWidgetsFlutterBinding.ensureInitialized()" as the first line in the test's "main()" method to initialize the binding.
+  If ServicesBinding is a custom binding mixin, there must also be a custom binding class, like WidgetsFlutterBinding, but that mixes in the selected binding, and that is the class that must be constructed before using the "instance" getter.
+  package:flutter/src/foundation/binding.dart 314:9                BindingBase.checkInstance.<fn>
+  package:flutter/src/foundation/binding.dart 401:6                BindingBase.checkInstance
+  package:flutter/src/services/binding.dart 73:54                  ServicesBinding.instance
+  package:flutter/src/services/asset_bundle.dart 328:54            PlatformAssetBundle.load
+  package:flutter/src/services/asset_bundle.dart 270:5             CachingAssetBundle.loadStructuredBinaryData
+  package:flutter/src/services/asset_manifest.dart 44:19           AssetManifest.loadFromAssetBundle
+  package:google_fonts/src/google_fonts_base.dart 145:43           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4877:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                                       Future._asyncCompleteError
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4877:19  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 22:30                        main.<fn>.<fn>
+  
+00:01 +0 -2: AppTheme ColorScheme & Extensions AppColorSchemes light and dark are distinct
+00:01 +0 -3: AppTheme ColorScheme & Extensions AppColorSchemes light and dark are distinct [E]
+  Expected: not Color:<Color(alpha: 1.0000, red: 1.0000, green: 0.5412, blue: 0.2392, colorSpace: ColorSpace.sRGB)>
+    Actual: Color:<Color(alpha: 1.0000, red: 1.0000, green: 0.5412, blue: 0.2392, colorSpace: ColorSpace.sRGB)>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\core\theme\app_theme_test.dart 39:7            main.<fn>.<fn>
+  
+00:01 +0 -3: Some tests failed.
