@@ -13,6 +13,7 @@ import { StoreModule } from './modules/store/store.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
 import { CartDebugModule } from './modules/cart-debug/cart-debug.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
+import { ReviewModule } from './modules/review/review.module.js';
 import { PaymentModule } from './modules/payment/payment.module.js';
 import { BullModule } from '@nestjs/bullmq';
 import { ModelGenerationModule } from './features/modelGenerationPipeline/generation/generations.module.js';
@@ -38,6 +39,7 @@ const redisEnabled =
     CartModule,
     CartDebugModule,
     CategoryModule,
+    ReviewModule,
     BudgetModule,
     SearchModule,
     ...(
