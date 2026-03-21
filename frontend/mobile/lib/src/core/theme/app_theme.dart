@@ -221,6 +221,14 @@ class AppButtonStyles {
 class AppTheme {
   AppTheme._();
 
+  static const lightExtension = AppThemeExtension(
+    cardBorder: AppColors.cardBorder,
+    priceColor: AppColors.primary,
+    cardGradient: AppColors.cardGradient,
+    productCardShadow: AppColors.productCardShadow,
+    textRating: AppColors.textRating,
+  );
+
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
@@ -232,15 +240,25 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
     ),
-    extensions: const [
-      AppThemeExtension(
-        cardBorder: AppColors.cardBorder,
-        priceColor: AppColors.primary,
-        cardGradient: AppColors.cardGradient,
-        productCardShadow: AppColors.productCardShadow,
-        textRating: AppColors.textRating,
+    extensions: const [lightExtension],
+  );
+
+  static const darkExtension = AppThemeExtension(
+    cardBorder: AppColors.cardBorder,
+    priceColor: Color(0xFFFFB385),
+    cardGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF2C2C2C), Color(0xFF131313)],
+    ),
+    productCardShadow: [
+      BoxShadow(
+        color: Colors.black54,
+        blurRadius: 10,
+        offset: Offset(0, 4),
       ),
     ],
+    textRating: Color(0xFFFFB74D),
   );
 
   static final ThemeData darkTheme = ThemeData(
@@ -256,25 +274,7 @@ class AppTheme {
       elevation: 0,
       centerTitle: true,
     ),
-    extensions: const [
-      AppThemeExtension(
-        cardBorder: AppColors.cardBorder,
-        priceColor: Color(0xFFFFB385),
-        cardGradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF2C2C2C), Color(0xFF131313)],
-        ),
-        productCardShadow: [
-          BoxShadow(
-            color: Colors.black54,
-            blurRadius: 10,
-            offset: Offset(0, 4),
-          ),
-        ],
-        textRating: Color(0xFFFFB74D),
-      ),
-    ],
+    extensions: const [darkExtension],
   );
 }
 

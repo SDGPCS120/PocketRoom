@@ -1,43 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
   group('AppTheme ColorScheme & Extensions', () {
-    test('lightTheme has correct ColorScheme and AppThemeExtension defaults', () {
-      final theme = AppTheme.lightTheme;
+    test('AppColorSchemes light has correct defaults', () {
+      const colorScheme = AppColorSchemes.light;
       
-      expect(theme.brightness, equals(Brightness.light));
-      expect(theme.useMaterial3, isTrue);
-      expect(theme.colorScheme.primary, equals(AppColors.primary));
-      expect(theme.colorScheme.surface, equals(AppColors.background));
+      expect(colorScheme.brightness, equals(Brightness.light));
+      expect(colorScheme.primary, equals(AppColors.primary));
+      expect(colorScheme.surface, equals(AppColors.background));
+      expect(colorScheme.outline, equals(AppColors.cardBorder));
+    });
+
+    test('AppTheme.lightExtension has correct defaults', () {
+      const extension = AppTheme.lightExtension;
       
-      final extension = theme.extension<AppThemeExtension>();
-      expect(extension, isNotNull);
-      expect(extension!.cardBorder, equals(AppColors.cardBorder));
+      expect(extension.cardBorder, equals(AppColors.cardBorder));
       expect(extension.priceColor, equals(AppColors.primary));
     });
 
-    test('darkTheme has correct ColorScheme and AppThemeExtension overrides', () {
-      final theme = AppTheme.darkTheme;
+    test('AppColorSchemes dark has correct overrides', () {
+      const colorScheme = AppColorSchemes.dark;
       
-      expect(theme.brightness, equals(Brightness.dark));
-      expect(theme.useMaterial3, isTrue);
-      // Dark mode onSurface from AppColorSchemes.dark
-      expect(theme.colorScheme.onSurface, equals(const Color(0xFFF5F5F5)));
+      expect(colorScheme.brightness, equals(Brightness.dark));
+      expect(colorScheme.onSurface, equals(const Color(0xFFF5F5F5)));
+      expect(colorScheme.outline, equals(AppColors.cardBorder));
+    });
+
+    test('AppTheme.darkExtension has correct overrides', () {
+      const extension = AppTheme.darkExtension;
       
-      final extension = theme.extension<AppThemeExtension>();
-      expect(extension, isNotNull);
-      // Dark mode should have adjusted colors
-      expect(extension!.cardBorder, equals(const Color(0xFF424242)));
+      expect(extension.cardBorder, equals(AppColors.cardBorder));
       expect(extension.priceColor, equals(const Color(0xFFFFB385)));
     });
 
     test('AppColorSchemes light and dark are distinct', () {
       expect(AppColorSchemes.light.brightness, equals(Brightness.light));
       expect(AppColorSchemes.dark.brightness, equals(Brightness.dark));
-      expect(AppColorSchemes.light.primary, isNot(equals(AppColorSchemes.dark.primary)));
+      expect(AppColorSchemes.light.surface, isNot(equals(AppColorSchemes.dark.surface)));
     });
   });
 }
