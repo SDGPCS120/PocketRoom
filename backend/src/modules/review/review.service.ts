@@ -10,6 +10,30 @@ export class ReviewService {
     return this.firebase.firestore.collection('reviews');
   }
 
+  private async recalculateProductRating(productId: string) {
+    const snapshot = await this.collection().where('productId', '==', productId).get();
+    
+    const count = snapshot.size;
+    let averageRating = 0;
+
+    if (count > 0) {
+      let totalRating = 0;
+      snapshot.forEach((doc: any) => {
+        totalRating += doc.data().rating || 0;
+      });
+      averageRating = totalRating / count;
+    }
+
+    try {
+      await this.firebase.firestore.collection('products').doc(productId).update({
+        rating: averageRating,
+        updatedAt: new Date(),
+      });
+    } catch (error) {
+      // Ignore if product does not exist
+    }
+  }
+
   async createReview(userId: string, dto: CreateReviewDto) {
     const docRef = this.collection().doc();
 
@@ -22,6 +46,7 @@ export class ReviewService {
     };
 
     await docRef.set(data);
+    await this.recalculateProductRating(dto.productId);
     return data;
   }
 
@@ -53,6 +78,7 @@ export class ReviewService {
     updateData.updatedAt = new Date();
 
     await docRef.update(updateData);
+    await this.recalculateProductRating(review.productId);
 
     return { message: 'Review updated successfully' };
   }
@@ -72,6 +98,7 @@ export class ReviewService {
     }
 
     await docRef.delete();
+    await this.recalculateProductRating(review.productId);
 
     return { message: 'Review deleted successfully' };
   }
