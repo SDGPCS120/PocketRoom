@@ -21,7 +21,7 @@ class GetStartedDesktopLayout extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.04),
               blurRadius: 40,
               offset: const Offset(0, 10),
             ),

@@ -19,7 +19,7 @@ class GetStartedMobileLayout extends StatelessWidget {
           right: 0,
           height: size.height * 0.6,
           child: Container(
-            color: const Color(0xFFFFF8DE),
+            color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.1),
             child: Image.asset(
               'assets/get_started_hero.png',
               fit: BoxFit.cover,
@@ -57,7 +57,7 @@ class GetStartedMobileLayout extends StatelessWidget {
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
+                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),

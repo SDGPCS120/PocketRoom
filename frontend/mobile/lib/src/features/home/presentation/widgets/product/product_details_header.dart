@@ -116,9 +116,9 @@ class ProductDetailsHeader extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildTrustBadge(Icons.timer_rounded, 'ONLY 3 LEFT', Colors.red),
-              _buildTrustBadge(Icons.handyman_rounded, 'FREE INSTALL', Colors.blue),
-              _buildTrustBadge(Icons.verified_rounded, '1-YEAR WARRANTY', Colors.green),
+              _buildTrustBadge(Icons.timer_rounded, 'ONLY 3 LEFT', colorScheme.error),
+              _buildTrustBadge(Icons.handyman_rounded, 'FREE INSTALL', colorScheme.primary),
+              _buildTrustBadge(Icons.verified_rounded, '1-YEAR WARRANTY', const Color(0xFF4CAF50)),
             ],
           ),
         ),

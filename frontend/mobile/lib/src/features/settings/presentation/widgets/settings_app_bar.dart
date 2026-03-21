@@ -20,11 +20,11 @@ class SettingsAppBar extends StatelessWidget implements PreferredSizeWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(10),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
-                color: Colors.black12,
+                color: colorScheme.shadow.withValues(alpha: 0.12),
                 blurRadius: 8,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
