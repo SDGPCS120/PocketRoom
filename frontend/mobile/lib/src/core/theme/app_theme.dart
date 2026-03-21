@@ -47,6 +47,57 @@ class AppSizes {
   static const double buttonHeight = 52.0;
 }
 
+/// Custom theme extension for properties that don't fit into [ColorScheme].
+class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
+  final Color? cardBorder;
+  final Color? priceColor;
+  final Gradient? cardGradient;
+  final List<BoxShadow>? productCardShadow;
+  final Color? textRating;
+
+  const AppThemeExtension({
+    required this.cardBorder,
+    required this.priceColor,
+    required this.cardGradient,
+    required this.productCardShadow,
+    required this.textRating,
+  });
+
+  @override
+  ThemeExtension<AppThemeExtension> copyWith({
+    Color? cardBorder,
+    Color? priceColor,
+    Gradient? cardGradient,
+    List<BoxShadow>? productCardShadow,
+    Color? textRating,
+  }) {
+    return AppThemeExtension(
+      cardBorder: cardBorder ?? this.cardBorder,
+      priceColor: priceColor ?? this.priceColor,
+      cardGradient: cardGradient ?? this.cardGradient,
+      productCardShadow: productCardShadow ?? this.productCardShadow,
+      textRating: textRating ?? this.textRating,
+    );
+  }
+
+  @override
+  ThemeExtension<AppThemeExtension> lerp(
+    ThemeExtension<AppThemeExtension>? other,
+    double t,
+  ) {
+    if (other is! AppThemeExtension) {
+      return this;
+    }
+    return AppThemeExtension(
+      cardBorder: Color.lerp(cardBorder, other.cardBorder, t),
+      priceColor: Color.lerp(priceColor, other.priceColor, t),
+      cardGradient: Gradient.lerp(cardGradient, other.cardGradient, t),
+      productCardShadow: BoxShadow.lerpList(productCardShadow, other.productCardShadow, t),
+      textRating: Color.lerp(textRating, other.textRating, t),
+    );
+  }
+}
+
 class AppTextStyles {
   AppTextStyles._();
   
