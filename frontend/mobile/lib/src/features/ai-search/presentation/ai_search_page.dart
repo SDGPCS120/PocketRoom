@@ -67,7 +67,7 @@ class AiSearchPage extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFE5D3).withOpacity(0.3),
+                color: const Color(0xFFFFE5D3).withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

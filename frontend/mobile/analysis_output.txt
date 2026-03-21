@@ -1,0 +1,62 @@
+Analyzing mobile...                                             
+
+   info - Don't invoke 'print' in production code - lib\src\core\services\api_client.dart:29:28 - avoid_print
+   info - Unnecessary 'const' keyword - lib\src\core\theme\app_theme.dart:135:16 - unnecessary_const
+   info - Unnecessary 'this.' qualifier - lib\src\core\utils\extensions.dart:4:9 - unnecessary_this
+   info - Unnecessary 'this.' qualifier - lib\src\core\utils\extensions.dart:7:19 - unnecessary_this
+   info - Unnecessary 'this.' qualifier - lib\src\core\utils\extensions.dart:21:22 - unnecessary_this
+   info - Unnecessary 'this.' qualifier - lib\src\core\utils\extensions.dart:21:41 - unnecessary_this
+   info - Unnecessary 'this.' qualifier - lib\src\core\utils\extensions.dart:21:54 - unnecessary_this
+  error - Target of URI doesn't exist: 'package:pocketroom/src/features/cart/data/cart_provider.dart' - lib\src\features\AR\ar_view_page.dart:7:8 - uri_does_not_exist
+  error - Undefined name 'cartProvider' - lib\src\features\AR\ar_view_page.dart:60:34 - undefined_identifier
+   info - Use the null-aware marker '?' rather than a null check via an 'if' - lib\src\features\AR\ar_view_page.dart:78:9 - use_null_aware_elements
+  error - Target of URI doesn't exist: '../../home/data/providers.dart' - lib\src\features\ai-search\data\ai_search_provider.dart:4:8 - uri_does_not_exist
+warning - The value of the field '_repository' isn't used - lib\src\features\ai-search\data\ai_search_provider.dart:11:30 - unused_field
+  error - Undefined name 'furnitureRepositoryProvider' - lib\src\features\ai-search\data\ai_search_provider.dart:73:32 - undefined_identifier
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\ai-search\presentation\ai_search_page.dart:70:48 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps - lib\src\features\ai-search\presentation\widgets\ai_prompt_panel.dart:52:21 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\ai-search\presentation\widgets\ai_prompt_panel.dart:70:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\ai-search\presentation\widgets\ai_prompt_panel.dart:83:48 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\ai-search\presentation\widgets\ai_search_results_view.dart:40:50 - deprecated_member_use
+  error - Target of URI doesn't exist: '../../../../../core/theme/app_theme.dart' - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:2:8 - uri_does_not_exist
+  error - Invalid constant value - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:40:33 - invalid_constant
+  error - Undefined name 'AppColors' - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:40:33 - undefined_identifier
+  error - Invalid constant value - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:48:43 - invalid_constant
+  error - Undefined name 'AppColors' - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:48:43 - undefined_identifier
+  error - Invalid constant value - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:55:43 - invalid_constant
+  error - Undefined name 'AppColors' - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:55:43 - undefined_identifier
+  error - Invalid constant value - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:72:63 - invalid_constant
+  error - Undefined name 'AppColors' - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:72:63 - undefined_identifier
+  error - Undefined name 'AppColors' - lib\src\features\auth\presentation\widgets\auth_confirm_password_dialog.dart:79:32 - undefined_identifier
+   info - Don't use 'BuildContext's across async gaps - lib\src\features\auth\presentation\widgets\login\login_form.dart:73:61 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps - lib\src\features\auth\presentation\widgets\signup\signup_form.dart:79:61 - use_build_context_synchronously
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\budget\ui\budget_planner_page.dart:149:40 - deprecated_member_use
+   info - Unnecessary use of multiple underscores - lib\src\features\budget\ui\budget_planner_page.dart:168:41 - unnecessary_underscores
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\src\features\budget\ui\budget_planner_page.dart:217:17 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\budget\ui\widgets\budget_result_page.dart:183:33 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\budget\ui\widgets\budget_result_page.dart:195:35 - deprecated_member_use
+   info - Invalid use of a private type in a public API - lib\src\features\budget\ui\widgets\color_picker_row.dart:11:14 - library_private_types_in_public_api
+   info - Invalid use of a private type in a public API - lib\src\features\budget\ui\widgets\color_picker_row.dart:60:6 - library_private_types_in_public_api
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\src\features\budget\ui\widgets\style_dropdown.dart:18:7 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\favorites\presentation\widgets\favorites_empty_state.dart:16:38 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\src\features\favorites\presentation\widgets\favorites_empty_state.dart:33:46 - deprecated_member_use
+  error - Target of URI doesn't exist: '../data/providers.dart' - lib\src\features\home\presentation\home_page.dart:10:8 - uri_does_not_exist
+  error - Undefined name 'searchQueryProvider' - lib\src\features\home\presentation\home_page.dart:19:41 - undefined_identifier
+  error - Undefined name 'trendingFurnitureProvider' - lib\src\features\home\presentation\home_page.dart:47:63 - undefined_identifier
+  error - Undefined name 'budgetFriendlyFurnitureProvider' - lib\src\features\home\presentation\home_page.dart:52:63 - undefined_identifier
+  error - Undefined name 'limitedTimeFurnitureProvider' - lib\src\features\home\presentation\home_page.dart:63:63 - undefined_identifier
+  error - Target of URI doesn't exist: '../../data/models/mock_data.dart' - lib\src\features\home\presentation\providers\home_provider.dart:4:8 - uri_does_not_exist
+  error - Undefined name 'mockBudgetProducts' - lib\src\features\home\presentation\providers\home_provider.dart:87:51 - undefined_identifier
+  error - Undefined name 'mockLimitedTimeProducts' - lib\src\features\home\presentation\providers\home_provider.dart:94:39 - undefined_identifier
+  error - Target of URI doesn't exist: '../data/providers.dart' - lib\src\features\home\presentation\vendor_page.dart:4:8 - uri_does_not_exist
+  error - The method 'vendorByNameProvider' isn't defined for the type 'VendorPage' - lib\src\features\home\presentation\vendor_page.dart:16:35 - undefined_method
+  error - The method 'vendorFurnitureProvider' isn't defined for the type 'VendorPage' - lib\src\features\home\presentation\vendor_page.dart:17:37 - undefined_method
+   info - Unnecessary use of multiple underscores - lib\src\features\home\presentation\vendor_page.dart:32:24 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\src\features\home\presentation\vendor_page.dart:49:26 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\src\features\home\presentation\vendor_page.dart:62:24 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\src\features\home\presentation\widgets\product\product_image_carousel.dart:43:41 - unnecessary_underscores
+   info - Unnecessary use of multiple underscores - lib\src\features\home\presentation\widgets\product\product_image_carousel.dart:43:45 - unnecessary_underscores
+   info - 'AlwaysAliveProviderBase' is deprecated and shouldn't be used. Will be removed in 3.0.0. Use ProviderBase instead - lib\src\features\home\presentation\widgets\product_list.dart:10:9 - deprecated_member_use
+warning - The value of the local variable 'furnitureAsync' isn't used - lib\src\features\home\presentation\widgets\product_list.dart:64:11 - unused_local_variable
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\src\features\settings\presentation\widgets\settings_section_toggle_item.dart:43:13 - deprecated_member_use
+

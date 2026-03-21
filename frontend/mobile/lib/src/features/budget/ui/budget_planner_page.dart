@@ -146,7 +146,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                   activeTrackColor: accent,
                   inactiveTrackColor: const Color(0xFFEDEDED),
                   thumbColor: Colors.white,
-                  overlayColor: accent.withOpacity(0.15),
+                  overlayColor: accent.withValues(alpha: 0.15),
                   thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
                 ),
                 child: Slider(

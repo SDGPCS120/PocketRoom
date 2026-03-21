@@ -67,7 +67,7 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -4),
           ),
@@ -80,7 +80,7 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFFD9D9D9).withOpacity(0.5),
+                color: const Color(0xFFD9D9D9).withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(20),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

@@ -180,7 +180,7 @@ class _ProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -192,7 +192,7 @@ class _ProductCard extends StatelessWidget {
             width: 92,
             height: 72,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(Icons.chair_alt, size: 34),

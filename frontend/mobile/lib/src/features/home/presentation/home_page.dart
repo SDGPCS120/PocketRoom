@@ -7,7 +7,7 @@ import './widgets/category_icons_row.dart';
 import './widgets/section_header.dart';
 import 'widgets/product_list.dart';
 import 'widgets/carousel_countdown_timer.dart';
-import '../data/providers.dart';
+import 'providers/home_provider.dart';
 
 class HomePage extends ConsumerWidget {
   final VoidCallback? onProfileTap;

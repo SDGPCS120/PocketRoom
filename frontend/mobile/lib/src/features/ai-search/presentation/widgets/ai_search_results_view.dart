@@ -37,7 +37,7 @@ class AiSearchResultsView extends ConsumerWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFE5D3).withOpacity(0.5),
+                  color: const Color(0xFFFFE5D3).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(

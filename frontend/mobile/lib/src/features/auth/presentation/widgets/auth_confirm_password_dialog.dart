@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme.dart';
 
 /// A dialog that prompts the user to enter their password to link an existing 
 /// email/password account with a Google login.

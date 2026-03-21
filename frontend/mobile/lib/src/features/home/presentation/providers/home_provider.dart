@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/furniture_model.dart';
 import '../../data/models/vendor_model.dart';
-import '../../data/models/mock_data.dart';
+import '../../data/mock_data.dart';
 import '../../data/repositories/furniture_repository.dart';
 import '../../data/repositories/firestore_product_repository.dart';
 
