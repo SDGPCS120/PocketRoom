@@ -60,7 +60,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
           ? Container(
               width: double.infinity,
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              height: MediaQuery.of(context).size.width > 900 ? 300 : 226,
+              height: MediaQuery.of(context).size.width > 900 ? 300 : 226, 
               child: Stack(
                 children: [
                   PageView(

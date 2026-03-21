@@ -84,13 +84,28 @@ class _ProductListState extends ConsumerState<ProductList> {
           const itemSpacing = 16.0;
           final screenWidth = MediaQuery.of(context).size.width;
           final availableWidth = screenWidth - (horizontalPadding * 2);
-          final cardWidth = (availableWidth - (itemSpacing * 2)) / 2.14;
+          
+          // Responsive item count
+          double itemsVisible;
+          if (screenWidth < 600) {
+            itemsVisible = 2.14; // Mobile
+          } else if (screenWidth < 1000) {
+            itemsVisible = 3.14; // Tablet
+          } else if (screenWidth < 1400) {
+            itemsVisible = 4.14; // Desktop
+          } else {
+            itemsVisible = 5.14; // Wide Desktop
+          }
+
+          final cardWidth = (availableWidth - (itemSpacing * (itemsVisible.floor()))) / itemsVisible;
 
           WidgetsBinding.instance.addPostFrameCallback((_) => _scrollListener());
 
+          final horizontalHeight = screenWidth > 600 ? 380.0 : 260.0;
+
           return SliverToBoxAdapter(
             child: SizedBox(
-              height: 260,
+              height: horizontalHeight,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -142,21 +157,24 @@ class _ProductListState extends ConsumerState<ProductList> {
   }
 
   Widget _buildSliverGrid(BuildContext context, List<dynamic> list) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final gridAspectRatio = screenWidth > 600 ? 0.6 : 177 / 253;
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       sliver: SliverGrid(
-        gridDelegate: MediaQuery.of(context).size.width > 600
-            ? const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 250,
+        gridDelegate: screenWidth > 600
+            ? SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: screenWidth > 1200 ? 200 : 250,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 177 / 253,
+                childAspectRatio: gridAspectRatio,
               )
-            : const SliverGridDelegateWithFixedCrossAxisCount(
+            : SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 177 / 253,
+                childAspectRatio: gridAspectRatio,
               ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
