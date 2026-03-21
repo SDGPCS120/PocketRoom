@@ -49,6 +49,9 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We need speech recognition to allow you to search for furniture and room designs using your voice.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need microphone access to capture your voice search queries.</string>
 </dict>
 </plist>

@@ -29,6 +29,8 @@ dependencies:
   google_fonts: ^8.0.0
   flutter_svg: ^2.2.3
   url_launcher: ^6.3.1
+  speech_to_text: ^7.0.0
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
