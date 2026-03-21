@@ -5,7 +5,7 @@ import { useSellerSession } from '../auth/sellerSession';
 import './SellerProducts.css';
 
 interface Product {
-  productID: string;
+  productId: string;
   name: string;
   description: string;
   price: number;
@@ -106,7 +106,7 @@ const SellerProducts: React.FC = () => {
         ) : (
           <div className="products-grid">
             {products.map((product) => (
-              <div key={product.productID} className="product-card">
+              <div key={product.productId} className="product-card">
                 <div className="product-image-wrapper">
                   {(product.imageUrl ?? product.images ?? []).length > 0 ? (
                     <img src={(product.imageUrl ?? product.images ?? [])[0]} alt={product.name} className="product-image" />
@@ -125,7 +125,7 @@ const SellerProducts: React.FC = () => {
                 <div className="product-actions">
                   <button
                     className="btn-secondary btn-sm"
-                    onClick={() => navigate(`/products/${product.productID}`)}
+                    onClick={() => navigate(`/products/${product.productId}`)}
                   >
                     Edit
                   </button>

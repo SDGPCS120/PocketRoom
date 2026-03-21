@@ -88,7 +88,7 @@ const SellerAddProduct: React.FC = () => {
       }
 
       const response = await api.post(`/products/store/${storeId}`, body);
-      productId = response.data.productID as string;
+      productId = response.data.productId as string;
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : 'Failed to save product. Please try again.';

@@ -7,7 +7,7 @@ import './SellerEditProduct.css';
 const CATEGORIES = ['Sofa', 'Chair', 'Table', 'Bed', 'Storage', 'Decor'];
 
 interface ProductData {
-  productID: string;
+  productId: string;
   name: string;
   description?: string;
   price: number;
