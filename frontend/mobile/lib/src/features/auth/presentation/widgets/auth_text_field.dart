@@ -34,7 +34,7 @@ class AuthTextField extends StatelessWidget {
         hintText: hint,
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: colorScheme.secondary,
+        fillColor: colorScheme.surfaceContainerHighest,
         labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
         hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
         border: OutlineInputBorder(
@@ -47,11 +47,11 @@ class AuthTextField extends StatelessWidget {
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.red, width: 1.5),
+          borderSide: BorderSide(color: colorScheme.error, width: 1.5),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.red, width: 1.5),
+          borderSide: BorderSide(color: colorScheme.error, width: 1.5),
         ),
       ),
     );

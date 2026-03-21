@@ -25,6 +25,7 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
   Widget build(BuildContext context) {
     final f = widget.furniture;
     final hasImages = f.images.isNotEmpty;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -41,15 +42,15 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
                       f.images[index],
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
-                        color: AppColors.secondary,
-                        child: const Icon(Icons.chair, size: 80, color: AppColors.textSecondary),
+                        color: colorScheme.surfaceContainerHighest,
+                        child: Icon(Icons.chair, size: 80, color: colorScheme.onSurfaceVariant),
                       ),
                       loadingBuilder: (_, child, progress) {
                         if (progress == null) return child;
                         return Container(
-                          color: AppColors.secondary,
-                          child: const Center(
-                            child: CircularProgressIndicator(color: AppColors.primary),
+                          color: colorScheme.surfaceContainerHighest,
+                          child: Center(
+                            child: CircularProgressIndicator(color: colorScheme.primary),
                           ),
                         );
                       },
@@ -57,8 +58,8 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
                   },
                 )
               : Container(
-                  color: AppColors.secondary,
-                  child: const Icon(Icons.chair, size: 80, color: AppColors.textSecondary),
+                  color: colorScheme.surfaceContainerHighest,
+                  child: Icon(Icons.chair, size: 80, color: colorScheme.onSurfaceVariant),
                 ),
         ),
         if (hasImages && f.images.length > 1)
@@ -73,7 +74,7 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
                   height: 7,
                   width: _currentPage == i ? 22 : 7,
                   decoration: BoxDecoration(
-                    color: _currentPage == i ? AppColors.primary : Colors.grey[300],
+                    color: _currentPage == i ? colorScheme.primary : colorScheme.outlineVariant,
                     borderRadius: BorderRadius.circular(10),
                   ),
                 );

@@ -13,17 +13,18 @@ class CartPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cartItems = ref.watch(cartProvider);
     final totalPrice = ref.read(cartProvider.notifier).totalPrice;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
       appBar: const CartAppBar(),
       body: cartItems.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 'No Orders to show',
                 style: TextStyle(
                   fontSize: 18,
-                  color: AppColors.textSecondary,
+                  color: colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 ),
               ),

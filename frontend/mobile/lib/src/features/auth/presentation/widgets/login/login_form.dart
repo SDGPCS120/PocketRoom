@@ -176,7 +176,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
             const SizedBox(height: 16),
             Row(
               children: [
-                const Expanded(child: Divider(color: AppColors.cardBorder)),
+                Expanded(child: Divider(color: colorScheme.outlineVariant)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
@@ -188,7 +188,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                     ),
                   ),
                 ),
-                const Expanded(child: Divider(color: AppColors.cardBorder)),
+                Expanded(child: Divider(color: colorScheme.outlineVariant)),
               ],
             ),
             const SizedBox(height: 16),

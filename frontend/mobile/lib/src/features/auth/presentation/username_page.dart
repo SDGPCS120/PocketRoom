@@ -7,13 +7,14 @@ class UsernamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: colorScheme.surface,
         appBar: AppBar(
-          backgroundColor: AppColors.background,
-          title: const Text('Enter username', style: TextStyle(color: AppColors.textPrimary)),
+          backgroundColor: colorScheme.surface,
+          title: Text('Enter username', style: TextStyle(color: colorScheme.onSurface)),
           automaticallyImplyLeading: false,
           elevation: 0,
         ),

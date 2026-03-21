@@ -23,7 +23,7 @@ class CartAppBar extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),

@@ -120,7 +120,7 @@ class _SignupFormState extends ConsumerState<SignupForm> {
             const SizedBox(height: 6),
             Text(
               'Create an account to buy your favorite furniture',
-              style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+              style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 36),
             AuthTextField(
@@ -161,7 +161,7 @@ class _SignupFormState extends ConsumerState<SignupForm> {
               suffixIcon: IconButton(
                 icon: Icon(
                   _obscureConfirm ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.textSecondary,
+                  color: colorScheme.onSurfaceVariant,
                 ),
                 onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
               ),
@@ -185,19 +185,19 @@ class _SignupFormState extends ConsumerState<SignupForm> {
             const SizedBox(height: 16),
             Row(
               children: [
-                Expanded(child: Divider(color: AppColors.cardBorder)),
+                Expanded(child: Divider(color: colorScheme.outlineVariant)),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
                     'OR',
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: colorScheme.onSurfaceVariant,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-                Expanded(child: Divider(color: AppColors.cardBorder)),
+                Expanded(child: Divider(color: colorScheme.outlineVariant)),
               ],
             ),
             const SizedBox(height: 16),
