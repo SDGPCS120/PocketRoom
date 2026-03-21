@@ -99,7 +99,7 @@ class _ProductListState extends ConsumerState<ProductList> {
 
           return SliverToBoxAdapter(
             child: SizedBox(
-              height: 260,
+              height: 380, // Increased from 260 to prevent overflow
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -160,13 +160,13 @@ class _ProductListState extends ConsumerState<ProductList> {
                 maxCrossAxisExtent: screenWidth > 1200 ? 200 : 250,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 0.7,
+                childAspectRatio: 0.6,
               )
             : const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,
-                childAspectRatio: 0.7,
+                childAspectRatio: 0.6,
               ),
         delegate: SliverChildBuilderDelegate(
           (context, index) {
