@@ -80,7 +80,20 @@ class _ProductListState extends ConsumerState<ProductList> {
           const itemSpacing = 16.0;
           final screenWidth = MediaQuery.of(context).size.width;
           final availableWidth = screenWidth - (horizontalPadding * 2);
-          final cardWidth = (availableWidth - (itemSpacing * 2)) / 2.14;
+          
+          // Responsive item count
+          double itemsVisible;
+          if (screenWidth < 600) {
+            itemsVisible = 2.14; // Mobile
+          } else if (screenWidth < 1000) {
+            itemsVisible = 3.14; // Tablet
+          } else if (screenWidth < 1400) {
+            itemsVisible = 4.14; // Desktop
+          } else {
+            itemsVisible = 5.14; // Wide Desktop
+          }
+
+          final cardWidth = (availableWidth - (itemSpacing * (itemsVisible.floor()))) / itemsVisible;
 
           WidgetsBinding.instance.addPostFrameCallback((_) => _scrollListener());
 
