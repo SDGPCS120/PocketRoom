@@ -5,13 +5,14 @@ import { useSellerSession } from '../auth/sellerSession';
 import './SellerProducts.css';
 
 interface Product {
-  id: string;
+  productID: string;
   name: string;
   description: string;
   price: number;
   furnitureType: string;
-  images: string[];
-  modelUrl?: string;
+  imageUrl?: string[];
+  images?: string[];
+  modelURL?: string;
   storeId: string;
 }
 
@@ -97,24 +98,29 @@ const SellerProducts: React.FC = () => {
         ) : (
           <div className="products-grid">
             {products.map((product) => (
-              <div key={product.id} className="product-card">
+              <div key={product.productID} className="product-card">
                 <div className="product-image-wrapper">
-                  {product.images && product.images.length > 0 ? (
-                    <img src={product.images[0]} alt={product.name} className="product-image" />
+                  {(product.imageUrl ?? product.images ?? []).length > 0 ? (
+                    <img src={(product.imageUrl ?? product.images ?? [])[0]} alt={product.name} className="product-image" />
                   ) : (
                     <div className="product-placeholder">No Image</div>
                   )}
-                  {product.modelUrl && (
+                  {product.modelURL && (
                     <div className="ar-badge">✨ AR Ready</div>
                   )}
                 </div>
                 <div className="product-info">
                   <span className="product-category">{product.furnitureType}</span>
                   <h3 className="product-name">{product.name}</h3>
-                  <p className="product-price">${product.price.toFixed(2)}</p>
+                  <p className="product-price">LKR {product.price?.toFixed(2)}</p>
                 </div>
                 <div className="product-actions">
-                  <button className="btn-secondary btn-sm" onClick={() => alert('Edit feature coming soon!')}>Edit</button>
+                  <button
+                    className="btn-secondary btn-sm"
+                    onClick={() => navigate(`/products/${product.productID}`)}
+                  >
+                    Edit
+                  </button>
                   <button className="btn-danger btn-sm" onClick={() => alert('Delete feature coming soon!')}>Delete</button>
                 </div>
               </div>

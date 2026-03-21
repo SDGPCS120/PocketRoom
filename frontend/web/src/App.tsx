@@ -5,6 +5,7 @@ import SellerRegister from './components/SellerRegister';
 import SellerDashboard from './components/SellerDashboard';
 import SellerAddProduct from './components/SellerAddProduct';
 import SellerProducts from './components/SellerProducts';
+import SellerEditProduct from './components/SellerEditProduct';
 import SellerAnalytics from './components/SellerAnalytics';
 import { SellerSessionProvider } from './auth/sellerSession';
 import ProtectedRoute from './auth/ProtectedRoute';
@@ -40,6 +41,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SellerProducts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/products/:productId"
+              element={
+                <ProtectedRoute>
+                  <SellerEditProduct />
                 </ProtectedRoute>
               }
             />
