@@ -98,6 +98,38 @@ class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
   }
 }
 
+class AppColorSchemes {
+  AppColorSchemes._();
+
+  static const ColorScheme light = ColorScheme(
+    brightness: Brightness.light,
+    primary: AppColors.primary,
+    onPrimary: Colors.white,
+    secondary: AppColors.secondary,
+    onSecondary: AppColors.primary,
+    surface: AppColors.background,
+    onSurface: AppColors.textPrimary,
+    onSurfaceVariant: AppColors.textSecondary,
+    error: Colors.redAccent,
+    onError: Colors.white,
+    outline: AppColors.cardBorder,
+  );
+
+  static const ColorScheme dark = ColorScheme(
+    brightness: Brightness.dark,
+    primary: AppColors.primary,
+    onPrimary: Colors.white,
+    secondary: Color(0xFF3D2C20),
+    onSecondary: Color(0xFFFFB385),
+    surface: Color(0xFF121212),
+    onSurface: Color(0xFFF5F5F5),
+    onSurfaceVariant: Color(0xFFB0B0B0),
+    error: Colors.redAccent,
+    onError: Colors.white,
+    outline: Color(0xFF424242),
+  );
+}
+
 class AppTextStyles {
   AppTextStyles._();
   
