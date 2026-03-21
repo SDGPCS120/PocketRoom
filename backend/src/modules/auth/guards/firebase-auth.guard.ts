@@ -40,9 +40,26 @@ export class FirebaseAuthGuard implements CanActivate {
           ? decoded.firebase.sign_in_provider
           : null;
 
+      let userUid = decoded.uid;
+
+      // Look up if this user has a meaningful ID (authUid points to their Firebase UID)
+      try {
+        const snap = await this.firebaseService.firestore
+          .collection('users')
+          .where('authUid', '==', decoded.uid)
+          .limit(1)
+          .get();
+
+        if (!snap.empty) {
+          userUid = snap.docs[0].id;
+        }
+      } catch (err) {
+        // Fallback to raw firebase uid
+      }
+
       // Attach decoded user to request
       req.user = {
-        uid: decoded.uid,
+        uid: userUid,
         email: decoded.email ?? null,
         claims: decoded as unknown as Record<string, unknown>,
         isAnonymous: signInProvider === 'anonymous',

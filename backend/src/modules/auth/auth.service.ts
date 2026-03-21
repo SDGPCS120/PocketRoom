@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { FirebaseService } from '../../firebase/firebase.service.js';
+import { generateMeaningfulId } from '../../common/utils/generate-id.util';
 
-export type UserRole = 'anonymous' | 'customer' | 'vendor';
+export type UserRole = 'anonymous' | 'customer' | 'vendor' | 'seller';
 
 export type FirestoreUser = {
   uid: string;
   email: string | null;
   role: UserRole;
+  authUid?: string;
 };
 
 export type SyncResult =
@@ -20,8 +22,8 @@ function asUnknownDoc(v: unknown): UnknownDoc {
 }
 
 function normalizeLegacyRole(rawRole: unknown): UserRole | null {
-  if (rawRole === 'anonymous' || rawRole === 'customer' || rawRole === 'vendor') {
-    return rawRole;
+  if (rawRole === 'anonymous' || rawRole === 'customer' || rawRole === 'vendor' || rawRole === 'seller') {
+    return rawRole as UserRole;
   }
 
   // Backward compatibility for previous role naming.
@@ -50,7 +52,8 @@ function toFirestoreUser(
     : null;
 
   const role = directRole ?? legacyRole ?? fallbackRole;
-  return { uid, email, role };
+  const authUid = typeof doc.authUid === 'string' ? doc.authUid : undefined;
+  return { uid, email, role, authUid };
 }
 
 @Injectable()
@@ -58,7 +61,7 @@ export class AuthService {
   constructor(private readonly firebaseService: FirebaseService) {}
 
   async syncUser(
-    uid: string,
+    uid: string, // this is the Firebase Auth UID
     email: string | null,
     isAnonymous: boolean,
     requestedRole?: UserRole,
@@ -67,22 +70,32 @@ export class AuthService {
     const db = this.firebaseService.firestore;
     let defaultRole: UserRole = isAnonymous ? 'anonymous' : 'customer';
 
-    if (requestedRole === 'vendor' || requestedRole === 'customer') {
-      defaultRole = requestedRole;
+    if (requestedRole === 'vendor' || requestedRole === 'seller' || requestedRole === 'customer') {
+      defaultRole = requestedRole === 'vendor' ? 'seller' : requestedRole; // Auto-consolidate new vendor requests to seller
     }
     console.log(`[SyncUser] setting defaultRole to: ${defaultRole}`);
 
-    const ref = db.collection('users').doc(uid);
-    const snap = await ref.get();
+    // Check if user already exists as a meaningful ID
+    const existingByAuthUidSnap = await db.collection('users').where('authUid', '==', uid).limit(1).get();
+    
+    // Check if user exists as a legacy ID
+    const legacyRef = db.collection('users').doc(uid);
+    const legacySnap = await legacyRef.get();
 
-    if (!snap.exists) {
+    if (!legacySnap.exists && existingByAuthUidSnap.empty) {
+      // ── BRAND NEW USER: Generate Meaningful ID ──
+      const prefix = email ? email.split('@')[0] : 'user';
+      const meaningfulId = generateMeaningfulId(prefix);
+      const newRef = db.collection('users').doc(meaningfulId);
+
       const user: FirestoreUser = {
-        uid,
+        uid: meaningfulId,
+        authUid: uid,
         email,
         role: defaultRole,
       };
 
-      await ref.set({
+      await newRef.set({
         ...user,
         createdAt: this.firebaseService.fieldValue.serverTimestamp(),
         lastLoginAt: this.firebaseService.fieldValue.serverTimestamp(),
@@ -91,25 +104,32 @@ export class AuthService {
       return { status: 'created', user };
     }
 
+    // ── EXISTING USER: Update login time and role if needed ──
+    const isLegacy = legacySnap.exists;
+    const docSnap = isLegacy ? legacySnap : existingByAuthUidSnap.docs[0];
+    const docRef = isLegacy ? legacyRef : docSnap.ref;
+    
     const existingUser = toFirestoreUser(
-      uid,
-      snap.data() as unknown,
+      docSnap.id,
+      docSnap.data() as unknown,
       email,
       defaultRole,
     );
-    // If the vendor was already a vendor, keep it vendor, OR if the request specifically upgrades/requests a valid role.
-    const preservedRole: UserRole =
-      existingUser.role === 'vendor' ? 'vendor' : defaultRole;
+    
+    // If the user was already a vendor/seller, keep it seller, OR if the request specifically upgrades/requests a valid role.
+    const currentRole = existingUser.role === 'vendor' ? 'seller' : existingUser.role;
+    const preservedRole: UserRole = currentRole === 'seller' ? 'seller' : defaultRole;
 
-    await ref.set({
-      uid,
+    await docRef.set({
+      uid: docSnap.id,
       email: existingUser.email ?? email,
       role: preservedRole,
       lastLoginAt: this.firebaseService.fieldValue.serverTimestamp(),
     }, { merge: true });
 
     const user: FirestoreUser = {
-      uid,
+      uid: docSnap.id,
+      authUid: existingUser.authUid,
       email: existingUser.email ?? email,
       role: preservedRole,
     };
