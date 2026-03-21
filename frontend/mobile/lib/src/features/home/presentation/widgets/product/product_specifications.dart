@@ -7,9 +7,34 @@ class ProductSpecifications extends StatelessWidget {
 
   const ProductSpecifications({super.key, required this.furniture});
 
+  List<_SpecRow> _parseDimensions(String raw) {
+    if (raw.isEmpty || raw == 'N/A') {
+      return [const _SpecRow('Dimensions', 'Not specified')];
+    }
+    final patterns = {
+      'Height': RegExp(r'height[:\s]*(\d+)', caseSensitive: false),
+      'Width': RegExp(r'width[:\s]*(\d+)', caseSensitive: false),
+      'Depth': RegExp(r'depth[:\s]*(\d+)', caseSensitive: false),
+      'Length': RegExp(r'length[:\s]*(\d+)', caseSensitive: false),
+    };
+    final results = <_SpecRow>[];
+    for (final entry in patterns.entries) {
+      final match = entry.value.firstMatch(raw);
+      if (match != null) {
+        results.add(_SpecRow(entry.key, '${match.group(1)} cm'));
+      }
+    }
+    if (results.isEmpty) {
+      final clean = raw.replaceAll(RegExp(r'[{}]'), '').trim();
+      return [_SpecRow('Size', clean.isEmpty ? 'Not specified' : clean)];
+    }
+    return results;
+  }
+
   @override
   Widget build(BuildContext context) {
     final f = furniture;
+    final specs = _parseDimensions(f.dimensions);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -22,66 +47,53 @@ class ProductSpecifications extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-        const SizedBox(height: 10),
-        _SpecSection(
-          title: 'Dimensions',
-          bullets: [f.dimensions],
-        ),
-        _SpecSection(
-          title: 'Category',
-          bullets: [f.furnitureType],
-        ),
+        const SizedBox(height: 16),
+        ...specs.map((s) => _SpecTile(title: s.label, value: s.value)),
+        _SpecTile(title: 'Category', value: f.furnitureType),
         if (f.styleTags.isNotEmpty)
-          _SpecSection(
-            title: 'Style Tags',
-            bullets: f.styleTags,
-          ),
+          _SpecTile(title: 'Style Tags', value: f.styleTags.join(', ')),
       ],
     );
   }
 }
 
-class _SpecSection extends StatelessWidget {
-  final String title;
-  final List<String> bullets;
+class _SpecRow {
+  final String label;
+  final String value;
+  const _SpecRow(this.label, this.value);
+}
 
-  const _SpecSection({required this.title, required this.bullets});
+class _SpecTile extends StatelessWidget {
+  final String title;
+  final String value;
+
+  const _SpecTile({required this.title, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Column(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+          SizedBox(
+            width: 100,
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
-          const SizedBox(height: 4),
-          ...bullets.map(
-            (b) => Padding(
-              padding: const EdgeInsets.only(left: 8, bottom: 2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('• ',
-                      style: TextStyle(
-                          color: AppColors.textSecondary, fontSize: 13)),
-                  Expanded(
-                    child: Text(
-                      b,
-                      style: const TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                          height: 1.4),
-                    ),
-                  ),
-                ],
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+                height: 1.4,
               ),
             ),
           ),

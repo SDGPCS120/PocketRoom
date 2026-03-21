@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { generateMeaningfulId } from '../../common/utils/generate-id.util';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { CreateOrderDto, OrderStatus } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -26,7 +27,8 @@ export class OrderService {
       }, 0);
     }
 
-    const docRef = this.collection().doc();
+    const customId = generateMeaningfulId('order-' + Date.now());
+    const docRef = this.collection().doc(customId);
 
     const data = {
       orderId: docRef.id,

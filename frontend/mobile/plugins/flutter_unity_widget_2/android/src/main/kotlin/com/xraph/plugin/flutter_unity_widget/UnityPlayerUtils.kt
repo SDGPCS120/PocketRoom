@@ -230,8 +230,6 @@ class UnityPlayerUtils {
 
         fun addUnityViewToGroup(group: ViewGroup) {
              val layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
-//             val layoutParams = ViewGroup.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT)
-//            val layoutParams = ViewGroup.LayoutParams(570, 770)
             group.addView(unityFrameLayout, layoutParams)
         }
 

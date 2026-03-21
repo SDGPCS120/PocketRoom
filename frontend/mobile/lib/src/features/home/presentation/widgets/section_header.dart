@@ -4,7 +4,15 @@ import '../providers/home_provider.dart';
 
 class SectionHeader extends ConsumerWidget {
   final String title;
-  const SectionHeader({super.key, this.title = "Sofas"});
+  final Widget? trailing;
+  final bool showSort;
+
+  const SectionHeader({
+    super.key,
+    this.title = "Sofas",
+    this.trailing,
+    this.showSort = true,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,30 +24,44 @@ class SectionHeader extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF2D2D2D),
-              fontSize: 26, // Keep original size
+          Expanded(
+            child: Row(
+              children: [
+                Text(
+                  title,
+                  style: textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF2D2D2D),
+                    fontSize: 22,
+                  ),
+                ),
+                if (trailing != null) ...[
+                  const SizedBox(width: 12),
+                  trailing!,
+                ],
+              ],
             ),
           ),
 
-          // This is the sort/filter button 
-          PopupMenuButton<SortOrder>(
+          if (showSort)
+            PopupMenuButton<SortOrder>(
             initialValue: currentSortOrder,
             onSelected: (SortOrder order) {
               ref.read(sortOrderProvider.notifier).state = order;
             },
             offset: const Offset(0, 45),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             color: Colors.white,
             elevation: 4,
             itemBuilder: (context) => [
               _buildPopupOption(SortOrder.none, 'Relevance', Icons.reorder),
-              _buildPopupOption(SortOrder.priceAsc, 'Price: Low to High', Icons.arrow_upward),
-              _buildPopupOption(SortOrder.priceDesc, 'Price: High to Low', Icons.arrow_downward),
-              _buildPopupOption(SortOrder.ratingDesc, 'Rating: High to Low', Icons.star),
+              _buildPopupOption(
+                  SortOrder.priceAsc, 'Price: Low to High', Icons.arrow_upward),
+              _buildPopupOption(SortOrder.priceDesc, 'Price: High to Low',
+                  Icons.arrow_downward),
+              _buildPopupOption(
+                  SortOrder.ratingDesc, 'Rating: High to Low', Icons.star),
             ],
             child: Container(
               padding: const EdgeInsets.all(8),
@@ -50,7 +72,9 @@ class SectionHeader extends ConsumerWidget {
               child: Icon(
                 currentSortOrder == SortOrder.none ? Icons.tune : Icons.sort,
                 size: 20,
-                color: currentSortOrder == SortOrder.none ? Colors.black : const Color(0xFFFF8A3D),
+                color: currentSortOrder == SortOrder.none
+                    ? Colors.black
+                    : const Color(0xFFFF8A3D),
               ),
             ),
           ),
@@ -59,7 +83,8 @@ class SectionHeader extends ConsumerWidget {
     );
   }
 
-  PopupMenuEntry<SortOrder> _buildPopupOption(SortOrder order, String label, IconData icon) {
+  PopupMenuEntry<SortOrder> _buildPopupOption(
+      SortOrder order, String label, IconData icon) {
     return PopupMenuItem<SortOrder>(
       value: order,
       child: Row(
@@ -75,3 +100,4 @@ class SectionHeader extends ConsumerWidget {
     );
   }
 }
+

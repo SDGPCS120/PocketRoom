@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
+import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/features/home/presentation/home_page.dart';
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
 import 'package:pocketroom/src/features/favorites/presentation/favorites_page.dart';
@@ -15,14 +17,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const CartPage(),
-    const FavoritesPage(),
-    const ProfilePage(),
-  ];
-
   void _onItemTapped(int index) {
+    final user = FirebaseAuth.instance.currentUser;
+    final isSignedIn = user != null && !user.isAnonymous;
+
+    if (index == 3 && !isSignedIn) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+      return;
+    }
+
     setState(() {
       _selectedIndex = index;
     });
@@ -32,13 +37,27 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
-      bottomNavigationBar: _FloatingBottomBar(
-        selectedIndex: _selectedIndex,
-        onItemSelected: _onItemTapped,
+      body: Stack(
+        children: [
+          IndexedStack(
+            index: _selectedIndex,
+            children: [
+              HomePage(onProfileTap: () => _onItemTapped(3)),
+              const CartPage(),
+              const FavoritesPage(),
+              const ProfilePage(),
+            ],
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: _FloatingBottomBar(
+              selectedIndex: _selectedIndex,
+              onItemSelected: _onItemTapped,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -55,45 +74,53 @@ class _FloatingBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(24, 0, 24, 32),
-      height: 70,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(35),
-        border: Border.all(color: AppColors.primary, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _NavBarItem(
-            icon: Icons.home_rounded,
-            isSelected: selectedIndex == 0,
-            onTap: () => onItemSelected(0),
-          ),
-          _NavBarItem(
-            icon: Icons.shopping_cart_rounded,
-            isSelected: selectedIndex == 1,
-            onTap: () => onItemSelected(1),
-          ),
-          _NavBarItem(
-            icon: Icons.favorite_rounded,
-            isSelected: selectedIndex == 2,
-            onTap: () => onItemSelected(2),
-          ),
-          _NavBarItem(
-            icon: Icons.person_rounded,
-            isSelected: selectedIndex == 3,
-            onTap: () => onItemSelected(3),
-          ),
-        ],
+    return Center(
+      heightFactor: 1.0,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 32),
+        height: 54,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(27),
+          border: Border.all(color: AppColors.primary, width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _NavBarItem(
+              icon: Icons.home_rounded,
+              isSelected: selectedIndex == 0,
+              onTap: () => onItemSelected(0),
+            ),
+            const SizedBox(width: 8),
+            _NavBarItem(
+              icon: Icons.shopping_cart_rounded,
+              isSelected: selectedIndex == 1,
+              onTap: () => onItemSelected(1),
+            ),
+            const SizedBox(width: 8),
+            _NavBarItem(
+              icon: Icons.favorite_rounded,
+              isSelected: selectedIndex == 2,
+              onTap: () => onItemSelected(2),
+            ),
+            const SizedBox(width: 8),
+            _NavBarItem(
+              icon: Icons.person_rounded,
+              isSelected: selectedIndex == 3,
+              onTap: () => onItemSelected(3),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -117,7 +144,7 @@ class _NavBarItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : Colors.transparent,
           shape: BoxShape.circle,
@@ -125,7 +152,7 @@ class _NavBarItem extends StatelessWidget {
         child: Icon(
           icon,
           color: isSelected ? Colors.white : AppColors.primary,
-          size: 28,
+          size: 24,
         ),
       ),
     );

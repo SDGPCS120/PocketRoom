@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../cart/presentation/providers/cart_provider.dart';
+import '../../../../auth/presentation/get_started_page.dart';
 import '../../../data/models/furniture_model.dart';
 
 class ProductActions extends ConsumerStatefulWidget {
@@ -16,87 +19,71 @@ class ProductActions extends ConsumerStatefulWidget {
 class _ProductActionsState extends ConsumerState<ProductActions> {
   int _quantity = 1;
 
+  bool _redirectGuestToGetStarted() {
+    final user = FirebaseAuth.instance.currentUser;
+    final isSignedIn = user != null && !user.isAnonymous;
+    if (isSignedIn) return false;
+
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final f = widget.furniture;
-    final hasColors = f.colorOptions.isNotEmpty;
 
     return Column(
       children: [
-        // Colors + Quantity
+        // Quantity
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (hasColors)
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Available colors',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: f.colorOptions.map((c) {
-                        return Container(
-                          width: 26,
-                          height: 26,
-                          decoration: BoxDecoration(
-                            color: c,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey[300]!, width: 1),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
+            const Text(
+              'Quantity',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
               ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Text(
-                  'Quantity',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.secondary,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  _QtyButton(
+                    icon: Icons.remove,
+                    onTap: () {
+                      if (_quantity > 1) {
+                        HapticFeedback.lightImpact();
+                        setState(() => _quantity--);
+                      }
+                    },
                   ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    _QtyButton(
-                      icon: Icons.remove,
-                      onTap: () {
-                        if (_quantity > 1) {
-                          setState(() => _quantity--);
-                        }
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      child: Text(
-                        '$_quantity',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      '$_quantity',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textPrimary,
                       ),
                     ),
-                    _QtyButton(
-                      icon: Icons.add,
-                      onTap: () => setState(() => _quantity++),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                  _QtyButton(
+                    icon: Icons.add,
+                    onTap: () {
+                      HapticFeedback.lightImpact();
+                      setState(() => _quantity++);
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -104,9 +91,12 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
         // Add to cart
         SizedBox(
           width: double.infinity,
-          height: 52,
+          height: 56,
           child: ElevatedButton(
             onPressed: () {
+              if (_redirectGuestToGetStarted()) return;
+              
+              HapticFeedback.mediumImpact();
               for (var i = 0; i < _quantity; i++) {
                 ref.read(cartProvider.notifier).addItem(f);
               }
@@ -116,7 +106,7 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
                   duration: const Duration(seconds: 1),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   backgroundColor: AppColors.primary,
                 ),
@@ -125,17 +115,25 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
-              elevation: 0,
+              elevation: 4,
+              shadowColor: AppColors.primary.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
-            child: const Text(
-              'Add to cart',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.shopping_bag_outlined, size: 20),
+                const SizedBox(width: 12),
+                const Text(
+                  'Add to cart',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -143,22 +141,32 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
         // View in AR
         SizedBox(
           width: double.infinity,
-          height: 52,
+          height: 56,
           child: OutlinedButton(
-            onPressed: () {},
+            onPressed: () {
+               HapticFeedback.mediumImpact();
+               // AR view logic here
+            },
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
-              side: const BorderSide(color: AppColors.primary, width: 1.5),
+              side: const BorderSide(color: AppColors.primary, width: 2),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
-            child: const Text(
-              'View in AR',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.view_in_ar_rounded, size: 20),
+                const SizedBox(width: 12),
+                const Text(
+                  'View in AR',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSellerSession } from '../auth/sellerSession';
 import './SellerAddProduct.css';
 
 const SellerAddProduct: React.FC = () => {
   const navigate = useNavigate();
+  useSellerSession();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -14,31 +16,63 @@ const SellerAddProduct: React.FC = () => {
     depth: '',
   });
 
+  const [isPublishing, setIsPublishing] = useState(false);
+
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [modelFile, setModelFile] = useState<File | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'model') => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'image') => {
     if (e.target.files && e.target.files.length > 0) {
       if (type === 'image') setImageFile(e.target.files[0]);
-      if (type === 'model') setModelFile(e.target.files[0]);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // In a real application, you would use FormData to send files to a backend
-    console.log('Product Data:', formData);
-    console.log('Image File:', imageFile?.name);
-    console.log('3D Model File:', modelFile?.name);
+    if (!imageFile) {
+        alert('Please upload a display image to generate the 3D model.');
+        return;
+    }
 
-    alert('Product added successfully! (Simulation)');
-    navigate('/dashboard');
+    setIsPublishing(true);
+    
+    try {
+        const productId = 'prod_' + Date.now();
+        const payload = new FormData();
+        payload.append('image', imageFile);
+        payload.append('x', formData.width || '10');
+        payload.append('y', formData.height || '10');
+        payload.append('z', formData.depth || '10');
+
+        console.log('Initiating 3D generation for product:', productId);
+        
+        // In a production app, the backend URL should come from an env variable (e.g. import.meta.env.VITE_API_URL)
+        const baseUrl = import.meta.env.VITE_API_URL || 'https://pocketroom-backend-93470454666.asia-south1.run.app';
+        const response = await fetch(`${baseUrl}/model-generation/${productId}/generate`, {
+            method: 'POST',
+            body: payload,
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to generate 3D model: ' + await response.text());
+        }
+
+        const data = await response.json();
+        console.log('Generation started:', data);
+        
+        alert('Product added successfully and 3D generation started! Job ID: ' + data.jobId);
+        navigate('/dashboard');
+    } catch (error: any) {
+        console.error(error);
+        alert('Error publishing product: ' + error.message);
+    } finally {
+        setIsPublishing(false);
+    }
   };
 
   return (
@@ -113,19 +147,13 @@ const SellerAddProduct: React.FC = () => {
                 <input type="file" accept="image/*" required onChange={(e) => handleFileChange(e, 'image')} className="file-input" />
               </label>
             </div>
-
-            <div className="file-upload-group">
-              <label className="file-label file-label-ar">
-                <span className="file-title">3D AR Model *</span>
-                <span className="file-desc">Upload a .glb or .gltf file for AR placement</span>
-                <input type="file" accept=".glb,.gltf" required onChange={(e) => handleFileChange(e, 'model')} className="file-input" />
-              </label>
-            </div>
           </section>
 
           <div className="form-actions">
-            <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')}>Cancel</button>
-            <button type="submit" className="btn-primary">Publish Product</button>
+            <button type="button" className="btn-secondary" onClick={() => navigate('/dashboard')} disabled={isPublishing}>Cancel</button>
+            <button type="submit" className="btn-primary" disabled={isPublishing}>
+              {isPublishing ? 'Publishing & Generating...' : 'Publish Product'}
+            </button>
           </div>
         </form>
       </div>

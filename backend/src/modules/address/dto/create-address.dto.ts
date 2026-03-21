@@ -8,19 +8,19 @@ export enum AddressType {
 export class CreateAddressDto {
   @IsString()
   @IsNotEmpty()
-  userId: string;
+  userId!: string;
 
   @IsString()
   @IsNotEmpty()
-  fullName: string;
+  fullName!: string;
 
   @IsString()
   @IsNotEmpty()
-  phoneNumber: string;
+  phoneNumber!: string;
 
   @IsString()
   @IsNotEmpty()
-  addressLine1: string;
+  addressLine1!: string;
 
   @IsOptional()
   @IsString()
@@ -28,19 +28,19 @@ export class CreateAddressDto {
 
   @IsString()
   @IsNotEmpty()
-  city: string;
+  city!: string;
 
   @IsString()
   @IsNotEmpty()
-  district: string;
+  district!: string;
 
   @IsString()
   @IsNotEmpty()
-  postalCode: string;
+  postalCode!: string;
 
   @IsString()
   @IsNotEmpty()
-  country: string;
+  country!: string;
 
   @IsOptional()
   @IsBoolean()

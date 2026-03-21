@@ -3,8 +3,8 @@ import { RoomRole } from '../enums/room-role.enum';
 
 export class UpdateRoomMemberRoleDto {
   @IsString()
-  memberId: string;
+  memberId!: string;
 
   @IsEnum(RoomRole)
-  role: RoomRole;
+  role!: RoomRole;
 }

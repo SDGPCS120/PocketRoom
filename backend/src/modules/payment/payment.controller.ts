@@ -8,22 +8,29 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
+
+type AuthenticatedRequest = Request & {
+  user: {
+    uid: string;
+  };
+};
 
 @Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post()
-  createPayment(@Req() req, @Body() dto: CreatePaymentDto) {
+  createPayment(@Req() req: AuthenticatedRequest, @Body() dto: CreatePaymentDto) {
     const userId = req.user.uid;
     return this.paymentService.createPayment(userId, dto);
   }
 
   @Get('my-payments')
-  getMyPayments(@Req() req) {
+  getMyPayments(@Req() req: AuthenticatedRequest) {
     const userId = req.user.uid;
     return this.paymentService.getPaymentsByUser(userId);
   }

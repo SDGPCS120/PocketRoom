@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../budget/ui/budget_planner_page.dart';
 
 class FeaturedCollectionCard extends StatefulWidget {
   const FeaturedCollectionCard({super.key});
@@ -35,22 +36,18 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
   void _startAutoSwitchTimer() {
     _autoSwitchTimer?.cancel();
     _autoSwitchTimer = Timer.periodic(_switchDuration, (_) {
-      _goToNextPage();
+      final pageController = _pageController;
+      if (!mounted || !_isVisible || pageController == null || !pageController.hasClients) {
+        return;
+      }
+
+      final nextPage = (_currentPage + 1) % 2;
+      pageController.animateToPage(
+        nextPage,
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.easeInOut,
+      );
     });
-  }
-
-  void _goToNextPage() {
-    final pageController = _pageController;
-    if (!mounted || !_isVisible || pageController == null || !pageController.hasClients) {
-      return;
-    }
-
-    final nextPage = (_currentPage + 1) % 2;
-    pageController.animateToPage(
-      nextPage,
-      duration: const Duration(milliseconds: 700),
-      curve: Curves.easeInOut,
-    );
   }
 
   @override
@@ -78,16 +75,8 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                       _startAutoSwitchTimer();
                     },
                     children: [
-                      AnimatedOpacity(
-                        duration: const Duration(milliseconds: 350),
-                        opacity: _currentPage == 0 ? 1 : 0.92,
-                        child: _buildFeaturedCard(),
-                      ),
-                      AnimatedOpacity(
-                        duration: const Duration(milliseconds: 350),
-                        opacity: _currentPage == 1 ? 1 : 0.92,
-                        child: _buildBudgetingCard(context),
-                      ),
+                      _buildFeaturedCard(),
+                      _buildBudgetingCard(context),
                     ],
                   ),
                   Positioned(
@@ -303,9 +292,10 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                     height: 36,
                     child: ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Budgeting feature coming soon'),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BudgetPlannerPage(),
                           ),
                         );
                       },

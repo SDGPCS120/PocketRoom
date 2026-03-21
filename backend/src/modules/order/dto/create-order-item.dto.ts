@@ -3,7 +3,7 @@ import { IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, Min } from 'class-
 export class CreateOrderItemDto {
   @IsString()
   @IsNotEmpty()
-  productId: string;
+  productId!: string;
 
   @IsString()
   @IsOptional()
@@ -11,14 +11,14 @@ export class CreateOrderItemDto {
 
   @IsString()
   @IsNotEmpty()
-  productName: string;
+  productName!: string;
 
   @IsPositive()
-  unitPrice: number;
+  unitPrice!: number;
 
   @IsInt()
   @Min(1)
-  quantity: number;
+  quantity!: number;
 
   @IsPositive()
   @IsOptional()

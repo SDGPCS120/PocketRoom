@@ -1,39 +1,17 @@
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  /* Color Palette */
-  --color-0: #FFFFFF;
-  --color-0-5: #FFFFFE;
-  --color-1: #FFFEFD;
-  --color-1-5: #FFFEFC;
-  --color-2: #FFFDFB;
-  --color-3: #FFFCFA;
-  --color-4: #FFFBF8;
-  --color-5: #FFFAF6;
-  --color-6: #F5DAC5;
-  --color-7: #EBBA94;
-  --color-8: #E19B62;
-  --color-8-5: #DC8B4A;
-  --color-9: #D77B31;
-  --color-9-5: #D26B19;
-  --color-10: #CD5B00;
-
-  /* Semantic Colors */
-  --bg-primary: var(--color-4);
-  --bg-secondary: var(--color-5);
-  --accent-primary: var(--color-10);
-  --accent-secondary: var(--color-9);
-  --text-primary: #2d1a0c;
-  --text-secondary: #5a3e2b;
-  --input-border: var(--color-7);
-  --input-focus: var(--color-9);
-  --btn-text: var(--color-0);
+  /* App Theme Variables */
+  --color-primary: #FF8A3D;
+  --color-secondary: #FFE5D3;
+  --color-background: #FFF8F3;
+  --color-text-primary: #2D2D2D;
+  --color-text-secondary: #757575;
+  --color-card-border: #E0E0E0;
+  
+  --font-primary: 'Fredoka', sans-serif;
 
   color-scheme: light;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -59,12 +37,13 @@ body {
 }
 
 h1, h2, h3 {
-  color: var(--accent-primary);
+  font-family: var(--font-primary);
+  color: var(--color-primary);
   margin-top: 0;
 }
 
 a {
-  color: var(--accent-secondary);
+  color: var(--color-primary);
   text-decoration: none;
 }
 

@@ -67,14 +67,20 @@ class Furniture {
       rating: (json['rating'] is num)
           ? (json['rating'] as num).toDouble()
           : double.nan,
-      images: (json['images'] is List)
-          ? (json['images'] as List).map((e) => e.toString()).toList()
-          : ((json['imageUrl']?.toString().trim().isNotEmpty ?? false)
-                ? [json['imageUrl'].toString()]
-                : []),
-      imageUrl: (json['imageUrl']?.toString().trim().isNotEmpty ?? false)
-          ? json['imageUrl'].toString()
-          : '',
+      images: (json['imageUrl'] is List)
+          ? (json['imageUrl'] as List)
+                .map((e) => e.toString().trim())
+                .where((e) => e.isNotEmpty)
+                .toList()
+          : ((json['images'] is List)
+              ? (json['images'] as List)
+                    .map((e) => e.toString().trim())
+                    .where((e) => e.isNotEmpty)
+                    .toList()
+              : []),
+      imageUrl: (json['imageUrl'] is List && (json['imageUrl'] as List).isNotEmpty)
+          ? (json['imageUrl'] as List).first.toString().trim()
+          : ((json['imageUrl'] is String) ? json['imageUrl'].toString().trim() : ''),
       imagePath: (json['imagePath']?.toString().trim().isNotEmpty ?? false)
           ? json['imagePath'].toString()
           : '',
@@ -120,6 +126,15 @@ class Furniture {
   }
 
   Map<String, dynamic> toJson() {
+    final normalizedImages = images
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+    final normalizedImageUrl = imageUrl.trim();
+    final imageUrlList = normalizedImages.isNotEmpty
+        ? normalizedImages
+        : (normalizedImageUrl.isNotEmpty ? [normalizedImageUrl] : const <String>[]);
+
     return {
       'id': id,
       'name': name,
@@ -127,7 +142,16 @@ class Furniture {
       'oldPrice': oldPrice,
       'brand': brand,
       'rating': rating,
-      'images': images,
+      'images': normalizedImages,
+      'imageUrl': imageUrlList,
+      'imagePath': imagePath,
+      'modelURL': modelURL,
+      'material': material,
+      'modelStatus': modelStatus,
+      'modelError': modelError,
+      'primaryColor': primaryColor,
+      'productID': productID,
+      'stockStatus': stockStatus,
       'furnitureType': furnitureType,
       'dimensions': dimensions,
       'availability': availability,

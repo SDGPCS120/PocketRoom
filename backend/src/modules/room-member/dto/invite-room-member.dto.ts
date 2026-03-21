@@ -7,11 +7,11 @@ export enum RoomRole {
 
 export class InviteRoomMemberDto {
   @IsString()
-  roomId: string;
+  roomId!: string;
 
   @IsString()
-  customerId: string;
+  customerId!: string;
 
   @IsEnum(RoomRole)
-  role: RoomRole;
+  role!: RoomRole;
 }

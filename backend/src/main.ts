@@ -6,6 +6,8 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
 import { ResponseTransformInterceptor } from './common/interceptors/response-transform.interceptor.js';
 import { AppModule } from './app.module.js';
 
+//halo
+
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
@@ -51,7 +53,7 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT || 3000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   const baseUrl = `http://localhost:${port}`;
   logger.log(`Application URL: ${baseUrl}`);

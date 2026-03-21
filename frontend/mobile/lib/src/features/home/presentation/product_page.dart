@@ -25,16 +25,16 @@ class ProductPage extends StatelessWidget {
               children: [
                 ProductImageCarousel(furniture: furniture),
                 Transform.translate(
-                  offset: const Offset(0, -24),
+                  offset: const Offset(0, -32),
                   child: Container(
                     decoration: const BoxDecoration(
                       color: AppColors.background,
                       borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(28),
+                        top: Radius.circular(32),
                       ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 28, 24, 32),
+                      padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -55,22 +55,15 @@ class ProductPage extends StatelessWidget {
               ],
             ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Material(
-                color: Colors.white.withValues(alpha: 0.85),
-                shape: const CircleBorder(),
-                elevation: 2,
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Icon(Icons.arrow_back,
-                        size: 22, color: AppColors.textPrimary),
-                  ),
-                ),
+          // Back button
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 10,
+            left: 20,
+            child: CircleAvatar(
+              backgroundColor: Colors.white.withValues(alpha: 0.9),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
           ),
