@@ -7,7 +7,7 @@ import '../features/home/presentation/product_page.dart';
 import '../features/home/presentation/vendor_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketroom/src/features/favorites/data/favorites_provider.dart';
+import 'package:pocketroom/src/features/favorites/presentation/providers/favorites_provider.dart';
 
 class ProductCard extends ConsumerStatefulWidget {
   final Furniture furniture;

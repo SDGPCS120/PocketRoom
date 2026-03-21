@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:pocketroom/src/core/firebase_providers.dart';
-import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
+import 'package:pocketroom/src/features/cart/presentation/providers/cart_provider.dart';
 import 'package:pocketroom/src/features/home/data/models/furniture_model.dart';
 
 void main() {

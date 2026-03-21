@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../home/data/models/furniture_model.dart';
 import '../../home/data/repositories/furniture_repository.dart';
-import '../../home/data/providers.dart';
+import '../../home/presentation/providers/home_provider.dart';
 import '../../../core/api_config.dart';
 import 'ai_search_state.dart';
 import 'dart:convert';

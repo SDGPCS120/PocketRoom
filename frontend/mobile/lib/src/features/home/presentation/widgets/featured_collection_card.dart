@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../budget/ui/budget_planner_page.dart';
@@ -54,7 +53,6 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
   Widget build(BuildContext context) {
     _pageController ??= PageController();
 
-    // Use AnimatedSize for smooth resizing when closing
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -103,8 +101,8 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                     ),
                   ),
                   Positioned(
-                    top: 8,
-                    right: 8,
+                    top: 18,
+                    right: 28,
                     child: IconButton(
                       icon: const Icon(Icons.close, color: Colors.white, size: 20),
                       onPressed: () {

@@ -1,4 +1,5 @@
 import '../../../core/services/api_client.dart';
+import '../../../core/utils/extensions.dart';
 import 'widgets/budget_result_page.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -128,10 +129,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
               const SizedBox(height: 6),
               Center(
                 child: Text(
-                  'LKR ${_budget.round().toString().replaceAllMapped(
-                        RegExp(r'\B(?=(\d{3})+(?!\d))'),
-                        (m) => ',',
-                      )}',
+                  _budget.toLKR(),
                   style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
                 ),
               ),
@@ -148,7 +146,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                   activeTrackColor: accent,
                   inactiveTrackColor: const Color(0xFFEDEDED),
                   thumbColor: Colors.white,
-                  overlayColor: accent.withOpacity(0.15),
+                  overlayColor: accent.withValues(alpha: 0.15),
                   thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
                 ),
                 child: Slider(
@@ -216,7 +214,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                   style: TextStyle(color: Colors.black54)),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _selectedStyle,
+                initialValue: _selectedStyle,
                 items: _styles
                     .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                     .toList(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/utils/extensions.dart';
 
 class BudgetResultPage extends StatefulWidget {
   final Map<String, dynamic> result;
@@ -16,7 +17,7 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
   Widget build(BuildContext context) {
     final bool ok = widget.result['ok'] == true;
     final reason = widget.result['reason'];
-    final totalBudget = widget.result['totalBudget'];
+    final totalBudget = widget.result['totalBudget'] as num? ?? 0;
     final bundles = (widget.result['bundles'] as List?) ?? [];
 
     Map<String, dynamic>? currentBundle;
@@ -24,8 +25,8 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
       currentBundle = bundles[_currentIndex] as Map<String, dynamic>?;
     }
 
-    final totalCost = currentBundle?['totalCost'] ?? 0;
-    final remaining = currentBundle?['remaining'] ?? 0;
+    final totalCost = currentBundle?['totalCost'] as num? ?? 0;
+    final remaining = currentBundle?['remaining'] as num? ?? 0;
 
     final List<dynamic> requiredBundle = (currentBundle?['requiredBundle'] as List?) ?? [];
     final List<dynamic> optionalBundle = (currentBundle?['optionalBundle'] as List?) ?? [];
@@ -145,9 +146,9 @@ class _SummaryCard extends StatelessWidget {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text("Total budget: LKR $totalBudget"),
-          Text("Total cost: LKR $totalCost"),
-          Text("Remaining: LKR $remaining"),
+          Text("Total budget: ${totalBudget.toLKR()}"),
+          Text("Total cost: ${totalCost.toLKR()}"),
+          Text("Remaining: ${remaining.toLKR()}"),
           if (!ok && reason != null) ...[
             const SizedBox(height: 8),
             Text("Reason: $reason", style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -166,7 +167,7 @@ class _ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final name = product['name'] ?? "Unknown";
-    final price = product['price'] ?? "-";
+    final price = product['price'] as num? ?? 0;
     final category = product['category'] ?? "-";
     final rating = product['rating'] ?? "-";
     final brand = product['brand'] ?? "-";
@@ -179,7 +180,7 @@ class _ProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -191,7 +192,7 @@ class _ProductCard extends StatelessWidget {
             width: 92,
             height: 72,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(Icons.chair_alt, size: 34),
@@ -203,7 +204,7 @@ class _ProductCard extends StatelessWidget {
               children: [
                 Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
-                Text("LKR $price", style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(price.toLKR(), style: const TextStyle(fontWeight: FontWeight.w600)),
                 Text("Brand: $brand", style: const TextStyle(color: Colors.black54)),
                 const SizedBox(height: 4),
                 Row(

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import '../api_config.dart';
 
 /// Centralized API client for making HTTP requests
@@ -26,7 +27,7 @@ class ApiClient {
         requestBody: true,
         responseBody: true,
         error: true,
-        logPrint: (obj) => print('[API] $obj'),
+        logPrint: (obj) => debugPrint('[API] $obj'),
       ),
     );
   }

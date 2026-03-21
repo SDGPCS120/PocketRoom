@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/core/firebase_providers.dart';
-import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
+import 'package:pocketroom/src/features/cart/presentation/providers/cart_provider.dart';
 
 class ArViewPage extends ConsumerStatefulWidget {
   const ArViewPage({super.key});

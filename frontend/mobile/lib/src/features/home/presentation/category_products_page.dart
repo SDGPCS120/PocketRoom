@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/providers.dart';
+import 'providers/home_provider.dart';
 import '../../../common_widgets/app_header.dart';
 import '../../../common_widgets/search_bar_widget.dart';
 import './widgets/category_pills.dart';

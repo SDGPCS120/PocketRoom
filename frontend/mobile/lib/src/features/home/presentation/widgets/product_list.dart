@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/furniture_model.dart';
 import '../../../../common_widgets/product_card.dart';
 import '../../../../common_widgets/circular_nav_button.dart';
-import '../../data/providers.dart';
+import '../providers/home_provider.dart';
 
 class ProductList extends ConsumerStatefulWidget {
   final bool isHorizontal;
-  final AlwaysAliveProviderBase<AsyncValue<List<Furniture>>>? provider;
+  final ProviderBase<AsyncValue<List<Furniture>>>? provider;
   const ProductList({super.key, this.isHorizontal = false, this.provider});
 
   @override
@@ -61,11 +61,15 @@ class _ProductListState extends ConsumerState<ProductList> {
   @override
   Widget build(BuildContext context) {
     // If a provider is passed, use it; otherwise, use the default filtered selection.
-    final furnitureAsync = widget.provider != null
+    // Fix for the line 70 issue: we need to handle the nested AsyncValue wrap/unwrap correctly.
+    // However, looking at line 70 in original: ref.watch(allFurnitureProvider).whenData((_) => ref.watch(filteredFurnitureProvider));
+    // It seems filteredFurnitureProvider is NOT an AsyncValue, but a Provider<List<Furniture>>.
+    // So we can do:
+    final actualAsync = widget.provider != null 
         ? ref.watch(widget.provider!)
-        : ref.watch(allFurnitureProvider).whenData((_) => ref.watch(filteredFurnitureProvider));
+        : ref.watch(allFurnitureProvider).whenData((_) => ref.read(filteredFurnitureProvider));
 
-    return furnitureAsync.when(
+    return actualAsync.when(
       loading: () => const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),
       error: (error, stack) => SliverFillRemaining(child: Center(child: Text('Error: $error'))),
       data: (filteredList) {

@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/core/firebase_providers.dart';
 import 'package:pocketroom/src/features/home/data/models/furniture_model.dart';
-import './models/cart_item.dart';
+import '../../data/models/cart_item.dart';
 
 class CartNotifier extends Notifier<List<CartItem>> {
   StreamSubscription? _authSubscription;

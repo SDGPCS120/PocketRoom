@@ -1,16 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import './models/furniture_model.dart';
-import './models/vendor_model.dart';
-import './mock_data.dart';
-import './repositories/furniture_repository.dart';
-import './repositories/firestore_product_repository.dart';
+import '../../data/models/furniture_model.dart';
+import '../../data/models/vendor_model.dart';
+import '../../data/mock_data.dart';
+import '../../data/repositories/furniture_repository.dart';
+import '../../data/repositories/firestore_product_repository.dart';
 
 // Provider for the active Furniture Type (selected from Home Page)
 final selectedFurnitureTypeProvider = StateProvider<String>((ref) => "All");
 
 // Provider for the active General Category (selected from Category Products Page)
-final selectedGeneralCategoryProvider =
-    StateProvider<String>((ref) => "Best sellers");
+final selectedGeneralCategoryProvider = StateProvider<String>(
+  (ref) => "Best sellers",
+);
 
 // Provider for the search query entered in the search bar
 final searchQueryProvider = StateProvider<String>((ref) => "");
@@ -105,14 +106,21 @@ List<Furniture> _applyCategoryFilters(List<Furniture> all, String activeType, St
   // Filter by General Category
   switch (activeCategory) {
     case 'Arpico':
+      filtered = filtered
+          .where((item) => item.brand.contains('Arpico'))
+          .toList();
+      break;
     case 'Damro':
-      filtered = filtered.where((item) => item.brand.contains(activeCategory)).toList();
+      filtered = filtered
+          .where((item) => item.brand.contains('Damro'))
+          .toList();
       break;
     case 'Modern':
     case 'Max':
     case 'Minimalistic':
       filtered = filtered.where((item) => _hasStyleTag(item, activeCategory.toLowerCase())).toList();
       break;
+    case 'Best sellers':
     default:
       break;
   }
