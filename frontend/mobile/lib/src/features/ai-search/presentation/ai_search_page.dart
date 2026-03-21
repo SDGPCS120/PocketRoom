@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../common_widgets/glass_container.dart';
 import '../data/ai_search_provider.dart';
 import '../data/ai_search_state.dart';
 import 'widgets/ai_prompt_panel.dart';
@@ -17,7 +18,7 @@ class AiSearchPage extends ConsumerWidget {
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.close, color: colorScheme.onSurface),
@@ -38,20 +39,51 @@ class AiSearchPage extends ConsumerWidget {
           ],
         ),
       ),
-      body: Column(
+      extendBodyBehindAppBar: true,
+      body: Stack(
         children: [
-          Expanded(
-            child: CustomScrollView(
-              slivers: [
-                if (isInitial)
-                  _buildWelcomeState(context, ref)
-                else
-                  const AiSearchResultsView(),
-                const SliverPadding(padding: EdgeInsets.only(bottom: 20)),
-              ],
+          // Background decorations to enhance glass effect
+          Positioned(
+            top: -100,
+            right: -50,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colorScheme.primary.withOpacity(0.05),
+              ),
             ),
           ),
-          const AiPromptPanel(),
+          Positioned(
+            bottom: 100,
+            left: -50,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colorScheme.secondary.withOpacity(0.1),
+              ),
+            ),
+          ),
+          
+          Column(
+            children: [
+              Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    if (isInitial)
+                      _buildWelcomeState(context, ref)
+                    else
+                      const AiSearchResultsView(),
+                    const SliverPadding(padding: EdgeInsets.only(bottom: 20)),
+                  ],
+                ),
+              ),
+              const AiPromptPanel(),
+            ],
+          ),
         ],
       ),
     );
@@ -66,16 +98,18 @@ class AiSearchPage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            GlassContainer(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFE5D3).withValues(alpha: 0.3),
-                shape: BoxShape.circle,
+              borderRadius: 100,
+              blur: 8,
+              opacity: 0.1,
+              border: Border.all(
+                color: colorScheme.primary.withOpacity(0.2),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.auto_awesome,
                 size: 48,
-                color: Color(0xFFD84B3E),
+                color: colorScheme.primary,
               ),
             ),
             const SizedBox(height: 24),
@@ -116,29 +150,32 @@ class AiSearchPage extends ConsumerWidget {
     ];
 
     return Wrap(
-      spacing: 10,
-      runSpacing: 10,
+      spacing: 12,
+      runSpacing: 12,
       alignment: WrapAlignment.center,
       children: suggestions.map((text) {
-        return ActionChip(
-          label: Text(
-            text,
-            style: TextStyle(
-              fontSize: 13, 
-              fontWeight: FontWeight.w500,
-              color: colorScheme.onSurface,
+        return GestureDetector(
+          onTap: () => ref.read(aiSearchStateProvider.notifier).searchAi(text),
+          child: GlassContainer(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            borderRadius: 20,
+            blur: 5,
+            opacity: 0.05,
+            border: Border.all(
+              color: colorScheme.onSurface.withOpacity(0.1),
+            ),
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 13, 
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurface,
+              ),
             ),
           ),
-          backgroundColor: colorScheme.surfaceContainerHighest,
-          side: BorderSide.none,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          onPressed: () {
-            ref.read(aiSearchStateProvider.notifier).searchAi(text);
-          },
         );
       }).toList(),
     );
   }
 }
+

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:permission_handler/permission_handler.dart';
+import '../../../../common_widgets/glass_container.dart';
 import '../../data/ai_search_provider.dart';
 
 class AiPromptPanel extends ConsumerStatefulWidget {
@@ -120,72 +121,80 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(24),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      child: GlassContainer(
+        borderRadius: 32,
+        blur: 15,
+        opacity: 0.15,
+        padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -4),
+            color: colorScheme.shadow.withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
-      ),
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24), // Extra bottom padding for safe area
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: TextField(
-                controller: _promptController,
-                maxLines: 5,
-                minLines: 1,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  hintText: 'What kind of room are you designing?',
-                  hintStyle: TextStyle(
-                    color: colorScheme.onSurfaceVariant,
-                    fontSize: 15,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: colorScheme.surface.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: colorScheme.onSurface.withOpacity(0.05),
                   ),
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-                style: TextStyle(fontSize: 15, color: colorScheme.onSurface),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: TextField(
+                  controller: _promptController,
+                  maxLines: 5,
+                  minLines: 1,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    hintText: 'What kind of room are you designing?',
+                    hintStyle: TextStyle(
+                      color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                      fontSize: 15,
+                    ),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  style: TextStyle(fontSize: 15, color: colorScheme.onSurface),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildIconButton(
-                icon: _isListening ? Icons.mic : Icons.graphic_eq,
-                color: _isListening ? colorScheme.errorContainer : colorScheme.surface,
-                iconColor: _isListening ? colorScheme.error : colorScheme.onSurface,
-                onTap: _onVoiceTap,
-              ),
-              const SizedBox(height: 8),
-              _buildIconButton(
-                icon: Icons.send,
-                color: colorScheme.primary,
-                iconColor: colorScheme.onPrimary,
-                isLoading: _isLoading,
-                onTap: _onSendPrompt,
-              ),
-            ],
-          ),
-        ],
+            const SizedBox(width: 12),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildIconButton(
+                  icon: _isListening ? Icons.mic : Icons.graphic_eq,
+                  color: _isListening 
+                      ? colorScheme.errorContainer.withOpacity(0.8) 
+                      : colorScheme.surface.withOpacity(0.5),
+                  iconColor: _isListening ? colorScheme.error : colorScheme.onSurface,
+                  onTap: _onVoiceTap,
+                ),
+                const SizedBox(height: 8),
+                _buildIconButton(
+                  icon: Icons.send,
+                  color: colorScheme.primary,
+                  iconColor: colorScheme.onPrimary,
+                  isLoading: _isLoading,
+                  onTap: _onSendPrompt,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
+
 
   Widget _buildIconButton({
     required IconData icon,

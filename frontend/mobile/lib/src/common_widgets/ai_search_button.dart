@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'glass_container.dart';
 
 class AiSearchButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -9,14 +10,15 @@ class AiSearchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: 'AI Search',
-      child: Material(
-        color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(20),
+      child: GlassContainer(
+        borderRadius: 20,
+        blur: 10,
+        opacity: 0.1,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(20),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: Icon(
               Icons.auto_awesome,
               color: Theme.of(context).colorScheme.primary,
@@ -29,3 +31,4 @@ class AiSearchButton extends StatelessWidget {
     );
   }
 }
+
