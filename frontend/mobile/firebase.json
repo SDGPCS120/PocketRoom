@@ -22,7 +22,6 @@
     }
   },
   "hosting": {
-    "site": "pocketroom-shop",
     "public": "build/web",
     "ignore": [
       "firebase.json",
