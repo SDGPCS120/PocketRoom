@@ -54,4 +54,20 @@ api.interceptors.request.use(
   }
 );
 
+api.interceptors.response.use(
+  (response) => {
+    // Unwrap NestJS ResponseTransformInterceptor payloads globally
+    if (
+      response.data &&
+      typeof response.data === 'object' &&
+      'success' in response.data &&
+      'data' in response.data
+    ) {
+      response.data = response.data.data;
+    }
+    return response;
+  },
+  (error) => Promise.reject(error)
+);
+
 export default api;
