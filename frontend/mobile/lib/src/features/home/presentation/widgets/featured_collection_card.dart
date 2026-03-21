@@ -113,7 +113,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       style: IconButton.styleFrom(
-                        backgroundColor: Colors.black.withValues(alpha: 0.12),
+                        backgroundColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.12),
                         shape: const CircleBorder(),
                       ),
                     ),
@@ -139,7 +139,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -233,7 +233,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

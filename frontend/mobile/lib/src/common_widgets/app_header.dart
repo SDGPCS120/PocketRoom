@@ -38,7 +38,7 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
       children: [
         if (currentQuery.isNotEmpty)
           IconButton(
-            icon: const Icon(Icons.clear, color: Colors.grey),
+            icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSurfaceVariant),
             onPressed: () {
               _searchController.clear();
               ref.read(searchQueryProvider.notifier).state = '';

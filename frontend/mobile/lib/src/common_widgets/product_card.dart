@@ -239,17 +239,24 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                       ref.read(favoritesProvider.notifier).toggleFavorite(furniture);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(isFavorite 
-                              ? '${furniture.name} removed from favorites' 
-                              : '${furniture.name} added to favorites',
-                            style: TextStyle(color: isFavorite ? Colors.white : colorScheme.onPrimary),
+                          content: Text(
+                            isFavorite 
+                                ? '${furniture.name} removed from favorites' 
+                                : '${furniture.name} added to favorites',
+                            style: TextStyle(
+                              color: isFavorite 
+                                  ? colorScheme.onSurface 
+                                  : colorScheme.onPrimary,
+                            ),
                           ),
                           duration: const Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          backgroundColor: isFavorite ? Colors.grey[800] : colorScheme.primary,
+                          backgroundColor: isFavorite 
+                              ? colorScheme.surfaceContainerHighest 
+                              : colorScheme.primary,
                         ),
                       );
                     },
@@ -270,7 +277,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                         child: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
                           size: 16,
-                          color: isFavorite ? colorScheme.primary : Colors.grey,
+                          color: isFavorite ? colorScheme.primary : colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),

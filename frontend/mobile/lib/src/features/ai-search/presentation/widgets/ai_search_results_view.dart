@@ -12,17 +12,17 @@ class AiSearchResultsView extends ConsumerWidget {
     final state = ref.watch(aiSearchStateProvider);
 
     return switch (state) {
-      AiSearchLoading() => const SliverFillRemaining(
+      AiSearchLoading() => SliverFillRemaining(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
               Text(
                 'Searching with AI...',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Color(0xFF2D2D2D),
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ],
@@ -37,21 +37,21 @@ class AiSearchResultsView extends ConsumerWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFE5D3).withValues(alpha: 0.5),
+                  color: Theme.of(context).colorScheme.secondaryContainer.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.auto_awesome,
-                        size: 20, color: Color(0xFF2D2D2D)),
+                    Icon(Icons.auto_awesome,
+                        size: 20, color: Theme.of(context).colorScheme.onSurface),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Found ${results.length} AI-powered results',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D2D2D),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ),
@@ -62,7 +62,7 @@ class AiSearchResultsView extends ConsumerWidget {
                       icon: const Icon(Icons.close, size: 16),
                       label: const Text('Clear'),
                       style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xFF2D2D2D),
+                        foregroundColor: Theme.of(context).colorScheme.onSurface,
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                       ),
                     ),
@@ -80,18 +80,18 @@ class AiSearchResultsView extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.search_off,
                   size: 64,
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'No results found',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D2D2D),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -99,7 +99,7 @@ class AiSearchResultsView extends ConsumerWidget {
                   'Try a different search query',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -111,8 +111,8 @@ class AiSearchResultsView extends ConsumerWidget {
                   icon: const Icon(Icons.refresh),
                   label: const Text('Try Again'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFE5D3),
-                    foregroundColor: const Color(0xFF2D2D2D),
+                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                       vertical: 12,
@@ -130,18 +130,18 @@ class AiSearchResultsView extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.error_outline,
                   size: 64,
-                  color: Colors.red,
+                  color: Theme.of(context).colorScheme.error,
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'Search Failed',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D2D2D),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -149,7 +149,7 @@ class AiSearchResultsView extends ConsumerWidget {
                   message,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -165,8 +165,8 @@ class AiSearchResultsView extends ConsumerWidget {
                         icon: const Icon(Icons.refresh),
                         label: const Text('Retry'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFFE5D3),
-                          foregroundColor: const Color(0xFF2D2D2D),
+                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 24,
                             vertical: 12,
@@ -181,8 +181,8 @@ class AiSearchResultsView extends ConsumerWidget {
                       icon: const Icon(Icons.close),
                       label: const Text('Cancel'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF2D2D2D),
-                        side: const BorderSide(color: Color(0xFF2D2D2D)),
+                        foregroundColor: Theme.of(context).colorScheme.onSurface,
+                        side: BorderSide(color: Theme.of(context).colorScheme.outline),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 12,

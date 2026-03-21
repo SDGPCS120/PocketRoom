@@ -63,7 +63,7 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
       children: [
         if (currentQuery.isNotEmpty)
           IconButton(
-            icon: const Icon(Icons.clear, color: Colors.grey),
+            icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSurfaceVariant),
             onPressed: () {
               _controller.clear();
               ref.read(searchQueryProvider.notifier).state = '';
