@@ -122,10 +122,10 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
 
 class _SummaryCard extends StatelessWidget {
   final bool ok;
-  final dynamic totalBudget;
-  final dynamic totalCost;
-  final dynamic remaining;
-  final dynamic reason;
+  final num totalBudget;
+  final num totalCost;
+  final num remaining;
+  final String? reason;
 
   const _SummaryCard({
     required this.ok,
