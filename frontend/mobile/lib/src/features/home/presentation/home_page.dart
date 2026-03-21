@@ -24,7 +24,8 @@ class HomePage extends ConsumerWidget {
         child: Column(
           children: [
             AppHeader(onProfileTap: onProfileTap),
-            const SearchBarWidget(),
+            if (MediaQuery.of(context).size.width <= 600)
+              const SearchBarWidget(),
             Expanded(
               child: CustomScrollView(
                 slivers: [

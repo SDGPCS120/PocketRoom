@@ -62,7 +62,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
           ? Container(
               width: double.infinity,
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              height: 226, // Extra room for the CTA card and page indicator
+              height: MediaQuery.of(context).size.width > 900 ? 300 : 226, 
               child: Stack(
                 children: [
                   PageView(
@@ -152,11 +152,11 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
         child: Stack(
           children: [
             Positioned(
-              right: -30,
-              bottom: -20,
+              right: MediaQuery.of(context).size.width > 900 ? 40 : -30,
+              bottom: MediaQuery.of(context).size.width > 900 ? 0 : -20,
               child: Image.asset(
                 'assets/bannerSofa.png',
-                height: 240,
+                height: MediaQuery.of(context).size.width > 900 ? 320 : 240,
                 fit: BoxFit.contain,
               ),
             ),
