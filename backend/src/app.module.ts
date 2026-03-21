@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import * as dotenv from 'dotenv';
 import { AppConfigModule } from './config/config.module.js';
 import { FirebaseModule } from './firebase/firebase.module.js';
 import { AppController } from './app.controller.js';
@@ -16,6 +17,12 @@ import { PaymentModule } from './modules/payment/payment.module.js';
 import { BullModule } from '@nestjs/bullmq';
 import { ModelGenerationModule } from './features/modelGenerationPipeline/generation/generations.module.js';
 import { BudgetModule } from './features/budget/budget.module.js';
+import { SearchModule } from './features/search/search.module.js';
+
+dotenv.config();
+
+const redisEnabled =
+  process.env.REDIS_ENABLED === 'true' || process.env.NODE_ENV === 'production';
 
 @Module({
   imports: [
@@ -31,14 +38,21 @@ import { BudgetModule } from './features/budget/budget.module.js';
     CartModule,
     CartDebugModule,
     CategoryModule,
-    BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379', 10),
-      },
-    }),
-    ModelGenerationModule,
     BudgetModule,
+    SearchModule,
+    ...(
+      redisEnabled
+        ? [
+            BullModule.forRoot({
+              connection: {
+                host: process.env.REDIS_HOST || 'localhost',
+                port: parseInt(process.env.REDIS_PORT || '6379', 10),
+              },
+            }),
+            ModelGenerationModule,
+          ]
+        : []
+    ),
   ],
 
   controllers: [AppController],

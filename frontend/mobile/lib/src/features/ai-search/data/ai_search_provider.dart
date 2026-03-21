@@ -32,9 +32,14 @@ class AiSearchNotifier extends StateNotifier<AiSearchState> {
         if (jsonResponse is List) {
           rawResults = jsonResponse;
         } else if (jsonResponse is Map && jsonResponse.containsKey('results')) {
-          rawResults = jsonResponse['results'];
+          rawResults = (jsonResponse['results'] as List?) ?? [];
         } else if (jsonResponse is Map && jsonResponse.containsKey('data')) {
-          rawResults = jsonResponse['data'];
+          final data = jsonResponse['data'];
+          if (data is List) {
+            rawResults = data;
+          } else if (data is Map && data.containsKey('results')) {
+            rawResults = (data['results'] as List?) ?? [];
+          }
         }
         
         final results = rawResults.map((item) {

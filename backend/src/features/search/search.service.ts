@@ -1,11 +1,10 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { ProductLoaderService } from './product-loader.service';
-import { QueryParserService, ParsedQuery } from './query-parser.service';
+import { QueryParserService } from './query-parser.service';
 import { ColorMatcherService } from './color-matcher.service';
 import { RelevanceScorerService } from './relevance-scorer.service';
 
 // Import only TF-IDF to avoid loading natural's ESM-only sentiment dependencies under ts-node.
-// @ts-ignore
 import TfIdf = require('natural/lib/natural/tfidf/tfidf');
 
 @Injectable()
