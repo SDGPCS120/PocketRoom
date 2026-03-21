@@ -11,6 +11,7 @@ class VendorDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -24,7 +25,7 @@ class VendorDetails extends StatelessWidget {
                 style: GoogleFonts.fredoka(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: colorScheme.onSurface,
                 ),
               ),
               if (vendor != null)
@@ -32,19 +33,19 @@ class VendorDetails extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: AppColors.secondary,
+                    color: colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.star,
-                          color: AppColors.primary, size: 16),
+                      Icon(Icons.star,
+                          color: colorScheme.primary, size: 16),
                       const SizedBox(width: 4),
                       Text(
                         vendor!.rating.toString(),
                         style: GoogleFonts.fredoka(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: colorScheme.onSecondaryContainer,
                         ),
                       ),
                     ],
@@ -57,19 +58,19 @@ class VendorDetails extends StatelessWidget {
             vendor?.description ?? 'No description available for this vendor.',
             style: GoogleFonts.fredoka(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: colorScheme.onSurfaceVariant,
               height: 1.5,
             ),
           ),
           const SizedBox(height: 24),
-          const Divider(),
+          Divider(color: colorScheme.outlineVariant.withValues(alpha: 0.5)),
           const SizedBox(height: 16),
           Text(
             'Products from $vendorName',
             style: GoogleFonts.fredoka(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+              color: colorScheme.onSurface,
             ),
           ),
         ],

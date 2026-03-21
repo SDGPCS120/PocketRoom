@@ -11,7 +11,7 @@ class ProfileSectionDivider extends StatelessWidget {
       thickness: 1,
       indent: 16,
       endIndent: 16,
-      color: AppColors.textSecondary.withValues(alpha: 0.25),
+      color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.4),
     );
   }
 }

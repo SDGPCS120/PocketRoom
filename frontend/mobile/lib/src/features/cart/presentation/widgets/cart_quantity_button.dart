@@ -9,16 +9,17 @@ class CartQuantityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onPressed,
       child: Container(
         width: 28,
         height: 28,
         decoration: BoxDecoration(
-          color: AppColors.secondary.withValues(alpha: 0.5),
+          color: colorScheme.secondaryContainer.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(icon, size: 16, color: AppColors.primary),
+        child: Icon(icon, size: 16, color: colorScheme.primary),
       ),
     );
   }

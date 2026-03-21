@@ -152,7 +152,7 @@ class ProductDetailsHeader extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.1),
+                  color: colorScheme.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -160,7 +160,7 @@ class ProductDetailsHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Colors.red[700],
+                    color: colorScheme.error,
                   ),
                 ),
               ),

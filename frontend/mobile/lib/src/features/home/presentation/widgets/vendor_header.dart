@@ -11,12 +11,13 @@ class VendorHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SliverAppBar(
       expandedHeight: 200,
       pinned: true,
-      backgroundColor: AppColors.primary,
+      backgroundColor: colorScheme.primary,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        icon: Icon(Icons.arrow_back, color: colorScheme.onPrimary),
         onPressed: () => Navigator.of(context).pop(),
       ),
       flexibleSpace: FlexibleSpaceBar(
@@ -24,7 +25,7 @@ class VendorHeader extends StatelessWidget {
           vendorName,
           style: GoogleFonts.fredoka(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: colorScheme.onPrimary,
           ),
         ),
         background: Stack(
@@ -37,11 +38,14 @@ class VendorHeader extends StatelessWidget {
               )
             else
               Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.primary, Color(0xFF5A4A3A)],
+                    colors: [
+                      colorScheme.primary,
+                      colorScheme.secondary,
+                    ],
                   ),
                 ),
               ),
@@ -52,7 +56,7 @@ class VendorHeader extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withValues(alpha: 0.7),
+                    colorScheme.shadow.withValues(alpha: 0.6),
                   ],
                 ),
               ),

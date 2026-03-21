@@ -23,9 +23,10 @@ class SectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final Color itemColor = isDestructive
         ? Colors.redAccent
-        : AppColors.textPrimary;
+        : colorScheme.onSurface;
 
     return InkWell(
       onTap: onTap,
@@ -33,11 +34,11 @@ class SectionItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
         child: Row(
           children: [
-            // Left icon - plain icon with grey color (matches design)
+            // Left icon
             Icon(
               icon,
               size: 20,
-              color: isDestructive ? Colors.redAccent : const Color(0xFF9E9E9E),
+              color: isDestructive ? Colors.redAccent : colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 14),
             // Label
@@ -55,10 +56,10 @@ class SectionItem extends StatelessWidget {
             if (value != null) ...[  
               Text(
                 value!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFF9E9E9E),
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
               if (trailingIcon != null) ...[  
@@ -66,14 +67,14 @@ class SectionItem extends StatelessWidget {
                 Icon(
                   trailingIcon,
                   size: 16,
-                  color: const Color(0xFF9E9E9E),
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ],
             ] else
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
-                color: Color(0xFF9E9E9E),
+                color: colorScheme.onSurfaceVariant,
               ),
           ],
         ),

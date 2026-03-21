@@ -39,13 +39,13 @@ class ProfileHeaderCard extends StatelessWidget {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: colorScheme.secondary,
+                  color: colorScheme.onPrimary.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.person_outline_rounded,
                   size: 56,
-                  color: colorScheme.onSurface,
+                  color: colorScheme.onPrimary,
                 ),
               ),
               const SizedBox(height: 14),
@@ -53,20 +53,20 @@ class ProfileHeaderCard extends StatelessWidget {
                 onTap: onEditProfile,
                 child: Text(
                   name,
-                  style: AppTextStyles.profileName(context),
+                  style: AppTextStyles.profileName(context).copyWith(color: colorScheme.onPrimary),
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 email.isEmpty ? 'No email on file' : email,
-                style: AppTextStyles.profileEmail(context),
+                style: AppTextStyles.profileEmail(context).copyWith(color: colorScheme.onPrimary.withValues(alpha: 0.8)),
               ),
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: onEditProfile,
                 child: Text(
                   'Edit Profile',
-                  style: AppTextStyles.profileEdit(context),
+                  style: AppTextStyles.profileEdit(context).copyWith(color: colorScheme.onPrimary),
                 ),
               ),
             ],
@@ -80,7 +80,7 @@ class ProfileHeaderCard extends StatelessWidget {
             child: Icon(
               Icons.photo_camera_outlined,
               size: 26,
-              color: colorScheme.onSurface,
+              color: colorScheme.onPrimary,
             ),
           ),
         ),

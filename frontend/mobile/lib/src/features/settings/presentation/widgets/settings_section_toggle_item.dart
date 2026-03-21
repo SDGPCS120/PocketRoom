@@ -17,6 +17,7 @@ class SettingsSectionToggleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
       child: Row(
@@ -24,26 +25,26 @@ class SettingsSectionToggleItem extends StatelessWidget {
           Icon(
             icon,
             size: 20,
-            color: AppColors.textSecondary,
+            color: colorScheme.onSurfaceVariant,
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: AppColors.textPrimary,
+                color: colorScheme.onSurface,
               ),
             ),
           ),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.background,
-            activeTrackColor: AppColors.primary,
-            inactiveThumbColor: AppColors.background,
-            inactiveTrackColor: AppColors.textSecondary.withValues(alpha: 0.3),
+            activeColor: colorScheme.surface,
+            activeTrackColor: colorScheme.primary,
+            inactiveThumbColor: colorScheme.surface,
+            inactiveTrackColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
             trackOutlineColor: WidgetStateProperty.all(
               Colors.transparent,
             ),

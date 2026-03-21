@@ -86,7 +86,7 @@ class _FloatingBottomBar extends StatelessWidget {
           border: Border.all(color: colorScheme.primary, width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: colorScheme.shadow.withValues(alpha: 0.1),
               blurRadius: 15,
               offset: const Offset(0, 8),
             ),

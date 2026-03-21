@@ -6,12 +6,13 @@ class EditProfileAvatarCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(vertical: 28),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        color: colorScheme.primary,
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -23,14 +24,14 @@ class EditProfileAvatarCard extends StatelessWidget {
               Container(
                 width: 100,
                 height: 100,
-                decoration: const BoxDecoration(
-                  color: AppColors.secondary,
+                decoration: BoxDecoration(
+                  color: colorScheme.onPrimary.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.person_outline_rounded,
                   size: 56,
-                  color: AppColors.textPrimary,
+                  color: colorScheme.onPrimary,
                 ),
               ),
               // Camera badge
@@ -40,9 +41,9 @@ class EditProfileAvatarCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: colorScheme.primary,
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.background, width: 2),
+                    border: Border.all(color: colorScheme.onPrimary, width: 2),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.12),
@@ -51,10 +52,10 @@ class EditProfileAvatarCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.camera_alt_outlined,
                     size: 16,
-                    color: AppColors.textPrimary,
+                    color: colorScheme.onPrimary,
                   ),
                 ),
               ),
@@ -66,10 +67,10 @@ class EditProfileAvatarCard extends StatelessWidget {
           // Save Photo pill button
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
-            child: const Text(
+            child: Text(
               'Save Photo',
               style: TextStyle(
-                color: AppColors.secondary,
+                color: colorScheme.onPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
