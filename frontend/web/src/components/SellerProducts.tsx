@@ -18,7 +18,7 @@ interface Product {
 
 const SellerProducts: React.FC = () => {
   const navigate = useNavigate();
-  const { session, refreshStore } = useSellerSession();
+  const { session } = useSellerSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -26,22 +26,29 @@ const SellerProducts: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        // Always try to resolve storeId — first from session cache, then from the API directly.
+        // The session may not have storeId yet due to async hydration timing after login.
         let storeId = session?.storeId;
 
         if (!storeId) {
           try {
-            await refreshStore();
-            const cached = localStorage.getItem('currentUser');
-            storeId = cached ? (JSON.parse(cached).storeId as string | undefined) : undefined;
-          } catch (e) {
-            console.error(e);
+            // Call /stores/me directly (refreshStore also updates session + cache)
+            const storeRes = await api.get('/stores/me');
+            storeId = storeRes.data?.storeId as string | undefined;
+            if (storeId) {
+              const storeName = storeRes.data?.storeName as string | undefined;
+              const cached = JSON.parse(localStorage.getItem('currentUser') ?? '{}');
+              localStorage.setItem('currentUser', JSON.stringify({ ...cached, storeId, storeName }));
+            }
+          } catch (e: unknown) {
+            console.error('Could not resolve store:', e);
           }
         }
-        
+
         if (!storeId) {
-            setError('No store associated with this account. Please verify your registration.');
-            setIsLoading(false);
-            return;
+          setError('No store is associated with this account. If you just registered, please wait a moment and refresh the page.');
+          setIsLoading(false);
+          return;
         }
 
         const response = await api.get(`/products/store/${storeId}`);
@@ -55,7 +62,8 @@ const SellerProducts: React.FC = () => {
     };
 
     fetchProducts();
-  }, [refreshStore, session?.storeId]);
+    // Re-run whenever session.storeId becomes available (e.g., after async hydration)
+  }, [session?.storeId]);
 
   return (
     <div className="seller-products-page">

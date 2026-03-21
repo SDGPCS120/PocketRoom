@@ -8,7 +8,7 @@ const CATEGORIES = ['Sofa', 'Chair', 'Table', 'Bed', 'Storage', 'Decor'];
 
 const SellerAddProduct: React.FC = () => {
   const navigate = useNavigate();
-  const { session, refreshStore } = useSellerSession();
+  const { session } = useSellerSession();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -38,15 +38,19 @@ const SellerAddProduct: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    // ── Resolve storeId ────────────────────────────────────────────────────────
+    // ── Resolve storeId — try session first, then call /stores/me directly ──────
     let storeId = session?.storeId;
     if (!storeId) {
       try {
-        await refreshStore();
-        const cached = localStorage.getItem('currentUser');
-        storeId = cached ? (JSON.parse(cached).storeId as string | undefined) : undefined;
+        const storeRes = await api.get('/stores/me');
+        storeId = storeRes.data?.storeId as string | undefined;
+        if (storeId) {
+          const storeName = storeRes.data?.storeName as string | undefined;
+          const cached = JSON.parse(localStorage.getItem('currentUser') ?? '{}');
+          localStorage.setItem('currentUser', JSON.stringify({ ...cached, storeId, storeName }));
+        }
       } catch {
-        // ignore; error reported below
+        // store truly doesn't exist; error reported below
       }
     }
 

@@ -42,7 +42,10 @@ export function SellerSessionProvider({ children }: { children: React.ReactNode 
 
   const refreshStore = async () => {
     if (!auth.currentUser) return;
-    const me = await api.get('/stores/me');
+    const token = await auth.currentUser.getIdToken(true); // force-refresh token
+    const me = await api.get('/stores/me', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const storeId = me.data?.storeId as string | undefined;
     const storeName = me.data?.storeName as string | undefined;
     if (storeId || storeName) {
