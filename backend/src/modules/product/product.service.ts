@@ -27,7 +27,7 @@ export class ProductService {
         const docRef = this.collection().doc(customId);
 
         const data = {
-            productID: docRef.id,
+            productId: docRef.id,
             storeId,
             storeName: store?.storeName || 'Unknown Store',
             ...dto,
