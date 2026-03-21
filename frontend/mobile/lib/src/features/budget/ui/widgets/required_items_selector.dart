@@ -14,6 +14,7 @@ class RequiredItemsSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Wrap(
       spacing: 12,
       runSpacing: 12,
@@ -26,14 +27,18 @@ class RequiredItemsSelector extends StatelessWidget {
             height: 92,
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: isOn ? const Color(0xFFF8E9D8) : Colors.white,
+              color: isOn ? const Color(0xFFF8E9D8) : colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: isOn ? const Color(0xFFD29A5A) : const Color(0xFFE0E0E0),
+                color: isOn ? const Color(0xFFD29A5A) : colorScheme.outlineVariant,
                 width: 1.5,
               ),
-              boxShadow: const [
-                BoxShadow(blurRadius: 8, color: Color(0x11000000), offset: Offset(0, 3)),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 8, 
+                  color: colorScheme.shadow.withValues(alpha: 0.07), 
+                  offset: const Offset(0, 3),
+                ),
               ],
             ),
             child: Column(
@@ -42,12 +47,15 @@ class RequiredItemsSelector extends StatelessWidget {
                 Icon(
                   _iconFor(name),
                   size: 28,
-                  color: Colors.black87,
+                  color: isOn ? const Color(0xFFD29A5A) : colorScheme.onSurface,
                 ),
                 const SizedBox(height: 8),
                 Text(
                   _label(name),
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: isOn ? const Color(0xFFD29A5A) : colorScheme.onSurface,
+                  ),
                 ),
               ],
             ),

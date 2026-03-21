@@ -6,37 +6,37 @@ class LicensesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: Padding(
           padding: const EdgeInsets.only(left: 12),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colorScheme.secondaryContainer,
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.06),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
-              color: AppColors.textPrimary,
+              icon: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: colorScheme.onSurface),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
         ),
-        title: const Text(
+        title: Text(
           'Licenses',
           style: TextStyle(
-            color: AppColors.textPrimary,
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.w700,
             fontSize: 20,
           ),
@@ -57,24 +57,25 @@ class _LicensesContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
           'Open Source Licenses',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: colorScheme.onSurface,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
           'PocketRoom uses several open-source libraries to deliver a smooth and reliable experience. Below are some of the libraries used in this application.',
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w400,
-            color: AppColors.textSecondary,
+            color: colorScheme.onSurfaceVariant,
             height: 1.6,
           ),
         ),
@@ -142,6 +143,7 @@ class _LicenseItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: EdgeInsets.only(bottom: isLast ? 32 : 20),
       child: Column(
@@ -149,30 +151,30 @@ class _LicenseItem extends StatelessWidget {
         children: [
           Text(
             name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: colorScheme.onSurface,
             ),
           ),
           if (license.isNotEmpty) ...[
             const SizedBox(height: 2),
             Text(
               'License: $license',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: AppColors.primary,
+                color: colorScheme.primary,
               ),
             ),
           ],
           const SizedBox(height: 4),
           Text(
             description,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w400,
-              color: AppColors.textSecondary,
+              color: colorScheme.onSurfaceVariant,
               height: 1.6,
             ),
           ),

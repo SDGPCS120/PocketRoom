@@ -31,16 +31,29 @@ class ColorPickerRow extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: c.color,
                   border: Border.all(
-                    color: isOn ? const Color(0xFFD29A5A) : const Color(0x33000000),
+                    color: isOn 
+                        ? Theme.of(context).colorScheme.primary 
+                        : Theme.of(context).colorScheme.outlineVariant,
                     width: isOn ? 3 : 1,
                   ),
                 ),
                 child: isOn
-                    ? const Icon(Icons.check, color: Colors.white)
+                    ? Icon(
+                        Icons.check, 
+                        color: c.color.computeLuminance() > 0.5 
+                            ? Colors.black 
+                            : Colors.white,
+                      )
                     : null,
               ),
               const SizedBox(height: 6),
-              Text(c.label, style: const TextStyle(fontSize: 12)),
+              Text(
+                c.label, 
+                style: TextStyle(
+                  fontSize: 12, 
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
             ],
           ),
         );

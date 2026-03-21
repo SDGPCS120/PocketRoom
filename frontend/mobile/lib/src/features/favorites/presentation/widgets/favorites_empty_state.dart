@@ -6,6 +6,7 @@ class FavoritesEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -13,14 +14,14 @@ class FavoritesEmptyState extends StatelessWidget {
           Icon(
             Icons.favorite_border_rounded,
             size: 80,
-            color: AppColors.primary.withValues(alpha: 0.3),
+            color: colorScheme.primary.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'No favorites yet',
             style: TextStyle(
               fontSize: 18,
-              color: AppColors.textSecondary,
+              color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -30,7 +31,7 @@ class FavoritesEmptyState extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.textSecondary.withValues(alpha: 0.7),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
           ),
         ],

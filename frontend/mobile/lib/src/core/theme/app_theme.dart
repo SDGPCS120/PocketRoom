@@ -47,60 +47,171 @@ class AppSizes {
   static const double buttonHeight = 52.0;
 }
 
+/// Custom theme extension for properties that don't fit into [ColorScheme].
+class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
+  final Color? cardBorder;
+  final Color? priceColor;
+  final Gradient? cardGradient;
+  final List<BoxShadow>? productCardShadow;
+  final Color? textRating;
+
+  const AppThemeExtension({
+    required this.cardBorder,
+    required this.priceColor,
+    required this.cardGradient,
+    required this.productCardShadow,
+    required this.textRating,
+  });
+
+  @override
+  ThemeExtension<AppThemeExtension> copyWith({
+    Color? cardBorder,
+    Color? priceColor,
+    Gradient? cardGradient,
+    List<BoxShadow>? productCardShadow,
+    Color? textRating,
+  }) {
+    return AppThemeExtension(
+      cardBorder: cardBorder ?? this.cardBorder,
+      priceColor: priceColor ?? this.priceColor,
+      cardGradient: cardGradient ?? this.cardGradient,
+      productCardShadow: productCardShadow ?? this.productCardShadow,
+      textRating: textRating ?? this.textRating,
+    );
+  }
+
+  @override
+  ThemeExtension<AppThemeExtension> lerp(
+    ThemeExtension<AppThemeExtension>? other,
+    double t,
+  ) {
+    if (other is! AppThemeExtension) {
+      return this;
+    }
+    return AppThemeExtension(
+      cardBorder: Color.lerp(cardBorder, other.cardBorder, t),
+      priceColor: Color.lerp(priceColor, other.priceColor, t),
+      cardGradient: Gradient.lerp(cardGradient, other.cardGradient, t),
+      productCardShadow: BoxShadow.lerpList(productCardShadow, other.productCardShadow, t),
+      textRating: Color.lerp(textRating, other.textRating, t),
+    );
+  }
+}
+
+class AppColorSchemes {
+  AppColorSchemes._();
+
+  static const ColorScheme light = ColorScheme(
+    brightness: Brightness.light,
+    primary: AppColors.primary,
+    onPrimary: Colors.white,
+    secondary: AppColors.secondary,
+    onSecondary: AppColors.primary,
+    surface: AppColors.background,
+    onSurface: AppColors.textPrimary,
+    onSurfaceVariant: AppColors.textSecondary,
+    error: Colors.redAccent,
+    onError: Colors.white,
+    outline: AppColors.cardBorder,
+  );
+
+  static const ColorScheme dark = ColorScheme(
+    brightness: Brightness.dark,
+    primary: AppColors.primary,
+    onPrimary: Colors.white,
+    secondary: Color(0xFF3D2C20),
+    onSecondary: Color(0xFFFFB385),
+    surface: Color(0xFF121212),
+    onSurface: Color(0xFFF5F5F5),
+    onSurfaceVariant: Color(0xFFB0B0B0),
+    error: Colors.redAccent,
+    onError: Colors.white,
+    outline: AppColors.cardBorder,
+  );
+}
+
 class AppTextStyles {
   AppTextStyles._();
   
-  static const TextStyle appBarTitle = TextStyle(
-    color: AppColors.textPrimary,
+  static TextStyle appBarTitle(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
     fontWeight: FontWeight.w700,
     fontSize: 20,
   );
   
-  static const TextStyle buttonText = TextStyle(
+  static TextStyle buttonText(BuildContext context) => TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
+    color: Theme.of(context).colorScheme.onPrimary,
   );
   
-  static const TextStyle sectionTitle = TextStyle(
-    color: AppColors.textPrimary,
+  static TextStyle sectionTitle(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
     fontSize: 15,
     fontWeight: FontWeight.w700,
   );
   
-  static const TextStyle profileName = TextStyle(
-    color: AppColors.textPrimary,
+  static TextStyle profileName(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
     fontSize: 22,
     fontWeight: FontWeight.w700,
   );
   
-  static const TextStyle profileEmail = TextStyle(
-    color: AppColors.textSecondary,
+  static TextStyle profileEmail(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurfaceVariant,
     fontSize: 13,
     fontWeight: FontWeight.w400,
   );
   
-  static const TextStyle profileEdit = TextStyle(
-    color: AppColors.secondary,
+  static TextStyle profileEdit(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.secondary,
     fontSize: 14,
     fontWeight: FontWeight.w600,
+  );
+
+  static TextStyle h1(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle b1(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle bodyLarge(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle bodyMedium(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Theme.of(context).colorScheme.onSurface,
   );
 }
 
 class AppButtonStyles {
   AppButtonStyles._();
   
-  static final ButtonStyle primaryButton = ElevatedButton.styleFrom(
-    backgroundColor: AppColors.primary,
-    foregroundColor: Colors.white,
+  static ButtonStyle primaryButton(BuildContext context) => ElevatedButton.styleFrom(
+    backgroundColor: Theme.of(context).colorScheme.primary,
+    foregroundColor: Theme.of(context).colorScheme.onPrimary,
     elevation: 0,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
     ),
   );
   
-  static final ButtonStyle outlinedButton = OutlinedButton.styleFrom(
-    foregroundColor: AppColors.textPrimary,
-    side: const BorderSide(color: AppColors.cardBorder),
+  static ButtonStyle outlinedButton(BuildContext context) => OutlinedButton.styleFrom(
+    foregroundColor: Theme.of(context).colorScheme.onSurface,
+    side: BorderSide(
+      color: Theme.of(context).extension<AppThemeExtension>()?.cardBorder ?? 
+             Theme.of(context).colorScheme.outline
+    ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
     ),
@@ -110,30 +221,60 @@ class AppButtonStyles {
 class AppTheme {
   AppTheme._();
 
+  static const lightExtension = AppThemeExtension(
+    cardBorder: AppColors.cardBorder,
+    priceColor: AppColors.primary,
+    cardGradient: AppColors.cardGradient,
+    productCardShadow: AppColors.productCardShadow,
+    textRating: AppColors.textRating,
+  );
+
   static final ThemeData lightTheme = ThemeData(
-    // Use the new AppColors class for consistency.
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: AppColors.background,
+    useMaterial3: true,
+    brightness: Brightness.light,
+    colorScheme: AppColorSchemes.light,
+    scaffoldBackgroundColor: AppColorSchemes.light.surface,
     textTheme: GoogleFonts.fredokaTextTheme(),
-    colorScheme: const ColorScheme.light(
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      surface: AppColors.background,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
     ),
+    extensions: const [lightExtension],
+  );
+
+  static const darkExtension = AppThemeExtension(
+    cardBorder: AppColors.cardBorder,
+    priceColor: Color(0xFFFFB385),
+    cardGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF2C2C2C), Color(0xFF131313)],
+    ),
+    productCardShadow: [
+      BoxShadow(
+        color: Colors.black54,
+        blurRadius: 10,
+        offset: Offset(0, 4),
+      ),
+    ],
+    textRating: Color(0xFFFFB74D),
   );
 
   static final ThemeData darkTheme = ThemeData(
+    useMaterial3: true,
     brightness: Brightness.dark,
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: const Color(0xFF1A1A1A),
+    colorScheme: AppColorSchemes.dark,
+    scaffoldBackgroundColor: AppColorSchemes.dark.surface,
     textTheme: GoogleFonts.fredokaTextTheme(
       ThemeData(brightness: Brightness.dark).textTheme,
     ),
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      surface: Color(0xFF1A1A1A),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
     ),
+    extensions: const [darkExtension],
   );
 }
 

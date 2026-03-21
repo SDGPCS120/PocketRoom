@@ -31,7 +31,7 @@ class SectionHeader extends ConsumerWidget {
                   title,
                   style: textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF2D2D2D),
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 22,
                   ),
                 ),
@@ -52,29 +52,29 @@ class SectionHeader extends ConsumerWidget {
             offset: const Offset(0, 45),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             elevation: 4,
             itemBuilder: (context) => [
-              _buildPopupOption(SortOrder.none, 'Relevance', Icons.reorder),
-              _buildPopupOption(
+              _buildPopupOption(context, SortOrder.none, 'Relevance', Icons.reorder),
+              _buildPopupOption(context, 
                   SortOrder.priceAsc, 'Price: Low to High', Icons.arrow_upward),
-              _buildPopupOption(SortOrder.priceDesc, 'Price: High to Low',
+              _buildPopupOption(context, SortOrder.priceDesc, 'Price: High to Low',
                   Icons.arrow_downward),
-              _buildPopupOption(
+              _buildPopupOption(context, 
                   SortOrder.ratingDesc, 'Rating: High to Low', Icons.star),
             ],
             child: Container(
               padding: const EdgeInsets.all(8),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFE5D3),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 currentSortOrder == SortOrder.none ? Icons.tune : Icons.sort,
                 size: 20,
                 color: currentSortOrder == SortOrder.none
-                    ? Colors.black
-                    : const Color(0xFFFF8A3D),
+                    ? Theme.of(context).colorScheme.onSurface
+                    : Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -84,16 +84,20 @@ class SectionHeader extends ConsumerWidget {
   }
 
   PopupMenuEntry<SortOrder> _buildPopupOption(
-      SortOrder order, String label, IconData icon) {
+      BuildContext context, SortOrder order, String label, IconData icon) {
     return PopupMenuItem<SortOrder>(
       value: order,
       child: Row(
         children: [
-          Icon(icon, size: 18, color: const Color(0xFFFF8A3D)),
+          Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 12),
           Text(
             label,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontSize: 14, 
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
         ],
       ),

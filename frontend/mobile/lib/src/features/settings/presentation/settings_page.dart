@@ -32,7 +32,7 @@ class SettingsPage extends ConsumerWidget {
     final notifier = ref.read(settingsProvider.notifier);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const SettingsAppBar(),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),

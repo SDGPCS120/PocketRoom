@@ -43,6 +43,7 @@ class ProductDetailsHeader extends StatelessWidget {
     final f = furniture;
     final hasOldPrice = f.oldPrice != null && !f.oldPrice!.isNaN;
     final hasDescription = f.description.isNotEmpty;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,10 +58,10 @@ class ProductDetailsHeader extends StatelessWidget {
                 children: [
                   Text(
                     f.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.w900,
-                      color: AppColors.textPrimary,
+                      color: colorScheme.onSurface,
                       height: 1.1,
                       letterSpacing: -0.5,
                     ),
@@ -74,9 +75,9 @@ class ProductDetailsHeader extends StatelessWidget {
                     ),
                     child: Text(
                       'Brand: ${f.brand.toUpperCase()}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.primary,
+                        color: colorScheme.primary,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.0,
                       ),
@@ -88,20 +89,20 @@ class ProductDetailsHeader extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.secondary,
+                color: colorScheme.secondary,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.star, color: AppColors.primary, size: 15),
+                  Icon(Icons.star, color: colorScheme.primary, size: 15),
                   const SizedBox(width: 4),
                   Text(
                     f.rating.isNaN ? '4.8' : f.rating.toString(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -115,9 +116,9 @@ class ProductDetailsHeader extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildTrustBadge(Icons.timer_rounded, 'ONLY 3 LEFT', Colors.red),
-              _buildTrustBadge(Icons.handyman_rounded, 'FREE INSTALL', Colors.blue),
-              _buildTrustBadge(Icons.verified_rounded, '1-YEAR WARRANTY', Colors.green),
+              _buildTrustBadge(Icons.timer_rounded, 'ONLY 3 LEFT', colorScheme.error),
+              _buildTrustBadge(Icons.handyman_rounded, 'FREE INSTALL', colorScheme.primary),
+              _buildTrustBadge(Icons.verified_rounded, '1-YEAR WARRANTY', const Color(0xFF4CAF50)),
             ],
           ),
         ),
@@ -129,10 +130,10 @@ class ProductDetailsHeader extends StatelessWidget {
           children: [
             Text(
               f.price.toLKR(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w900,
-                color: AppColors.textPrimary,
+                color: colorScheme.onSurface,
                 height: 1.0,
               ),
             ),
@@ -140,18 +141,18 @@ class ProductDetailsHeader extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 f.oldPrice!.toLKR(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
-                  color: AppColors.textSecondary,
+                  color: colorScheme.onSurfaceVariant,
                   decoration: TextDecoration.lineThrough,
-                  decorationColor: AppColors.textSecondary,
+                  decorationColor: colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(width: 12),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.1),
+                  color: colorScheme.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -159,7 +160,7 @@ class ProductDetailsHeader extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Colors.red[700],
+                    color: colorScheme.error,
                   ),
                 ),
               ),
@@ -171,7 +172,7 @@ class ProductDetailsHeader extends StatelessWidget {
           'or 3 interest-free installments of ${(f.price / 3).toLKR()}',
           style: TextStyle(
             fontSize: 12.5,
-            color: AppColors.textSecondary.withValues(alpha: 0.6),
+            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -180,9 +181,9 @@ class ProductDetailsHeader extends StatelessWidget {
         if (hasDescription) ...[
           Text(
             f.description,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13.5,
-              color: AppColors.textSecondary,
+              color: colorScheme.onSurfaceVariant,
               height: 1.55,
             ),
           ),

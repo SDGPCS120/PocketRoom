@@ -4,10 +4,11 @@ extension CurrencyFormatter on num {
     if (toDouble().isNaN) return 'N/A';
     
     // Using RegExp for thousands separator
-    return "LKR ${toStringAsFixed(0).replaceAllMapped(
+    final formatted = toStringAsFixed(0).replaceAllMapped(
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (m) => '${m[1]},',
-        )}";
+        );
+    return 'LKR ${formatted.replaceAll(',', ' ')}';
   }
 }
 

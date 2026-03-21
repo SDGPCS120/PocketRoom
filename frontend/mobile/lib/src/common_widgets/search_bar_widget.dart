@@ -35,7 +35,7 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFFFE5D3),
+          color: Theme.of(context).colorScheme.secondaryContainer,
           borderRadius: BorderRadius.circular(20),
         ),
         child: TextField(
@@ -45,8 +45,8 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
           },
           decoration: InputDecoration(
             hintText: 'Search',
-            hintStyle: TextStyle(color: Colors.grey[600]),
-            prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+            hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+            prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.onSurfaceVariant),
             suffixIcon: _buildSuffixActions(currentQuery),
             border: InputBorder.none,
             contentPadding:
@@ -63,7 +63,7 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
       children: [
         if (currentQuery.isNotEmpty)
           IconButton(
-            icon: const Icon(Icons.clear, color: Colors.grey),
+            icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.onSurfaceVariant),
             onPressed: () {
               _controller.clear();
               ref.read(searchQueryProvider.notifier).state = '';
@@ -80,8 +80,8 @@ class _SearchBarWidgetState extends ConsumerState<SearchBarWidget> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFFD84B3E),
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                foregroundColor: Theme.of(context).colorScheme.primary,
                 elevation: 0,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 shape: RoundedRectangleBorder(

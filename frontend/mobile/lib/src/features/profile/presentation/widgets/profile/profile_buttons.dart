@@ -18,8 +18,8 @@ class ProfilePrimaryButton extends StatelessWidget {
       height: AppSizes.buttonHeight,
       child: ElevatedButton(
         onPressed: onPressed,
-        style: AppButtonStyles.primaryButton,
-        child: Text(label, style: AppTextStyles.buttonText),
+        style: AppButtonStyles.primaryButton(context),
+        child: Text(label, style: AppTextStyles.buttonText(context)),
       ),
     );
   }
@@ -42,8 +42,8 @@ class ProfileOutlinedButton extends StatelessWidget {
       height: AppSizes.buttonHeight,
       child: OutlinedButton(
         onPressed: onPressed,
-        style: AppButtonStyles.outlinedButton,
-        child: Text(label, style: AppTextStyles.buttonText),
+        style: AppButtonStyles.outlinedButton(context),
+        child: Text(label, style: AppTextStyles.buttonText(context)),
       ),
     );
   }

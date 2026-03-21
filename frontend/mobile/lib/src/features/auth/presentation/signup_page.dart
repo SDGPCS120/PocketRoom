@@ -8,12 +8,13 @@ class SignupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
-        leading: const BackButton(color: AppColors.textPrimary),
+        leading: BackButton(color: colorScheme.onSurface),
       ),
       body: ResponsiveLayout.auth(
         content: const SignupForm(),

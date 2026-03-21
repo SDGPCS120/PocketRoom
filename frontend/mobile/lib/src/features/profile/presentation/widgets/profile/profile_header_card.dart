@@ -15,6 +15,8 @@ class ProfileHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -28,7 +30,7 @@ class ProfileHeaderCard extends StatelessWidget {
             right: 16,
           ),
           decoration: BoxDecoration(
-            color: AppColors.primary,
+            color: colorScheme.primary,
             borderRadius: BorderRadius.circular(28),
           ),
           child: Column(
@@ -36,14 +38,14 @@ class ProfileHeaderCard extends StatelessWidget {
               Container(
                 width: 100,
                 height: 100,
-                decoration: const BoxDecoration(
-                  color: AppColors.secondary,
+                decoration: BoxDecoration(
+                  color: colorScheme.onPrimary.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.person_outline_rounded,
                   size: 56,
-                  color: AppColors.textPrimary,
+                  color: colorScheme.onPrimary,
                 ),
               ),
               const SizedBox(height: 14),
@@ -51,20 +53,20 @@ class ProfileHeaderCard extends StatelessWidget {
                 onTap: onEditProfile,
                 child: Text(
                   name,
-                  style: AppTextStyles.profileName,
+                  style: AppTextStyles.profileName(context).copyWith(color: colorScheme.onPrimary),
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 email.isEmpty ? 'No email on file' : email,
-                style: AppTextStyles.profileEmail,
+                style: AppTextStyles.profileEmail(context).copyWith(color: colorScheme.onPrimary.withValues(alpha: 0.8)),
               ),
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: onEditProfile,
-                child: const Text(
+                child: Text(
                   'Edit Profile',
-                  style: AppTextStyles.profileEdit,
+                  style: AppTextStyles.profileEdit(context).copyWith(color: colorScheme.onPrimary),
                 ),
               ),
             ],
@@ -75,10 +77,10 @@ class ProfileHeaderCard extends StatelessWidget {
           right: 28,
           child: Container(
             padding: const EdgeInsets.all(6),
-            child: const Icon(
+            child: Icon(
               Icons.photo_camera_outlined,
               size: 26,
-              color: AppColors.textPrimary,
+              color: colorScheme.onPrimary,
             ),
           ),
         ),

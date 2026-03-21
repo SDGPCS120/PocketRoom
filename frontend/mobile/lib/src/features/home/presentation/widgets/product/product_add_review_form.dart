@@ -40,86 +40,95 @@ class _ProductAddReviewFormState extends ConsumerState<ProductAddReviewForm> {
     setState(() => _newRating = 5);
   }
 
-  InputDecoration _inputDecoration(String hint) {
+  InputDecoration _inputDecoration(String hint, ColorScheme colorScheme) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(
-        color: AppColors.textSecondary,
+      hintStyle: TextStyle(
+        color: colorScheme.onSurfaceVariant,
         fontSize: 13.5,
       ),
       filled: true,
-      fillColor: AppColors.background,
+      fillColor: colorScheme.surface,
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.secondary, width: 1),
+        borderSide: BorderSide(color: colorScheme.outlineVariant, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.secondary, width: 1),
+        borderSide: BorderSide(color: colorScheme.outlineVariant, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+        borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.red, width: 1),
+        borderSide: BorderSide(color: colorScheme.error, width: 1),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.red, width: 1.5),
+        borderSide: BorderSide(color: colorScheme.error, width: 1.5),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.secondary, width: 1.2),
-        boxShadow: AppColors.productCardShadow,
+        border: Border.all(color: colorScheme.outlineVariant, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withValues(alpha: 0.08),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Form(
         key: _reviewFormKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Add a Review',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _nameController,
               textCapitalization: TextCapitalization.words,
-              decoration: _inputDecoration('Your name'),
+              decoration: _inputDecoration('Your name', colorScheme),
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+              style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _reviewController,
               maxLines: 3,
               textCapitalization: TextCapitalization.sentences,
-              decoration: _inputDecoration('Write your review…'),
+              decoration: _inputDecoration('Write your review…', colorScheme),
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? 'Review cannot be empty' : null,
+              style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Your rating',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 6),
@@ -132,7 +141,7 @@ class _ProductAddReviewFormState extends ConsumerState<ProductAddReviewForm> {
                     padding: const EdgeInsets.only(right: 4),
                     child: Icon(
                       starIndex <= _newRating ? Icons.star : Icons.star_border,
-                      color: AppColors.primary,
+                      color: colorScheme.primary,
                       size: 26,
                     ),
                   ),
@@ -146,8 +155,8 @@ class _ProductAddReviewFormState extends ConsumerState<ProductAddReviewForm> {
               child: ElevatedButton(
                 onPressed: _submitReview,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

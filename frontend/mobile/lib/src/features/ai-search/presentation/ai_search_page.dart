@@ -12,24 +12,25 @@ class AiSearchPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(aiSearchStateProvider);
     final isInitial = state is AiSearchInitial;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Color(0xFF2D2D2D)),
+          icon: Icon(Icons.close, color: colorScheme.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Row(
           children: [
-            const Icon(Icons.auto_awesome, color: Color(0xFF2D2D2D), size: 20),
+            Icon(Icons.auto_awesome, color: colorScheme.onSurface, size: 20),
             const SizedBox(width: 8),
             Text(
               'AI Interior Assistant',
               style: TextStyle(
-                color: const Color(0xFF2D2D2D),
+                color: colorScheme.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
@@ -57,6 +58,7 @@ class AiSearchPage extends ConsumerWidget {
   }
 
   Widget _buildWelcomeState(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Padding(
@@ -77,13 +79,13 @@ class AiSearchPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'How can I help you design\nyour room today?',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2D2D2D),
+                color: colorScheme.onSurface,
                 height: 1.2,
               ),
             ),
@@ -93,18 +95,19 @@ class AiSearchPage extends ConsumerWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey[600],
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 40),
-            _buildSuggestions(ref),
+            _buildSuggestions(context, ref),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSuggestions(WidgetRef ref) {
+  Widget _buildSuggestions(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final suggestions = [
       'Modern oak dining table',
       'Blue ergonomic office chair',
@@ -120,9 +123,13 @@ class AiSearchPage extends ConsumerWidget {
         return ActionChip(
           label: Text(
             text,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontSize: 13, 
+              fontWeight: FontWeight.w500,
+              color: colorScheme.onSurface,
+            ),
           ),
-          backgroundColor: const Color(0xFFF5F5F5),
+          backgroundColor: colorScheme.surfaceContainerHighest,
           side: BorderSide.none,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),

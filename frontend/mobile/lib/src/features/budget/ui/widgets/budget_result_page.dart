@@ -15,6 +15,7 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final bool ok = widget.result['ok'] == true;
     final reason = widget.result['reason'];
     final totalBudget = widget.result['totalBudget'] as num? ?? 0;
@@ -34,10 +35,12 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
     final items = [...requiredBundle, ...optionalBundle];
 
     return Scaffold(
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        title: const Text("Budget Result"),
+        backgroundColor: colorScheme.surface,
+        title: Text("Budget Result", style: TextStyle(color: colorScheme.onSurface)),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -51,7 +54,10 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Bundle ${_currentIndex + 1} of ${bundles.length}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(
+                      "Bundle ${_currentIndex + 1} of ${bundles.length}", 
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: colorScheme.onSurface),
+                    ),
                     ElevatedButton.icon(
                       onPressed: () {
                         setState(() {
@@ -61,8 +67,8 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                       icon: const Icon(Icons.skip_next),
                       label: const Text("Next Bundle"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFE39A3B),
-                        foregroundColor: Colors.white,
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
                       ),
                     )
                   ],
@@ -78,9 +84,9 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
               ),
               const SizedBox(height: 16),
 
-              const Text(
+              Text(
                 "Bundle Items",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
               ),
               const SizedBox(height: 10),
 
@@ -89,7 +95,7 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                     ? Center(
                         child: Text(
                           ok ? "No items returned." : (reason ?? "No bundle could be generated."),
-                          style: const TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 16, color: colorScheme.onSurfaceVariant),
                           textAlign: TextAlign.center,
                         ),
                       )
@@ -131,27 +137,32 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final bgColor = ok ? colorScheme.primaryContainer : colorScheme.errorContainer;
+    final textColor = ok ? colorScheme.onPrimaryContainer : colorScheme.onErrorContainer;
+    final borderColor = ok ? colorScheme.primary.withValues(alpha: 0.3) : colorScheme.error.withValues(alpha: 0.3);
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: ok ? const Color(0xFFE9F7EF) : const Color(0xFFFFF3F3),
+        color: bgColor,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: ok ? Colors.green.shade200 : Colors.red.shade200),
+        border: Border.all(color: borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             ok ? "Bundle generated ✅" : "Couldn’t generate bundle ❌",
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
           ),
           const SizedBox(height: 8),
-          Text("Total budget: ${totalBudget.toLKR()}"),
-          Text("Total cost: ${totalCost.toLKR()}"),
-          Text("Remaining: ${remaining.toLKR()}"),
+          Text("Total budget: ${totalBudget.toLKR()}", style: TextStyle(color: textColor)),
+          Text("Total cost: ${totalCost.toLKR()}", style: TextStyle(color: textColor)),
+          Text("Remaining: ${remaining.toLKR()}", style: TextStyle(color: textColor)),
           if (!ok && reason != null) ...[
             const SizedBox(height: 8),
-            Text("Reason: $reason", style: const TextStyle(fontWeight: FontWeight.w600)),
+            Text("Reason: $reason", style: TextStyle(fontWeight: FontWeight.w600, color: textColor)),
           ],
         ],
       ),
@@ -166,6 +177,7 @@ class _ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final name = product['name'] ?? "Unknown";
     final price = product['price'] as num? ?? 0;
     final category = product['category'] ?? "-";
@@ -176,7 +188,7 @@ class _ProductCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF6E2CF),
+        color: colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
@@ -192,26 +204,38 @@ class _ProductCard extends StatelessWidget {
             width: 92,
             height: 72,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.6),
+              color: colorScheme.surface.withValues(alpha: 0.6),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(Icons.chair_alt, size: 34),
+            child: Icon(Icons.chair_alt, size: 34, color: colorScheme.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(
+                  name, 
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: colorScheme.onSecondaryContainer),
+                ),
                 const SizedBox(height: 4),
-                Text(price.toLKR(), style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text("Brand: $brand", style: const TextStyle(color: Colors.black54)),
+                Text(
+                  price.toLKR(), 
+                  style: TextStyle(fontWeight: FontWeight.w600, color: colorScheme.primary),
+                ),
+                Text(
+                  "Brand: $brand", 
+                  style: TextStyle(color: colorScheme.onSecondaryContainer.withValues(alpha: 0.7)),
+                ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
                     const Icon(Icons.star, size: 16, color: Colors.orange),
                     const SizedBox(width: 4),
-                    Text("$rating • $category"),
+                    Text(
+                      "$rating • $category",
+                      style: TextStyle(color: colorScheme.onSecondaryContainer),
+                    ),
                   ],
                 )
               ],

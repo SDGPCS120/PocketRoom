@@ -7,8 +7,9 @@ class EditProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return AppBar(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
       elevation: 0,
       scrolledUnderElevation: 0,
       leadingWidth: 64, // Provide enough width for margin + button
@@ -18,11 +19,11 @@ class EditProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
           height: 40,
           margin: const EdgeInsets.only(left: 12),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colorScheme.secondaryContainer,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
+                color: colorScheme.shadow.withValues(alpha: 0.06),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -34,15 +35,15 @@ class EditProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
               padding: EdgeInsets.only(right: 2), // Nudge the icon slightly left
               child: Icon(Icons.arrow_back_ios_new_rounded, size: 18),
             ),
-            color: AppColors.textPrimary,
+            color: colorScheme.onSurface,
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
       ),
-      title: const Text(
+      title: Text(
         'Edit Profile',
         style: TextStyle(
-          color: AppColors.textPrimary,
+          color: colorScheme.onSurface,
           fontWeight: FontWeight.w700,
           fontSize: 20,
         ),
@@ -52,9 +53,9 @@ class EditProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.only(right: 12),
           child: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.settings_outlined,
-              color: AppColors.textPrimary,
+              color: colorScheme.onSurface,
               size: 24,
             ),
             onPressed: () {

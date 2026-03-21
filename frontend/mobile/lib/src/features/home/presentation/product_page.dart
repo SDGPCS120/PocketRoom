@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_theme.dart';
 import '../data/models/furniture_model.dart';
 import 'widgets/product/product_image_carousel.dart';
 import 'widgets/product/product_details_header.dart';
@@ -15,8 +14,9 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -27,9 +27,9 @@ class ProductPage extends StatelessWidget {
                 Transform.translate(
                   offset: const Offset(0, -32),
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.vertical(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(32),
                       ),
                     ),
@@ -60,9 +60,9 @@ class ProductPage extends StatelessWidget {
             top: MediaQuery.of(context).padding.top + 10,
             left: 20,
             child: CircleAvatar(
-              backgroundColor: Colors.white.withValues(alpha: 0.9),
+              backgroundColor: colorScheme.surface.withValues(alpha: 0.9),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+                icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
                 onPressed: () => Navigator.pop(context),
               ),
             ),

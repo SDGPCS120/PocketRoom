@@ -25,6 +25,7 @@ class _ProductReviewsSectionState extends ConsumerState<ProductReviewsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final reviews = ref.watch(reviewsProvider)[widget.productId] ??
         ref.read(reviewsProvider.notifier).getInitialReviews(widget.productId);
 
@@ -33,21 +34,21 @@ class _ProductReviewsSectionState extends ConsumerState<ProductReviewsSection> {
       children: [
         Text(
           'Reviews (${reviews.length})',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w700,
-            color: AppColors.textPrimary,
+            color: colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 12),
         if (reviews.isEmpty)
-          const Padding(
-            padding: EdgeInsets.only(bottom: 16),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
             child: Text(
               'No reviews yet. Be the first to review!',
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textSecondary,
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
           )
@@ -77,6 +78,7 @@ class _ReviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -86,12 +88,12 @@ class _ReviewTile extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.secondary,
+              color: colorScheme.secondaryContainer.withValues(alpha: 0.5),
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.cardBorder, width: 1),
+              border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.5), width: 1),
             ),
-            child: const Icon(Icons.person,
-                size: 22, color: AppColors.textSecondary),
+            child: Icon(Icons.person,
+                size: 22, color: colorScheme.onSurfaceVariant),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -103,17 +105,17 @@ class _ReviewTile extends StatelessWidget {
                   children: [
                     Text(
                       name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
-                      ),
+                        color: colorScheme.onSurface,
+                       ),
                     ),
                     Row(
                       children: List.generate(
                         rating.clamp(0, 5),
-                        (_) => const Icon(Icons.star,
-                            color: AppColors.primary, size: 12),
+                        (_) => Icon(Icons.star,
+                            color: colorScheme.primary, size: 12),
                       ),
                     ),
                   ],
@@ -121,9 +123,9 @@ class _ReviewTile extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   review,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
-                    color: AppColors.textSecondary,
+                    color: colorScheme.onSurfaceVariant,
                     height: 1.45,
                   ),
                 ),

@@ -161,7 +161,7 @@ class ProfilePage extends ConsumerWidget {
     );
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: const ProfileAppBar(),
       body: ResponsiveLayout(
         mobile: content,

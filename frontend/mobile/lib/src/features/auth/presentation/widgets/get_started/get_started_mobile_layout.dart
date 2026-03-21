@@ -19,7 +19,7 @@ class GetStartedMobileLayout extends StatelessWidget {
           right: 0,
           height: size.height * 0.6,
           child: Container(
-            color: const Color(0xFFFFF8DE),
+            color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.1),
             child: Image.asset(
               'assets/get_started_hero.png',
               fit: BoxFit.cover,
@@ -34,13 +34,13 @@ class GetStartedMobileLayout extends StatelessWidget {
             children: [
               Image.asset('assets/logo.png', width: 250),
               Transform.translate(
-                offset: const Offset(0, 0),
+                offset: Offset(0, 0),
                 child: Text(
                   'A CS-120 project',
-                  style: textTheme.titleMedium?.copyWith(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
                 ),
               ),
             ],
@@ -53,11 +53,11 @@ class GetStartedMobileLayout extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(24, 24, 24, 55),
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: AppColors.secondary,
+              color: Theme.of(context).colorScheme.secondary,
               borderRadius: BorderRadius.circular(32),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
+                  color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.2),
                   blurRadius: 20,
                   offset: const Offset(0, 4),
                 ),
@@ -70,14 +70,14 @@ class GetStartedMobileLayout extends StatelessWidget {
                   "Let's get started",
                   style: textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    style: AppButtonStyles.primaryButton,
+                    style: AppButtonStyles.primaryButton(context),
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -89,21 +89,21 @@ class GetStartedMobileLayout extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
-                    style: AppButtonStyles.outlinedButton,
+                    style: AppButtonStyles.outlinedButton(context),
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const SignupPage()),
                     ),
-                    child: const Text('Create account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                    child: Text('Create account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {},
-                  child: const Text(
+                  child: Text(
                     'Get started as seller',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                       decoration: TextDecoration.underline,
                       fontSize: 14,
                     ),

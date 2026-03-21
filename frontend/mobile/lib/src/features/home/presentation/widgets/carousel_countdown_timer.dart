@@ -35,6 +35,7 @@ class _CarouselCountdownTimerState extends State<CarouselCountdownTimer> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     if (_timeLeft.isNegative) {
       return const SizedBox.shrink();
     }
@@ -47,21 +48,21 @@ class _CarouselCountdownTimerState extends State<CarouselCountdownTimer> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.1),
+        color: colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 0.5),
+        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.3), width: 0.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.timer_outlined, size: 14, color: AppColors.primary),
+          Icon(Icons.timer_outlined, size: 14, color: colorScheme.primary),
           const SizedBox(width: 6),
           Text(
             'Ends in: $hours:$minutes:$seconds',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.primary,
+              color: colorScheme.primary,
             ),
           ),
         ],

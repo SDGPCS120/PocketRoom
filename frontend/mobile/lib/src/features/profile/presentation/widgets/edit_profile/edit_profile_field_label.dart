@@ -9,8 +9,8 @@ class EditProfileFieldLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-        color: AppColors.textPrimary,
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.onSurface,
         fontSize: 15,
         fontWeight: FontWeight.w700,
       ),

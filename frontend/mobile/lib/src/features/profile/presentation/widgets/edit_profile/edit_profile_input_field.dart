@@ -17,24 +17,25 @@ class EditProfileInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
       ),
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          color: AppColors.textPrimary,
+          color: colorScheme.onSurface,
         ),
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, size: 20, color: AppColors.textSecondary),
+          prefixIcon: Icon(icon, size: 20, color: colorScheme.onSurfaceVariant),
           hintText: hint,
-          hintStyle: const TextStyle(
-            color: AppColors.textSecondary,
+          hintStyle: TextStyle(
+            color: colorScheme.onSurfaceVariant,
             fontSize: 14,
             fontWeight: FontWeight.w400,
           ),

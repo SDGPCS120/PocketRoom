@@ -14,7 +14,7 @@ class SettingsLanguagePicker extends StatelessWidget {
   static void show(BuildContext context, String currentLanguage) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -24,6 +24,7 @@ class SettingsLanguagePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     const languages = ['English', 'Sinhala', 'Tamil'];
     
     return SafeArea(
@@ -33,10 +34,10 @@ class SettingsLanguagePicker extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Language',
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: colorScheme.onSurface,
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
               ),
@@ -53,11 +54,11 @@ class SettingsLanguagePicker extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                        color: selected ? AppColors.primary : AppColors.textPrimary,
+                        color: selected ? colorScheme.primary : colorScheme.onSurface,
                       ),
                     ),
                     trailing: selected
-                        ? const Icon(Icons.check_rounded, color: AppColors.primary, size: 20)
+                        ? Icon(Icons.check_rounded, color: colorScheme.primary, size: 20)
                         : null,
                     onTap: () {
                       ref.read(settingsProvider.notifier).setLanguage(lang);

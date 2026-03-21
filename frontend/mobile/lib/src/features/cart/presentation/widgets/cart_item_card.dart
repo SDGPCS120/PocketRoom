@@ -20,20 +20,21 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: AppColors.cardBorder.withValues(alpha: 0.3),
-            width: 0.6,
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+            width: 0.8,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.02),
+              color: colorScheme.shadow.withValues(alpha: 0.04),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -47,7 +48,7 @@ class CartItemCard extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: AppColors.secondary.withValues(alpha: 0.3),
+                color: colorScheme.secondaryContainer.withValues(alpha: 0.5),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
@@ -65,19 +66,19 @@ class CartItemCard extends StatelessWidget {
                 children: [
                   Text(
                     item.furniture.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
-                      color: AppColors.textPrimary,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     item.furniture.price.toLKR(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.priceColor,
-                      fontWeight: FontWeight.w600,
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ],
@@ -98,10 +99,10 @@ class CartItemCard extends StatelessWidget {
                       ),
                       child: Text(
                         item.quantity.toString(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 16,
-                          color: AppColors.textPrimary,
+                          color: colorScheme.onSurface,
                         ),
                       ),
                     ),
@@ -114,9 +115,9 @@ class CartItemCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: onRemove,
-                  child: const Icon(
+                  child: Icon(
                     Icons.delete_outline,
-                    color: Colors.red,
+                    color: colorScheme.error,
                     size: 20,
                   ),
                 ),

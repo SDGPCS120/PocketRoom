@@ -15,9 +15,10 @@ class VendorPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vendorAsync = ref.watch(vendorByNameProvider(vendorName));
     final productsAsync = ref.watch(vendorFurnitureProvider(vendorName));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
       body: CustomScrollView(
         slivers: [
           // ── App Bar ────────────────────────────────────────────────────────
@@ -26,13 +27,13 @@ class VendorPage extends ConsumerWidget {
             loading: () => SliverAppBar(
               expandedHeight: 200,
               pinned: true,
-              backgroundColor: AppColors.primary,
+              backgroundColor: colorScheme.primary,
               flexibleSpace: FlexibleSpaceBar(title: Text(vendorName)),
             ),
             error: (_, __) => SliverAppBar(
               expandedHeight: 200,
               pinned: true,
-              backgroundColor: AppColors.primary,
+              backgroundColor: colorScheme.primary,
               flexibleSpace: FlexibleSpaceBar(title: Text(vendorName)),
             ),
           ),
