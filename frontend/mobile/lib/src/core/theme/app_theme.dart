@@ -126,7 +126,7 @@ class AppColorSchemes {
     onSurfaceVariant: Color(0xFFB0B0B0),
     error: Colors.redAccent,
     onError: Colors.white,
-    outline: Color(0xFF424242),
+    outline: AppColors.cardBorder,
   );
 }
 
@@ -258,7 +258,7 @@ class AppTheme {
     ),
     extensions: const [
       AppThemeExtension(
-        cardBorder: Color(0xFF424242),
+        cardBorder: AppColors.cardBorder,
         priceColor: Color(0xFFFFB385),
         cardGradient: LinearGradient(
           begin: Alignment.topLeft,
