@@ -42,7 +42,6 @@ ios/Flutter/app.flx
 
 # Generated files
 app.*.symbols
-<<<<<<< HEAD
 
 # Unity project
 unity/
@@ -51,5 +50,10 @@ unity/
 android/build/
 android/unityLibrary/
 android/kotlin_unity.log
-=======
->>>>>>> ai-search
+
+# Firebase cache
+.firebase/
+
+# Flutter plugins gradle cache
+plugins/flutter_unity_widget_2/android/.gradle/
+plugins/flutter_unity_widget_2/example/android/.gradle/
