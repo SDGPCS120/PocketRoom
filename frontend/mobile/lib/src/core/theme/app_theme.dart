@@ -194,29 +194,59 @@ class AppTheme {
   AppTheme._();
 
   static final ThemeData lightTheme = ThemeData(
-    // Use the new AppColors class for consistency.
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: AppColors.background,
+    useMaterial3: true,
+    brightness: Brightness.light,
+    colorScheme: AppColorSchemes.light,
+    scaffoldBackgroundColor: AppColorSchemes.light.surface,
     textTheme: GoogleFonts.fredokaTextTheme(),
-    colorScheme: const ColorScheme.light(
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      surface: AppColors.background,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
     ),
+    extensions: const [
+      AppThemeExtension(
+        cardBorder: AppColors.cardBorder,
+        priceColor: AppColors.primary,
+        cardGradient: AppColors.cardGradient,
+        productCardShadow: AppColors.productCardShadow,
+        textRating: AppColors.textRating,
+      ),
+    ],
   );
 
   static final ThemeData darkTheme = ThemeData(
+    useMaterial3: true,
     brightness: Brightness.dark,
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: const Color(0xFF1A1A1A),
+    colorScheme: AppColorSchemes.dark,
+    scaffoldBackgroundColor: AppColorSchemes.dark.surface,
     textTheme: GoogleFonts.fredokaTextTheme(
       ThemeData(brightness: Brightness.dark).textTheme,
     ),
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      surface: Color(0xFF1A1A1A),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
     ),
+    extensions: const [
+      AppThemeExtension(
+        cardBorder: Color(0xFF424242),
+        priceColor: Color(0xFFFFB385),
+        cardGradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF2C2C2C), Color(0xFF131313)],
+        ),
+        productCardShadow: [
+          BoxShadow(
+            color: Colors.black54,
+            blurRadius: 10,
+            offset: Offset(0, 4),
+          ),
+        ],
+        textRating: Color(0xFFFFB74D),
+      ),
+    ],
   );
 }
 
