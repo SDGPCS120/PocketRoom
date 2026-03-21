@@ -3,7 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import api, { toUserFacingApiError } from '../lib/api';
+import logoUrl from '../assets/logo.png';
 import './SellerRegister.css';
+
+function CheckIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline' }}><polyline points="20 6 9 17 4 12"/></svg>; }
+function BagIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>; }
+function ChartIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>; }
+function RocketIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>; }
 
 interface FormData {
   firstName: string;
@@ -157,7 +163,7 @@ const SellerRegister: React.FC = () => {
     return (
       <div className="register-page">
         <div className="register-card success-card">
-          <div className="success-icon">✓</div>
+          <div className="success-icon"><CheckIcon /></div>
           <h2>Registration Successful!</h2>
           <p>Your seller account has been created. Redirecting to dashboard…</p>
         </div>
@@ -170,27 +176,29 @@ const SellerRegister: React.FC = () => {
       {/* Left Panel */}
       <div className="register-left">
         <div className="register-brand">
-          <div className="brand-logo">PR</div>
-          <h1>PocketRoom</h1>
-          <p>Seller Portal</p>
+          <img src={logoUrl} alt="PocketRoom" className="register-logo-img" />
+          <div>
+            <h1>PocketRoom</h1>
+            <p>Seller Portal</p>
+          </div>
         </div>
         <div className="register-features">
           <div className="feature-item">
-            <span className="feature-icon">🛍️</span>
+            <span className="feature-icon"><BagIcon /></span>
             <div>
               <strong>List Your Products</strong>
               <p>Reach thousands of customers looking for unique room decor.</p>
             </div>
           </div>
           <div className="feature-item">
-            <span className="feature-icon">📊</span>
+            <span className="feature-icon"><ChartIcon /></span>
             <div>
               <strong>Track Analytics</strong>
               <p>Monitor your sales, views, and revenue in real time.</p>
             </div>
           </div>
           <div className="feature-item">
-            <span className="feature-icon">🚀</span>
+            <span className="feature-icon"><RocketIcon /></span>
             <div>
               <strong>Grow Your Business</strong>
               <p>Use AR-powered previews to boost buyer confidence.</p>

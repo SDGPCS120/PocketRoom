@@ -41,6 +41,7 @@ export class OrderService {
       estimatedDelivery: dto.estimatedDelivery ?? null,
       shippedAt: null,
       deliveredAt: null,
+      storeId: dto.storeId ?? null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -56,6 +57,15 @@ export class OrderService {
   async getUserOrders(userId: string) {
     const snapshot = await this.collection()
       .where('customerId', '==', userId)
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    return snapshot.docs.map((doc) => doc.data());
+  }
+
+  async getOrdersByStore(storeId: string) {
+    const snapshot = await this.collection()
+      .where('storeId', '==', storeId)
       .orderBy('createdAt', 'desc')
       .get();
 

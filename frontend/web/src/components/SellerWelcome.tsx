@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logoUrl from '../assets/logo.png';
 import './SellerWelcome.css';
 
 const SellerWelcome: React.FC = () => {
@@ -9,7 +10,7 @@ const SellerWelcome: React.FC = () => {
 
       <header className="welcome-header">
         <div className="welcome-logo">
-          <span className="welcome-logo-mark">PR</span>
+          <img src={logoUrl} alt="PocketRoom" className="welcome-logo-img" />
           <div className="welcome-logo-text">
             <span className="welcome-logo-title">PocketRoom</span>
             <span className="welcome-logo-subtitle">Seller Portal</span>
@@ -48,7 +49,7 @@ const SellerWelcome: React.FC = () => {
             </div>
 
             <div className="welcome-meta">
-              <span>⚡ No setup fees</span>
+              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',marginRight:'4px',verticalAlign:'text-bottom'}}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> No setup fees</span>
               <span>•</span>
               <span>Real-time analytics</span>
               <span>•</span>

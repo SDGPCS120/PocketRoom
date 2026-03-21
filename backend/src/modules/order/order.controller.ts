@@ -41,6 +41,11 @@ export class OrderController {
     return this.orderService.getUserOrders(userId);
   }
 
+  @Get('store/:storeId')
+  getOrdersByStore(@Param('storeId') storeId: string) {
+    return this.orderService.getOrdersByStore(storeId);
+  }
+
   @Get()
   getAllOrders() {
     return this.orderService.getAllOrders();

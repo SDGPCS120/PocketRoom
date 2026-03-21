@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../lib/firebase';
 import api, { getApiBaseURL } from '../lib/api';
 import { useSellerSession } from '../auth/sellerSession';
+import AppShell from './AppShell';
 import './SellerAddProduct.css';
+
+function TrashIcon() { return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>; }
 
 const CATEGORIES = ['Sofa', 'Chair', 'Table', 'Bed', 'Storage', 'Decor'];
 
@@ -20,7 +25,7 @@ const SellerAddProduct: React.FC = () => {
     depth: '',
   });
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [generate3D, setGenerate3D] = useState(false);
   const [loadingStep, setLoadingStep] = useState<'idle' | 'saving' | 'generating'>('idle');
   const [error, setError] = useState('');
@@ -61,16 +66,25 @@ const SellerAddProduct: React.FC = () => {
       return;
     }
 
-    if (generate3D && !imageFile) {
-      setError('Please upload a display image to generate the 3D model, or uncheck "Generate 3D Model now".');
+    if (generate3D && imageFiles.length === 0) {
+      setError('Please upload at least one display image to generate the 3D model, or uncheck "Generate 3D Model now".');
       return;
     }
 
-    // ── Step 1: Create the product ─────────────────────────────────────────────
     setLoadingStep('saving');
     let productId: string;
 
     try {
+      // ── Step 1: Upload images to Firebase Storage ──────────────────────────
+      const uploadedUrls: string[] = [];
+      for (const file of imageFiles) {
+        const storageRef = ref(storage, `products/${storeId}/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+        uploadedUrls.push(downloadUrl);
+      }
+
+      // ── Step 2: Create the product ─────────────────────────────────────────────
       const dimensions: Record<string, number> = {};
       if (formData.width) dimensions.width = Number(formData.width);
       if (formData.height) dimensions.height = Number(formData.height);
@@ -82,6 +96,10 @@ const SellerAddProduct: React.FC = () => {
         price: Number(formData.price),
         furnitureType: formData.category,
       };
+
+      if (uploadedUrls.length > 0) {
+        body.imageUrl = uploadedUrls;
+      }
 
       if (Object.keys(dimensions).length > 0) {
         body.dimensions = dimensions;
@@ -97,12 +115,12 @@ const SellerAddProduct: React.FC = () => {
       return;
     }
 
-    // ── Step 2 (optional): Trigger 3D generation ───────────────────────────────
-    if (generate3D && imageFile) {
+    // ── Step 3 (optional): Trigger 3D generation ───────────────────────────────
+    if (generate3D && imageFiles.length > 0) {
       setLoadingStep('generating');
       try {
         const multipart = new FormData();
-        multipart.append('image', imageFile);
+        multipart.append('image', imageFiles[0]); // Use the first image for generation
         multipart.append('x', formData.width || '10');
         multipart.append('y', formData.height || '10');
         multipart.append('z', formData.depth || '10');
@@ -138,14 +156,11 @@ const SellerAddProduct: React.FC = () => {
         : 'Publish Product';
 
   return (
-    <div className="add-product-container">
-      <div className="add-product-header">
-        <button className="back-button" onClick={() => navigate('/dashboard')}>
-          &larr; Back to Dashboard
-        </button>
-        <h1>Add New Product</h1>
-        <p>List a new furniture item with AR visualization capabilities.</p>
-      </div>
+    <AppShell pageTitle="Add New Product">
+      <div className="add-product-container">
+        <div className="add-product-header">
+          <p>List a new furniture item with AR visualization capabilities.</p>
+        </div>
 
       <div className="form-card">
         {error && <div className="form-error">{error}</div>}
@@ -237,21 +252,36 @@ const SellerAddProduct: React.FC = () => {
 
             <div className="file-upload-group">
               <label className="file-label">
-                <span className="file-title">Display Image {generate3D && '*'}</span>
-                <span className="file-desc">High quality image for the catalog (JPG, PNG)</span>
+                <span className="file-title">Display Images {generate3D && '*'}</span>
+                <span className="file-desc">High quality images for the catalog (JPG, PNG). The first image will be used for AR generation.</span>
                 <input
                   type="file"
+                  multiple
                   accept="image/jpeg,image/jpg,image/png"
                   onChange={(e) => {
                     if (e.target.files && e.target.files.length > 0) {
-                      setImageFile(e.target.files[0]);
+                      setImageFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
                     }
                   }}
                   className="file-input"
                 />
               </label>
-              {imageFile && (
-                <p className="file-selected">✓ {imageFile.name}</p>
+
+              {imageFiles.length > 0 && (
+                <div className="image-previews">
+                  {imageFiles.map((file, idx) => (
+                    <div key={idx} className="image-preview-item">
+                      <img src={URL.createObjectURL(file)} alt={`Preview ${idx + 1}`} />
+                      <button 
+                        type="button" 
+                        className="btn-remove-img"
+                        onClick={() => setImageFiles(files => files.filter((_, i) => i !== idx))}
+                      >
+                        <TrashIcon />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
 
@@ -290,6 +320,7 @@ const SellerAddProduct: React.FC = () => {
         </form>
       </div>
     </div>
+    </AppShell>
   );
 };
 

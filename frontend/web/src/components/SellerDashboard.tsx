@@ -1,115 +1,48 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../lib/api';
 import { useSellerSession } from '../auth/sellerSession';
+import AppShell from './AppShell';
 import './SellerDashboard.css';
 
 /* ─── Types ─── */
 interface Order {
-  id: string;
-  customer: string;
-  product: string;
-  date: string;
-  amount: number;
-  status: 'Delivered' | 'Processing' | 'Shipped' | 'Cancelled';
+  orderId: string;
+  customerId: string;
+  orderStatus: string;
+  totalAmount: number;
+  createdAt: string;
+  items?: { productName: string }[];
 }
 
-interface Notification {
-  id: number;
-  text: string;
-  time: string;
-  read: boolean;
+interface Product {
+  productId: string;
+  name: string;
 }
 
-/* ─── Mock data ─── */
-const ORDERS: Order[] = [
-  { id: '#ORD-4821', customer: 'Sarah Johnson', product: 'Modern Lounge Chair', date: 'Mar 11, 2026', amount: 349.00, status: 'Delivered' },
-  { id: '#ORD-4820', customer: 'David Lee',     product: 'Scandinavian Shelf Unit', date: 'Mar 10, 2026', amount: 189.50, status: 'Shipped' },
-  { id: '#ORD-4819', customer: 'Priya Mehta',   product: 'Velvet Accent Chair',     date: 'Mar 10, 2026', amount: 420.00, status: 'Processing' },
-  { id: '#ORD-4818', customer: 'Tom Walker',    product: 'Oak Dining Table',        date: 'Mar 9, 2026',  amount: 899.99, status: 'Delivered' },
-  { id: '#ORD-4817', customer: 'Aisha Kamara',  product: 'Marble Coffee Table',     date: 'Mar 9, 2026',  amount: 560.00, status: 'Cancelled' },
-  { id: '#ORD-4816', customer: 'James Patel',   product: 'Wicker Floor Lamp',       date: 'Mar 8, 2026',  amount: 135.00, status: 'Shipped' },
-];
+/* ─── Icon components (SVGs replacing emojis) ─── */
+function BoxIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>; }
+function ChartIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>; }
+function TagIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>; }
+function TruckIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>; }
+function MessageIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>; }
+function SettingsIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>; }
+function HandWaveIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', marginLeft: '8px', verticalAlign: 'text-bottom' }}><path d="M18 11V6a2 2 0 0 0-4 0v4"/><path d="M14 11V4a2 2 0 0 0-4 0v5"/><path d="M10 11V3a2 2 0 0 0-4 0v7"/><path d="M6 11V5a2 2 0 0 0-4 0v9c0 4.5 3 6.5 6 9h4c4 0 8-3 8-8v-4a2 2 0 0 0-4 0v2"/></svg>; }
 
-const NOTIFICATIONS: Notification[] = [
-  { id: 1, text: 'New order #ORD-4821 received', time: '2 min ago', read: false },
-  { id: 2, text: 'Product "Velvet Chair" is low on stock', time: '1 hr ago', read: false },
-  { id: 3, text: 'Your payout of $1,240 was processed', time: '3 hrs ago', read: true },
-  { id: 4, text: 'New 5★ review on "Oak Dining Table"', time: 'Yesterday', read: true },
-];
-
-const TOP_PRODUCTS = [
-  { name: 'Oak Dining Table',       sales: 38, revenue: 34199 },
-  { name: 'Modern Lounge Chair',    sales: 54, revenue: 18846 },
-  { name: 'Scandinavian Shelf Unit',sales: 29, revenue: 5496  },
-  { name: 'Marble Coffee Table',    sales: 21, revenue: 11760 },
-];
-
-const statusColor: Record<Order['status'], string> = {
-  Delivered:  'status--delivered',
-  Processing: 'status--processing',
-  Shipped:    'status--shipped',
-  Cancelled:  'status--cancelled',
+const statusColor: Record<string, string> = {
+  DELIVERED:  'status--delivered',
+  PROCESSING: 'status--processing',
+  SHIPPED:    'status--shipped',
+  CANCELLED:  'status--cancelled',
+  PENDING_PAYMENT: 'status--processing',
 };
 
-/* ─── Sidebar links ─── */
-const NAV_LINKS = [
-  { path: '/dashboard',        label: 'Dashboard',       icon: <GridIcon /> },
-  { path: '/products',         label: 'Store Catalog',   icon: <BoxIcon /> },
-  { path: '/analytics',        label: 'Analytics',       icon: <ChartIcon /> },
-  { path: '/add-product',      label: 'Upload Product',  icon: <UploadIcon /> },
-];
-
-/* ─── Icon components ─── */
-function GridIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-      <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-    </svg>
-  );
-}
-function ChartIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
-      <line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
-    </svg>
-  );
-}
-function UploadIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-      <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-    </svg>
-  );
-}
-function BoxIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-      <line x1="12" y1="22.08" x2="12" y2="12"/>
-    </svg>
-  );
-}
-function BellIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-    </svg>
-  );
-}
-
-/* ─── Component ─── */
 const SellerDashboard: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { session, logout } = useSellerSession();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [notifOpen, setNotifOpen] = useState(false);
-  const unreadCount = NOTIFICATIONS.filter((n) => !n.read).length;
+  const { session } = useSellerSession();
+  
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const user = useMemo(() => {
     if (!session) return null;
@@ -117,269 +50,199 @@ const SellerDashboard: React.FC = () => {
     const username = cached ? (JSON.parse(cached).username as string | undefined) : undefined;
     return {
       email: session.email ?? '',
-      username: username ?? session.storeName ?? session.email ?? 'Seller',
+      username: username ?? session.storeName ?? 'Seller',
     };
   }, [session]);
 
-  const handleLogout = () => {
-    void logout().then(() => navigate('/login'));
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        let storeId = session?.storeId;
+        if (!storeId) {
+          try {
+            const storeRes = await api.get('/stores/me');
+            storeId = storeRes.data?.storeId;
+          } catch (e) {
+            console.warn('Could not fetch store', e);
+          }
+        }
+
+        if (storeId) {
+          const [productsRes, ordersRes] = await Promise.all([
+            api.get(`/products/store/${storeId}`).catch(() => ({ data: [] })),
+            api.get(`/orders/store/${storeId}`).catch(() => ({ data: [] }))
+          ]);
+          setProducts(productsRes.data || []);
+          setOrders(ordersRes.data || []);
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard data', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [session]);
 
   if (!user) return null;
 
-  const initials = user.username
-    ? user.username.slice(0, 2).toUpperCase()
-    : user.email.slice(0, 2).toUpperCase();
+  // Compute KPIs
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  const totalOrders = orders.length;
+  const activeProducts = products.length;
+
+  if (isLoading) {
+    return (
+      <AppShell pageTitle="Dashboard">
+        <div className="db-content" style={{ display: 'flex', justifyContent: 'center', paddingTop: '4rem' }}>
+          <span className="spinner" style={{ width: '40px', height: '40px', borderWidth: '3px', borderColor: 'rgba(210,107,25,0.2)', borderTopColor: '#d26b19' }} />
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
-    <div className={`db-layout ${sidebarOpen ? 'sidebar-open' : ''}`}>
-      {/* ── Sidebar ── */}
-      <aside className="db-sidebar">
-        <div className="sb-brand">
-          <div className="sb-logo">PR</div>
+    <AppShell pageTitle="Dashboard">
+      <div className="db-content">
+        {/* Welcome banner */}
+        <div className="welcome-banner">
           <div>
-            <span className="sb-name">PocketRoom</span>
-            <span className="sb-role">Seller Portal</span>
+            <h2>Welcome back, {user.username}! <HandWaveIcon /></h2>
+            <p>Here's what's happening with your store today.</p>
+          </div>
+          <Link to="/add-product" className="btn-add-product">
+            + Add New Product
+          </Link>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="kpi-grid">
+          <div className="kpi-card">
+            <div className="kpi-icon kpi-icon--revenue">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div className="kpi-body">
+              <span className="kpi-label">Total Revenue</span>
+              <span className="kpi-value">${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="kpi-change kpi-change--neutral">Based on all orders</span>
+            </div>
+          </div>
+
+          <div className="kpi-card">
+            <div className="kpi-icon kpi-icon--orders">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <div className="kpi-body">
+              <span className="kpi-label">Total Orders</span>
+              <span className="kpi-value">{totalOrders}</span>
+              <span className="kpi-change kpi-change--neutral">All time</span>
+            </div>
+          </div>
+
+          <div className="kpi-card">
+            <div className="kpi-icon kpi-icon--products">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <div className="kpi-body">
+              <span className="kpi-label">Active Products</span>
+              <span className="kpi-value">{activeProducts}</span>
+              <span className="kpi-change kpi-change--neutral">Available in catalog</span>
+            </div>
+          </div>
+
+          <div className="kpi-card">
+            <div className="kpi-icon kpi-icon--rating">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div className="kpi-body">
+              <span className="kpi-label">Store Rating</span>
+              <span className="kpi-value">-- ★</span>
+              <span className="kpi-change kpi-change--neutral">Coming soon</span>
+            </div>
           </div>
         </div>
 
-        <nav className="sb-nav">
-          <p className="sb-section-label">Main Menu</p>
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`sb-link ${location.pathname === link.path ? 'sb-link--active' : ''}`}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="sb-link-icon">{link.icon}</span>
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="sb-bottom">
-          <div className="sb-user-card">
-            <div className="sb-avatar">{initials}</div>
-            <div className="sb-user-info">
-              <span className="sb-user-name">{user.username}</span>
-              <span className="sb-user-email">{user.email}</span>
+        {/* Orders + Actions row */}
+        <div className="db-row">
+          {/* Recent Orders */}
+          <div className="db-card db-card--wide">
+            <div className="card-header">
+              <h3>Recent Orders</h3>
+              {orders.length > 0 && <button className="btn-text">View all →</button>}
             </div>
-          </div>
-          <button className="sb-logout" onClick={handleLogout}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Sign Out
-          </button>
-        </div>
-      </aside>
-
-      {sidebarOpen && <div className="sb-overlay" onClick={() => setSidebarOpen(false)} />}
-
-      {/* ── Main ── */}
-      <div className="db-main">
-        {/* Top bar */}
-        <header className="db-topbar">
-          <div className="topbar-left">
-            <button className="hamburger" onClick={() => setSidebarOpen((v) => !v)} aria-label="Toggle sidebar">
-              <span /><span /><span />
-            </button>
-            <div className="topbar-title">
-              <h1>Dashboard</h1>
-              <p>Tuesday, March 11, 2026</p>
-            </div>
-          </div>
-          <div className="topbar-right">
-            <div className="notif-wrapper">
-              <button className="icon-btn" onClick={() => setNotifOpen((v) => !v)} aria-label="Notifications">
-                <BellIcon />
-                {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
-              </button>
-              {notifOpen && (
-                <div className="notif-dropdown">
-                  <div className="notif-header">
-                    <strong>Notifications</strong>
-                    <span className="notif-count">{unreadCount} new</span>
-                  </div>
-                  {NOTIFICATIONS.map((n) => (
-                    <div key={n.id} className={`notif-item ${!n.read ? 'notif-item--unread' : ''}`}>
-                      {!n.read && <span className="notif-dot" />}
-                      <div>
-                        <p>{n.text}</p>
-                        <span>{n.time}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="topbar-avatar">{initials}</div>
-          </div>
-        </header>
-
-        <div className="db-content">
-          {/* Welcome banner */}
-          <div className="welcome-banner">
-            <div>
-              <h2>Welcome back, {user.username}! 👋</h2>
-              <p>Here's what's happening with your store today.</p>
-            </div>
-            <Link to="/add-product" className="btn-add-product">
-              + Add New Product
-            </Link>
-          </div>
-
-          {/* KPI Cards */}
-          <div className="kpi-grid">
-            <div className="kpi-card">
-              <div className="kpi-icon kpi-icon--revenue">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              </div>
-              <div className="kpi-body">
-                <span className="kpi-label">Total Revenue</span>
-                <span className="kpi-value">$24,390</span>
-                <span className="kpi-change kpi-change--up">↑ 12.5% this month</span>
-              </div>
-            </div>
-
-            <div className="kpi-card">
-              <div className="kpi-icon kpi-icon--orders">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              </div>
-              <div className="kpi-body">
-                <span className="kpi-label">Total Orders</span>
-                <span className="kpi-value">142</span>
-                <span className="kpi-change kpi-change--up">↑ 8.1% this month</span>
-              </div>
-            </div>
-
-            <div className="kpi-card">
-              <div className="kpi-icon kpi-icon--products">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-              </div>
-              <div className="kpi-body">
-                <span className="kpi-label">Active Products</span>
-                <span className="kpi-value">36</span>
-                <span className="kpi-change kpi-change--neutral">→ 2 added this week</span>
-              </div>
-            </div>
-
-            <div className="kpi-card">
-              <div className="kpi-icon kpi-icon--rating">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              </div>
-              <div className="kpi-body">
-                <span className="kpi-label">Store Rating</span>
-                <span className="kpi-value">4.8 ★</span>
-                <span className="kpi-change kpi-change--up">↑ from 4.6 last month</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Orders + Top Products row */}
-          <div className="db-row">
-            {/* Recent Orders */}
-            <div className="db-card db-card--wide">
-              <div className="card-header">
-                <h3>Recent Orders</h3>
-                <button className="btn-text">View all →</button>
-              </div>
-              <div className="table-scroll">
-                <table className="orders-table">
-                  <thead>
+            <div className="table-scroll">
+              <table className="orders-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Product</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.length === 0 ? (
                     <tr>
-                      <th>Order ID</th>
-                      <th>Customer</th>
-                      <th>Product</th>
-                      <th>Date</th>
-                      <th>Amount</th>
-                      <th>Status</th>
+                      <td colSpan={5} className="empty-message">No orders yet. They will appear here when customers buy your products.</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {ORDERS.map((o) => (
-                      <tr key={o.id}>
-                        <td className="order-id">{o.id}</td>
-                        <td>{o.customer}</td>
-                        <td className="order-product">{o.product}</td>
-                        <td className="order-date">{o.date}</td>
-                        <td className="order-amount">${o.amount.toFixed(2)}</td>
+                  ) : (
+                    orders.slice(0, 8).map((o) => (
+                      <tr key={o.orderId}>
+                        <td className="order-id">#{o.orderId.substring(0, 8).toUpperCase()}</td>
+                        <td className="order-product">{o.items?.[0]?.productName || 'Multiple Items'}</td>
+                        <td className="order-date">{new Date(o.createdAt).toLocaleDateString()}</td>
+                        <td className="order-amount">${(o.totalAmount || 0).toFixed(2)}</td>
                         <td>
-                          <span className={`status-badge ${statusColor[o.status]}`}>
-                            {o.status}
+                          <span className={`status-badge ${statusColor[o.orderStatus] || 'status--processing'}`}>
+                            {o.orderStatus.replace('_', ' ')}
                           </span>
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Top Products */}
-            <div className="db-card db-card--narrow">
-              <div className="card-header">
-                <h3>Top Products</h3>
-                <button className="btn-text">See all →</button>
-              </div>
-              <div className="top-products">
-                {TOP_PRODUCTS.map((p, i) => {
-                  const maxRevenue = Math.max(...TOP_PRODUCTS.map((x) => x.revenue));
-                  const pct = Math.round((p.revenue / maxRevenue) * 100);
-                  return (
-                    <div className="tp-item" key={p.name}>
-                      <span className="tp-rank">#{i + 1}</span>
-                      <div className="tp-info">
-                        <span className="tp-name">{p.name}</span>
-                        <div className="tp-bar-track">
-                          <div className="tp-bar-fill" style={{ width: `${pct}%` }} />
-                        </div>
-                        <div className="tp-meta">
-                          <span>{p.sales} sold</span>
-                          <span>${p.revenue.toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="db-card">
+          <div className="db-card db-card--narrow">
             <div className="card-header">
               <h3>Quick Actions</h3>
             </div>
             <div className="quick-actions">
               <Link to="/add-product" className="qa-btn">
-                <span className="qa-icon">📦</span>
+                <span className="qa-icon"><BoxIcon /></span>
                 <span>Add Product</span>
               </Link>
               <Link to="/analytics" className="qa-btn">
-                <span className="qa-icon">📊</span>
+                <span className="qa-icon"><ChartIcon /></span>
                 <span>View Analytics</span>
               </Link>
               <button className="qa-btn">
-                <span className="qa-icon">🏷️</span>
+                <span className="qa-icon"><TagIcon /></span>
                 <span>Manage Pricing</span>
               </button>
               <button className="qa-btn">
-                <span className="qa-icon">🚚</span>
+                <span className="qa-icon"><TruckIcon /></span>
                 <span>Track Shipments</span>
               </button>
               <button className="qa-btn">
-                <span className="qa-icon">💬</span>
+                <span className="qa-icon"><MessageIcon /></span>
                 <span>Customer Messages</span>
               </button>
               <button className="qa-btn">
-                <span className="qa-icon">⚙️</span>
+                <span className="qa-icon"><SettingsIcon /></span>
                 <span>Store Settings</span>
               </button>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 };
 
