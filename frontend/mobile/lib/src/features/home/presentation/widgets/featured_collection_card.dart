@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../common_widgets/glass_container.dart';
 import '../../../budget/ui/budget_planner_page.dart';
 
 class FeaturedCollectionCard extends StatefulWidget {
@@ -50,7 +51,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
   }
 
   @override
-  Widget build(BuildContext context) {
+    Widget build(BuildContext context) {
     _pageController ??= PageController();
 
     return AnimatedSize(
@@ -63,24 +64,29 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
               height: MediaQuery.of(context).size.width > 900 ? 300 : 226, 
               child: Stack(
                 children: [
-                  PageView(
-                    controller: _pageController!,
-                    onPageChanged: (index) {
-                      if (!mounted) return;
-                      setState(() {
-                        _currentPage = index;
-                      });
-                      _startAutoSwitchTimer();
-                    },
-                    children: [
-                      _buildFeaturedCard(),
-                      _buildBudgetingCard(context),
-                    ],
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    clipBehavior: Clip.antiAlias,
+                    child: PageView(
+                      clipBehavior: Clip.antiAlias,
+                      controller: _pageController!,
+                      onPageChanged: (index) {
+                        if (!mounted) return;
+                        setState(() {
+                          _currentPage = index;
+                        });
+                        _startAutoSwitchTimer();
+                      },
+                      children: [
+                        _buildFeaturedCard(),
+                        _buildBudgetingCard(context),
+                      ],
+                    ),
                   ),
                   Positioned(
                     left: 0,
                     right: 0,
-                    bottom: 10,
+                    bottom: 12,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(2, (index) {
@@ -88,33 +94,47 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 250),
                           margin: const EdgeInsets.symmetric(horizontal: 4),
-                          height: 8,
-                          width: isActive ? 20 : 8,
+                          height: 6,
+                          width: isActive ? 24 : 6,
                           decoration: BoxDecoration(
                             color: isActive
                                 ? Colors.white
-                                : Colors.white.withValues(alpha: 0.45),
+                                : Colors.white.withOpacity(0.4),
                             borderRadius: BorderRadius.circular(999),
+                            boxShadow: isActive ? [
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.3),
+                                blurRadius: 4,
+                                spreadRadius: 1,
+                              )
+                            ] : null,
                           ),
                         );
                       }),
                     ),
                   ),
                   Positioned(
-                    top: 18,
-                    right: 28,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white, size: 20),
-                      onPressed: () {
-                        setState(() {
-                          _isVisible = false;
-                        });
-                      },
+                    top: 10,
+                    right: 10,
+                    child: GlassContainer(
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      style: IconButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.12),
-                        shape: const CircleBorder(),
+                      borderRadius: 100,
+                      blur: 8,
+                      opacity: 0.1,
+                      border: Border.all(color: Colors.white.withOpacity(0.1)),
+                      child: SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: IconButton(
+                          icon: const Icon(Icons.close, color: Colors.white, size: 14),
+                          onPressed: () {
+                            setState(() {
+                              _isVisible = false;
+                            });
+                          },
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
                       ),
                     ),
                   ),
@@ -130,90 +150,99 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
             Color(0xFFCfb088),
             Color(0xFF5A4A3A),
           ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
-        child: Stack(
-          children: [
-            Positioned(
-              right: MediaQuery.of(context).size.width > 900 ? 40 : -30,
-              bottom: MediaQuery.of(context).size.width > 900 ? 0 : -20,
-              child: Image.asset(
-                'assets/bannerSofa.png',
-                height: MediaQuery.of(context).size.width > 900 ? 320 : 240,
-                fit: BoxFit.contain,
+        clipBehavior: Clip.antiAlias,
+        child: GlassContainer(
+          borderRadius: 24,
+          blur: 10,
+          opacity: 0.1,
+          padding: EdgeInsets.zero,
+          border: Border.all(color: Colors.white.withOpacity(0.15)),
+          child: Stack(
+            children: [
+              Positioned(
+                right: MediaQuery.of(context).size.width > 900 ? 40 : -30,
+                bottom: MediaQuery.of(context).size.width > 900 ? 0 : -20,
+                child: Image.asset(
+                  'assets/bannerSofa.png',
+                  height: MediaQuery.of(context).size.width > 900 ? 320 : 240,
+                  fit: BoxFit.contain,
+                ),
               ),
-            ),
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      const Color(0xFF5A4A3A),
-                      const Color(0xFF5A4A3A).withValues(alpha: 0.8),
-                      const Color(0xFF5A4A3A).withValues(alpha: 0.3),
-                      Colors.transparent,
-                    ],
-                    stops: const [0.0, 0.4, 0.75, 1.0],
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [
+                        const Color(0xFF544131).withOpacity(0.6),
+                        const Color(0xFF544131).withOpacity(0.3),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.5, 1.0],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              left: 24,
-              right: 120,
-              top: 0,
-              bottom: 0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'NEW ARRIVAL',
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFFFF8A3D),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 10,
-                      letterSpacing: 1.2,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF8A3D).withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'NEW ARRIVAL',
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFFFF8A3D),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 9,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Featured Collection',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        'Featured Collection',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          height: 1.1,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Curated by top local vendors',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white.withValues(alpha: 0.8),
-                      fontSize: 12,
+                    const SizedBox(height: 8),
+                    Text(
+                      'Curated by top local vendors',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white.withOpacity(0.85),
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -231,65 +260,66 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
             Color.fromARGB(255, 103, 95, 255),
           ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
-        child: Stack(
-          children: [
-            Positioned(
-              right: -10,
-              top: 22,
-              child: Icon(
-                Icons.savings_outlined,
-                size: 120,
-                color: Colors.white.withValues(alpha: 0.12),
+        clipBehavior: Clip.antiAlias,
+        child: GlassContainer(
+          borderRadius: 24,
+          blur: 10,
+          opacity: 0.1,
+          padding: EdgeInsets.zero,
+          border: Border.all(color: Colors.white.withOpacity(0.15)),
+          child: Stack(
+            children: [
+              Positioned(
+                right: -20,
+                top: 10,
+                child: Icon(
+                  Icons.savings_outlined,
+                  size: 140,
+                  color: Colors.white.withOpacity(0.15),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'SMART PLANNING',
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFFFFD27A),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 10,
-                      letterSpacing: 1.2,
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'SMART PLANNING',
+                      style: GoogleFonts.poppins(
+                        color: const Color(0xFFFFD27A),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 9,
+                        letterSpacing: 1.2,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Try out our budgeting feature',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      height: 1.1,
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        'Try out our budgeting feature',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          height: 1.1,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Plan your room within budget before you commit.',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white.withValues(alpha: 0.82),
-                      fontSize: 12,
+                    const SizedBox(height: 6),
+                    Text(
+                      'Plan your room within budget.',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 14),
-                  SizedBox(
-                    height: 36,
-                    child: ElevatedButton(
-                      onPressed: () {
+                    const SizedBox(height: 16),
+                    GestureDetector(
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -297,30 +327,35 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                           ),
                         );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFD27A),
-                        foregroundColor: const Color(0xFF183328),
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: const Text(
-                        'Try now',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
+                      child: GlassContainer(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        borderRadius: 12,
+                        blur: 15,
+                        opacity: 0.15,
+                        border: Border.all(color: Colors.white.withOpacity(0.2)),
+                        child: Text(
+                          'Try now',
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
+
+
+
+
 }
+
