@@ -7,7 +7,7 @@ import '../providers/home_provider.dart';
 
 class ProductList extends ConsumerStatefulWidget {
   final bool isHorizontal;
-  final AlwaysAliveProviderBase<AsyncValue<List<Furniture>>>? provider;
+  final ProviderBase<AsyncValue<List<Furniture>>>? provider;
   const ProductList({super.key, this.isHorizontal = false, this.provider});
 
   @override
@@ -61,10 +61,6 @@ class _ProductListState extends ConsumerState<ProductList> {
   @override
   Widget build(BuildContext context) {
     // If a provider is passed, use it; otherwise, use the default filtered selection.
-    final furnitureAsync = widget.provider != null
-        ? ref.watch(widget.provider!)
-        : ref.watch(allFurnitureProvider).whenData((_) => AsyncValue.data(ref.watch(filteredFurnitureProvider))).value ?? const AsyncValue.loading();
-
     // Fix for the line 70 issue: we need to handle the nested AsyncValue wrap/unwrap correctly.
     // However, looking at line 70 in original: ref.watch(allFurnitureProvider).whenData((_) => ref.watch(filteredFurnitureProvider));
     // It seems filteredFurnitureProvider is NOT an AsyncValue, but a Provider<List<Furniture>>.

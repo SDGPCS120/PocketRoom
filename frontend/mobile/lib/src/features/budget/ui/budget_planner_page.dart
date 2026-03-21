@@ -214,7 +214,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                   style: TextStyle(color: Colors.black54)),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: _selectedStyle,
+                initialValue: _selectedStyle,
                 items: _styles
                     .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                     .toList(),

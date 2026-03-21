@@ -15,7 +15,7 @@ class StyleDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       items: items.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
       onChanged: (v) => onChanged(v ?? value),
       decoration: const InputDecoration(
