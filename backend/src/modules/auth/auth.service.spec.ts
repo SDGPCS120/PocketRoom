@@ -11,6 +11,8 @@ describe('AuthService', () => {
     doc: jest.fn().mockReturnThis(),
     get: jest.fn(),
     set: jest.fn(),
+    where: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
   };
 
   const mockFieldValue = {
@@ -49,9 +51,9 @@ describe('AuthService', () => {
     const email = 'test@example.com';
 
     it('should create a new user profile if it does not exist', async () => {
-      mockFirestore.get.mockResolvedValue({
-        exists: false,
-      });
+      mockFirestore.get
+        .mockResolvedValueOnce({ empty: true, docs: [] })
+        .mockResolvedValueOnce({ exists: false });
 
       const result = await service.syncUser(uid, email, false);
 
@@ -59,18 +61,20 @@ describe('AuthService', () => {
       expect(result.user.role).toBe('customer');
       expect(mockFirestore.set).toHaveBeenCalledWith(
         expect.objectContaining({
-          uid,
+          uid: expect.any(String),
+          authUid: uid,
           email,
           role: 'customer',
           createdAt: 'mock-timestamp',
+          lastLoginAt: 'mock-timestamp',
         }),
       );
     });
 
     it('should assign anonymous role for and anonymous sign-in', async () => {
-      mockFirestore.get.mockResolvedValue({
-        exists: false,
-      });
+      mockFirestore.get
+        .mockResolvedValueOnce({ empty: true, docs: [] })
+        .mockResolvedValueOnce({ exists: false });
 
       const result = await service.syncUser(uid, null, true);
 
@@ -79,34 +83,41 @@ describe('AuthService', () => {
     });
 
     it('should preserve vendor role for existing users during sync', async () => {
-      mockFirestore.get.mockResolvedValue({
-        exists: true,
-        data: () => ({
-          role: 'vendor',
-          email: 'vendor@example.com',
-        }),
-      });
+      mockFirestore.get
+        .mockResolvedValueOnce({ empty: true, docs: [] })
+        .mockResolvedValueOnce({
+          exists: true,
+          id: uid,
+          data: () => ({
+            role: 'vendor',
+            email: 'vendor@example.com',
+          }),
+        });
 
       const result = await service.syncUser(uid, 'vendor@example.com', false);
 
       expect(result.status).toBe('exists');
-      expect(result.user.role).toBe('vendor');
+      expect(result.user.role).toBe('seller');
       expect(mockFirestore.set).toHaveBeenCalledWith(
         expect.objectContaining({
-          role: 'vendor',
+          role: 'seller',
+          lastLoginAt: 'mock-timestamp',
         }),
         { merge: true },
       );
     });
 
     it('should update lastLoginAt for existing users', async () => {
-      mockFirestore.get.mockResolvedValue({
-        exists: true,
-        data: () => ({
-          role: 'customer',
-          email: email,
-        }),
-      });
+      mockFirestore.get
+        .mockResolvedValueOnce({ empty: true, docs: [] })
+        .mockResolvedValueOnce({
+          exists: true,
+          id: uid,
+          data: () => ({
+            role: 'customer',
+            email: email,
+          }),
+        });
 
       await service.syncUser(uid, email, false);
 
