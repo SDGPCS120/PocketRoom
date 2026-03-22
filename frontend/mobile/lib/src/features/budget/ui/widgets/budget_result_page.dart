@@ -15,6 +15,33 @@ class BudgetResultPage extends StatefulWidget {
 
 class _BudgetResultPageState extends State<BudgetResultPage> {
   int _currentIndex = 0;
+  // Map of item unique ID -> quantity
+  final Map<String, int> _itemQuantities = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _resetQuantities();
+  }
+
+  void _resetQuantities() {
+    _itemQuantities.clear();
+    final bundles = (widget.result['bundles'] as List?) ?? [];
+    if (bundles.isNotEmpty && _currentIndex < bundles.length) {
+      final currentBundle = bundles[_currentIndex] as Map<String, dynamic>;
+      final required = (currentBundle['requiredBundle'] as List?) ?? [];
+      final optional = (currentBundle['optionalBundle'] as List?) ?? [];
+      for (final it in [...required, ...optional]) {
+        final id = _getItemId(it);
+        _itemQuantities[id] = 1;
+      }
+    }
+  }
+
+  String _getItemId(Map<String, dynamic> item) {
+    final data = (item['product'] is Map) ? item['product'] : item;
+    return (data['id'] ?? data['productID'] ?? item.hashCode).toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +58,19 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
       currentBundle = bundles[_currentIndex] as Map<String, dynamic>?;
     }
 
-    final totalCost = currentBundle?['totalCost'] as num? ?? 0;
-    final remaining = currentBundle?['remaining'] as num? ?? 0;
-
     final List<dynamic> requiredBundle = (currentBundle?['requiredBundle'] as List?) ?? [];
     final List<dynamic> optionalBundle = (currentBundle?['optionalBundle'] as List?) ?? [];
-
     final items = [...requiredBundle, ...optionalBundle];
+
+    // Calculate dynamic totals
+    double currentTotalCost = 0;
+    for (final it in items) {
+      final data = (it['product'] is Map) ? it['product'] : it;
+      final price = (data['price'] as num? ?? 0).toDouble();
+      final qty = _itemQuantities[_getItemId(it)] ?? 1;
+      currentTotalCost += price * qty;
+    }
+    final currentRemaining = totalBudget - currentTotalCost;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -67,6 +100,7 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                       onPressed: () {
                         setState(() {
                           _currentIndex = (_currentIndex + 1) % bundles.length;
+                          _resetQuantities();
                         });
                       },
                       icon: const Icon(Icons.skip_next),
@@ -82,8 +116,8 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
               _SummaryCard(
                 ok: ok,
                 totalBudget: totalBudget,
-                totalCost: totalCost,
-                remaining: remaining,
+                totalCost: currentTotalCost,
+                remaining: currentRemaining,
                 reason: reason,
               ),
               const SizedBox(height: 20),
@@ -107,7 +141,16 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                         itemCount: items.length,
                         itemBuilder: (context, index) {
                           final item = items[index] as Map<String, dynamic>;
-                          return _ProductItem(product: item);
+                          final id = _getItemId(item);
+                          return _ProductItem(
+                            product: item,
+                            quantity: _itemQuantities[id] ?? 1,
+                            onQuantityChanged: (newQty) {
+                              setState(() {
+                                _itemQuantities[id] = newQty;
+                              });
+                            },
+                          );
                         },
                       ),
               ),
@@ -214,21 +257,24 @@ class _SummaryLine extends StatelessWidget {
 
 class _ProductItem extends StatelessWidget {
   final Map<String, dynamic> product;
+  final int quantity;
+  final ValueChanged<int> onQuantityChanged;
 
-  const _ProductItem({required this.product});
+  const _ProductItem({
+    required this.product,
+    required this.quantity,
+    required this.onQuantityChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
-    // backend might return either {category,id,name,price,...}
-    // or {product:{...}}
     final itemData = (product['product'] is Map) 
         ? Map<String, dynamic>.from(product['product']) 
         : product;
 
-    // Use the actual Furniture model to parse images/brand consistently with Home page
     final furniture = Furniture.fromJson({
       ...itemData,
       'furnitureType': product['category'] ?? itemData['category'] ?? itemData['furnitureType'] ?? "-",
@@ -241,10 +287,6 @@ class _ProductItem extends StatelessWidget {
     final rating = furniture.rating.isNaN ? 4.0 : furniture.rating;
     
     final imageUrl = furniture.images.isNotEmpty ? furniture.images.first : null;
-    
-    if (kDebugMode) {
-      debugPrint('[BudgetResult] Item: $name, Brand: $brand, URL: $imageUrl');
-    }
 
     String formatPrice(double p) => "LKR ${p.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
 
@@ -258,6 +300,7 @@ class _ProductItem extends StatelessWidget {
         boxShadow: AppColors.productCardShadow,
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 90,
@@ -272,12 +315,10 @@ class _ProductItem extends StatelessWidget {
                   ? Image.network(
                       imageUrl,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: colorScheme.secondary.withAlpha(51),
-                          child: Icon(Icons.chair, size: 40, color: colorScheme.onSurfaceVariant.withAlpha(128)),
-                        );
-                      },
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: colorScheme.secondary.withAlpha(51),
+                        child: Icon(Icons.chair, size: 40, color: colorScheme.onSurfaceVariant.withAlpha(128)),
+                      ),
                     )
                   : Container(
                       color: colorScheme.secondary.withAlpha(51),
@@ -297,9 +338,18 @@ class _ProductItem extends StatelessWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  formatPrice(price),
-                  style: TextStyle(fontWeight: FontWeight.w700, color: colorScheme.primary, fontSize: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      formatPrice(price),
+                      style: TextStyle(fontWeight: FontWeight.w700, color: colorScheme.primary, fontSize: 15),
+                    ),
+                    _QuantitySelector(
+                      quantity: quantity,
+                      onChanged: onQuantityChanged,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -336,6 +386,68 @@ class _ProductItem extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _QuantitySelector extends StatelessWidget {
+  final int quantity;
+  final ValueChanged<int> onChanged;
+
+  const _QuantitySelector({required this.quantity, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildCircBtn(
+          icon: Icons.remove,
+          onTap: quantity > 1 ? () => onChanged(quantity - 1) : null,
+          enabled: quantity > 1,
+          colorScheme: colorScheme,
+        ),
+        Container(
+          constraints: const BoxConstraints(minWidth: 30),
+          alignment: Alignment.center,
+          child: Text(
+            quantity.toString(),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
+        ),
+        _buildCircBtn(
+          icon: Icons.add,
+          onTap: () => onChanged(quantity + 1),
+          enabled: true,
+          colorScheme: colorScheme,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCircBtn({
+    required IconData icon,
+    required VoidCallback? onTap,
+    required bool enabled,
+    required ColorScheme colorScheme,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: enabled ? colorScheme.primary.withAlpha(20) : colorScheme.outline.withAlpha(20),
+          border: Border.all(color: enabled ? colorScheme.primary.withAlpha(51) : colorScheme.outline.withAlpha(51)),
+        ),
+        child: Icon(
+          icon,
+          size: 16,
+          color: enabled ? colorScheme.primary : colorScheme.outline,
+        ),
       ),
     );
   }
