@@ -23,7 +23,7 @@ type AuthenticatedRequest = Request & {
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post()
+  @Post('create')
   createPayment(@Req() req: AuthenticatedRequest, @Body() dto: CreatePaymentDto) {
     const userId = req.user.uid;
     return this.paymentService.createPayment(userId, dto);
