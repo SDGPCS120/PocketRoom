@@ -77,16 +77,7 @@ const SellerAddProduct: React.FC = () => {
     let productId: string;
 
     try {
-      // ── Step 1: Upload images to Firebase Storage ──────────────────────────
-      const uploadedUrls: string[] = [];
-      for (const file of imageFiles) {
-        const storageRef = ref(storage, `products/${storeId}/${Date.now()}_${file.name}`);
-        const snapshot = await uploadBytes(storageRef, file);
-        const downloadUrl = await getDownloadURL(snapshot.ref);
-        uploadedUrls.push(downloadUrl);
-      }
-
-      // ── Step 2: Create the product ─────────────────────────────────────────────
+      // ── Step 1: Create the product without images first ──────────────────────────
       const dimensions: Record<string, number> = {};
       if (formData.width) dimensions.width = Number(formData.width);
       if (formData.height) dimensions.height = Number(formData.height);
@@ -99,19 +90,33 @@ const SellerAddProduct: React.FC = () => {
         furnitureType: formData.category,
       };
 
-      if (uploadedUrls.length > 0) {
-        body.imageUrl = uploadedUrls;
-      }
-
       if (Object.keys(dimensions).length > 0) {
         body.dimensions = dimensions;
       }
 
       const response = await api.post(`/products/store/${storeId}`, body);
       productId = response.data.productId as string;
+
+      // ── Step 2: Upload images to Firebase Storage ──────────────────────────
+      if (imageFiles.length > 0) {
+        const uploadedUrls: string[] = [];
+        for (const file of imageFiles) {
+          // Upload to product-specific folder instead of store folder
+          const storageRef = ref(storage, `products/${productId}/${Date.now()}_${file.name}`);
+          const snapshot = await uploadBytes(storageRef, file);
+          const downloadUrl = await getDownloadURL(snapshot.ref);
+          uploadedUrls.push(downloadUrl);
+        }
+
+        // ── Step 3: Update the product with the uploaded image URLs ────────────────
+        await api.put(`/products/${productId}`, { imageUrl: uploadedUrls });
+      }
+
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : 'Failed to save product. Please try again.';
+      // If product was created but image upload failed, we might have an orphaned product. 
+      // For now, just show the error.
       setError(msg);
       setLoadingStep('idle');
       return;
