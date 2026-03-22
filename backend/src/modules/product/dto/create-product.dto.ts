@@ -6,10 +6,10 @@ import {
   IsOptional,
   IsInt,
   IsArray,
+  IsObject,
+  ValidateNested,
 } from 'class-validator';
-
 import { Type } from 'class-transformer';
-import { ValidateNested } from 'class-validator';
 
 class DimensionsDto {
   @IsOptional()
@@ -48,6 +48,10 @@ export class CreateProductDto {
   brand?: string;
 
   @IsOptional()
+  @IsString()
+  brandLogoUrl?: string;
+
+  @IsOptional()
   @IsNumber()
   @Min(0)
   rating?: number;
@@ -56,6 +60,20 @@ export class CreateProductDto {
   @IsArray()
   @IsString({ each: true })
   imageUrl?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  colors?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  materials?: string[];
+
+  @IsOptional()
+  @IsObject()
+  imagesByColor?: Record<string, string[]>;
 
   @IsOptional()
   @IsString()
