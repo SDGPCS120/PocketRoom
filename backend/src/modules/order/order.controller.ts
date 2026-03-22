@@ -7,12 +7,14 @@ import {
   Patch,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { UpdateOrderFulfillmentDto } from './dto/update-order-fulfillment.dto';
+import { FirebaseAuthGuard } from '../auth/guards/firebase-auth.guard';
 
 type AuthenticatedRequest = Request & {
   user: {
@@ -20,6 +22,7 @@ type AuthenticatedRequest = Request & {
   };
 };
 
+@UseGuards(FirebaseAuthGuard)
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
