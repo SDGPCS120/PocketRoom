@@ -62,4 +62,14 @@ export class PaymentController {
   deletePayment(@Param('paymentId') paymentId: string) {
     return this.paymentService.deletePayment(paymentId);
   }
+
+  @Post('verify')
+  verifyPayment(@Body() body: { orderId: string }) {
+    return this.paymentService.verifyPayment(body.orderId);
+  }
+
+  @Post('notify')
+  handleNotify(@Body() body: any) {
+    return this.paymentService.handleNotify(body);
+  }
 }

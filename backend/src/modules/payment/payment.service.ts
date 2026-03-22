@@ -209,4 +209,42 @@ export class PaymentService {
       throw new InternalServerErrorException('Failed to delete payment');
     }
   }
+
+  async verifyPayment(orderId: string) {
+    const payment = (await this.getPaymentByOrderId(orderId)) as any;
+    if (!payment) {
+      throw new NotFoundException('Payment not found');
+    }
+
+    if (payment.paymentStatus !== PaymentStatus.SUCCESS) {
+      return this.updatePaymentStatus(payment.paymentId, {
+        paymentStatus: PaymentStatus.SUCCESS,
+        transactionReference: 'VERIFIED_BY_CLIENT',
+      });
+    }
+
+    return payment;
+  }
+
+  async handleNotify(data: any) {
+    const { order_id, status_code, payment_id: transactionReference } = data;
+
+    // status_code 2 means success in PayHere
+    if (status_code == 2 || status_code === '2') {
+      try {
+        const payment = await this.getPaymentByOrderId(order_id);
+        if (payment) {
+          await this.updatePaymentStatus(payment.paymentId, {
+            paymentStatus: PaymentStatus.SUCCESS,
+            transactionReference: transactionReference,
+          });
+        }
+      } catch (error) {
+        // Payment might not exist yet or already updated
+        console.error('[PaymentService] Notify error:', error);
+      }
+    }
+    
+    return { status: 'acknowledged' };
+  }
 }
