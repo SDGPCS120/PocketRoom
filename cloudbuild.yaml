@@ -3,6 +3,8 @@ steps:
     args:
       [
         'build',
+        '-f',
+        './backend/dockerfile',
         '-t',
         'asia-south1-docker.pkg.dev/$PROJECT_ID/pocketroom-backend-repo/pocketroom-backend:$COMMIT_SHA',
         './backend'

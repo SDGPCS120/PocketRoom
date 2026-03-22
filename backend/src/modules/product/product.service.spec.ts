@@ -41,6 +41,7 @@ describe('ProductService', () => {
     firebaseService = {
       firestore: mockFirestore,
       storage: mockStorage,
+      storageBucketName: 'test-bucket',
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -91,6 +92,22 @@ describe('ProductService', () => {
 
       expect(result.productId).toBe('new-prod-id');
       expect(mockDoc.set).toHaveBeenCalled();
+    });
+
+    it('should serialize dimensions into a plain object before saving', async () => {
+      storeService.getStoreById.mockResolvedValue({ storeId, sellerId });
+      mockDoc.id = 'new-prod-id';
+
+      await service.createProduct(storeId, sellerId, {
+        ...dto,
+        dimensions: { width: 80, height: 95, length: 75 } as any,
+      });
+
+      expect(mockDoc.set).toHaveBeenCalledWith(
+        expect.objectContaining({
+          dimensions: { width: 80, height: 95, length: 75 },
+        }),
+      );
     });
 
     it('should throw ForbiddenException if user does not own the store', async () => {
@@ -170,6 +187,22 @@ describe('ProductService', () => {
       expect(storeService.getStoreById).toHaveBeenCalledWith('store-1');
       expect(mockStorage.bucket).toHaveBeenCalled();
       expect(mockBucket.deleteFiles).toHaveBeenCalledTimes(2);
+      expect(mockDoc.delete).toHaveBeenCalled();
+    });
+
+    it('should still delete the document when no storage bucket is configured', async () => {
+      firebaseService.storageBucketName = undefined;
+      mockDoc.get.mockResolvedValue({
+        exists: true,
+        data: () => ({ storeId: 'store-1' }),
+      });
+      storeService.getStoreById.mockResolvedValue({ sellerId });
+      mockDoc.delete.mockResolvedValue(undefined);
+
+      const result = await service.deleteProduct(productId, sellerId);
+
+      expect(result.message).toBe('Product deleted successfully');
+      expect(mockStorage.bucket).not.toHaveBeenCalled();
       expect(mockDoc.delete).toHaveBeenCalled();
     });
   });

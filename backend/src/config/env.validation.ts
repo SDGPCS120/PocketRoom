@@ -2,6 +2,7 @@ export interface EnvironmentVariables {
   PORT: number;
   NODE_ENV: string;
   FIREBASE_SERVICE_ACCOUNT_PATH?: string;
+  FIREBASE_STORAGE_BUCKET?: string;
 }
 
 export function validate(
@@ -21,5 +22,6 @@ export function validate(
     FIREBASE_SERVICE_ACCOUNT_PATH: config.FIREBASE_SERVICE_ACCOUNT_PATH as
       | string
       | undefined,
+    FIREBASE_STORAGE_BUCKET: config.FIREBASE_STORAGE_BUCKET as string | undefined,
   };
 }
