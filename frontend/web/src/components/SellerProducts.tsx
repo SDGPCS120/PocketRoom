@@ -14,9 +14,10 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  category: string;
+  furnitureType: string;
   stock: number;
   dimensions?: { length: number; width: number; height: number };
+  materials?: string[];
   modelURL?: string;
   imageUrl?: string[];
 }
@@ -110,7 +111,7 @@ const SellerProducts: React.FC = () => {
                   </div>
                   <div className="product-info">
                     <div className="product-header-row">
-                      <span className="product-category">{product.category}</span>
+                      <span className="product-category">{product.furnitureType}</span>
                       <span className="product-price">LKR {Number(product.price).toFixed(2)}</span>
                     </div>
                     <h3 className="product-name">{product.name}</h3>

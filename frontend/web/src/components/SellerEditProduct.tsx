@@ -25,6 +25,8 @@ interface ProductData {
   furnitureType?: string;
   dimensions?: { height?: number; width?: number; length?: number };
   imageUrl?: string[];
+  materials?: string[];
+  styleTags?: string[];
   modelURL?: string;
   storeId: string;
 }
@@ -39,8 +41,10 @@ const SellerEditProduct: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: 'Sofa',
+    furnitureType: 'Sofa',
     price: '',
+    materials: '',
+    styleTags: '',
     width: '',
     height: '',
     depth: '',
@@ -71,8 +75,10 @@ const SellerEditProduct: React.FC = () => {
         setFormData({
           name: p.name ?? '',
           description: p.description ?? '',
-          category: p.furnitureType ?? 'Sofa',
+          furnitureType: p.furnitureType ?? 'Sofa',
           price: p.price?.toString() ?? '',
+          materials: p.materials?.join(', ') ?? '',
+          styleTags: p.styleTags?.join(', ') ?? '',
           width: p.dimensions?.width?.toString() ?? '',
           height: p.dimensions?.height?.toString() ?? '',
           depth: p.dimensions?.length?.toString() ?? '',
@@ -110,7 +116,9 @@ const SellerEditProduct: React.FC = () => {
         name: formData.name,
         description: formData.description,
         price: Number(formData.price),
-        furnitureType: formData.category,
+        furnitureType: formData.furnitureType,
+        materials: formData.materials.split(',').map((m: string) => m.trim()).filter((m: string) => m !== ''),
+        styleTags: formData.styleTags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== ''),
       };
       if (Object.keys(dimensions).length > 0) body.dimensions = dimensions;
 
@@ -278,8 +286,8 @@ const SellerEditProduct: React.FC = () => {
 
               <div className="form-row">
                 <div className="form-group half">
-                  <label htmlFor="category">Category *</label>
-                  <select id="category" name="category" value={formData.category} onChange={handleInputChange}>
+                  <label htmlFor="furnitureType">Category *</label>
+                  <select id="furnitureType" name="furnitureType" value={formData.furnitureType} onChange={handleInputChange}>
                     {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
@@ -290,6 +298,24 @@ const SellerEditProduct: React.FC = () => {
                     value={formData.price} onChange={handleInputChange} placeholder="29999"
                   />
                 </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="materials">Materials (Comma separated)</label>
+                <input
+                  type="text" id="materials" name="materials"
+                  value={formData.materials} onChange={handleInputChange}
+                  placeholder="e.g., Oak Wood, Metal Frame, Velvet"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="styleTags">Style Tags (Comma separated)</label>
+                <input
+                  type="text" id="styleTags" name="styleTags"
+                  value={formData.styleTags} onChange={handleInputChange}
+                  placeholder="e.g., Modern, Minimalist, Luxurious"
+                />
               </div>
             </section>
 

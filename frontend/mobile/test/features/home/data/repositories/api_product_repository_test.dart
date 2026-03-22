@@ -28,7 +28,7 @@ void main() {
             'name': 'Test Sofa',
             'price': 100.0,
             'brand': 'Test Brand',
-            'furnitureType': 'sofa',
+            'category': 'sofa',
             'dimensions': '100x100',
             'stockStatus': true,
             'rating': 4.5,

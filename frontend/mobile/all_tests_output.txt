@@ -1,0 +1,53 @@
+00:00 +0: loading C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart
+00:00 +0: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart: AppTheme ColorScheme & Extensions AppColorSchemes light has correct defaults
+00:00 +1: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart: AppTheme ColorScheme & Extensions AppTheme.lightExtension has correct defaults
+00:00 +2: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart: AppTheme ColorScheme & Extensions AppColorSchemes dark has correct overrides
+00:00 +3: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart: AppTheme ColorScheme & Extensions AppTheme.darkExtension has correct overrides
+00:00 +4: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart: AppTheme ColorScheme & Extensions AppColorSchemes light and dark are distinct
+00:05 +5: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/login_page_test.dart: LoginPage shows validation errors on empty fields
+00:14 +6: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/login_page_test.dart: LoginPage shows validation errors on empty fields
+00:14 +7: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/login_page_test.dart: LoginPage shows validation errors on empty fields
+00:14 +8: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/login_page_test.dart: LoginPage shows validation errors on empty fields
+00:14 +9: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/login_page_test.dart: LoginPage shows validation errors on empty fields
+00:14 +10: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/login_page_test.dart: LoginPage shows validation errors on empty fields
+00:15 +11: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage shows validation errors on empty fields
+00:16 +12: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage shows validation errors on empty fields
+00:17 +13: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage shows validation errors on empty fields
+00:18 +14: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage shows validation errors on empty fields
+00:18 +15: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage shows validation errors on empty fields
+00:18 +16: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage shows validation errors on empty fields
+ΓòÉΓòÉΓòí EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK Γò₧ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+The following TestFailure was thrown running a test:
+Expected: exactly one matching candidate
+  Actual: _TextWidgetFinder:<Found 0 widgets with text "Enter a valid email": []>
+   Which: means none were found but one was expected
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart:27:5)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart line 27
+The test description was:
+  SignupPage shows validation errors on empty fields
+ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ
+00:20 +16 -1: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/home/data/repositories/firestore_product_repository_test.dart: FirestoreProductRepository fetchFurniture returns list of products from Firestore
+00:20 +16 -1: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage shows validation errors on empty fields [E]
+  Test failed. See exception logs above.
+  The test description was: SignupPage shows validation errors on empty fields
+  
+00:21 +17 -1: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage validates password confirmation
+00:21 +17 -1: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/home/data/repositories/firestore_product_repository_test.dart: FirestoreProductRepository fetchFurniture handles missing fields gracefully
+--- JSON EXTRACTION FAILURE [C2tXgux0OBhojLkmpOPz]: No images found ---
+Available Keys: [name, brand, id]
+JSON Content: {name: Mini Table, brand: OfficePro, id: C2tXgux0OBhojLkmpOPz}
+00:21 +18 -1: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage validates password confirmation
+00:22 +19 -1: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage validates password confirmation
+00:22 +20 -1: C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/features/auth/presentation/signup_page_test.dart: SignupPage sanitizes username
+00:23 +21 -1: Some tests failed.

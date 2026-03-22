@@ -14,6 +14,7 @@ interface Order {
 interface Product {
   productId: string;
   name: string;
+  materials?: string[];
   modelURL?: string;
 }
 

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('AppTheme ColorScheme & Extensions', () {
     test('AppColorSchemes light has correct defaults', () {
       const colorScheme = AppColorSchemes.light;

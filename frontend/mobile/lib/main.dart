@@ -7,7 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'src/core/theme/app_theme.dart';
 import 'src/features/splash/presentation/splash_page.dart';
+import 'src/features/home/presentation/product_page.dart';
+import 'src/features/home/presentation/providers/home_provider.dart';
 import 'src/common_widgets/responsive_wrapper.dart';
+import 'src/features/home/data/models/furniture_model.dart';
 
 void _logAuth(String message) {
   final line = '[AUTH_LOG] $message';
@@ -74,6 +77,31 @@ class PocketRoomApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
+      onGenerateRoute: (settings) {
+        final name = settings.name ?? '';
+        
+        // Handle /product/:id
+        if (name.startsWith('/product/')) {
+          final parts = name.split('/');
+          if (parts.length >= 3) {
+            final productId = parts[2];
+            
+            // If furniture object is passed as argument, use it directly
+            if (settings.arguments is Furniture) {
+              return MaterialPageRoute(
+                settings: settings,
+                builder: (context) => ProductPage(furniture: settings.arguments as Furniture),
+              );
+            }
+            
+            // Fallback: This would ideally fetch from a repository/provider
+            // For now, if we don't have the object, we can't easily show the page
+            // unless we have a "ProductByIDPage" or similar that fetches.
+            // Since most navigation is internal, arguments will usually be present.
+          }
+        }
+        return null;
+      },
       home: const SplashPage(),
       builder: (context, child) => ResponsiveWrapper(child: child ?? const SizedBox.shrink()),
     );

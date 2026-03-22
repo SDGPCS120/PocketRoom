@@ -14,34 +14,10 @@ class FirestoreProductRepository implements IFurnitureRepository {
   Future<List<Furniture>> fetchFurniture() async {
     final snapshot = await _firestore.collection('products').get();
 
-    return snapshot.docs.map((doc) {
+    return snapshot.docs.map<Furniture>((doc) {
       final data = doc.data();
-
-      return Furniture(
-        id: doc.id,
-        name: _asTextOrNA(data['name']),
-        price: (data['price'] is num) ? (data['price'] as num).toDouble() : double.nan,
-        oldPrice: (data['oldPrice'] is num) ? (data['oldPrice'] as num).toDouble() : null,
-        brand: _asTextOrNA(data['brand']),
-        rating: (data['rating'] is num) ? (data['rating'] as num).toDouble() : double.nan,
-        images: _extractImages(data),
-        imageUrl: _extractImageUrl(data),
-        imagePath: _asOptionalText(data['imagePath']),
-        modelURL: _asOptionalText(data['modelURL']),
-        material: _asOptionalText(data['material']),
-        modelStatus: _asOptionalText(data['modelStatus']),
-        modelError: data['modelError']?.toString() ?? '',
-        primaryColor: _asOptionalText(data['primaryColor']),
-        productID: _asOptionalText(data['productID']).isNotEmpty
-            ? _asOptionalText(data['productID'])
-            : doc.id,
-        stockStatus: data['stockStatus'] is bool ? data['stockStatus'] as bool : null,
-        furnitureType: _asTextOrNA(data['furnitureType']),
-        dimensions: _asTextOrNA(data['dimensions']),
-        availability: _availabilityLabel(data['stockStatus']),
-        styleTags: _extractStyleTags(data['styleTags']),
-        description: _asOptionalText(data['description']),
-      );
+      // Ensure ID is included for fromJson
+      return Furniture.fromJson({...data, 'id': doc.id});
     }).toList();
   }
 
@@ -153,6 +129,46 @@ class FirestoreProductRepository implements IFurnitureRepository {
       return rawTags
           .map((e) => e.toString().trim())
           .where((tag) => tag.isNotEmpty)
+          .toList();
+    }
+    return const [];
+  }
+
+  Map<String, List<String>> _extractImagesByColor(Map<String, dynamic> data) {
+    final Map<String, List<String>> result = {};
+    final dynamic ibc = data['imagesByColor'] ?? data['images_by_color'];
+
+    if (ibc is Map) {
+      ibc.forEach((key, value) {
+        if (value is List) {
+          result[key.toString().trim()] = value
+              .map((e) => e.toString().trim())
+              .where((url) => url.isNotEmpty)
+              .toList();
+        } else if (value is String && value.toString().trim().isNotEmpty) {
+          result[key.toString().trim()] = [value.toString().trim()];
+        }
+      });
+    }
+    return result;
+  }
+
+  List<String> _extractMaterials(Map<String, dynamic> data) {
+    if (data['materials'] is List) {
+      return (data['materials'] as List)
+          .map((e) => e.toString().trim())
+          .where((m) => m.isNotEmpty)
+          .toList();
+    }
+    final singleMat = _asOptionalText(data['material']);
+    return singleMat.isNotEmpty ? [singleMat] : const [];
+  }
+
+  List<String> _extractList(dynamic rawList) {
+    if (rawList is List) {
+      return rawList
+          .map((e) => e.toString().trim())
+          .where((item) => item.isNotEmpty)
           .toList();
     }
     return const [];
