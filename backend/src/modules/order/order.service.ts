@@ -51,7 +51,8 @@ export class OrderService {
       return data;
     } catch (error) {
       console.error('[OrderService] Create Order Error:', error);
-      throw new InternalServerErrorException(`Failed to create order: ${error.message}`);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new InternalServerErrorException(`Failed to create order: ${message}`);
     }
   }
 
