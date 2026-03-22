@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../budget/ui/budget_planner_page.dart';
+import '../../../featured_collection/presentation/pages/featured_collection_page.dart' as pocket_room_featured;
 
 class FeaturedCollectionCard extends StatefulWidget {
   const FeaturedCollectionCard({super.key});
@@ -73,7 +74,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
                       _startAutoSwitchTimer();
                     },
                     children: [
-                      _buildFeaturedCard(),
+                      _buildFeaturedCard(context),
                       _buildBudgetingCard(context),
                     ],
                   ),
@@ -125,8 +126,17 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
     );
   }
 
-  Widget _buildFeaturedCard() {
-    return Container(
+  Widget _buildFeaturedCard(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const pocket_room_featured.FeaturedCollectionPage(),
+          ),
+        );
+      },
+      child: Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
@@ -216,8 +226,9 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildBudgetingCard(BuildContext context) {
     return Container(
