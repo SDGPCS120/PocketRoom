@@ -1,14 +1,23 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../api_config.dart';
+import '../firebase_providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final apiClientProvider = Provider<ApiClient>((ref) {
+  final auth = ref.watch(firebaseAuthProvider);
+  return ApiClient(auth: auth);
+});
 
 /// Centralized API client for making HTTP requests
 class ApiClient {
   late final Dio _dio;
+  final FirebaseAuth? _auth;
   
   static const String baseUrl = ApiConfig.baseUrl;
 
-  ApiClient({String? customBaseUrl}) {
+  ApiClient({FirebaseAuth? auth, String? customBaseUrl}) : _auth = auth {
     _dio = Dio(
       BaseOptions(
         baseUrl: customBaseUrl ?? baseUrl,
@@ -17,6 +26,24 @@ class ApiClient {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+        },
+      ),
+    );
+
+    // Add Auth token interceptor
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          try {
+            final user = _auth?.currentUser;
+            if (user != null) {
+              final token = await user.getIdToken();
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+          } catch (e) {
+            debugPrint('[ApiClient] Error getting auth token: $e');
+          }
+          return handler.next(options);
         },
       ),
     );

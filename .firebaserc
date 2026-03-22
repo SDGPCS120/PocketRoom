@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "pocketroom-80f62"
+  },
+  "targets": {
+    "pocketroom-80f62": {
+      "hosting": {
+        "seller": [
+          "seller-20ce5"
+        ],
+        "shop": [
+          "shop-71197"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

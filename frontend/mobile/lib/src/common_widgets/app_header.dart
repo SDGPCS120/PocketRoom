@@ -50,6 +50,7 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
             height: 30,
             child: ElevatedButton(
               onPressed: () {
+                ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('AI search coming soon')),
                 );

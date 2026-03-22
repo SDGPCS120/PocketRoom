@@ -12,7 +12,6 @@ class FeaturedCollectionCard extends StatefulWidget {
 }
 
 class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
-  bool _isVisible = true;
   PageController? _pageController;
   Timer? _autoSwitchTimer;
   int _currentPage = 0;
@@ -37,7 +36,7 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
     _autoSwitchTimer?.cancel();
     _autoSwitchTimer = Timer.periodic(_switchDuration, (_) {
       final pageController = _pageController;
-      if (!mounted || !_isVisible || pageController == null || !pageController.hasClients) {
+      if (!mounted || pageController == null || !pageController.hasClients) {
         return;
       }
 
@@ -57,72 +56,52 @@ class _FeaturedCollectionCardState extends State<FeaturedCollectionCard> {
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      child: _isVisible
-          ? Container(
-              width: double.infinity,
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              height: MediaQuery.of(context).size.width > 900 ? 300 : 226, 
-              child: Stack(
-                children: [
-                  PageView(
-                    controller: _pageController!,
-                    onPageChanged: (index) {
-                      if (!mounted) return;
-                      setState(() {
-                        _currentPage = index;
-                      });
-                      _startAutoSwitchTimer();
-                    },
-                    children: [
-                      _buildFeaturedCard(context),
-                      _buildBudgetingCard(context),
-                    ],
-                  ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 10,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(2, (index) {
-                        final isActive = index == _currentPage;
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          height: 8,
-                          width: isActive ? 20 : 8,
-                          decoration: BoxDecoration(
-                            color: isActive
-                                ? Colors.white
-                                : Colors.white.withValues(alpha: 0.45),
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                        );
-                      }),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        height: MediaQuery.of(context).size.width > 900 ? 300 : 226, 
+        child: Stack(
+          children: [
+            PageView(
+              controller: _pageController!,
+              onPageChanged: (index) {
+                if (!mounted) return;
+                setState(() {
+                  _currentPage = index;
+                });
+                _startAutoSwitchTimer();
+              },
+              children: [
+                _buildFeaturedCard(),
+                _buildBudgetingCard(context),
+              ],
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 10,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(2, (index) {
+                  final isActive = index == _currentPage;
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    height: 8,
+                    width: isActive ? 20 : 8,
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? Colors.white
+                          : Colors.white.withValues(alpha: 0.45),
+                      borderRadius: BorderRadius.circular(999),
                     ),
-                  ),
-                  Positioned(
-                    top: 18,
-                    right: 28,
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white, size: 20),
-                      onPressed: () {
-                        setState(() {
-                          _isVisible = false;
-                        });
-                      },
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      style: IconButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.12),
-                        shape: const CircleBorder(),
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                }),
               ),
-            )
-          : const SizedBox.shrink(), // Takes up zero space when hidden
+            ),
+          ],
+        ),
+      ),
     );
   }
 

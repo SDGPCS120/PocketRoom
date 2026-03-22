@@ -28,22 +28,38 @@ export class RelevanceScorerService {
         // Color matching
         if (parsedQuery.colors && parsedQuery.colors.length > 0) {
             const productColor = product.color || '';
-            const { matches, matchType } = this.colorMatcher.matches(
+            const name = (product.name || '').toLowerCase();
+            const desc = (product.description || '').toLowerCase();
+
+            let { matches, matchType } = this.colorMatcher.matches(
                 productColor,
                 parsedQuery.colors,
             );
 
+            // Fallback: Check name and description if direct color field didn't match
+            if (!matches) {
+                for (const queryColor of parsedQuery.colors) {
+                    const qc = queryColor.toLowerCase();
+                    if (name.includes(qc) || desc.includes(qc)) {
+                        matches = true;
+                        matchType = 'similar'; // Treat text-based match as similar
+                        break;
+                    }
+                }
+            }
+
             if (matches) {
                 if (matchType === 'exact') {
-                    score += 20;
+                    score += 25; // Increased boost
                     tags.push('color_exact');
                 } else if (matchType === 'similar') {
                     score += 15;
                     tags.push('color_similar');
                 }
             } else {
-                score -= 20;
-                tags.push('color_mismatch');
+                // Only penalize if it's a clear mismatch (we'll be less punishing now)
+                score -= 10;
+                tags.push('color_neutral_or_mismatch');
             }
         }
 
@@ -122,40 +138,11 @@ export class RelevanceScorerService {
     }
 
     public shouldInclude(product: any, parsedQuery: ParsedQuery): boolean {
-        // Hard constraint: color must match (exact or similar) if specified
-        if (parsedQuery.colors && parsedQuery.colors.length > 0) {
-            const productColor = product.color || '';
-            const { matches } = this.colorMatcher.matches(
-                productColor,
-                parsedQuery.colors,
-            );
-            if (!matches) {
-                return false;
-            }
-        }
+        // Soft constraints: We no longer discard items for color or type mismatches.
+        // This ensures natural language prompts like "pink chair" show the best items
+        // available even if the metadata is sparse.
 
-        // Hard constraint: product type must match if specified
-        if (parsedQuery.productTypes.length > 0) {
-            const name = (product.name || '').toLowerCase();
-            const category = (product.category || '').toLowerCase();
-            const style = (product.style || '').toLowerCase();
-
-            let anyMatch = false;
-            for (const type of parsedQuery.productTypes) {
-                const typeLower = type.toLowerCase();
-                const typeRegex = new RegExp(`\\b${typeLower}\\b`, 'i');
-                if (typeRegex.test(name) || typeRegex.test(category) || typeRegex.test(style)) {
-                    anyMatch = true;
-                    break;
-                }
-            }
-
-            if (!anyMatch) {
-                return false;
-            }
-        }
-
-        // Hard constraint: price must be within range if specified
+        // Hard constraint: price must be within range if specified (if the user says "under 50k", we should respect it)
         const productPrice =
             typeof product.price === 'number'
                 ? product.price

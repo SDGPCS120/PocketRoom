@@ -52,10 +52,19 @@ class CartItemCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  item.furniture.images.first,
-                  fit: BoxFit.cover,
-                ),
+                child: item.furniture.images.isNotEmpty
+                    ? Image.network(
+                        item.furniture.images.first,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Icon(
+                          Icons.chair,
+                          color: colorScheme.primary,
+                        ),
+                      )
+                    : Icon(
+                        Icons.chair,
+                        color: colorScheme.primary,
+                      ),
               ),
             ),
             const SizedBox(width: 16),
