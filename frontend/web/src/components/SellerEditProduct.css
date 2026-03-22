@@ -4,17 +4,51 @@
   padding: 0;
 }
 
+/* ── Banner Image ───────────────────────────────────────────────────────────── */
+.edit-product-banner {
+  height: 280px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-2, #f4f6f9);
+  position: relative;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -40px; /* pull the card up */
+}
+
+.no-image-banner {
+  color: var(--text-secondary, #9aada0);
+  font-weight: 600;
+  font-size: 14px;
+}
+
 /* ── Header ─────────────────────────────────────────────────────────────────── */
 .edit-product-header {
-  max-width: 800px;
-  margin: 0 auto 1.5rem auto;
+  margin-bottom: 1.5rem;
 }
 
 .edit-header-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.edit-product-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-text-primary, #3d1a00);
+  margin: 0 0 6px 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.brand-text {
+  color: var(--color-primary, #cd5b00);
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 .product-id-label {
@@ -31,6 +65,13 @@
   font-size: 0.78rem;
 }
 
+.badges-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
 .ar-ready-badge {
   background: linear-gradient(135deg, #f6a623, #f97316);
   color: #fff;
@@ -42,6 +83,23 @@
   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
+.trust-badge {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.badge-warranty {
+  background-color: rgba(76, 175, 80, 0.05);
+  border: 1px solid rgba(76, 175, 80, 0.1);
+  color: rgba(76, 175, 80, 0.9);
+}
+
 /* ── Cards ───────────────────────────────────────────────────────────────────── */
 .form-card {
   max-width: 800px;
@@ -51,6 +109,14 @@
   border: 1px solid var(--color-6);
   box-shadow: 0 4px 12px rgba(205, 91, 0, 0.05);
   padding: 2.5rem;
+}
+
+.overlap-card {
+  position: relative;
+  z-index: 2;
+  border-radius: 32px 32px 16px 16px !important;
+  border: none !important;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.06) !important;
 }
 
 .generation-card {

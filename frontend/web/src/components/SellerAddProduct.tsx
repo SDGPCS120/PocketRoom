@@ -155,14 +155,21 @@ const SellerAddProduct: React.FC = () => {
         ? 'Generating 3D model…'
         : 'Publish Product';
 
+  const primaryImage = imageFiles.length > 0 ? URL.createObjectURL(imageFiles[0]) : null;
+
   return (
     <AppShell pageTitle="Add New Product">
       <div className="add-product-container">
-        <div className="add-product-header">
-          <p>List a new furniture item with AR visualization capabilities.</p>
+        {/* ── Banner Image Background ─────────────────────────────────────── */}
+        <div className="add-product-banner" style={{ backgroundImage: primaryImage ? `url(${primaryImage})` : 'none' }}>
+           {!primaryImage && <div className="no-image-banner">Upload an image to see it here</div>}
         </div>
 
-      <div className="form-card">
+      <div className="form-card overlap-card">
+        <div className="add-product-header-content">
+          <h1 className="add-product-title">{formData.name || 'New Product Name'}</h1>
+          <p className="product-id-label">Brand: <span className="brand-text">POCKETROOM</span></p>
+        </div>
         {error && <div className="form-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="product-form">

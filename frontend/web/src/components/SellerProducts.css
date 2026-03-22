@@ -49,11 +49,12 @@
 }
 
 .product-card {
-  background: #fff;
-  border-radius: 14px;
-  border: 1px solid #e9edf2;
+  background: var(--color-0, #fff);
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   display: flex;
   flex-direction: column;
 }
@@ -65,10 +66,10 @@
 
 .product-image-wrapper {
   position: relative;
-  aspect-ratio: 4/3;
+  aspect-ratio: 16/10;
   width: 100%;
   background: #f8f9fb;
-  border-bottom: 1px solid #e9edf2;
+  border-bottom: 1px solid #f0f2f5;
 }
 
 .product-image {
@@ -92,13 +93,16 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(255,138,61,0.9);
+  background: linear-gradient(135deg, rgba(246, 166, 35, 0.95), rgba(249, 115, 22, 0.95));
   color: #fff;
-  padding: 4px 8px;
-  border-radius: 20px;
+  padding: 4px 10px;
+  border-radius: 8px;
   font-size: 11px;
   font-weight: 700;
   backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+  display: inline-flex;
+  align-items: center;
 }
 
 .product-info {
@@ -106,28 +110,51 @@
   flex: 1;
 }
 
-.product-category {
-  font-size: 11px;
-  color: #9aada0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-  margin-bottom: 4px;
-  display: block;
+.product-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
 }
 
-.product-name {
-  font-size: 15px;
+.product-category {
+  font-size: 11px;
+  color: var(--color-primary, #cd5b00);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
   font-weight: 700;
-  color: var(--color-text-primary);
-  margin-bottom: 6px;
 }
 
 .product-price {
   font-size: 14px;
-  font-weight: 600;
-  color: var(--color-primary);
+  font-weight: 800;
+  color: var(--color-text-primary, #3d1a00);
   margin: 0;
+}
+
+.product-name {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--color-text-primary, #3d1a00);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.product-description {
+  font-size: 13px;
+  color: var(--text-secondary, #737373);
+  margin-bottom: 10px;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.product-dimensions {
+  font-size: 12px;
+  color: var(--text-secondary, #737373);
+  background: var(--color-2, #f4f6f9);
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
 }
 
 .product-actions {

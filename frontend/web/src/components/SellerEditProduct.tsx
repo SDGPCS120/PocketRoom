@@ -209,23 +209,34 @@ const SellerEditProduct: React.FC = () => {
   // Using CheckIcon indirectly here as string doesn't take elements in label mapping
   // We'll render it custom in button
   
+  const primaryImage = product?.imageUrl?.[0] || product?.modelURL;
+
   return (
     <AppShell pageTitle="Edit Product">
       <div className="edit-product-container">
-        {/* ── Page header ─────────────────────────────────────────────────── */}
-        <div className="edit-product-header">
-          <div className="edit-header-row">
-            <div>
-              <p className="product-id-label">ID: <code>{productId}</code></p>
-            </div>
-            {product?.modelURL && (
-              <div className="ar-ready-badge"><SparklesIcon /> AR Ready</div>
-            )}
-          </div>
+        {/* ── Banner Image Background ─────────────────────────────────────── */}
+        <div className="edit-product-banner" style={{ backgroundImage: primaryImage ? `url(${primaryImage})` : 'none' }}>
+           {!primaryImage && <div className="no-image-banner">No Image Available</div>}
         </div>
 
-        {/* ── Edit form card ───────────────────────────────────────────────── */}
-        <div className="form-card">
+        {/* ── Edit form card overlapping ───────────────────────────────────── */}
+        <div className="form-card overlap-card">
+          <div className="edit-product-header">
+            <div className="edit-header-row">
+              <div>
+                <h1 className="edit-product-title">{product?.name || 'Edit Product'}</h1>
+                <p className="product-id-label">
+                  Brand: <span className="brand-text">POCKETROOM</span> • ID: <code>{productId}</code>
+                </p>
+              </div>
+              <div className="badges-container">
+                {product?.modelURL && (
+                  <div className="ar-ready-badge"><SparklesIcon /> AR Ready</div>
+                )}
+                <div className="trust-badge badge-warranty"><CheckIcon /> 1-YEAR WARRANTY</div>
+              </div>
+            </div>
+          </div>
           {saveError && <div className="form-error">{saveError}</div>}
 
           <form onSubmit={handleSave} className="product-form">
