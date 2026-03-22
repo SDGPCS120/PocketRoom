@@ -50,7 +50,9 @@ export class OrderService {
       await docRef.set(data);
       return data;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to create order');
+      console.error('[OrderService] Create Order Error:', error);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new InternalServerErrorException(`Failed to create order: ${message}`);
     }
   }
 

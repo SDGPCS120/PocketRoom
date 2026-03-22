@@ -101,6 +101,7 @@ export class PaymentService {
         items: `Order ${dto.orderId}`,
       };
     } catch (error) {
+      console.error('[PaymentService] Create Payment Error:', error);
       throw new InternalServerErrorException('Failed to create payment');
     }
   }
@@ -190,6 +191,7 @@ export class PaymentService {
       const updatedDoc = await paymentRef.get();
       return updatedDoc.data();
     } catch (error) {
+      console.error('[PaymentService] Update Payment Status Error:', error);
       throw new InternalServerErrorException('Failed to update payment status');
     }
   }
@@ -206,6 +208,7 @@ export class PaymentService {
       await docRef.delete();
       return { message: 'Payment deleted successfully' };
     } catch (error) {
+      console.error('[PaymentService] Delete Payment Error:', error);
       throw new InternalServerErrorException('Failed to delete payment');
     }
   }
