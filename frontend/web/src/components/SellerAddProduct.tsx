@@ -146,8 +146,8 @@ const SellerAddProduct: React.FC = () => {
 
     setLoadingStep('idle');
 
-    // ── Navigate to edit page ──────────────────────────────────────────────────
-    navigate(`/products/${productId}`);
+    // ── Navigate to catalog page ──────────────────────────────────────────────────
+    navigate('/products');
   };
 
   const stepLabel =
