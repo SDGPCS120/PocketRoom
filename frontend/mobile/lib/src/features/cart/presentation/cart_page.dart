@@ -88,7 +88,11 @@ class CartPage extends ConsumerWidget {
                       });
 
                       if (orderResponse.statusCode != 200 && orderResponse.statusCode != 201) {
-                        throw Exception('Failed to create order');
+                        final errorBody = orderResponse.data;
+                        final errorMessage = (errorBody is Map && errorBody.containsKey('message'))
+                            ? errorBody['message']
+                            : 'Failed to create order';
+                        throw Exception(errorMessage);
                       }
 
                       final orderId = orderResponse.data['orderId'];
