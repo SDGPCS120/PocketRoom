@@ -5,6 +5,9 @@ import 'providers/cart_provider.dart';
 import 'widgets/cart_app_bar.dart';
 import 'widgets/cart_item_card.dart';
 import 'widgets/cart_summary_bottom_bar.dart';
+import '../../../core/services/api_client.dart';
+import '../../../core/services/payment_service.dart';
+import 'package:flutter/material.dart';
 
 class CartPage extends ConsumerWidget {
   const CartPage({super.key});
@@ -55,8 +58,81 @@ class CartPage extends ConsumerWidget {
                 ),
                 CartSummaryBottomBar(
                   totalPrice: totalPrice,
-                  onCheckout: () {
-                    // TODO: Implement checkout
+                  onCheckout: () async {
+                    if (cartItems.isEmpty) return;
+
+                    try {
+                      // Show loading dialog
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+
+                      final apiClient = ref.read(apiClientProvider);
+                      final paymentService = ref.read(paymentServiceProvider);
+
+                      // 1. Create Order
+                      final orderResponse = await apiClient.post('/orders', data: {
+                        'shippingAddressId': 'default-address-id',
+                        'billingAddressId': 'default-address-id',
+                        'items': cartItems.map((item) => {
+                          'furnitureId': item.furniture.id,
+                          'quantity': item.quantity,
+                          'unitPrice': item.furniture.price,
+                        }).toList(),
+                        'totalAmount': totalPrice,
+                        'currency': 'LKR',
+                      });
+
+                      if (orderResponse.statusCode != 200 && orderResponse.statusCode != 201) {
+                        throw Exception('Failed to create order');
+                      }
+
+                      final orderId = orderResponse.data['orderId'];
+
+                      // 2. Start Payment
+                      final success = await paymentService.startPayment(orderId);
+
+                      // Close loading dialog
+                      if (context.mounted) Navigator.of(context).pop();
+
+                      if (success) {
+                        // 3. Success Feedback
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Payment Successful! Order Confirmed.'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          // Clear cart or navigate to success page
+                          // Assuming we just clear the local state for now if not auto-synced
+                        }
+                      } else {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Payment Cancelled or Failed.'),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                        }
+                      }
+                    } catch (e) {
+                      // Close loading dialog if open
+                      if (context.mounted) {
+                        if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error: $e'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
                   },
                 ),
               ],
