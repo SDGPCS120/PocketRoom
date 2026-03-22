@@ -22,26 +22,28 @@ export class BudgetService {
       const name = (data.name || doc.id).toLowerCase();
       const id = doc.id.toLowerCase();
 
-      let category = (data.category || '').toUpperCase();
+      let category = (data.category || data.furnitureType || '').toUpperCase();
 
-      if (!category) {
+      if (!category || category === 'N/A') {
         if (name.includes('chair') || id.includes('chair')) category = 'CHAIR';
         else if (name.includes('sofa') || id.includes('sofa') || name.includes('couch')) category = 'SOFA';
         else if (name.includes('table') || id.includes('table')) category = 'TABLE';
         else if (name.includes('bed') || id.includes('bed')) category = 'BED';
         else if (name.includes('wardrobe') || id.includes('wardrobe')) category = 'WARDROBE';
-        else category = id.split('-')[0].toUpperCase();
+        else if (name.includes('lamp')) category = 'LAMP';
+        else if (name.includes('rug')) category = 'RUG';
+        else category = 'OTHER';
       }
 
       const item = {
+        ...data,
         id: doc.id,
         name: data.name ?? doc.id,
         category,
         price: data.price ?? 10000,
         rating: data.rating ?? 4,
         inStock: data.inStock ?? true,
-        style: data.style,
-        color: data.color,
+        images: data.images ?? (Array.isArray(data.imageUrl) ? data.imageUrl : (data.imageUrl ? [data.imageUrl] : [])),
       };
 
       this.logger.debug(`Loaded item: ${item.id} -> Category: ${item.category}`);
