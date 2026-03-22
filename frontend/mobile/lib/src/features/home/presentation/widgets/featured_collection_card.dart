@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../budget/ui/budget_planner_page.dart';
-import '../../../featured_collection/presentation/pages/featured_collection_page.dart' as pocket_room_featured;
+import '../../../featured-collection/presentation/featured_collection_page.dart' as pocket_room_featured;
 
 class FeaturedCollectionCard extends StatefulWidget {
   const FeaturedCollectionCard({super.key});
