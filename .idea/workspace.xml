@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6ea2f19a-29b2-4120-811a-ac778383b768" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/cart/presentation/cart_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/cart/presentation/cart_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/profile/presentation/profile_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/profile/presentation/profile_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/mobile/lib/src/features/splash/presentation/splash_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/mobile/lib/src/features/splash/presentation/splash_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,9 +41,10 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "mobileEnhance",
+    "git-widget-placeholder": "Payments",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/lehan/tempo/PocketRoom/frontend/mobile",
+    "settings.editor.selected.configurable": "flutter.settings",
     "show.migrate.to.gradle.popup": "false"
   }
 }]]></component>
