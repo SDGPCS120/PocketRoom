@@ -65,7 +65,7 @@ class Furniture {
   final String brand;
   final String brandLogoUrl;
   final double rating;
-  final List<String> imageUrl;
+  final List<String> images;
   final String imagePath;
   final String modelURL;
   final String material;
@@ -93,7 +93,7 @@ class Furniture {
     required this.brand,
     this.brandLogoUrl = '',
     required this.rating,
-    required this.imageUrl,
+    required this.images,
     this.imagePath = '',
     this.modelURL = '',
     this.material = '',
@@ -113,6 +113,8 @@ class Furniture {
     this.similarProducts = const [],
     this.customersAlsoBought = const [],
   }) : colors = colors.map((e) => ProductColor.fromJson(e)).toList();
+
+  String get imageUrl => images.isNotEmpty ? images.first : '';
 
   String? getPrimaryImage() {
     String? chosen;
@@ -149,10 +151,10 @@ class Furniture {
       }
     }
 
-    // 3. Fallback to imageUrl.first
-    if (chosen == null && imageUrl.isNotEmpty) {
-      chosen = imageUrl.first;
-      source = "imageUrl.first";
+    // 3. Fallback to images.first
+    if (chosen == null && images.isNotEmpty) {
+      chosen = images.first;
+      source = "images.first";
     }
 
     // Temporary Debug Logging
@@ -160,7 +162,7 @@ class Furniture {
       debugPrint('--- IMAGE FAILURE: $name ---');
       debugPrint('Colors: ${colors.map((c) => c.name).toList()}');
       debugPrint('ImagesByColor Keys: ${imagesByColor.keys.toList()}');
-      debugPrint('ImageUrl: $imageUrl');
+      debugPrint('Images: $images');
       debugPrint('--------------------------');
     } else {
       // Optional: success log if you want to see what's working
@@ -202,8 +204,8 @@ class Furniture {
       }
     }
 
-    // 4. Append common images from imageUrl
-    result.addAll(imageUrl);
+    // 4. Append common images from images list
+    result.addAll(images);
 
     // Ensure unique and non-empty
     final finalImages = result.where((e) => e.isNotEmpty).toSet().toList();
@@ -213,7 +215,7 @@ class Furniture {
       debugPrint('Selected Color: $selectedColor');
       debugPrint('Target Color: $targetColor');
       debugPrint('ImagesByColor Keys: ${imagesByColor.keys.toList()}');
-      debugPrint('ImageUrl: $imageUrl');
+      debugPrint('Images: $images');
       debugPrint('------------------------------');
     }
 
@@ -302,7 +304,7 @@ class Furniture {
       rating: (json['rating'] is num)
           ? (json['rating'] as num).toDouble()
           : double.nan,
-      imageUrl: rawImageUrl,
+      images: rawImageUrl,
       imagePath: json['imagePath']?.toString() ?? '',
       modelURL: json['modelURL']?.toString() ?? '',
       materials: rawMaterials,
@@ -342,7 +344,7 @@ class Furniture {
       'brand': brand,
       'brandLogoUrl': brandLogoUrl,
       'rating': rating,
-      'imageUrl': imageUrl,
+      'images': images,
       'imagePath': imagePath,
       'modelURL': modelURL,
       'material': material,

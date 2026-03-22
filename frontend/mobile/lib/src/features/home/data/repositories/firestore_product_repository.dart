@@ -14,7 +14,7 @@ class FirestoreProductRepository implements IFurnitureRepository {
   Future<List<Furniture>> fetchFurniture() async {
     final snapshot = await _firestore.collection('products').get();
 
-    return snapshot.docs.map((doc) {
+    return snapshot.docs.map<Furniture>((doc) {
       final data = doc.data();
 
       return Furniture(
@@ -25,7 +25,6 @@ class FirestoreProductRepository implements IFurnitureRepository {
         brand: _asTextOrNA(data['brand']),
         rating: (data['rating'] is num) ? (data['rating'] as num).toDouble() : double.nan,
         images: _extractImages(data),
-        imageUrl: _extractImageUrl(data),
         imagePath: _asOptionalText(data['imagePath']),
         modelURL: _asOptionalText(data['modelURL']),
         material: _asOptionalText(data['material']),

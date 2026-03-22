@@ -128,7 +128,6 @@ class AiSearchProduct {
       brand: brand,
       rating: rating.toDouble(),
       images: [image],
-      imageUrl: image,
       furnitureType: furnitureType,
       dimensions: formattedDimensions,
     );
