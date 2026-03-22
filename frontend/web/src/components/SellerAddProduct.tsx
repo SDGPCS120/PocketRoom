@@ -24,6 +24,7 @@ const SellerAddProduct: React.FC = () => {
     height: '',
     depth: '',
     materials: '',
+    styleTags: '',
   });
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -103,7 +104,11 @@ const SellerAddProduct: React.FC = () => {
       }
 
       if (formData.materials) {
-        body.materials = formData.materials.split(',').map((m) => m.trim()).filter((m) => m !== '');
+        body.materials = formData.materials.split(',').map((m: string) => m.trim()).filter((m: string) => m !== '');
+      }
+
+      if (formData.styleTags) {
+        body.styleTags = formData.styleTags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== '');
       }
 
       if (Object.keys(dimensions).length > 0) {
@@ -240,6 +245,18 @@ const SellerAddProduct: React.FC = () => {
                 value={formData.materials}
                 onChange={handleInputChange}
                 placeholder="e.g., Wood, Fabric, Metal"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="styleTags">Style Tags (comma separated)</label>
+              <input
+                type="text"
+                id="styleTags"
+                name="styleTags"
+                value={formData.styleTags}
+                onChange={handleInputChange}
+                placeholder="e.g., Modern, Minimalist, Luxurious"
               />
             </div>
           </section>

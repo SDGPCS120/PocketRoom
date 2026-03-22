@@ -26,6 +26,7 @@ interface ProductData {
   dimensions?: { height?: number; width?: number; length?: number };
   imageUrl?: string[];
   materials?: string[];
+  styleTags?: string[];
   modelURL?: string;
   storeId: string;
 }
@@ -43,6 +44,7 @@ const SellerEditProduct: React.FC = () => {
     furnitureType: 'Sofa',
     price: '',
     materials: '',
+    styleTags: '',
     width: '',
     height: '',
     depth: '',
@@ -75,6 +77,7 @@ const SellerEditProduct: React.FC = () => {
           furnitureType: p.furnitureType ?? 'Sofa',
           price: p.price?.toString() ?? '',
           materials: p.materials?.join(', ') ?? '',
+          styleTags: p.styleTags?.join(', ') ?? '',
           width: p.dimensions?.width?.toString() ?? '',
           height: p.dimensions?.height?.toString() ?? '',
           depth: p.dimensions?.length?.toString() ?? '',
@@ -113,7 +116,8 @@ const SellerEditProduct: React.FC = () => {
         description: formData.description,
         price: Number(formData.price),
         furnitureType: formData.furnitureType,
-        materials: formData.materials.split(',').map(m => m.trim()).filter(m => m !== ''),
+        materials: formData.materials.split(',').map((m: string) => m.trim()).filter((m: string) => m !== ''),
+        styleTags: formData.styleTags.split(',').map((t: string) => t.trim()).filter((t: string) => t !== ''),
       };
       if (Object.keys(dimensions).length > 0) body.dimensions = dimensions;
 
@@ -275,6 +279,15 @@ const SellerEditProduct: React.FC = () => {
                   type="text" id="materials" name="materials"
                   value={formData.materials} onChange={handleInputChange}
                   placeholder="e.g., Oak Wood, Metal Frame, Velvet"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="styleTags">Style Tags (Comma separated)</label>
+                <input
+                  type="text" id="styleTags" name="styleTags"
+                  value={formData.styleTags} onChange={handleInputChange}
+                  placeholder="e.g., Modern, Minimalist, Luxurious"
                 />
               </div>
             </section>
