@@ -13,7 +13,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  category: string;
+  furnitureType: string;
   stock: number;
   dimensions?: { length: number; width: number; height: number };
   modelURL?: string;
@@ -107,7 +107,7 @@ const SellerProducts: React.FC = () => {
                     {product.modelURL && <span className="ar-badge">AR Ready</span>}
                   </div>
                   <div className="product-info">
-                    <span className="product-category">{product.category}</span>
+                    <span className="product-category">{product.furnitureType}</span>
                     <h3 className="product-name">{product.name}</h3>
                     <p className="product-price">${Number(product.price).toFixed(2)}</p>
                   </div>

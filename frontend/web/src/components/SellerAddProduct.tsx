@@ -18,7 +18,7 @@ const SellerAddProduct: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: 'Sofa',
+    furnitureType: 'Sofa',
     price: '',
     width: '',
     height: '',
@@ -94,7 +94,7 @@ const SellerAddProduct: React.FC = () => {
         name: formData.name,
         description: formData.description,
         price: Number(formData.price),
-        furnitureType: formData.category,
+        furnitureType: formData.furnitureType,
       };
 
       if (uploadedUrls.length > 0) {
@@ -198,11 +198,11 @@ const SellerAddProduct: React.FC = () => {
 
             <div className="form-row">
               <div className="form-group half">
-                <label htmlFor="category">Category *</label>
+                <label htmlFor="furnitureType">Category *</label>
                 <select
-                  id="category"
-                  name="category"
-                  value={formData.category}
+                  id="furnitureType"
+                  name="furnitureType"
+                  value={formData.furnitureType}
                   onChange={handleInputChange}
                 >
                   {CATEGORIES.map((c) => (

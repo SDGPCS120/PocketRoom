@@ -30,7 +30,7 @@ export class ConstraintsDto {
   @IsInt()
   @Min(5)
   @Max(100)
-  topKPerCategory?: number = 30;
+  topKPerFurnitureType?: number = 30;
 
   @IsOptional()
   @IsInt()
@@ -57,11 +57,11 @@ export class BudgetBundleRequestDto {
   totalBudget!: number;
 
   @IsArray()
-  requiredCategories!: string[];
+  requiredFurnitureTypes!: string[];
 
   @IsOptional()
   @IsArray()
-  optionalCategories?: string[] = [];
+  optionalFurnitureTypes?: string[] = [];
 
   @IsOptional()
   @ValidateNested()
@@ -75,7 +75,7 @@ export class BudgetBundleRequestDto {
 }
 
 export type PickedItem = {
-  category: string;
+  furnitureType: string;
   id: string;
   name: string;
   price: number;

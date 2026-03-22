@@ -39,7 +39,7 @@ const SellerEditProduct: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: 'Sofa',
+    furnitureType: 'Sofa',
     price: '',
     width: '',
     height: '',
@@ -70,7 +70,7 @@ const SellerEditProduct: React.FC = () => {
         setFormData({
           name: p.name ?? '',
           description: p.description ?? '',
-          category: p.furnitureType ?? 'Sofa',
+          furnitureType: p.furnitureType ?? 'Sofa',
           price: p.price?.toString() ?? '',
           width: p.dimensions?.width?.toString() ?? '',
           height: p.dimensions?.height?.toString() ?? '',
@@ -109,7 +109,7 @@ const SellerEditProduct: React.FC = () => {
         name: formData.name,
         description: formData.description,
         price: Number(formData.price),
-        furnitureType: formData.category,
+        furnitureType: formData.furnitureType,
       };
       if (Object.keys(dimensions).length > 0) body.dimensions = dimensions;
 
@@ -251,8 +251,8 @@ const SellerEditProduct: React.FC = () => {
 
               <div className="form-row">
                 <div className="form-group half">
-                  <label htmlFor="category">Category *</label>
-                  <select id="category" name="category" value={formData.category} onChange={handleInputChange}>
+                  <label htmlFor="furnitureType">Category *</label>
+                  <select id="furnitureType" name="furnitureType" value={formData.furnitureType} onChange={handleInputChange}>
                     {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>

@@ -39,7 +39,7 @@ export class ProductLoaderService {
                         return {
                             id: String(data.productID || doc.id),
                             name: this.ensureString(data.name),
-                            category: this.ensureString(data.category),
+                            furnitureType: this.ensureString(data.furnitureType || data.category),
                             color: this.ensureString(data.primaryColor || data.color),
                             material: this.ensureString(data.material),
                             style: Array.isArray(data.styleTags)

@@ -1,7 +1,7 @@
 export type FurnitureItem = {
   id: string;
   name: string;
-  category: string;
+  furnitureType: string;
   price: number;
   style?: string;
   color?: string;
@@ -15,7 +15,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P001',
     name: 'Velvet Accent Chair',
-    category: 'Chair',
+    furnitureType: 'Chair',
     price: 58900,
     style: 'Modern',
     color: 'Pink',
@@ -26,7 +26,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P002',
     name: 'Ergonomic Office Chair',
-    category: 'Chair',
+    furnitureType: 'Chair',
     price: 85000,
     style: 'Modern',
     color: 'Black',
@@ -37,7 +37,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P003',
     name: 'Boho Rattan Chair',
-    category: 'Chair',
+    furnitureType: 'Chair',
     price: 60000,
     style: 'Bohemian',
     color: 'Natural',
@@ -48,7 +48,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P004',
     name: 'Dining Chair Set (x2)',
-    category: 'Chair',
+    furnitureType: 'Chair',
     price: 70000,
     style: 'Rustic',
     color: 'Walnut',
@@ -59,7 +59,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P005',
     name: 'Lounge Recliner',
-    category: 'Chair',
+    furnitureType: 'Chair',
     price: 110000,
     style: 'Traditional',
     color: 'Brown',
@@ -72,7 +72,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P006',
     name: 'Wooden Bed Frame',
-    category: 'Bed',
+    furnitureType: 'Bed',
     price: 120000,
     style: 'Modern',
     color: 'Oak',
@@ -83,7 +83,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P007',
     name: 'Platform Bed with Storage',
-    category: 'Bed',
+    furnitureType: 'Bed',
     price: 160000,
     style: 'Modern',
     color: 'Charcoal',
@@ -94,7 +94,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P008',
     name: 'King Size Canopy Bed',
-    category: 'Bed',
+    furnitureType: 'Bed',
     price: 250000,
     style: 'Classic',
     color: 'Mahogany',
@@ -105,7 +105,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P009',
     name: 'Minimalist Metal Bed',
-    category: 'Bed',
+    furnitureType: 'Bed',
     price: 85000,
     style: 'Minimalist',
     color: 'Black',
@@ -116,7 +116,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P010',
     name: 'Tufted Headboard Bed',
-    category: 'Bed',
+    furnitureType: 'Bed',
     price: 145000,
     style: 'Contemporary',
     color: 'Grey',
@@ -129,7 +129,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P011',
     name: 'Wardrobe (2-door)',
-    category: 'Wardrobe',
+    furnitureType: 'Wardrobe',
     price: 90000,
     style: 'Modern',
     color: 'Oak',
@@ -140,7 +140,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P012',
     name: 'Sliding Mirror Wardrobe',
-    category: 'Wardrobe',
+    furnitureType: 'Wardrobe',
     price: 180000,
     style: 'Contemporary',
     color: 'White',
@@ -151,7 +151,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P013',
     name: 'Vintage Wooden Armoire',
-    category: 'Wardrobe',
+    furnitureType: 'Wardrobe',
     price: 150000,
     style: 'Vintage',
     color: 'Cherry',
@@ -162,7 +162,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P014',
     name: 'Corner Wardrobe Unit',
-    category: 'Wardrobe',
+    furnitureType: 'Wardrobe',
     price: 120000,
     style: 'Modern',
     color: 'Black',
@@ -173,7 +173,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P015',
     name: 'Open Closet System',
-    category: 'Wardrobe',
+    furnitureType: 'Wardrobe',
     price: 75000,
     style: 'Industrial',
     color: 'Natural',
@@ -186,7 +186,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P016',
     name: 'Mid-Century Sofa',
-    category: 'Sofa',
+    furnitureType: 'Sofa',
     price: 250000,
     style: 'Mid-Century Modern',
     color: 'Teal',
@@ -197,7 +197,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P017',
     name: 'Leather Loveseat',
-    category: 'Sofa',
+    furnitureType: 'Sofa',
     price: 320000,
     style: 'Traditional',
     color: 'Brown',
@@ -208,7 +208,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P018',
     name: 'L-Shaped Sectional',
-    category: 'Sofa',
+    furnitureType: 'Sofa',
     price: 450000,
     style: 'Modern',
     color: 'Light Grey',
@@ -219,7 +219,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P019',
     name: 'Sleeper Futon',
-    category: 'Sofa',
+    furnitureType: 'Sofa',
     price: 120000,
     style: 'Minimalist',
     color: 'Navy Blue',
@@ -230,7 +230,7 @@ export const MOCK_FURNITURE: FurnitureItem[] = [
   {
     id: 'P020',
     name: 'Curved Bouclé Sofa',
-    category: 'Sofa',
+    furnitureType: 'Sofa',
     price: 380000,
     style: 'Contemporary',
     color: 'Cream',

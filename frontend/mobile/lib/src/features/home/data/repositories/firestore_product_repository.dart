@@ -36,7 +36,7 @@ class FirestoreProductRepository implements IFurnitureRepository {
             ? _asOptionalText(data['productID'])
             : doc.id,
         stockStatus: data['stockStatus'] is bool ? data['stockStatus'] as bool : null,
-        furnitureType: _asTextOrNA(data['furnitureType']),
+        furnitureType: data['furnitureType']?.toString() ?? 'N/A',
         dimensions: _asTextOrNA(data['dimensions']),
         availability: _availabilityLabel(data['stockStatus']),
         styleTags: _extractStyleTags(data['styleTags']),

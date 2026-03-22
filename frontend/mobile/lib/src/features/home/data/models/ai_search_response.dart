@@ -57,7 +57,7 @@ class AiSearchProduct {
   final int id;
   final String name;
   final num price;
-  final String category;
+  final String furnitureType;
   final String color;
   final String material;
   final String style;
@@ -71,7 +71,7 @@ class AiSearchProduct {
     required this.id,
     required this.name,
     required this.price,
-    required this.category,
+    required this.furnitureType,
     required this.color,
     required this.material,
     required this.style,
@@ -98,7 +98,7 @@ class AiSearchProduct {
       id: parsedId,
       name: json['name'] as String,
       price: json['price'] as num,
-      category: json['category'] as String,
+      furnitureType: json['furnitureType'] as String? ?? json['category'] as String? ?? '',
       color: json['color'] as String,
       material: json['material'] as String,
       style: json['style'] as String,
@@ -129,7 +129,7 @@ class AiSearchProduct {
       rating: rating.toDouble(),
       images: [image],
       imageUrl: image,
-      furnitureType: category,
+      furnitureType: furnitureType,
       dimensions: formattedDimensions,
     );
   }

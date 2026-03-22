@@ -49,7 +49,7 @@ class ProductSpecifications extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         ...specs.map((s) => _SpecTile(title: s.label, value: s.value)),
-        _SpecTile(title: 'Category', value: f.furnitureType),
+        _SpecTile(title: 'Furniture Type', value: f.furnitureType),
         if (f.styleTags.isNotEmpty)
           _SpecTile(title: 'Style Tags', value: f.styleTags.join(', ')),
       ],
