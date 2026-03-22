@@ -1,69 +1,65 @@
-# PocketRoom Backend - NestJS AI Search
+# PocketRoom Backend
 
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+This is the backend server for PocketRoom, built using the progressive Node.js framework, NestJS. It provides an intelligent furniture search API utilizing Natural Language Processing (NLP) along with essential e-commerce endpoints.
 
-## Description
+## Features
+- AI Search Engine: Smart query parsing and entity extraction for product types, colors, and materials.
+- Color Similarity Matching: Finds products in similar shade families.
+- ML-Based Relevance: Scores products based on multiple semantic signals.
+- Modular Architecture: Heavily decoupled feature sets including Authentication using Firebase Admin.
+- Automated API Documentation: Integrated Swagger UI for real-time endpoint exploration.
 
-A modular NestJS backend providing intelligent furniture search with NLP capabilities. This project has been migrated from Express.js/FastAPI to a robust NestJS architecture.
+## Tech Stack
+- Framework: NestJS v11 (TypeScript)
+- Authentication: Firebase Admin
+- NLP Processing: natural package
+- Task Queueing: BullMQ
+- Documentation: Swagger UI Express
+- Validation: Class-validator and Class-transformer
 
-## 🎯 AI Search Features
+## Project Structure
 
-- **AI-powered natural language search:** Understands complex user queries.
-- **Smart query parsing:** Entity extraction for product types, colors, and materials.
-- **Color similarity matching:** Finds products in similar shade families.
-- **ML-based relevance ranking:** Scores products based on multiple semantic signals.
-
-## Project setup
-
-```bash
-$ npm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run dev
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-```
-
-## 📁 Project Structure
-
-Following a modular feature-based structure:
-```
+```text
 backend/
-├── src/
-│   ├── features/
-│   │   ├── search/          # AI Search module
-│   │   │   ├── search.service.ts
-│   │   │   ├── search.controller.ts
-│   │   │   └── ...
-│   │   ├── app.module.ts
-│   │   └── main.ts
 ├── data/
-│   └── products.json        # Product database
-└── ...
+│   └── products.json          # Formatted product data catalogs
+├── src/
+│   ├── config/                # Environment configurations
+│   ├── features/              # Modular backend services
+│   │   ├── search/            # AI Search features and controllers
+│   │   └── main.ts            # Entrypoint
+│   └── ...
+├── test/                      # E2E test suites
+├── dockerfile                 # Containerization instructions
+└── package.json               # Scripts and dependencies
 ```
 
-## Resources
+## Setup Instructions
 
-- [NestJS Documentation](https://docs.nestjs.com)
-- [NLP-based Search Logic](src/features/search/README.md) (if it exists)
+### Environment Setup
+1. Place your Firebase service-account.json and google-services.json securely at the root of the backend folder.
+2. Initialize environment variables via a .env file as outlined in .env.example.
 
-## License
+### Installation and Running
+1. Install Dependencies
+```bash
+npm install
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+2. Run the Development Server
+```bash
+# standard development
+npm run start
+
+# watch mode (recommended)
+npm run start:dev
+```
+
+3. Production Build
+```bash
+npm run build
+npm run start:prod
+```
+
+## API Overview
+Once the server is running on the default local port, explore the complete live documentation via Swagger UI. Common domains include `/search`, `/products`, `/orders`, and `/users`.
