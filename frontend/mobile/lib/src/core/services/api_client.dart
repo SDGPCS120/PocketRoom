@@ -1,6 +1,7 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import '../api_config.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
 
 /// Centralized API client for making HTTP requests
 class ApiClient {
