@@ -25,6 +25,7 @@ interface ProductData {
   furnitureType?: string;
   dimensions?: { height?: number; width?: number; length?: number };
   imageUrl?: string[];
+  materials?: string[];
   modelURL?: string;
   storeId: string;
 }
@@ -41,6 +42,7 @@ const SellerEditProduct: React.FC = () => {
     description: '',
     furnitureType: 'Sofa',
     price: '',
+    materials: '',
     width: '',
     height: '',
     depth: '',
@@ -72,6 +74,7 @@ const SellerEditProduct: React.FC = () => {
           description: p.description ?? '',
           furnitureType: p.furnitureType ?? 'Sofa',
           price: p.price?.toString() ?? '',
+          materials: p.materials?.join(', ') ?? '',
           width: p.dimensions?.width?.toString() ?? '',
           height: p.dimensions?.height?.toString() ?? '',
           depth: p.dimensions?.length?.toString() ?? '',
@@ -110,6 +113,7 @@ const SellerEditProduct: React.FC = () => {
         description: formData.description,
         price: Number(formData.price),
         furnitureType: formData.furnitureType,
+        materials: formData.materials.split(',').map(m => m.trim()).filter(m => m !== ''),
       };
       if (Object.keys(dimensions).length > 0) body.dimensions = dimensions;
 
@@ -263,6 +267,15 @@ const SellerEditProduct: React.FC = () => {
                     value={formData.price} onChange={handleInputChange} placeholder="29999"
                   />
                 </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="materials">Materials (Comma separated)</label>
+                <input
+                  type="text" id="materials" name="materials"
+                  value={formData.materials} onChange={handleInputChange}
+                  placeholder="e.g., Oak Wood, Metal Frame, Velvet"
+                />
               </div>
             </section>
 

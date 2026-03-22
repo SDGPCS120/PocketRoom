@@ -23,6 +23,7 @@ const SellerAddProduct: React.FC = () => {
     width: '',
     height: '',
     depth: '',
+    materials: '',
   });
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -99,6 +100,10 @@ const SellerAddProduct: React.FC = () => {
 
       if (uploadedUrls.length > 0) {
         body.imageUrl = uploadedUrls;
+      }
+
+      if (formData.materials) {
+        body.materials = formData.materials.split(',').map((m) => m.trim()).filter((m) => m !== '');
       }
 
       if (Object.keys(dimensions).length > 0) {
@@ -224,6 +229,18 @@ const SellerAddProduct: React.FC = () => {
                   placeholder="29999"
                 />
               </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="materials">Materials (comma separated)</label>
+              <input
+                type="text"
+                id="materials"
+                name="materials"
+                value={formData.materials}
+                onChange={handleInputChange}
+                placeholder="e.g., Wood, Fabric, Metal"
+              />
             </div>
           </section>
 
