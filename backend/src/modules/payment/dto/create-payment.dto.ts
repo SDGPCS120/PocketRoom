@@ -7,13 +7,14 @@ export class CreatePaymentDto {
 
   @IsNumber()
   @Min(0)
-  amount!: number;
+  @IsOptional()
+  amount?: number;
 
   @IsString()
   @IsOptional()
   currency?: string;
 
   @IsString()
-  @IsNotEmpty()
-  paymentMethod!: string;
+  @IsOptional()
+  paymentMethod?: string;
 }

@@ -23,7 +23,7 @@ type AuthenticatedRequest = Request & {
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post()
+  @Post('create')
   createPayment(@Req() req: AuthenticatedRequest, @Body() dto: CreatePaymentDto) {
     const userId = req.user.uid;
     return this.paymentService.createPayment(userId, dto);
@@ -61,5 +61,15 @@ export class PaymentController {
   @Delete(':paymentId')
   deletePayment(@Param('paymentId') paymentId: string) {
     return this.paymentService.deletePayment(paymentId);
+  }
+
+  @Post('verify')
+  verifyPayment(@Body() body: { orderId: string }) {
+    return this.paymentService.verifyPayment(body.orderId);
+  }
+
+  @Post('notify')
+  handleNotify(@Body() body: any) {
+    return this.paymentService.handleNotify(body);
   }
 }

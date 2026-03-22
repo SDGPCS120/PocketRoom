@@ -11,9 +11,14 @@ import {
   UpdatePaymentStatusDto,
 } from './dto/update-payment-status.dto';
 import { OrderStatus } from '../order/dto/create-order.dto';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class PaymentService {
+  private readonly MERCHANT_ID = '4OVybzavqDY4JH5Ex7E22E3PM';
+  private readonly APP_SECRET = '8RiWi2kyWOY49Y1ZRVq2sP4OfEWgFMnh44aBQAfI5uHB';
+  private readonly NOTIFY_URL = 'https://pocketroom-backend-93470454666.asia-south1.run.app/payments/notify';
+
   constructor(private readonly firebase: FirebaseService) {}
 
   private paymentCollection() {
@@ -24,6 +29,30 @@ export class PaymentService {
     return this.firebase.firestore.collection('orders');
   }
 
+  private generatePayHereHash(orderId: string, amount: number, currency: string): string {
+    const hashedSecret = crypto
+      .createHash('md5')
+      .update(this.APP_SECRET)
+      .digest('hex')
+      .toUpperCase();
+    
+    // Amount must be formatted to 2 decimal places for PayHere hash
+    const amountFormatted = amount.toFixed(2);
+    
+    const mainHashString = 
+      this.MERCHANT_ID + 
+      orderId + 
+      amountFormatted + 
+      currency + 
+      hashedSecret;
+    
+    return crypto
+      .createHash('md5')
+      .update(mainHashString)
+      .digest('hex')
+      .toUpperCase();
+  }
+
   async createPayment(userId: string, dto: CreatePaymentDto) {
     const orderDoc = await this.orderCollection().doc(dto.orderId).get();
 
@@ -31,16 +60,22 @@ export class PaymentService {
       throw new NotFoundException('Order not found');
     }
 
+    const orderData = orderDoc.data()!;
+    const amount = dto.amount ?? orderData.totalAmount;
+    const currency = dto.currency ?? orderData.currency ?? 'LKR';
+
     const customId = generateMeaningfulId('payment-' + Date.now());
     const docRef = this.paymentCollection().doc(customId);
 
-    const data = {
+    const hash = this.generatePayHereHash(dto.orderId, amount, currency);
+
+    const paymentData = {
       paymentId: docRef.id,
       orderId: dto.orderId,
       customerId: userId,
-      amount: dto.amount,
-      currency: dto.currency ?? 'LKR',
-      paymentMethod: dto.paymentMethod,
+      amount: amount,
+      currency: currency,
+      paymentMethod: dto.paymentMethod ?? 'PAYHERE',
       paymentStatus: PaymentStatus.PENDING,
       transactionReference: null,
       paidAt: null,
@@ -49,8 +84,22 @@ export class PaymentService {
     };
 
     try {
-      await docRef.set(data);
-      return data;
+      await docRef.set(paymentData);
+      
+      // Return PayHere specific object format for mobile SDK
+      return {
+        merchant_id: this.MERCHANT_ID,
+        order_id: dto.orderId,
+        amount: amount,
+        currency: currency,
+        hash: hash,
+        first_name: orderData.firstName ?? 'Customer',
+        last_name: orderData.lastName ?? '',
+        email: orderData.email ?? '',
+        phone: orderData.phone ?? '',
+        notify_url: this.NOTIFY_URL,
+        items: `Order ${dto.orderId}`,
+      };
     } catch (error) {
       throw new InternalServerErrorException('Failed to create payment');
     }
@@ -159,5 +208,43 @@ export class PaymentService {
     } catch (error) {
       throw new InternalServerErrorException('Failed to delete payment');
     }
+  }
+
+  async verifyPayment(orderId: string) {
+    const payment = (await this.getPaymentByOrderId(orderId)) as any;
+    if (!payment) {
+      throw new NotFoundException('Payment not found');
+    }
+
+    if (payment.paymentStatus !== PaymentStatus.SUCCESS) {
+      return this.updatePaymentStatus(payment.paymentId, {
+        paymentStatus: PaymentStatus.SUCCESS,
+        transactionReference: 'VERIFIED_BY_CLIENT',
+      });
+    }
+
+    return payment;
+  }
+
+  async handleNotify(data: any) {
+    const { order_id, status_code, payment_id: transactionReference } = data;
+
+    // status_code 2 means success in PayHere
+    if (status_code == 2 || status_code === '2') {
+      try {
+        const payment = await this.getPaymentByOrderId(order_id);
+        if (payment) {
+          await this.updatePaymentStatus(payment.paymentId, {
+            paymentStatus: PaymentStatus.SUCCESS,
+            transactionReference: transactionReference,
+          });
+        }
+      } catch (error) {
+        // Payment might not exist yet or already updated
+        console.error('[PaymentService] Notify error:', error);
+      }
+    }
+    
+    return { status: 'acknowledged' };
   }
 }
