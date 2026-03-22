@@ -31,6 +31,7 @@ dependencies:
   url_launcher: ^6.3.1
   speech_to_text: ^7.0.0
   permission_handler: ^11.3.1
+  payhere_mobilesdk_flutter: ^3.0.3
 
 dev_dependencies:
   flutter_test:
