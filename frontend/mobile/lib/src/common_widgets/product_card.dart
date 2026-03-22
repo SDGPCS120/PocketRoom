@@ -237,6 +237,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                         return;
                       }
                       ref.read(favoritesProvider.notifier).toggleFavorite(furniture);
+                      ScaffoldMessenger.of(context).clearSnackBars();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(

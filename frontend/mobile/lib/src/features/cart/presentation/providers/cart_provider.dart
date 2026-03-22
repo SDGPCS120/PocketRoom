@@ -39,6 +39,21 @@ class CartNotifier extends Notifier<List<CartItem>> {
     unawaited(_persistCartForSignedInUser());
   }
 
+  void addItems(List<CartItem> newItems) {
+    final List<CartItem> updatedState = List<CartItem>.from(state);
+    for (final newItem in newItems) {
+      final index = updatedState.indexWhere((item) => item.furniture.id == newItem.furniture.id);
+      if (index != -1) {
+        final existing = updatedState[index];
+        updatedState[index] = existing.copyWith(quantity: existing.quantity + newItem.quantity);
+      } else {
+        updatedState.add(newItem);
+      }
+    }
+    state = updatedState;
+    unawaited(_persistCartForSignedInUser());
+  }
+
   void removeItem(String furnitureId) {
     state = state.where((item) => item.furniture.id != furnitureId).toList();
     unawaited(_persistCartForSignedInUser());

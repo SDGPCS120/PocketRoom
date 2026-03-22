@@ -2,7 +2,6 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy Flutter web preview to Firebase Hosting on PR
-
 on:
   pull_request:
     paths:
@@ -40,4 +39,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_POCKETROOM_80F62 }}
           projectId: pocketroom-80f62
-          entryPoint: frontend/mobile
+          target: shop

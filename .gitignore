@@ -28,6 +28,9 @@ pnpm-debug.log*
 service-account.json
 firebase-adminsdk*.json
 google-services.json
+.firebase/
+frontend/web/.firebase/
+public/
 
 # ======================
 # OS files
@@ -82,3 +85,6 @@ pids
 # ======================
 *.swp
 *.swo
+
+# Local scratch / one-off scripts
+backend/test-flow.js
