@@ -16,6 +16,7 @@ interface Product {
   furnitureType: string;
   stock: number;
   dimensions?: { length: number; width: number; height: number };
+  materials?: string[];
   modelURL?: string;
 }
 
