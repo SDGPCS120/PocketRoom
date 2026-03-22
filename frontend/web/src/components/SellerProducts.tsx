@@ -133,7 +133,23 @@ const SellerProducts: React.FC = () => {
                     >
                       Edit
                     </button>
-                    <button className="btn-sm btn-danger" onClick={() => alert('Delete functionality not implemented yet')}>
+                    <button 
+                      className="btn-sm btn-danger" 
+                      onClick={async () => {
+                        const targetId = product.productId || (product as any).id;
+                        if (!targetId) return;
+                        if (!window.confirm(`Are you sure you want to completely delete "${product.name}"? This action cannot be undone and will remove all associated images and 3D models.`)) {
+                          return;
+                        }
+                        try {
+                          await api.delete(`/products/${targetId}`);
+                          setProducts(prev => prev.filter(p => p.productId !== targetId && (p as any).id !== targetId));
+                        } catch (err) {
+                          console.error('Failed to delete product:', err);
+                          alert('Failed to delete product. Please try again.');
+                        }
+                      }}
+                    >
                       Delete
                     </button>
                   </div>
