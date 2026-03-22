@@ -7,7 +7,7 @@ import '../auth_text_field.dart';
 import '../auth_confirm_password_dialog.dart';
 import '../../signup_page.dart';
 import '../../username_page.dart';
-import '../../../../home/presentation/home_page.dart';
+import '../../../../home/presentation/main_screen.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
@@ -38,10 +38,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   void _handleOutcome(AuthOutcome outcome) {
     if (!mounted) return;
     if (outcome == AuthOutcome.needsUsername) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const UsernamePage()));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const UsernamePage()),
+      );
     } else {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HomePage()),
+        MaterialPageRoute(builder: (_) => const MainScreen()),
         (route) => false,
       );
     }
@@ -51,10 +53,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
     try {
-      final outcome = await ref.read(authControllerProvider).signInWithEmailPassword(
-        _emailController.text.trim(),
-        _passwordController.text,
-      );
+      final outcome = await ref
+          .read(authControllerProvider)
+          .signInWithEmailPassword(
+            _emailController.text.trim(),
+            _passwordController.text,
+          );
       _handleOutcome(outcome);
     } catch (e) {
       _showMessage(e.toString());
@@ -63,19 +67,22 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     }
   }
 
-
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     try {
       final outcome = await ref.read(authControllerProvider).signInWithGoogle();
       _handleOutcome(outcome);
-    } on RequiresPasswordException catch(req) {
+    } on RequiresPasswordException catch (req) {
+      if (!mounted) return;
       final password = await AuthConfirmPasswordDialog.show(context, req.email);
+      if (!mounted) return;
       if (password != null && password.isNotEmpty) {
         try {
-          final outcome = await ref.read(authControllerProvider).linkExistingAccount(req.email, password, req.credential);
+          final outcome = await ref
+              .read(authControllerProvider)
+              .linkExistingAccount(req.email, password, req.credential);
           _handleOutcome(outcome);
-        } catch(e) {
+        } catch (e) {
           _showMessage('Failed to link account: ${e.toString()}');
         }
       } else {
@@ -96,8 +103,8 @@ class _LoginFormState extends ConsumerState<LoginForm> {
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(
-        horizontal: isDesktop ? 40 : 28, 
-        vertical: isDesktop ? 40 : 16
+        horizontal: isDesktop ? 40 : 28,
+        vertical: isDesktop ? 40 : 16,
       ),
       child: Form(
         key: _formKey,
@@ -115,9 +122,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
             const SizedBox(height: 6),
             Text(
               'Sign In',
-              style: AppTextStyles.h1(context).copyWith(
-                color: colorScheme.onSurface,
-              ),
+              style: AppTextStyles.h1(
+                context,
+              ).copyWith(color: colorScheme.onSurface),
             ),
             const SizedBox(height: 36),
             AuthTextField(
@@ -125,7 +132,9 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               label: 'Email',
               hint: 'you@example.com',
               keyboardType: TextInputType.emailAddress,
-              validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+              validator: (v) => (v == null || !v.contains('@'))
+                  ? 'Enter a valid email'
+                  : null,
             ),
             const SizedBox(height: 16),
             AuthTextField(
@@ -138,9 +147,11 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
                   color: colorScheme.onSurfaceVariant,
                 ),
-                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                onPressed: () =>
+                    setState(() => _obscurePassword = !_obscurePassword),
               ),
-              validator: (v) => (v == null || v.isEmpty) ? 'Enter your password' : null,
+              validator: (v) =>
+                  (v == null || v.isEmpty) ? 'Enter your password' : null,
             ),
             const SizedBox(height: 12),
             Align(
@@ -168,9 +179,18 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                     ? SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: colorScheme.onPrimary),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: colorScheme.onPrimary,
+                        ),
                       )
-                    : const Text('Log in', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                    : const Text(
+                        'Log in',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 16),
@@ -201,8 +221,12 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Continue with Google', 
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: colorScheme.onSurface)
+                      'Continue with Google',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onSurface,
+                      ),
                     ),
                   ],
                 ),
@@ -214,23 +238,23 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               children: [
                 Text(
                   "Don't have an account? ",
-                  style: AppTextStyles.bodyLarge(context).copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                  style: AppTextStyles.bodyLarge(
+                    context,
+                  ).copyWith(color: colorScheme.onSurfaceVariant),
                 ),
                 GestureDetector(
                   onTap: _isLoading
                       ? null
                       : () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const SignupPage()),
-                          ),
+                          context,
+                          MaterialPageRoute(builder: (_) => const SignupPage()),
+                        ),
                   child: Text(
                     'Create one',
-                          style: AppTextStyles.bodyMedium(context).copyWith(
-                            color: colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
+                    style: AppTextStyles.bodyMedium(context).copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],

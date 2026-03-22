@@ -1,4 +1,4 @@
-import type { FurnitureItem } from '../../../furniture/furniture.mock';
+import { FurnitureItem } from './types';
 import type { PreferencesDto } from '../dto/budget-bundle.dto';
 
 export function norm(s: string): string {

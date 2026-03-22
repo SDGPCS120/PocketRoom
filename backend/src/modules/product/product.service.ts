@@ -41,7 +41,7 @@ export class ProductService {
 
     async getAllProducts() {
         const snapshot = await this.collection().get();
-        return snapshot.docs.map((doc) => doc.data());
+        return snapshot.docs.map((doc) => ({ productId: doc.id, ...doc.data() }));
     }
 
     async getProductById(productId: string) {
@@ -106,6 +106,6 @@ export class ProductService {
             .where('storeId', '==', storeId)
             .get();
 
-        return snapshot.docs.map((doc) => doc.data());
+        return snapshot.docs.map((doc) => ({ productId: doc.id, ...doc.data() }));
     }
 }

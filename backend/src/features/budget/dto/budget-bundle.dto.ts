@@ -9,7 +9,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import type { FurnitureItem } from '../../../furniture/furniture.mock';
+import { FurnitureItem } from '../algo/types';
 
 export class PreferencesDto {
   @IsOptional()

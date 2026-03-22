@@ -7,6 +7,7 @@ import './SellerProducts.css';
 
 function WarningIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{color: '#e53e3e'}}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>; }
 function BoxEmptyIcon() { return <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{color: '#9aada0'}}><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>; }
+function SparklesIcon() { return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', marginRight: '4px', verticalAlign: 'text-bottom' }}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>; }
 
 interface Product {
   productId: string;
@@ -18,6 +19,7 @@ interface Product {
   dimensions?: { length: number; width: number; height: number };
   materials?: string[];
   modelURL?: string;
+  imageUrl?: string[];
 }
 
 const SellerProducts: React.FC = () => {
@@ -99,21 +101,36 @@ const SellerProducts: React.FC = () => {
               {products.map((product) => (
                 <div key={product.productId} className="product-card">
                   <div className="product-image-wrapper">
-                    {product.modelURL ? (
-                       <img src={product.modelURL} alt={product.name} className="product-image" 
+                    {(product.imageUrl?.[0] || product.modelURL) ? (
+                       <img src={product.imageUrl?.[0] || product.modelURL} alt={product.name} className="product-image" 
                             onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                     ) : (
                       <div className="product-placeholder">No Image Available</div>
                     )}
-                    {product.modelURL && <span className="ar-badge">AR Ready</span>}
+                    {product.modelURL && <span className="ar-badge"><SparklesIcon /> AR Ready</span>}
                   </div>
                   <div className="product-info">
-                    <span className="product-category">{product.furnitureType}</span>
+                    <div className="product-header-row">
+                      <span className="product-category">{product.furnitureType}</span>
+                      <span className="product-price">LKR {Number(product.price).toFixed(2)}</span>
+                    </div>
                     <h3 className="product-name">{product.name}</h3>
-                    <p className="product-price">${Number(product.price).toFixed(2)}</p>
+                    <p className="product-description">{product.description?.substring(0, 60)}{product.description && product.description.length > 60 ? '...' : ''}</p>
+                    {product.dimensions && (
+                      <div className="product-dimensions">
+                        {product.dimensions.width}x{product.dimensions.height}x{product.dimensions.length} cm
+                      </div>
+                    )}
                   </div>
                   <div className="product-actions">
-                    <button className="btn-sm btn-secondary" onClick={() => navigate(`/products/${product.productId}`)}>
+                    <button 
+                      className="btn-sm btn-secondary" 
+                      onClick={() => {
+                        const targetId = product.productId || (product as any).id;
+                        if (targetId) navigate(`/products/${targetId}`);
+                        else alert('Error: Product ID not found.');
+                      }}
+                    >
                       Edit
                     </button>
                     <button className="btn-sm btn-danger" onClick={() => alert('Delete functionality not implemented yet')}>

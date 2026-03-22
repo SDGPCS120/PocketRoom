@@ -1,4 +1,5 @@
 export type Candidate = {
+  category: string;
   product: any;
   price: number;
   score: number;

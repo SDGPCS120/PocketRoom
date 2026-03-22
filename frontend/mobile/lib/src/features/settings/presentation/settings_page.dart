@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../features/home/presentation/main_screen.dart';
 import 'providers/settings_provider.dart';
 import 'widgets/settings_app_bar.dart';
@@ -22,6 +21,51 @@ class SettingsPage extends ConsumerWidget {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const MainScreen()),
         (route) => false,
+      );
+    }
+  }
+
+  Future<void> _handleDeleteAccount(BuildContext context, WidgetRef ref) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete account?'),
+          content: const Text(
+            'This will permanently remove your profile information from the database. This action cannot be undone.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true || !context.mounted) {
+      return;
+    }
+
+    try {
+      final success = await ref.read(settingsProvider.notifier).deleteAccount();
+      if (success && context.mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const MainScreen()),
+          (route) => false,
+        );
+      }
+    } catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString().replaceFirst('Exception: ', '')),
+        ),
       );
     }
   }
@@ -56,7 +100,10 @@ class SettingsPage extends ConsumerWidget {
                 onOrderUpdatesChanged: notifier.toggleOrderUpdates,
               ),
               const SizedBox(height: 20),
-              const SettingsPrivacySection(),
+              SettingsPrivacySection(
+                isDeletingAccount: state.isDeletingAccount,
+                onDeleteAccount: () => _handleDeleteAccount(context, ref),
+              ),
               const SizedBox(height: 20),
               SettingsSupportSection(
                 onLaunchPocketRoom: notifier.launchPocketRoom,

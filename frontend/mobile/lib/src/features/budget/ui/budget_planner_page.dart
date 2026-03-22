@@ -18,13 +18,39 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
   final double _minBudget = 25000;
   final double _maxBudget = 500000;
 
-  final Map<String, _ReqItem> _requiredItems = const {
+  final Map<String, _ReqItem> _availableCategories = const {
     'sofa': _ReqItem(label: 'Sofa', icon: Icons.weekend),
     'bed': _ReqItem(label: 'Bed', icon: Icons.bed),
     'wardrobe': _ReqItem(label: 'Wardrobe', icon: Icons.door_sliding),
     'chair': _ReqItem(label: 'Chair', icon: Icons.chair_alt),
+    'table': _ReqItem(label: 'Table', icon: Icons.table_restaurant),
+    'lamp': _ReqItem(label: 'Lamp', icon: Icons.lightbulb_outline),
+    'rug': _ReqItem(label: 'Rug', icon: Icons.grid_view_rounded),
   };
   final Set<String> _selectedRequired = {'sofa', 'bed'};
+  final Set<String> _selectedOptional = {};
+
+  void _toggleRequired(String key) {
+    setState(() {
+      if (_selectedRequired.contains(key)) {
+        _selectedRequired.remove(key);
+      } else {
+        _selectedRequired.add(key);
+        _selectedOptional.remove(key); // Mutually exclusive
+      }
+    });
+  }
+
+  void _toggleOptional(String key) {
+    setState(() {
+      if (_selectedOptional.contains(key)) {
+        _selectedOptional.remove(key);
+      } else {
+        _selectedOptional.add(key);
+        _selectedRequired.remove(key); // Mutually exclusive
+      }
+    });
+  }
 
   final List<String> _styles = const ['Modern', 'Minimal', 'Scandinavian', 'Classic'];
   String _selectedStyle = 'Modern';
@@ -54,6 +80,7 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
     final payload = {
       "totalBudget": _budget.round(),
       "requiredCategories": _selectedRequired.toList(),
+      "optionalCategories": _selectedOptional.toList(),
       "preferences": {
         "style": _selectedStyle,
         "colors": _selectedColors.toList(),
@@ -164,23 +191,15 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                 height: 86,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  itemCount: _requiredItems.length,
+                  itemCount: _availableCategories.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 12),
                   itemBuilder: (context, i) {
-                    final key = _requiredItems.keys.elementAt(i);
-                    final item = _requiredItems[key]!;
+                    final key = _availableCategories.keys.elementAt(i);
+                    final item = _availableCategories[key]!;
                     final selected = _selectedRequired.contains(key);
 
                     return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (selected) {
-                            _selectedRequired.remove(key);
-                          } else {
-                            _selectedRequired.add(key);
-                          }
-                        });
-                      },
+                      onTap: () => _toggleRequired(key),
                       child: Container(
                         width: 86,
                         padding: const EdgeInsets.symmetric(vertical: 10),
@@ -202,6 +221,55 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
                                   fontSize: 12, 
                                   fontWeight: FontWeight.w600,
                                   color: selected ? colorScheme.onPrimaryContainer : colorScheme.onSurface,
+                                )),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text('Select Optional Items',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: colorScheme.onSurface)),
+              const SizedBox(height: 4),
+              Text('AI will try to include these if budget permits.',
+                  style: TextStyle(color: colorScheme.onSurfaceVariant, fontSize: 13)),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 86,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _availableCategories.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  itemBuilder: (context, i) {
+                    final key = _availableCategories.keys.elementAt(i);
+                    final item = _availableCategories[key]!;
+                    final selected = _selectedOptional.contains(key);
+
+                    return GestureDetector(
+                      onTap: () => _toggleOptional(key),
+                      child: Container(
+                        width: 86,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          color: selected ? colorScheme.secondaryContainer : colorScheme.surface,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: selected ? colorScheme.secondary : colorScheme.outlineVariant,
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(item.icon, color: selected ? colorScheme.onSecondaryContainer : colorScheme.onSurface),
+                            const SizedBox(height: 8),
+                            Text(item.label,
+                                style: TextStyle(
+                                  fontSize: 12, 
+                                  fontWeight: FontWeight.w600,
+                                  color: selected ? colorScheme.onSecondaryContainer : colorScheme.onSurface,
                                 )),
                           ],
                         ),

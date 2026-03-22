@@ -59,7 +59,8 @@ const SellerEditProduct: React.FC = () => {
   const [saveError, setSaveError] = useState('');
 
   // ── 3D generation state ────────────────────────────────────────────────────
-  const [genImage, setGenImage] = useState<File | null>(null);
+  type SelectedImage = { type: 'existing' | 'new'; index: number };
+  const [selectedGenImg, setSelectedGenImg] = useState<SelectedImage | null>(null);
   const [genStatus, setGenStatus] = useState<'idle' | 'generating' | 'done' | 'error'>('idle');
   const [genError, setGenError] = useState('');
 
@@ -149,7 +150,7 @@ const SellerEditProduct: React.FC = () => {
 
   // ── Generate 3D model ──────────────────────────────────────────────────────
   const handleGenerate = async () => {
-    if (!genImage) {
+    if (!selectedGenImg) {
       setGenError('Please select a reference image first.');
       return;
     }
@@ -157,8 +158,21 @@ const SellerEditProduct: React.FC = () => {
     setGenStatus('generating');
 
     try {
+      let fileToUpload: File;
+
+      if (selectedGenImg.type === 'new') {
+        fileToUpload = imageFiles[selectedGenImg.index];
+      } else {
+        // Fetch existing Firebase URL and convert to Blob -> File
+        const url = existingImages[selectedGenImg.index];
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch existing image for generation.');
+        const blob = await response.blob();
+        fileToUpload = new File([blob], 'reference.jpg', { type: blob.type });
+      }
+
       const multipart = new FormData();
-      multipart.append('image', genImage);
+      multipart.append('image', fileToUpload);
       multipart.append('x', formData.width || '10');
       multipart.append('y', formData.height || '10');
       multipart.append('z', formData.depth || '10');
@@ -214,26 +228,39 @@ const SellerEditProduct: React.FC = () => {
     );
   }
 
-  // Using CheckIcon indirectly here as string doesn't take elements in label mapping
-  // We'll render it custom in button
-  
+  const isValidImage = (url: string | undefined) => {
+    if (!url) return false;
+    return !url.endsWith('.glb') && !url.endsWith('.gltf');
+  };
+
+  const primaryImage = product?.imageUrl?.[0] || (isValidImage(product?.modelURL) ? product?.modelURL : undefined);
+
   return (
     <AppShell pageTitle="Edit Product">
       <div className="edit-product-container">
-        {/* ── Page header ─────────────────────────────────────────────────── */}
-        <div className="edit-product-header">
-          <div className="edit-header-row">
-            <div>
-              <p className="product-id-label">ID: <code>{productId}</code></p>
-            </div>
-            {product?.modelURL && (
-              <div className="ar-ready-badge"><SparklesIcon /> AR Ready</div>
-            )}
-          </div>
+        {/* ── Banner Image Background ─────────────────────────────────────── */}
+        <div className="edit-product-banner" style={{ backgroundImage: primaryImage ? `url(${primaryImage})` : 'none' }}>
+           {!primaryImage && <div className="no-image-banner">No Image Available</div>}
         </div>
 
-        {/* ── Edit form card ───────────────────────────────────────────────── */}
-        <div className="form-card">
+        {/* ── Edit form card overlapping ───────────────────────────────────── */}
+        <div className="form-card overlap-card">
+          <div className="edit-product-header">
+            <div className="edit-header-row">
+              <div>
+                <h1 className="edit-product-title">{product?.name || 'Edit Product'}</h1>
+                <p className="product-id-label">
+                  Brand: <span className="brand-text">POCKETROOM</span> • ID: <code>{productId}</code>
+                </p>
+              </div>
+              <div className="badges-container">
+                {product?.modelURL && (
+                  <div className="ar-ready-badge"><SparklesIcon /> AR Ready</div>
+                )}
+                <div className="trust-badge badge-warranty"><CheckIcon /> 1-YEAR WARRANTY</div>
+              </div>
+            </div>
+          </div>
           {saveError && <div className="form-error">{saveError}</div>}
 
           <form onSubmit={handleSave} className="product-form">
@@ -380,35 +407,61 @@ const SellerEditProduct: React.FC = () => {
               <p>
                 {product?.modelURL
                   ? 'A 3D model already exists for this product. You can regenerate it below.'
-                  : 'No 3D model yet. Upload a reference image and generate one.'}
+                  : 'No 3D model yet. Select a reference image and generate one.'}
               </p>
             </div>
             {product?.modelURL && <div className="ar-mini-badge"><SparklesIcon /> AR Ready</div>}
           </div>
 
           <div className="generation-body">
-            <div className="file-upload-group gen-upload">
-              <label className="file-label">
-                <span className="file-title">Reference Image *</span>
-                <span className="file-desc">A clear photo of the furniture item (JPG, PNG)</span>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/jpg,image/png"
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      setGenImage(e.target.files[0]);
-                      setGenStatus('idle');
-                      setGenError('');
-                    }
-                  }}
-                  className="file-input"
-                  disabled={genStatus === 'generating'}
-                />
-              </label>
-              {genImage && <p className="file-selected"><CheckIcon /> {genImage.name}</p>}
-            </div>
+            <p className="file-desc" style={{ marginBottom: '1rem' }}>
+              Select one of your product's images to use as a 3D generator reference:
+            </p>
 
-            {genError && <div className="form-error gen-error">{genError}</div>}
+            {(existingImages.length > 0 || imageFiles.length > 0) ? (
+              <div className="image-previews gen-selectors">
+                {existingImages.map((url, idx) => {
+                  const isSelected = selectedGenImg?.type === 'existing' && selectedGenImg.index === idx;
+                  return (
+                    <div 
+                      key={`sel-exist-${idx}`} 
+                      className={`image-preview-item gen-select-item ${isSelected ? 'selected' : ''}`}
+                      onClick={() => {
+                        setSelectedGenImg({ type: 'existing', index: idx });
+                        setGenError('');
+                        setGenStatus('idle');
+                      }}
+                    >
+                      <img src={url} alt={`Existing ${idx + 1}`} />
+                      {isSelected && <div className="sel-check"><CheckIcon /></div>}
+                    </div>
+                  );
+                })}
+                {imageFiles.map((file, idx) => {
+                  const isSelected = selectedGenImg?.type === 'new' && selectedGenImg.index === idx;
+                  return (
+                    <div 
+                      key={`sel-new-${idx}`} 
+                      className={`image-preview-item gen-select-item ${isSelected ? 'selected' : ''}`}
+                      onClick={() => {
+                        setSelectedGenImg({ type: 'new', index: idx });
+                        setGenError('');
+                        setGenStatus('idle');
+                      }}
+                    >
+                      <img src={URL.createObjectURL(file)} alt={`New ${idx + 1}`} />
+                      {isSelected && <div className="sel-check"><CheckIcon /></div>}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="no-image-banner" style={{ marginBottom: '1rem' }}>
+                Please add some images in the Media section above first.
+              </div>
+            )}
+
+            {genError && <div className="form-error gen-error" style={{ marginTop: '1rem' }}>{genError}</div>}
 
             {genStatus === 'done' && (
               <div className="gen-success">
@@ -420,7 +473,7 @@ const SellerEditProduct: React.FC = () => {
               type="button"
               className="btn-generate"
               onClick={handleGenerate}
-              disabled={genStatus === 'generating' || !genImage}
+              disabled={genStatus === 'generating' || !selectedGenImg}
             >
               {genStatus === 'generating' ? (
                 <><span className="btn-spinner btn-spinner-dark" />Generating 3D Model…</>

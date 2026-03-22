@@ -8,6 +8,7 @@ import AppShell from './AppShell';
 import './SellerAddProduct.css';
 
 function TrashIcon() { return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>; }
+function CheckIcon() { return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', margin: 0 }}><polyline points="20 6 9 17 4 12"/></svg>; }
 
 const CATEGORIES = ['Sofa', 'Chair', 'Table', 'Bed', 'Storage', 'Decor'];
 
@@ -29,6 +30,7 @@ const SellerAddProduct: React.FC = () => {
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [generate3D, setGenerate3D] = useState(false);
+  const [selectedGenIndex, setSelectedGenIndex] = useState(0);
   const [loadingStep, setLoadingStep] = useState<'idle' | 'saving' | 'generating'>('idle');
   const [error, setError] = useState('');
 
@@ -130,7 +132,7 @@ const SellerAddProduct: React.FC = () => {
       setLoadingStep('generating');
       try {
         const multipart = new FormData();
-        multipart.append('image', imageFiles[0]); // Use the first image for generation
+        multipart.append('image', imageFiles[selectedGenIndex] || imageFiles[0]); // Use selected image
         multipart.append('x', formData.width || '10');
         multipart.append('y', formData.height || '10');
         multipart.append('z', formData.depth || '10');
@@ -165,14 +167,21 @@ const SellerAddProduct: React.FC = () => {
         ? 'Generating 3D model…'
         : 'Publish Product';
 
+  const primaryImage = imageFiles.length > 0 ? URL.createObjectURL(imageFiles[0]) : null;
+
   return (
     <AppShell pageTitle="Add New Product">
       <div className="add-product-container">
-        <div className="add-product-header">
-          <p>List a new furniture item with AR visualization capabilities.</p>
+        {/* ── Banner Image Background ─────────────────────────────────────── */}
+        <div className="add-product-banner" style={{ backgroundImage: primaryImage ? `url(${primaryImage})` : 'none' }}>
+           {!primaryImage && <div className="no-image-banner">Upload an image to see it here</div>}
         </div>
 
-      <div className="form-card">
+      <div className="form-card overlap-card">
+        <div className="add-product-header-content">
+          <h1 className="add-product-title">{formData.name || 'New Product Name'}</h1>
+          <p className="product-id-label">Brand: <span className="brand-text">POCKETROOM</span></p>
+        </div>
         {error && <div className="form-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="product-form">
@@ -302,19 +311,32 @@ const SellerAddProduct: React.FC = () => {
               </label>
 
               {imageFiles.length > 0 && (
-                <div className="image-previews">
-                  {imageFiles.map((file, idx) => (
-                    <div key={idx} className="image-preview-item">
-                      <img src={URL.createObjectURL(file)} alt={`Preview ${idx + 1}`} />
-                      <button 
-                        type="button" 
-                        className="btn-remove-img"
-                        onClick={() => setImageFiles(files => files.filter((_, i) => i !== idx))}
+                <div className="image-previews gen-selectors">
+                  {imageFiles.map((file, idx) => {
+                    const isSelected = generate3D && selectedGenIndex === idx;
+                    return (
+                      <div 
+                        key={idx} 
+                        className={`image-preview-item ${generate3D ? 'gen-select-item' : ''} ${isSelected ? 'selected' : ''}`}
+                        onClick={() => generate3D && setSelectedGenIndex(idx)}
                       >
-                        <TrashIcon />
-                      </button>
-                    </div>
-                  ))}
+                        <img src={URL.createObjectURL(file)} alt={`Preview ${idx + 1}`} />
+                        {isSelected && <div className="sel-check"><CheckIcon /></div>}
+                        <button 
+                          type="button" 
+                          className="btn-remove-img"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setImageFiles(files => files.filter((_, i) => i !== idx));
+                            if (selectedGenIndex === idx) setSelectedGenIndex(0);
+                            else if (selectedGenIndex > idx) setSelectedGenIndex(prev => prev - 1);
+                          }}
+                        >
+                          <TrashIcon />
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -329,7 +351,9 @@ const SellerAddProduct: React.FC = () => {
                 <span className="toggle-text">
                   <strong>Generate 3D Model now</strong>
                   <span className="toggle-sub">
-                    Uses the image above to create an AR-ready 3D model. You can also do this later from the product's edit page.
+                    {imageFiles.length > 1 
+                      ? 'Click on one of the uploaded images above to choose which one to use for the 3D model.'
+                      : 'Uses the image above to create an AR-ready 3D model.'} You can also do this later from the product's edit page.
                   </span>
                 </span>
               </label>
