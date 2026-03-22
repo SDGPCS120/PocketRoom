@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:permission_handler/permission_handler.dart';
 import '../../data/ai_search_provider.dart';
 
 class AiPromptPanel extends ConsumerStatefulWidget {
@@ -12,6 +14,14 @@ class AiPromptPanel extends ConsumerStatefulWidget {
 class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
   final TextEditingController _promptController = TextEditingController();
   bool _isLoading = false;
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+  }
 
   @override
   void dispose() {
@@ -19,20 +29,66 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
     super.dispose();
   }
 
-  void _onVoiceTap() {
-    // Placeholder for voice search functionality
+  void _onVoiceTap() async {
+    if (!_isListening) {
+      final status = await Permission.microphone.request();
+      if (!mounted) return;
+      if (status.isGranted) {
+        bool available = await _speech.initialize(
+          onStatus: (val) {
+            if (val == 'done' || val == 'notListening') {
+              if (mounted) setState(() => _isListening = false);
+            }
+          },
+          onError: (val) {
+            if (mounted) {
+              setState(() => _isListening = false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Speech recognition error: ${val.errorMsg}')),
+              );
+            }
+          },
+        );
+        if (!mounted) return;
+        if (available) {
+          setState(() => _isListening = true);
+          _speech.listen(
+            onResult: (val) => setState(() {
+              _promptController.text = val.recognizedWords;
+            }),
+          );
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Speech recognition is not available on this device')),
+            );
+          }
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Microphone permission is required for voice search')),
+          );
+        }
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+    }
   }
 
   void _onSendPrompt() async {
     final promptText = _promptController.text.trim();
     
     if (promptText.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a search query'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please enter a search query'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
       return;
     }
 
@@ -49,7 +105,9 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
       _promptController.clear();
       
       // Unfocus to hide keyboard
-      FocusScope.of(context).unfocus();
+      if (mounted) {
+        FocusScope.of(context).unfocus();
+      }
     } finally {
       if (mounted) {
         setState(() {
@@ -109,9 +167,9 @@ class _AiPromptPanelState extends ConsumerState<AiPromptPanel> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildIconButton(
-                icon: Icons.graphic_eq,
-                color: colorScheme.surface,
-                iconColor: colorScheme.onSurface,
+                icon: _isListening ? Icons.mic : Icons.graphic_eq,
+                color: _isListening ? colorScheme.errorContainer : colorScheme.surface,
+                iconColor: _isListening ? colorScheme.error : colorScheme.onSurface,
                 onTap: _onVoiceTap,
               ),
               const SizedBox(height: 8),

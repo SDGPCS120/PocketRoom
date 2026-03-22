@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/extensions.dart';
+import '../../../home/data/models/furniture_model.dart';
 
 class BudgetResultPage extends StatefulWidget {
   final Map<String, dynamic> result;
@@ -15,7 +18,9 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
     final bool ok = widget.result['ok'] == true;
     final reason = widget.result['reason'];
     final totalBudget = widget.result['totalBudget'] as num? ?? 0;
@@ -38,7 +43,7 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         backgroundColor: colorScheme.surface,
-        title: Text("Budget Result", style: TextStyle(color: colorScheme.onSurface)),
+        title: Text("Budget Result", style: AppTextStyles.appBarTitle(context)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
@@ -56,7 +61,7 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                   children: [
                     Text(
                       "Bundle ${_currentIndex + 1} of ${bundles.length}", 
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: colorScheme.onSurface),
+                      style: AppTextStyles.sectionTitle(context),
                     ),
                     ElevatedButton.icon(
                       onPressed: () {
@@ -66,9 +71,8 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                       },
                       icon: const Icon(Icons.skip_next),
                       label: const Text("Next Bundle"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.primary,
-                        foregroundColor: colorScheme.onPrimary,
+                      style: AppButtonStyles.primaryButton(context).copyWith(
+                        padding: WidgetStateProperty.all(const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
                       ),
                     )
                   ],
@@ -82,11 +86,11 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                 remaining: remaining,
                 reason: reason,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
 
               Text(
                 "Bundle Items",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+                style: AppTextStyles.sectionTitle(context).copyWith(fontSize: 18),
               ),
               const SizedBox(height: 10),
 
@@ -103,12 +107,7 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                         itemCount: items.length,
                         itemBuilder: (context, index) {
                           final item = items[index] as Map<String, dynamic>;
-
-                          // backend might return either {category,id,name,price,...}
-                          // or {product:{...}}
-                          final product = (item['product'] is Map) ? item['product'] : item;
-
-                          return _ProductCard(product: Map<String, dynamic>.from(product));
+                          return _ProductItem(product: item);
                         },
                       ),
               ),
@@ -137,32 +136,40 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final bgColor = ok ? colorScheme.primaryContainer : colorScheme.errorContainer;
-    final textColor = ok ? colorScheme.onPrimaryContainer : colorScheme.onErrorContainer;
-    final borderColor = ok ? colorScheme.primary.withValues(alpha: 0.3) : colorScheme.error.withValues(alpha: 0.3);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final bgColor = ok ? colorScheme.surface : colorScheme.errorContainer.withAlpha(25);
+    final textColor = ok ? colorScheme.onSurface : colorScheme.error;
+    final borderColor = ok ? colorScheme.primary.withAlpha(128) : colorScheme.error.withAlpha(128);
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
         border: Border.all(color: borderColor),
+        boxShadow: AppColors.productCardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            ok ? "Bundle generated ✅" : "Couldn’t generate bundle ❌",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor),
+          Row(
+            children: [
+              Icon(ok ? Icons.check_circle : Icons.error, color: textColor, size: 24),
+              const SizedBox(width: 8),
+              Text(
+                ok ? "Bundle generated" : "Generation failed",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text("Total budget: ${totalBudget.toLKR()}", style: TextStyle(color: textColor)),
-          Text("Total cost: ${totalCost.toLKR()}", style: TextStyle(color: textColor)),
-          Text("Remaining: ${remaining.toLKR()}", style: TextStyle(color: textColor)),
+          const SizedBox(height: 12),
+          _SummaryLine(label: "Total budget", value: totalBudget.toLKR(), textColor: textColor),
+          _SummaryLine(label: "Total cost", value: totalCost.toLKR(), textColor: textColor),
+          _SummaryLine(label: "Remaining", value: remaining.toLKR(), textColor: textColor, isHighlight: true),
           if (!ok && reason != null) ...[
-            const SizedBox(height: 8),
-            Text("Reason: $reason", style: TextStyle(fontWeight: FontWeight.w600, color: textColor)),
+            const Divider(height: 20),
+            Text("Reason: $reason", style: TextStyle(fontWeight: FontWeight.w500, color: textColor)),
           ],
         ],
       ),
@@ -170,77 +177,164 @@ class _SummaryCard extends StatelessWidget {
   }
 }
 
-class _ProductCard extends StatelessWidget {
-  final Map<String, dynamic> product;
+class _SummaryLine extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color textColor;
+  final bool isHighlight;
 
-  const _ProductCard({required this.product});
+  const _SummaryLine({
+    required this.label,
+    required this.value,
+    required this.textColor,
+    this.isHighlight = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final name = product['name'] ?? "Unknown";
-    final price = product['price'] as num? ?? 0;
-    final category = product['category'] ?? "-";
-    final rating = product['rating'] ?? "-";
-    final brand = product['brand'] ?? "-";
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(color: textColor.withAlpha(204), fontSize: 14)),
+          Text(
+            value, 
+            style: TextStyle(
+              color: textColor, 
+              fontWeight: isHighlight ? FontWeight.bold : FontWeight.w600,
+              fontSize: isHighlight ? 16 : 14,
+            )
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ProductItem extends StatelessWidget {
+  final Map<String, dynamic> product;
+
+  const _ProductItem({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    // backend might return either {category,id,name,price,...}
+    // or {product:{...}}
+    final itemData = (product['product'] is Map) 
+        ? Map<String, dynamic>.from(product['product']) 
+        : product;
+
+    // Use the actual Furniture model to parse images/brand consistently with Home page
+    final furniture = Furniture.fromJson({
+      ...itemData,
+      'furnitureType': product['category'] ?? itemData['category'] ?? itemData['furnitureType'] ?? "-",
+    });
+
+    final name = furniture.name.trim().isEmpty ? "Unknown" : furniture.name;
+    final price = furniture.price.isNaN ? 0.0 : furniture.price;
+    final furnitureType = furniture.furnitureType.trim().isEmpty ? "-" : furniture.furnitureType;
+    final brand = furniture.brand.trim().isEmpty ? "PocketRoom" : furniture.brand;
+    final rating = furniture.rating.isNaN ? 4.0 : furniture.rating;
+    
+    final imageUrl = furniture.images.isNotEmpty ? furniture.images.first : null;
+    
+    if (kDebugMode) {
+      debugPrint('[BudgetResult] Item: $name, Brand: $brand, URL: $imageUrl');
+    }
+
+    String formatPrice(double p) => "LKR ${p.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        border: Border.all(color: colorScheme.outline.withAlpha(51)),
+        boxShadow: AppColors.productCardShadow,
       ),
       child: Row(
         children: [
           Container(
-            width: 92,
-            height: 72,
+            width: 90,
+            height: 90,
             decoration: BoxDecoration(
-              color: colorScheme.surface.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(14),
+              color: colorScheme.secondary,
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(Icons.chair_alt, size: 34, color: colorScheme.primary),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: imageUrl != null && imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: colorScheme.secondary.withAlpha(51),
+                          child: Icon(Icons.chair, size: 40, color: colorScheme.onSurfaceVariant.withAlpha(128)),
+                        );
+                      },
+                    )
+                  : Container(
+                      color: colorScheme.secondary.withAlpha(51),
+                      child: Icon(Icons.chair, size: 40, color: colorScheme.onSurfaceVariant.withAlpha(128)),
+                    ),
+            ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name, 
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: colorScheme.onSecondaryContainer),
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  price.toLKR(), 
-                  style: TextStyle(fontWeight: FontWeight.w600, color: colorScheme.primary),
-                ),
-                Text(
-                  "Brand: $brand", 
-                  style: TextStyle(color: colorScheme.onSecondaryContainer.withValues(alpha: 0.7)),
+                  formatPrice(price),
+                  style: TextStyle(fontWeight: FontWeight.w700, color: colorScheme.primary, fontSize: 15),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.star, size: 16, color: Colors.orange),
+                    Icon(Icons.star, size: 14, color: AppColors.textRating),
                     const SizedBox(width: 4),
                     Text(
-                      "$rating • $category",
-                      style: TextStyle(color: colorScheme.onSecondaryContainer),
+                      rating.toStringAsFixed(1),
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
+                    ),
+                    Expanded(
+                      child: Text(
+                        " • $brand",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+                      ),
                     ),
                   ],
-                )
+                ),
+                const SizedBox(height: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: colorScheme.primary.withAlpha(30),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    furnitureType.toUpperCase(),
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: colorScheme.primary),
+                  ),
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

@@ -15,12 +15,16 @@ export function greedyOptional(
 
   const picks: Candidate[] = [];
   let spent = 0;
+  const seenCategories = new Set<string>();
 
   for (const it of pool) {
     if (picks.length >= maxItems) break;
+    if (seenCategories.has(it.category)) continue;
+
     if (spent + it.price <= leftover) {
       picks.push(it);
       spent += it.price;
+      seenCategories.add(it.category);
     }
   }
 

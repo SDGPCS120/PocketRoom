@@ -1,4 +1,4 @@
-import { FurnitureItem } from '../../../furniture/furniture.mock';
+import { FurnitureItem } from './types';
 import { BudgetBundleRequestDto, BudgetBundleResponseDto, BundleVariantDto } from '../dto/budget-bundle.dto';
 import { norm, scoreItem } from './scoring';
 import { Candidate, mckp, minCostRequired } from './mckp';
@@ -19,7 +19,7 @@ function topKByCategory(
     if (!catSet.has(c)) continue;
 
     const { score, reason } = scoreItem(p, pref);
-    groups[c].push({ product: p, price: p.price, score, reason });
+    groups[c].push({ category: c, product: p, price: p.price, score, reason });
   }
 
   for (const c of Object.keys(groups)) {
@@ -49,7 +49,7 @@ export function buildBundle(
   const pref = req.preferences ?? {};
   const cons = req.constraints ?? {};
 
-  const topK = cons.topKPerCategory ?? 30;
+  const topK = cons.topKPerCategory ?? 200;
   const step = cons.budgetStepLkr ?? 1000;
   const maxOptional = cons.maxOptionalItems ?? 3;
   const minRating = cons.minRating ?? 0;
