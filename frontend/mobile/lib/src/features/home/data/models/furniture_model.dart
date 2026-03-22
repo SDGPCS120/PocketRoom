@@ -12,6 +12,7 @@ class Furniture {
   final String imagePath;
   final String modelURL;
   final String material;
+  final List<String> materials;
   final String modelStatus;
   final String modelError;
   final String primaryColor;
@@ -36,6 +37,7 @@ class Furniture {
     this.imagePath = '',
     this.modelURL = '',
     this.material = '',
+    this.materials = const [],
     this.modelStatus = '',
     this.modelError = '',
     this.primaryColor = '',
@@ -50,6 +52,12 @@ class Furniture {
   });
 
   factory Furniture.fromJson(Map<String, dynamic> json) {
+    final rawMaterials = (json['materials'] is List)
+        ? (json['materials'] as List).map((e) => e.toString().trim()).where((e) => e.isNotEmpty).toList()
+        : ((json['material']?.toString().trim().isNotEmpty ?? false)
+            ? [json['material'].toString().trim()]
+            : <String>[]);
+
     return Furniture(
       id: json['id']?.toString() ?? '',
       name: (json['name']?.toString().trim().isNotEmpty ?? false)
@@ -87,9 +95,10 @@ class Furniture {
       modelURL: (json['modelURL']?.toString().trim().isNotEmpty ?? false)
           ? json['modelURL'].toString()
           : '',
+      materials: rawMaterials,
       material: (json['material']?.toString().trim().isNotEmpty ?? false)
           ? json['material'].toString()
-          : '',
+          : (rawMaterials.isNotEmpty ? rawMaterials.join(', ') : ''),
       modelStatus: (json['modelStatus']?.toString().trim().isNotEmpty ?? false)
           ? json['modelStatus'].toString()
           : '',
@@ -147,6 +156,7 @@ class Furniture {
       'imagePath': imagePath,
       'modelURL': modelURL,
       'material': material,
+      'materials': materials,
       'modelStatus': modelStatus,
       'modelError': modelError,
       'primaryColor': primaryColor,

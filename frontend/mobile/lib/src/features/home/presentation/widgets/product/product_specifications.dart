@@ -50,6 +50,13 @@ class ProductSpecifications extends StatelessWidget {
         const SizedBox(height: 16),
         ...specs.map((s) => _SpecTile(title: s.label, value: s.value)),
         _SpecTile(title: 'Furniture Type', value: f.furnitureType),
+        if (f.materials.isNotEmpty)
+          _SpecTile(
+            title: f.materials.length > 1 ? 'Materials' : 'Material',
+            value: f.materials.join(', '),
+          )
+        else if (f.material.isNotEmpty)
+          _SpecTile(title: 'Material', value: f.material),
         if (f.styleTags.isNotEmpty)
           _SpecTile(title: 'Style Tags', value: f.styleTags.join(', ')),
       ],
