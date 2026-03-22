@@ -18,7 +18,7 @@ void main() {
         'name': 'Modern Sofa',
         'price': 499.0,
         'brand': 'ComfortCo',
-        'furnitureType': 'Sofa',
+        'category': 'Sofa',
         'images': ['sofa.png'],
         'rating': 4.5,
       });

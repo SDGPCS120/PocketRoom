@@ -6,6 +6,7 @@ import 'package:pocketroom/src/features/cart/presentation/providers/cart_provide
 import 'package:pocketroom/src/features/cart/presentation/cart_page.dart';
 import 'package:pocketroom/src/features/home/presentation/providers/home_provider.dart';
 import 'package:pocketroom/src/features/profile/presentation/profile_page.dart';
+import 'package:pocketroom/src/features/ai-search/presentation/ai_search_page.dart';
 
 class AppHeader extends ConsumerStatefulWidget {
   final VoidCallback? onProfileTap;
@@ -50,9 +51,9 @@ class _AppHeaderState extends ConsumerState<AppHeader> {
             height: 30,
             child: ElevatedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('AI search coming soon')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AiSearchPage()),
                 );
               },
               style: ElevatedButton.styleFrom(

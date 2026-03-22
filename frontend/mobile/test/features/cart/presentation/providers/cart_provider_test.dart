@@ -16,7 +16,7 @@ void main() {
     name: 'Test Chair',
     price: 100.0,
     brand: 'Test Brand',
-    images: ['chair.png'],
+    imageUrl: ['chair.png'],
     furnitureType: 'Chair',
     dimensions: '10x10',
     rating: 4.0,

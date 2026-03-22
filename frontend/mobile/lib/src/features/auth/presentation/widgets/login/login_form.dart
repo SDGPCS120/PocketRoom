@@ -7,6 +7,7 @@ import '../auth_text_field.dart';
 import '../auth_confirm_password_dialog.dart';
 import '../../signup_page.dart';
 import '../../username_page.dart';
+import '../../../../../core/utils/email_validation.dart';
 import '../../../../home/presentation/main_screen.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
@@ -132,9 +133,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               label: 'Email',
               hint: 'you@example.com',
               keyboardType: TextInputType.emailAddress,
-              validator: (v) => (v == null || !v.contains('@'))
-                  ? 'Enter a valid email'
-                  : null,
+              validator: EmailValidation.validateSyntax,
             ),
             const SizedBox(height: 16),
             AuthTextField(

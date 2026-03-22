@@ -5,7 +5,7 @@ import '../../data/mock_data.dart';
 import '../../data/repositories/furniture_repository.dart';
 import '../../data/repositories/firestore_product_repository.dart';
 
-// Provider for the active Furniture Type (selected from Home Page)
+// Provider for the active Category (selected from Home Page)
 final selectedFurnitureTypeProvider = StateProvider<String>((ref) => "All");
 
 // Provider for the active General Category (selected from Category Products Page)

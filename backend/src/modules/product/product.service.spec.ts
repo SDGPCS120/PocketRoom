@@ -68,7 +68,7 @@ describe('ProductService', () => {
       price: 100,
       description: 'A test product',
       images: [],
-      category: 'Test',
+      furnitureType: 'Test',
       stock: 10,
     } as any;
 

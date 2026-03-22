@@ -1,39 +1,27 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/app_theme.dart';
-import '../../../../../core/utils/extensions.dart';
-import '../../../data/models/furniture_model.dart';
-import '../../vendor_page.dart';
+import 'package:pocketroom/src/core/theme/app_theme.dart';
+import 'package:pocketroom/src/core/utils/extensions.dart';
+import 'package:pocketroom/src/features/home/data/models/furniture_model.dart';
+import 'package:pocketroom/src/features/home/presentation/vendor_page.dart';
 
 class ProductDetailsHeader extends StatelessWidget {
   final Furniture furniture;
 
   const ProductDetailsHeader({super.key, required this.furniture});
 
-  Widget _buildTrustBadge(IconData icon, String label, Color color) {
-    return Container(
-      height: 32,
+  String _formatPrice(double p) => "LKR ${p.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+
+  String _formatRawValue(double v) => v.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+
+  Widget _buildSeparator(ColorScheme colorScheme) {
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      margin: const EdgeInsets.only(right: 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.1), width: 0.5),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color.withValues(alpha: 0.8)),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 10.5,
-              fontWeight: FontWeight.w700,
-              color: color.withValues(alpha: 0.8),
-              letterSpacing: 0.2,
-            ),
-          ),
-        ],
+      child: Text(
+        '•',
+        style: TextStyle(
+          color: colorScheme.onSurfaceVariant.withOpacity(0.3),
+          fontSize: 12,
+        ),
       ),
     );
   }
@@ -41,153 +29,207 @@ class ProductDetailsHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final f = furniture;
-    final hasOldPrice = f.oldPrice != null && !f.oldPrice!.isNaN;
-    final hasDescription = f.description.isNotEmpty;
     final colorScheme = Theme.of(context).colorScheme;
+
+    // Pricing Logic
+    final hasDiscount = f.oldPrice != null && f.oldPrice! > f.price;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Name + Brand + Rating
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    f.name,
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w900,
-                      color: colorScheme.onSurface,
-                      height: 1.1,
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => VendorPage(vendorName: f.brand),
-                      ),
-                    ),
-                    child: Text(
-                      'Brand: ${f.brand.toUpperCase()}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colorScheme.primary,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                  ),
-                ],
+        // 1. BRAND ROW (Tappable)
+        GestureDetector(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => VendorPage(vendorName: f.brand)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: colorScheme.surfaceContainerHighest,
+                  image: f.brandLogoUrl.isNotEmpty 
+                      ? DecorationImage(image: NetworkImage(f.brandLogoUrl), fit: BoxFit.cover)
+                      : null,
+                ),
+                child: f.brandLogoUrl.isEmpty 
+                    ? Icon(Icons.storefront_rounded, size: 14, color: colorScheme.primary) 
+                    : null,
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: colorScheme.secondary,
-                borderRadius: BorderRadius.circular(20),
+              const SizedBox(width: 8),
+              Text(
+                f.brand,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurfaceVariant.withOpacity(0.8),
+                ),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.star, color: colorScheme.primary, size: 15),
-                  const SizedBox(width: 4),
-                  Text(
-                    f.rating.isNaN ? '4.8' : f.rating.toString(),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+              Icon(Icons.chevron_right_rounded, size: 16, color: colorScheme.onSurfaceVariant.withOpacity(0.4)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // 2. PRODUCT TITLE
+        Text(
+          f.name,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.w900,
+            color: colorScheme.onSurface,
+            letterSpacing: -0.8,
+            height: 1.1,
+          ),
         ),
         const SizedBox(height: 16),
-        // Trust Badges
+        
+        // 3. CONSOLIDATED INFO ROW
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildTrustBadge(Icons.timer_rounded, 'ONLY 3 LEFT', colorScheme.error),
-              _buildTrustBadge(Icons.handyman_rounded, 'FREE INSTALL', colorScheme.primary),
-              _buildTrustBadge(Icons.verified_rounded, '1-YEAR WARRANTY', const Color(0xFF4CAF50)),
+              // Rating
+              Row(
+                children: [
+                  Icon(Icons.star_rounded, color: Colors.orange.shade400, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    f.rating.isNaN ? '4.8' : f.rating.toString(),
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colorScheme.onSurface),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '(128)',
+                    style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
+                  ),
+                ],
+              ),
+              _buildSeparator(colorScheme),
+              // Delivery
+              Row(
+                children: [
+                  Icon(Icons.local_shipping_outlined, color: colorScheme.onSurfaceVariant.withOpacity(0.7), size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    '3–5 days',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: colorScheme.onSurfaceVariant),
+                  ),
+                ],
+              ),
+              _buildSeparator(colorScheme),
+              // Stock
+              Row(
+                children: [
+                  Icon(
+                    f.availability.toLowerCase().contains('only') 
+                        ? Icons.error_outline_rounded 
+                        : Icons.check_circle_rounded, 
+                    color: f.availability.toLowerCase().contains('only') 
+                        ? Colors.orange.shade800 
+                        : Colors.green.shade600, 
+                    size: 16,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    f.availability.toLowerCase().contains('only') ? f.availability : 'In Stock',
+                    style: TextStyle(
+                      fontSize: 13, 
+                      fontWeight: FontWeight.w600, 
+                      color: f.availability.toLowerCase().contains('only') ? Colors.orange.shade800 : Colors.green.shade600,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
         const SizedBox(height: 24),
-        // Price
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
+
+        // 4. PRICE SECTION
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              f.price.toLKR(),
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w900,
-                color: colorScheme.onSurface,
-                height: 1.0,
-              ),
-            ),
-            if (hasOldPrice && f.oldPrice! > f.price) ...[
-              const SizedBox(width: 12),
-              Text(
-                f.oldPrice!.toLKR(),
-                style: TextStyle(
-                  fontSize: 16,
-                  color: colorScheme.onSurfaceVariant,
-                  decoration: TextDecoration.lineThrough,
-                  decorationColor: colorScheme.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colorScheme.error.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  'Save ${((1 - f.price / f.oldPrice!) * 100).round()}%',
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  _formatPrice(f.price),
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: colorScheme.error,
+                    fontSize: 34,
+                    fontWeight: FontWeight.w900,
+                    color: colorScheme.onSurface,
+                    letterSpacing: -1,
                   ),
                 ),
+                if (hasDiscount) ...[
+                  const SizedBox(width: 12),
+                  Text(
+                    _formatPrice(f.oldPrice!),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.onSurfaceVariant.withOpacity(0.4),
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 6),
+            RichText(
+              text: TextSpan(
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+                ),
+                children: [
+                  const TextSpan(text: 'or '),
+                  TextSpan(
+                    text: 'LKR ${_formatRawValue(f.price / 3)} x 3',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  const TextSpan(text: ' (0% interest)'),
+                ],
               ),
-            ],
+            ),
           ],
         ),
-        const SizedBox(height: 6),
-        Text(
-          'or 3 interest-free installments of ${(f.price / 3).toLKR()}',
-          style: TextStyle(
-            fontSize: 12.5,
-            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-            fontWeight: FontWeight.w500,
+        
+        // Style Tags (Secondary Pills)
+        if (f.styleTags.isNotEmpty) ...[
+          const SizedBox(height: 24),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: f.styleTags.take(3).map((tag) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest.withOpacity(0.4),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  tag.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              );
+            }).toList(),
           ),
-        ),
-        const SizedBox(height: 24),
-        // Description
-        if (hasDescription) ...[
-          Text(
-            f.description,
-            style: TextStyle(
-              fontSize: 13.5,
-              color: colorScheme.onSurfaceVariant,
-              height: 1.55,
-            ),
-          ),
-          const SizedBox(height: 20),
         ],
       ],
     );

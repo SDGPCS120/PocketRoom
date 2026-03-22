@@ -52,9 +52,9 @@ class CartItemCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: item.furniture.images.isNotEmpty
+                child: item.furniture.imageUrl.isNotEmpty
                     ? Image.network(
-                        item.furniture.images.first,
+                        item.furniture.imageUrl.first,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => Icon(
                           Icons.chair,

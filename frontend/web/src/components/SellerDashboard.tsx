@@ -18,6 +18,7 @@ interface Order {
 interface Product {
   productId: string;
   name: string;
+  materials?: string[];
 }
 
 /* ─── Icon components (SVGs replacing emojis) ─── */

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_avif/flutter_avif.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
 import '../features/auth/presentation/get_started_page.dart';
 import '../features/home/data/models/furniture_model.dart';
@@ -32,6 +33,69 @@ class _ProductCardState extends ConsumerState<ProductCard> {
     return true;
   }
 
+  bool _isNetworkUrl(String path) => path.startsWith('http');
+
+  Widget _buildProductImage(String? primaryImage, ColorScheme colorScheme) {
+    if (primaryImage == null || primaryImage.isEmpty) {
+      return _buildPlaceholder(colorScheme);
+    }
+
+    final isAvif = primaryImage.toLowerCase().contains('.avif');
+
+    if (_isNetworkUrl(primaryImage)) {
+      if (isAvif) {
+        return AvifImage.network(
+          primaryImage,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(colorScheme),
+        );
+      }
+      return Image.network(
+        primaryImage,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(colorScheme),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+      );
+    } else {
+      // Local Asset Fallback
+      if (isAvif) {
+        return AvifImage.asset(
+          primaryImage,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(colorScheme),
+        );
+      }
+      return Image.asset(
+        primaryImage,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(colorScheme),
+      );
+    }
+  }
+
+  Widget _buildPlaceholder(ColorScheme colorScheme) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.secondary,
+      ),
+      child: Icon(
+        Icons.chair,
+        size: 50,
+        color: colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -39,6 +103,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
     final appTheme = theme.extension<AppThemeExtension>();
     
     final furniture = widget.furniture;
+    final primaryImage = furniture.getPrimaryImage();
     final favorites = ref.watch(favoritesProvider);
     final isFavorite = favorites.any((item) => item.id == furniture.id);
 
@@ -85,58 +150,31 @@ class _ProductCardState extends ConsumerState<ProductCard> {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          Navigator.push(
+          Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder: (context) => ProductPage(furniture: furniture),
-            ),
+            '/product/${furniture.id}',
+            arguments: furniture,
           );
         },
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Image container
               AspectRatio(
-                aspectRatio: 156.26 / 147,
+                aspectRatio: 156.26 / 140,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: furniture.images.isNotEmpty
-                        ? Image.network(
-                            furniture.images.first,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: colorScheme.secondary,
-                                ),
-                                child: Icon(
-                                  Icons.chair,
-                                  size: 50,
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                              );
-                            },
-                          )
-                        : DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: colorScheme.secondary,
-                            ),
-                            child: Icon(
-                              Icons.chair,
-                              size: 50,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
+                    child: _buildProductImage(primaryImage, colorScheme),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               // Title
               Text(
                 furniture.name.trim().isEmpty ? 'N/A' : furniture.name,
@@ -149,7 +187,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   color: colorScheme.onSurface,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               // Brand and Rating
               Row(
                 children: [
@@ -201,7 +239,7 @@ class _ProductCardState extends ConsumerState<ProductCard> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
               // Price and Add to Cart
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

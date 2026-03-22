@@ -233,7 +233,7 @@ export class SearchService implements OnModuleInit {
             name: p.name,
             style: p.style,
             color: p.color,
-            category: p.category,
+            furnitureType: p.furnitureType,
             searchDoc: this.getProductDoc(p),
         }));
     }

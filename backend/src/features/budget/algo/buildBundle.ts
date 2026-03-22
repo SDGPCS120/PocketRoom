@@ -6,13 +6,13 @@ import { greedyOptional } from './greedy';
 
 function topKByCategory(
   items: FurnitureItem[],
-  categories: string[],
+  furnitureTypes: string[],
   pref: any,
   k: number,
 ): Record<string, Candidate[]> {
   const groups: Record<string, Candidate[]> = {};
-  const catSet = new Set(categories.map(norm));
-  categories.forEach((c) => (groups[norm(c)] = []));
+  const catSet = new Set(furnitureTypes.map(norm));
+  furnitureTypes.forEach((c) => (groups[norm(c)] = []));
 
   for (const p of items) {
     const c = norm(p.category);
@@ -32,7 +32,7 @@ function topKByCategory(
 
 function toPicked(c: Candidate) {
   return {
-    category: c.product.category,
+    furnitureType: c.product.category,
     id: c.product.id,
     name: c.product.name,
     price: c.price,
@@ -49,13 +49,13 @@ export function buildBundle(
   const pref = req.preferences ?? {};
   const cons = req.constraints ?? {};
 
-  const topK = cons.topKPerCategory ?? 200;
+  const topK = cons.topKPerFurnitureType ?? 30;
   const step = cons.budgetStepLkr ?? 1000;
   const maxOptional = cons.maxOptionalItems ?? 3;
   const minRating = cons.minRating ?? 0;
 
-  const required = req.requiredCategories.map(norm);
-  const optional = (req.optionalCategories ?? []).map(norm);
+  const required = req.requiredFurnitureTypes.map(norm);
+  const optional = (req.optionalFurnitureTypes ?? []).map(norm);
 
   const filtered = furnitureItems.filter((p) => {
     if (typeof p.price !== 'number' || p.price <= 0) return false;
