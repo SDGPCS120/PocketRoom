@@ -69,4 +69,14 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   modelURL?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  similarProducts?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  customersAlsoBought?: string[];
 }
