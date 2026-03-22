@@ -13,5 +13,5 @@ class ApiConfig {
   // static const String baseUrl = 'http://10.0.2.2:8000';
 
   /// ALTERNATIVE: Local IP for physical mobile phone (must be on same Wi-Fi)
-  static const String baseUrl = 'http://192.168.1.6:8000';
+  static const String baseUrl = 'https://pocketroom-backend-93470454666.asia-south1.run.app';
 }
