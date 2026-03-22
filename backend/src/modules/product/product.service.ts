@@ -96,6 +96,25 @@ export class ProductService {
             throw new ForbiddenException('You do not own this product');
         }
 
+        // 1. Delete associated files in Firebase Storage
+        const storage = this.firebase.storage;
+        const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+        
+        // Delete images
+        try {
+            await bucket.deleteFiles({ prefix: `products/${productId}/` });
+        } catch (e) {
+            console.error(`Failed to delete product images for ${productId}`, e);
+        }
+
+        // Delete 3D models (prefix format used in generation.processor.ts)
+        try {
+            await bucket.deleteFiles({ prefix: `3DModel/${productId}_` });
+        } catch (e) {
+            console.error(`Failed to delete product 3D models for ${productId}`, e);
+        }
+
+        // 2. Delete database document
         await docRef.delete();
 
         return { message: 'Product deleted successfully' };

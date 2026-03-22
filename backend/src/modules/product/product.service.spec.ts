@@ -11,6 +11,8 @@ describe('ProductService', () => {
   let storeService: jest.Mocked<StoreService>;
   let mockDoc: any;
   let mockFirestore: any;
+  let mockBucket: any;
+  let mockStorage: any;
 
   beforeEach(async () => {
     mockDoc = {
@@ -19,6 +21,14 @@ describe('ProductService', () => {
       set: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
+    };
+
+    mockBucket = {
+      deleteFiles: jest.fn().mockResolvedValue(undefined),
+    };
+
+    mockStorage = {
+      bucket: jest.fn().mockReturnValue(mockBucket),
     };
 
     mockFirestore = {
@@ -30,6 +40,7 @@ describe('ProductService', () => {
 
     firebaseService = {
       firestore: mockFirestore,
+      storage: mockStorage,
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -151,10 +162,14 @@ describe('ProductService', () => {
         data: () => ({ storeId: 'store-1' }),
       });
       storeService.getStoreById.mockResolvedValue({ sellerId });
+      mockDoc.delete.mockResolvedValue(undefined);
 
       const result = await service.deleteProduct(productId, sellerId);
 
       expect(result.message).toBe('Product deleted successfully');
+      expect(storeService.getStoreById).toHaveBeenCalledWith('store-1');
+      expect(mockStorage.bucket).toHaveBeenCalled();
+      expect(mockBucket.deleteFiles).toHaveBeenCalledTimes(2);
       expect(mockDoc.delete).toHaveBeenCalled();
     });
   });
