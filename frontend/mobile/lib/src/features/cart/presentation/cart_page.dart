@@ -7,7 +7,6 @@ import 'widgets/cart_item_card.dart';
 import 'widgets/cart_summary_bottom_bar.dart';
 import '../../../core/services/api_client.dart';
 import '../../../core/services/payment_service.dart';
-import 'package:flutter/material.dart';
 
 class CartPage extends ConsumerWidget {
   const CartPage({super.key});
@@ -79,7 +78,8 @@ class CartPage extends ConsumerWidget {
                         'shippingAddressId': 'default-address-id',
                         'billingAddressId': 'default-address-id',
                         'items': cartItems.map((item) => {
-                          'furnitureId': item.furniture.id,
+                          'productId': item.furniture.id,
+                          'productName': item.furniture.name,
                           'quantity': item.quantity,
                           'unitPrice': item.furniture.price,
                         }).toList(),
