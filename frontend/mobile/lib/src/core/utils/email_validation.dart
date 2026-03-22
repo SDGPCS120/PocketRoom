@@ -11,10 +11,10 @@ class EmailValidation {
   static String? validateSyntax(String? value) {
     final email = value?.trim() ?? '';
     if (email.isEmpty) {
-      return 'Enter an email address';
+      return 'Enter a valid email';
     }
     if (!_emailRegex.hasMatch(email)) {
-      return 'Enter a valid email address';
+      return 'Enter a valid email';
     }
     return null;
   }

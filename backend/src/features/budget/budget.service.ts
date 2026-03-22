@@ -60,7 +60,7 @@ export class BudgetService {
     dto: BudgetBundleRequestDto
   ): Promise<BudgetBundleResponseDto> {
     const furnitureItems = await this.getFurnitureFromDB();
-    this.logger.log(`Generating bundle for ${dto.requiredCategories.join(', ')} with ${furnitureItems.length} items`);
+    this.logger.log(`Generating bundle for ${dto.requiredFurnitureTypes.join(', ')} with ${furnitureItems.length} items`);
     const result = buildBundle(dto, furnitureItems);
 
     if (!result.ok && result.reason?.includes('Missing categories')) {

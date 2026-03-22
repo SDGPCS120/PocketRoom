@@ -15,7 +15,7 @@ function topKByCategory(
   furnitureTypes.forEach((c) => (groups[norm(c)] = []));
 
   for (const p of items) {
-    const c = norm(p.furnitureType);
+    const c = norm(p.category);
     if (!catSet.has(c)) continue;
 
     const { score, reason } = scoreItem(p, pref);
@@ -32,7 +32,7 @@ function topKByCategory(
 
 function toPicked(c: Candidate) {
   return {
-    furnitureType: c.product.furnitureType,
+    furnitureType: c.product.category,
     id: c.product.id,
     name: c.product.name,
     price: c.price,
@@ -114,12 +114,12 @@ export function buildBundle(
     const explanations: string[] = [];
 
     const requiredBundle = dpRes.picks.map((c) => {
-      explanations.push(`${c.product.furnitureType}: ${c.product.name} (${c.reason})`);
+      explanations.push(`${c.product.category}: ${c.product.name} (${c.reason})`);
       return toPicked(c);
     });
 
     const optionalBundle = optRes.picks.map((c) => {
-      explanations.push(`Optional ${c.product.furnitureType}: ${c.product.name} (${c.reason})`);
+      explanations.push(`Optional ${c.product.category}: ${c.product.name} (${c.reason})`);
       return toPicked(c);
     });
 
@@ -132,7 +132,7 @@ export function buildBundle(
     });
 
     for (const c of dpRes.picks) {
-      const cat = norm(c.product.furnitureType);
+      const cat = norm(c.product.category);
       if (requiredGroups[cat]) {
         const item = requiredGroups[cat].find((it) => it.product.id === c.product.id);
         if (item) {
