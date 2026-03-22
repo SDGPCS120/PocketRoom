@@ -1,21 +1,26 @@
 class BudgetRequest {
   BudgetRequest({
     required this.totalBudget,
-    required this.requiredCategories,
+    required this.requiredFurnitureTypes,
     required this.style,
     required this.colors,
+    this.optionalFurnitureTypes = const [],
   });
 
   final int totalBudget;
-  final List<String> requiredCategories;
+  final List<String> requiredFurnitureTypes;
+  final List<String> optionalFurnitureTypes;
   final String style;
   final List<String> colors;
 
   Map<String, dynamic> toJson() => {
         "totalBudget": totalBudget,
-        "requiredCategories": requiredCategories,
-        "style": style,
-        "colors": colors,
+        "requiredFurnitureTypes": requiredFurnitureTypes,
+        "optionalFurnitureTypes": optionalFurnitureTypes,
+        "preferences": {
+          "style": style,
+          "colors": colors,
+        },
       };
 }
 
