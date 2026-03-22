@@ -4,7 +4,7 @@ export const products = [
         id: 'pink-fluffy-cloud-chair',
         name: 'Pink Fluffy Cloud Chair',
         description: 'A cozy fluffy accent chair with a playful cloud-inspired silhouette.',
-        price: 24990,
+        price: 14990,
         stock: 10,
         brand: 'Arpico',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Farpico.jpg?alt=media&token=8348ee19-6373-43a7-bc1f-4119850a077c',
@@ -26,6 +26,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['velvet-petal-chair', 'nordic-lounge-chair', 'ivory-nest-chair', 'amber-curve-chair', 'urban-recline-chair'],
         customersAlsoBought: ['aurora-floor-lamp', 'oaknest-coffee-table', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Playful', 'Accent', 'Minimalist'],
     },
     {
         id: 'nordic-lounge-chair',
@@ -50,12 +51,13 @@ export const products = [
         modelURL: '',
         similarProducts: ['ivory-nest-chair', 'pink-fluffy-cloud-chair', 'amber-curve-chair', 'urban-recline-chair', 'velvet-petal-chair'],
         customersAlsoBought: ['oaknest-coffee-table', 'urban-comfort-sofa', 'halo-floor-lamp'],
+        styleTags: ['Modern', 'Minimalist', 'Scandinavian', 'Accent'],
     },
     {
         id: 'ivory-nest-chair',
         name: 'Ivory Nest Chair',
         description: 'Soft upholstered chair perfect for compact spaces.',
-        price: 26990,
+        price: 16990,
         stock: 7,
         brand: 'Singer',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fsinger.png?alt=media&token=5da111d6-e8ea-445e-9bc5-1c1ccc7984dc',
@@ -76,6 +78,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['nordic-lounge-chair', 'pink-fluffy-cloud-chair', 'amber-curve-chair', 'velvet-petal-chair', 'urban-recline-chair'],
         customersAlsoBought: ['marble-glow-side-table', 'aurora-floor-lamp', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Minimalist', 'Compact', 'Accent'],
     },
     {
         id: 'urban-recline-chair',
@@ -101,12 +104,13 @@ export const products = [
         modelURL: '',
         similarProducts: ['amber-curve-chair', 'velvet-petal-chair', 'nordic-lounge-chair', 'ivory-nest-chair', 'pink-fluffy-cloud-chair'],
         customersAlsoBought: ['metro-3-seater-sofa', 'halo-floor-lamp', 'oaknest-coffee-table'],
+        styleTags: ['Modern', 'Comfort', 'Recliner', 'Accent'],
     },
     {
         id: 'velvet-petal-chair',
         name: 'Velvet Petal Chair',
         description: 'Luxurious velvet chair with curved design.',
-        price: 33990,
+        price: 13990,
         stock: 5,
         brand: 'Damro',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fdamro.png?alt=media&token=b1e76b37-237f-4077-ae08-82820e5ca239',
@@ -132,6 +136,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['pink-fluffy-cloud-chair', 'amber-curve-chair', 'urban-recline-chair', 'ivory-nest-chair', 'nordic-lounge-chair'],
         customersAlsoBought: ['luna-wall-art-set', 'glassline-console-table', 'halo-floor-lamp'],
+        styleTags: ['Modern', 'Luxurious', 'Accent', 'Elegant'],
     },
     {
         id: 'curve-chair',
@@ -165,6 +170,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['urban-recline-chair', 'velvet-petal-chair', 'nordic-lounge-chair', 'ivory-nest-chair', 'pink-fluffy-cloud-chair'],
         customersAlsoBought: ['marble-glow-side-table', 'aurora-floor-lamp', 'urban-comfort-sofa'],
+        styleTags: ['Modern', 'Minimalist', 'Accent', 'Elegant'],
     },
 
     // ================= SOFAS (6) =================
@@ -208,6 +214,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['metro-3-seater-sofa', 'serene-linen-sofa', 'compact-city-sofa', 'cloud-rest-sofa', 'velour-luxe-sofa'],
         customersAlsoBought: ['oaknest-coffee-table', 'aurora-floor-lamp', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Comfort', 'Minimalist', 'Living Room'],
     },
     {
         id: 'metro-3-seater-sofa',
@@ -239,6 +246,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['urban-comfort-sofa', 'serene-linen-sofa', 'velour-luxe-sofa', 'cloud-rest-sofa', 'compact-city-sofa'],
         customersAlsoBought: ['oaknest-coffee-table', 'halo-floor-lamp', 'glassline-console-table'],
+        styleTags: ['Modern', 'Contemporary', 'Comfort', 'Living Room'],
     },
     {
         id: 'serene-linen-sofa',
@@ -264,6 +272,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['urban-comfort-sofa', 'metro-3-seater-sofa', 'compact-city-sofa', 'cloud-rest-sofa', 'velour-luxe-sofa'],
         customersAlsoBought: ['aurora-floor-lamp', 'luna-wall-art-set', 'oaknest-coffee-table'],
+        styleTags: ['Linen', 'Minimalist', 'Airy', 'Living Room'],
     },
     {
         id: 'cloud-rest-sofa',
@@ -277,7 +286,7 @@ export const products = [
         imageUrl: [],
         colors: ['Cream'],
         imagesByColor: {
-            'Brown': [
+            'Cream': [
                 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcloud-rest-sofa%2Fimage1.avif?alt=media&token=a7bc118e-9a07-43a6-a169-86b0734dd2db',
                 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcloud-rest-sofa%2Fimage2.avif?alt=media&token=97a654f7-353f-46cd-89e2-4be82a4472ec',
                 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcloud-rest-sofa%2Fimage3.avif?alt=media&token=9df0023c-8ca5-43fd-a74b-111fd02d7049',
@@ -289,6 +298,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['velour-luxe-sofa', 'metro-3-seater-sofa', 'urban-comfort-sofa', 'serene-linen-sofa', 'compact-city-sofa'],
         customersAlsoBought: ['halo-floor-lamp', 'marble-glow-side-table', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Minimalist', 'Comfort', 'Living Room'],
     },
     {
         id: 'compact-city-sofa',
@@ -314,6 +324,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['serene-linen-sofa', 'urban-comfort-sofa', 'metro-3-seater-sofa', 'cloud-rest-sofa', 'velour-luxe-sofa'],
         customersAlsoBought: ['oaknest-coffee-table', 'aurora-floor-lamp', 'glassline-console-table'],
+        styleTags: ['Modern', 'Compact', 'Apartment', 'Living Room'],
     },
     {
         id: 'velour-luxe-sofa',
@@ -337,6 +348,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['cloud-rest-sofa', 'metro-3-seater-sofa', 'urban-comfort-sofa', 'serene-linen-sofa', 'compact-city-sofa'],
         customersAlsoBought: ['halo-floor-lamp', 'luna-wall-art-set', 'marble-glow-side-table'],
+        styleTags: ['Modern', 'Luxurious', 'Living Room', 'Elegant'],
     },
 
     // ================= TABLES (6) =================
@@ -364,6 +376,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['marble-glow-side-table', 'minimalist-round-table', 'compact-study-table', 'glassline-console-table', 'expandable-dining-table'],
         customersAlsoBought: ['urban-comfort-sofa', 'pink-fluffy-cloud-chair', 'aurora-floor-lamp'],
+        styleTags: ['Modern', 'Minimalist', 'Living Room', 'Wooden'],
     },
     {
         id: 'marble-glow-side-table',
@@ -390,6 +403,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['minimalist-round-table', 'oaknest-coffee-table', 'compact-study-table', 'glassline-console-table', 'expandable-dining-table'],
         customersAlsoBought: ['amber-curve-chair', 'cloud-rest-sofa', 'halo-floor-lamp'],
+        styleTags: ['Modern', 'Luxurious', 'Living Room', 'Accent'],
     },
     {
         id: 'glassline-console-table',
@@ -400,17 +414,15 @@ export const products = [
         brand: 'Singer',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fsinger.png?alt=media&token=5da111d6-e8ea-445e-9bc5-1c1ccc7984dc',
         rating: 4.4,
-        imageUrl: [],
-        colors: ['Brown', 'Black'],
-        materials: ['Oak Wood', 'Metal Frame'],
+        imageUrl: ['https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fglassline-console-table%2Fimage.avif?alt=media&token=93f26d34-57a3-4e40-9996-249cd871b349'],
+        colors: ['Clear', 'Black'],
+        materials: ['Glass', 'Wooden legs'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
+            'Clear': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fglassline-console-table%2Fclear_image.avif?alt=media&token=10858d91-9151-4097-b79a-90a6183dd5b3'
             ],
             'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fglassline-console-table%2Fblack_image.avif?alt=media&token=918e644b-609e-4ed0-b3ec-e269ed870b59'
             ]
         },
         furnitureType: 'table',
@@ -418,6 +430,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['compact-study-table', 'oaknest-coffee-table', 'expandable-dining-table', 'marble-glow-side-table', 'minimalist-round-table'],
         customersAlsoBought: ['velvet-petal-chair', 'metro-3-seater-sofa', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Minimalist', 'Living Room', 'Glass'],
     },
     {
         id: 'compact-study-table',
@@ -429,16 +442,14 @@ export const products = [
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Farpico.jpg?alt=media&token=8348ee19-6373-43a7-bc1f-4119850a077c',
         rating: 4.2,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
-        materials: ['Oak Wood', 'Metal Frame'],
+        colors: ['Brown'],
+        materials: ['Wood'],
         imagesByColor: {
             'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcompact-study-table%2Fimage1.webp?alt=media&token=c60d7d38-00d6-4b8e-a21a-04240b16f176',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcompact-study-table%2Fimage2.webp?alt=media&token=352e5c7d-3a6d-490a-87b1-a2958bf06595',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcompact-study-table%2Fimage3.webp?alt=media&token=15112e33-cb7a-4fc7-b446-e0418c001b2e',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcompact-study-table%2Fimage4.webp?alt=media&token=5590bb12-5ced-4d72-b301-6225ea06748d'
             ]
         },
         furnitureType: 'table',
@@ -446,6 +457,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['glassline-console-table', 'oaknest-coffee-table', 'minimalist-round-table', 'marble-glow-side-table', 'expandable-dining-table'],
         customersAlsoBought: ['ivory-nest-chair', 'aurora-floor-lamp', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Functional', 'Study', 'Wooden'],
     },
     {
         id: 'expandable-dining-table',
@@ -457,16 +469,15 @@ export const products = [
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fdamro.png?alt=media&token=b1e76b37-237f-4077-ae08-82820e5ca239',
         rating: 4.6,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
-        materials: ['Oak Wood', 'Metal Frame'],
+        colors: ['Black'],
+        materials: ['Wood', 'Metal'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
+
             'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fexpandable-dining-table%2Fimage.webp?alt=media&token=8b679fce-b02b-4e15-9a52-b0d598411688',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fexpandable-dining-table%2Fimage2.webp?alt=media&token=f52f59c7-1210-4fba-a00a-1910c18450d7',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fexpandable-dining-table%2Fimage3.webp?alt=media&token=4c0c121a-f744-42ce-8499-2f749046dbb3',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fexpandable-dining-table%2Fimage4.webp?alt=media&token=57ad72bf-7e8a-4e8f-92ae-5c7f4f782e50'
             ]
         },
         furnitureType: 'table',
@@ -474,6 +485,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['glassline-console-table', 'compact-study-table', 'oaknest-coffee-table', 'minimalist-round-table', 'marble-glow-side-table'],
         customersAlsoBought: ['metro-3-seater-sofa', 'halo-floor-lamp', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Functional', 'Dining', 'Family'],
     },
     {
         id: 'minimalist-round-table',
@@ -484,17 +496,19 @@ export const products = [
         brand: 'Singer',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fsinger.png?alt=media&token=5da111d6-e8ea-445e-9bc5-1c1ccc7984dc',
         rating: 4.3,
-        imageUrl: [],
-        colors: ['Brown', 'Black'],
-        materials: ['Oak Wood', 'Metal Frame'],
+        imageUrl: [
+            'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-round-table%2Fimage1.webp?alt=media&token=dbe2cdd8-44f9-4f4c-817d-c6ef44395fe8',
+            'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-round-table%2Fimage.webp?alt=media&token=31fb8d36-f7dc-4c02-afb3-062c11bbf7f0',
+            'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-round-table%2Fimage2.webp?alt=media&token=d89ef044-c21f-47e0-9a64-0d9455b2b439'
+        ],
+        colors: ['Gold Stand', 'Black Stand'],
+        materials: ['Marble', 'Metal Frame'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
+            'Gold Stand': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-round-table%2Fgold_image.avif?alt=media&token=08298185-7250-487a-94b6-2d3aa4562fbe'
             ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Black Stand': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-round-table%2Fblack_image.webp?alt=media&token=b98da4ed-3041-42c5-9aca-22e5de1767e7'
             ]
         },
         furnitureType: 'table',
@@ -502,6 +516,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['marble-glow-side-table', 'oaknest-coffee-table', 'compact-study-table', 'glassline-console-table', 'expandable-dining-table'],
         customersAlsoBought: ['amber-curve-chair', 'aurora-floor-lamp', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Minimalist', 'Dining', 'Elegant'],
     },
 
     // ================= BEDS (6) =================
@@ -509,48 +524,46 @@ export const products = [
         id: 'serenity-platform-bed',
         name: 'Serenity Platform Bed',
         description: 'Elegant platform bed with clean design.',
-        price: 65990,
+        price: 265990,
         stock: 4,
         brand: 'Arpico',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Farpico.jpg?alt=media&token=8348ee19-6373-43a7-bc1f-4119850a077c',
         rating: 4.5,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Ivory'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
+            'Ivory': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fserenity-platform-bed%2Fimage1.webp?alt=media&token=2c8bf530-804b-4412-a41c-786aa95ed449',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fserenity-platform-bed%2Fimage2.webp?alt=media&token=31b04538-640a-4709-9639-5433f3db0f55',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fserenity-platform-bed%2Fimage3.webp?alt=media&token=be2c2645-4c30-4380-99fd-c6c36fde4e32',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fserenity-platform-bed%2Fimage4.webp?alt=media&token=1b81692f-3463-4daf-b130-83b9f3a4ce30'
             ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
-            ]
+
         },
         furnitureType: 'bed',
         dimensions: { height: 110, length: 200, width: 160 },
         modelURL: '',
         similarProducts: ['soft-edge-bed', 'storage-drawer-bed', 'modern-loft-bed', 'luxury-king-bed', 'compact-single-bed'],
         customersAlsoBought: ['aurora-floor-lamp', 'luna-wall-art-set', 'minimalist-round-table'],
+        styleTags: ['Modern', 'Minimalist', 'Bed', 'Bedroom'],
     },
     {
         id: 'luxury-king-bed',
         name: 'Luxury King Bed',
         description: 'Premium king-sized bed with headboard.',
-        price: 99990,
+        price: 299990,
         stock: 2,
         brand: 'Damro',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fdamro.png?alt=media&token=b1e76b37-237f-4077-ae08-82820e5ca239',
         rating: 4.8,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Gray'],
+        materials: ['Plush Velvet'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Gray': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fluxury-king-bed%2Fimage1.webp?alt=media&token=6ec0ea26-acad-44fe-96aa-628a286a89cf',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fluxury-king-bed%2Fimage2.webp?alt=media&token=5be3c0a8-b690-497e-b37b-bc0bbab8bf45',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fluxury-king-bed%2Fimage3.webp?alt=media&token=f75e1334-3c08-4378-b486-2b289162ba6b'
             ]
         },
         furnitureType: 'bed',
@@ -558,6 +571,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['storage-drawer-bed', 'serenity-platform-bed', 'soft-edge-bed', 'modern-loft-bed', 'compact-single-bed'],
         customersAlsoBought: ['halo-floor-lamp', 'glassline-console-table', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Luxurious', 'Bed', 'Bedroom'],
     },
     {
         id: 'compact-single-bed',
@@ -569,15 +583,14 @@ export const products = [
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fsinger.png?alt=media&token=5da111d6-e8ea-445e-9bc5-1c1ccc7984dc',
         rating: 4.2,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Gray'],
+        materials: ['Stainless Steel'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Gray': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcompact-single-bed%2Fimage1.avif?alt=media&token=c779f197-869d-4070-ab37-68169277a0f7',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcompact-single-bed%2Fimage2.avif?alt=media&token=d2e8725b-27d8-45e7-83db-08dad9a7d4e7',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcompact-single-bed%2Fimage3.avif?alt=media&token=4a031e6f-2b74-42f7-9818-536fd1ed956d',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fcompact-single-bed%2Fimage4.avif?alt=media&token=cb0ad0a4-1fa2-43e8-922b-390daebde5a9'
             ]
         },
         furnitureType: 'bed',
@@ -585,26 +598,26 @@ export const products = [
         modelURL: '',
         similarProducts: ['soft-edge-bed', 'serenity-platform-bed', 'modern-loft-bed', 'storage-drawer-bed', 'luxury-king-bed'],
         customersAlsoBought: ['compact-study-table', 'aurora-floor-lamp', 'minimalist-round-table'],
+        styleTags: ['Modern', 'Minimalist', 'Compact', 'Bedroom'],
     },
     {
         id: 'storage-drawer-bed',
         name: 'Storage Drawer Bed',
         description: 'Bed with built-in storage drawers.',
-        price: 74990,
+        price: 212800,
         stock: 3,
         brand: 'Arpico',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Farpico.jpg?alt=media&token=8348ee19-6373-43a7-bc1f-4119850a077c',
         rating: 4.6,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Beige'],
+        materials: ['Wood'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Beige': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fstorage-drawer-bed%2Fimage1.webp?alt=media&token=8a3c1dc4-da09-4303-9a71-a4bd7db9df2c',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fstorage-drawer-bed%2Fimage2.webp?alt=media&token=1e799648-1312-4d88-a443-1ca5719e5d47',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fstorage-drawer-bed%2Fimage3.webp?alt=media&token=82252ba1-2531-441b-b98c-eccbc98854a0',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fstorage-drawer-bed%2Fimage4.webp?alt=media&token=ecbeb252-3b9c-48aa-8fb2-3fc9506e352e'
             ]
         },
         furnitureType: 'bed',
@@ -612,26 +625,28 @@ export const products = [
         modelURL: '',
         similarProducts: ['serenity-platform-bed', 'luxury-king-bed', 'soft-edge-bed', 'modern-loft-bed', 'compact-single-bed'],
         customersAlsoBought: ['oaknest-coffee-table', 'halo-floor-lamp', 'luna-wall-art-set'],
+        styleTags: ['Modern', 'Functional', 'Bed', 'Bedroom'],
     },
     {
         id: 'modern-loft-bed',
         name: 'Modern Loft Bed',
         description: 'Elevated bed with workspace below.',
-        price: 69990,
+        price: 169990,
         stock: 2,
         brand: 'Damro',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fdamro.png?alt=media&token=b1e76b37-237f-4077-ae08-82820e5ca239',
         rating: 4.5,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Brown + Black'],
+        materials: ['Wood', 'Metal'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Brown + Black': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fmodern-loft-bed%2Fimage1.webp?alt=media&token=4b38e08a-fa8d-4ae4-8837-b73f001d2cfd',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fmodern-loft-bed%2Fimage.webp?alt=media&token=8bd1091f-f978-4b1b-bd01-49e8e43f7365',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fmodern-loft-bed%2Fimage2.webp?alt=media&token=edf97853-3896-4354-b7bd-f9599148b6fa',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fmodern-loft-bed%2Fimage3.webp?alt=media&token=035546e0-c15c-4a17-84c6-84b507ddd008',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fmodern-loft-bed%2Fimage4.webp?alt=media&token=73986b4a-2fdf-4282-a68e-4418a8a030cd',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fmodern-loft-bed%2Fimage5.webp?alt=media&token=2727f61c-0f27-408d-8fac-cb7348d8fb7f'
             ]
         },
         furnitureType: 'bed',
@@ -639,6 +654,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['storage-drawer-bed', 'serenity-platform-bed', 'soft-edge-bed', 'compact-single-bed', 'luxury-king-bed'],
         customersAlsoBought: ['compact-study-table', 'aurora-floor-lamp', 'minimalist-round-table'],
+        styleTags: ['Modern', 'Minimalist', 'Functional', 'Bedroom'],
     },
     {
         id: 'soft-edge-bed',
@@ -650,15 +666,13 @@ export const products = [
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fsinger.png?alt=media&token=5da111d6-e8ea-445e-9bc5-1c1ccc7984dc',
         rating: 4.4,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['White'],
+        materials: ['Polyvinyl chloride'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'White': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fsoft-edge-bed%2Fimage3.avif?alt=media&token=b713159f-2637-4c36-817d-188b4b36af13',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fsoft-edge-bed%2Fimage2.avif?alt=media&token=40030034-1e92-4065-858c-c91d1acde48f',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fsoft-edge-bed%2Fimage2.avif?alt=media&token=40030034-1e92-4065-858c-c91d1acde48f'
             ]
         },
         furnitureType: 'bed',
@@ -666,6 +680,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['serenity-platform-bed', 'compact-single-bed', 'storage-drawer-bed', 'modern-loft-bed', 'luxury-king-bed'],
         customersAlsoBought: ['marble-glow-side-table', 'halo-floor-lamp', 'luna-wall-art-set'],
+        styleTags: ['Portable', 'Comfort', 'Bed', 'Bedroom'],
     },
 
     // ================= DECOR (6) =================
@@ -673,21 +688,19 @@ export const products = [
         id: 'aurora-floor-lamp',
         name: 'Aurora Floor Lamp',
         description: 'Elegant ambient floor lamp.',
-        price: 12990,
+        price: 2990,
         stock: 14,
         brand: 'Arpico',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Farpico.jpg?alt=media&token=8348ee19-6373-43a7-bc1f-4119850a077c',
         rating: 4.2,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Multi-color'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Multi-color': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Faurora-floor-lamp%2Fimage.avif?alt=media&token=23f66316-f318-4e61-98d7-d051b6f74e98',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Faurora-floor-lamp%2Fimage1.avif?alt=media&token=1df7229c-fa4a-44f1-b68d-979920b307ec',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Faurora-floor-lamp%2Fimage2.avif?alt=media&token=695c9d23-975b-4bc3-9a4c-6b6ae44598d6',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Faurora-floor-lamp%2Fimage3.avif?alt=media&token=359fa451-0738-45c7-b8cd-76b5c166ed43'
             ]
         },
         furnitureType: 'decor',
@@ -695,10 +708,11 @@ export const products = [
         modelURL: '',
         similarProducts: ['halo-floor-lamp', 'minimalist-vase-set', 'luna-wall-art-set', 'geometric-rug', 'ambient-led-strip'],
         customersAlsoBought: ['pink-fluffy-cloud-chair', 'oaknest-coffee-table', 'urban-comfort-sofa'],
+        styleTags: ['Modern', 'Minimalist', 'Decor', 'Ambient'],
     },
     {
-        id: 'halo-floor-lamp',
-        name: 'Halo Floor Lamp',
+        id: 'halo-table-lamp',
+        name: 'Halo Table Lamp',
         description: 'Modern halo-style lighting piece.',
         price: 14990,
         stock: 10,
@@ -706,15 +720,13 @@ export const products = [
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fdamro.png?alt=media&token=b1e76b37-237f-4077-ae08-82820e5ca239',
         rating: 4.5,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Brown + White'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Brown + White': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fhalo-table-lamp%2Fimage1.avif?alt=media&token=3597b92c-25c1-48b4-afff-f79bbf018731',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fhalo-table-lamp%2Fimage2.avif?alt=media&token=016f8e12-247b-493c-baf7-74180fff06d8',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fhalo-table-lamp%2Fimage3.avif?alt=media&token=5c75aa5c-d64f-4a0e-9491-4d1ac6aeeaf6',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fhalo-table-lamp%2Fimage4.avif?alt=media&token=53b98958-b062-4c39-b0aa-b5944b80b25f'
             ]
         },
         furnitureType: 'decor',
@@ -722,6 +734,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['aurora-floor-lamp', 'ambient-led-strip', 'minimalist-vase-set', 'luna-wall-art-set', 'geometric-rug'],
         customersAlsoBought: ['velour-luxe-sofa', 'marble-glow-side-table', 'luxury-king-bed'],
+        styleTags: ['Modern', 'Minimalist', 'Decor', 'Ambient'],
     },
     {
         id: 'luna-wall-art-set',
@@ -732,43 +745,37 @@ export const products = [
         brand: 'Singer',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fsinger.png?alt=media&token=5da111d6-e8ea-445e-9bc5-1c1ccc7984dc',
         rating: 4.3,
-        imageUrl: [],
-        colors: ['Brown', 'Black'],
-        imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
-            ]
-        },
+        imageUrl: [
+            'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fluna-wall-art-set%2Fimage1.avif?alt=media&token=369ed05a-1b20-463c-9e8c-be04c94198b8',
+            'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fluna-wall-art-set%2Fimage2.avif?alt=media&token=987016aa-be96-42f1-99c2-a3902dd95afc',
+            'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fluna-wall-art-set%2Fimage3.avif?alt=media&token=dd7a425f-87aa-4bd2-9459-d27e20d2935a',
+            'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fluna-wall-art-set%2Fimage4.avif?alt=media&token=f4237eb3-9159-4160-9f5a-634adcf669fc'
+        ],
         furnitureType: 'decor',
         dimensions: { height: 60, length: 5, width: 60 },
         modelURL: '',
         similarProducts: ['minimalist-vase-set', 'geometric-rug', 'ambient-led-strip', 'aurora-floor-lamp', 'halo-floor-lamp'],
         customersAlsoBought: ['velvet-petal-chair', 'urban-comfort-sofa', 'glassline-console-table'],
+        styleTags: ['Modern', 'Minimalist', 'Decor', 'Elegant'],
     },
     {
         id: 'minimalist-vase-set',
         name: 'Minimalist Vase Set',
         description: 'Decorative ceramic vases.',
-        price: 7990,
+        price: 3990,
         stock: 18,
         brand: 'Arpico',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Farpico.jpg?alt=media&token=8348ee19-6373-43a7-bc1f-4119850a077c',
         rating: 4.1,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['White'],
+        materials: ['ceramic'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'White': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-vase-set%2Fimage1.avif?alt=media&token=14f50fcc-0a25-4f90-a135-1740e66fe830',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-vase-set%2Fimage2.avif?alt=media&token=252a09a9-3f41-4689-9211-f49e8c3f84b1',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-vase-set%2Fimage3.avif?alt=media&token=f9628009-a4b2-42f3-84d2-4aaa4dc42af0',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fminimalist-vase-set%2Fimage4.avif?alt=media&token=9d48085f-bfd5-45f5-aa09-5c98da92feb5'
             ]
         },
         furnitureType: 'decor',
@@ -776,26 +783,25 @@ export const products = [
         modelURL: '',
         similarProducts: ['luna-wall-art-set', 'ambient-led-strip', 'geometric-rug', 'aurora-floor-lamp', 'halo-floor-lamp'],
         customersAlsoBought: ['oaknest-coffee-table', 'amber-curve-chair', 'compact-study-table'],
+        styleTags: ['Modern', 'Minimalist', 'Decor', 'Elegant'],
     },
     {
         id: 'geometric-rug',
         name: 'Geometric Rug',
         description: 'Stylish patterned rug.',
-        price: 15990,
+        price: 5990,
         stock: 12,
         brand: 'Damro',
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fdamro.png?alt=media&token=b1e76b37-237f-4077-ae08-82820e5ca239',
         rating: 4.4,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Beige'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Beige': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fgeometric-rug%2Fimage1.avif?alt=media&token=e1c1e080-5af5-46d8-8c75-352d581985cd',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fgeometric-rug%2Fimage2.avif?alt=media&token=e006f8ce-bfcf-4a94-8ac3-b06dc7d73074',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fgeometric-rug%2Fimage3.avif?alt=media&token=3f1f5769-3acc-49a4-85b4-1f951838ae50',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fgeometric-rug%2Fimage4.avif?alt=media&token=8b29461a-4996-4fef-9ecd-d720cbec9193'
             ]
         },
         furnitureType: 'decor',
@@ -803,6 +809,7 @@ export const products = [
         modelURL: '',
         similarProducts: ['luna-wall-art-set', 'minimalist-vase-set', 'ambient-led-strip', 'halo-floor-lamp', 'aurora-floor-lamp'],
         customersAlsoBought: ['urban-comfort-sofa', 'nordic-lounge-chair', 'minimalist-round-table'],
+        styleTags: ['Modern', 'Minimalist', 'Decor', 'Stylish'],
     },
     {
         id: 'ambient-led-strip',
@@ -814,15 +821,12 @@ export const products = [
         brandLogoUrl: 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fbrand-logos%2Fsinger.png?alt=media&token=5da111d6-e8ea-445e-9bc5-1c1ccc7984dc',
         rating: 4.2,
         imageUrl: [],
-        colors: ['Brown', 'Black'],
+        colors: ['Multi-color'],
         imagesByColor: {
-            'Brown': [
-                'https://picsum.photos/seed/brown-1/600/400',
-                'https://picsum.photos/seed/brown-2/600/400'
-            ],
-            'Black': [
-                'https://picsum.photos/seed/black-1/600/400',
-                'https://picsum.photos/seed/black-2/600/400'
+            'Multi-color': [
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fambient-led-strip%2Fimage.avif?alt=media&token=458bfe91-b495-4de5-b5f9-1559eae5ae74',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fambient-led-strip%2Fimage2.avif?alt=media&token=fbc0f9e7-8a9d-487e-b44f-e2451aaf1917',
+                'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2Fambient-led-strip%2Fimage3.avif?alt=media&token=73a784f8-288b-4036-a5c8-4347ec0dc5a3'
             ]
         },
         furnitureType: 'decor',
@@ -830,5 +834,6 @@ export const products = [
         modelURL: '',
         similarProducts: ['halo-floor-lamp', 'minimalist-vase-set', 'luna-wall-art-set', 'aurora-floor-lamp', 'geometric-rug'],
         customersAlsoBought: ['metro-3-seater-sofa', 'compact-study-table', 'glassline-console-table'],
+        styleTags: ['Modern', 'Decor', 'Ambient'],
     },
 ];

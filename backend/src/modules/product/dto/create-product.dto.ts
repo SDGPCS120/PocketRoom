@@ -97,4 +97,17 @@ export class CreateProductDto {
   @IsArray()
   @IsString({ each: true })
   customersAlsoBought?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  styleTags?: string[];
+
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
+  audio?: string;
 }
