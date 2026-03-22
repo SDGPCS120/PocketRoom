@@ -15,8 +15,8 @@ class ProductColor {
       );
     } else if (json is Map) {
       return ProductColor(
-        name: json['name']?.toString() ?? 'Unknown',
-        hex: json['hex']?.toString() ?? '',
+        name: (json['name'] ?? json['color'] ?? 'Unknown').toString().trim(),
+        hex: (json['hex'] ?? json['hex_code'] ?? '').toString().trim(),
       );
     }
     return ProductColor(name: 'Unknown', hex: '');
@@ -65,7 +65,7 @@ class Furniture {
   final String brand;
   final String brandLogoUrl;
   final double rating;
-  final List<String> images;
+  final List<String> imageUrl;
   final String imagePath;
   final String modelURL;
   final String material;
@@ -93,7 +93,7 @@ class Furniture {
     required this.brand,
     this.brandLogoUrl = '',
     required this.rating,
-    required this.images,
+    required this.imageUrl,
     this.imagePath = '',
     this.modelURL = '',
     this.material = '',
@@ -114,36 +114,25 @@ class Furniture {
     this.customersAlsoBought = const [],
   }) : colors = colors.map((e) => ProductColor.fromJson(e)).toList();
 
-  String get imageUrl => images.isNotEmpty ? images.first : '';
-
   String? getPrimaryImage() {
     String? chosen;
     String source = "none";
 
-    // 1. First try imagesByColor[firstColor]
+    // 1. Try imagesByColor[firstColor]
     if (colors.isNotEmpty) {
       final firstColor = colors.first.name.trim();
-      // Try exact match first
-      if (imagesByColor.containsKey(firstColor) && imagesByColor[firstColor]!.isNotEmpty) {
+      if (imagesByColor.containsKey(firstColor) && 
+          imagesByColor[firstColor]!.isNotEmpty && 
+          imagesByColor[firstColor]!.first.isNotEmpty) {
         chosen = imagesByColor[firstColor]!.first;
-        source = "imagesByColor[exact: $firstColor]";
-      } else {
-        // Try normalized match
-        final normalizedFirst = firstColor.toLowerCase();
-        for (var entry in imagesByColor.entries) {
-          if (entry.key.trim().toLowerCase() == normalizedFirst && entry.value.isNotEmpty) {
-            chosen = entry.value.first;
-            source = "imagesByColor[normalized: ${entry.key}]";
-            break;
-          }
-        }
+        source = "imagesByColor[$firstColor]";
       }
     }
 
-    // 2. Scan ALL keys in imagesByColor if still no image
-    if (chosen == null && imagesByColor.isNotEmpty) {
+    // 2. Fallback: first non-empty imagesByColor entry
+    if ((chosen == null || chosen.isEmpty) && imagesByColor.isNotEmpty) {
       for (var entry in imagesByColor.entries) {
-        if (entry.value.isNotEmpty) {
+        if (entry.value.isNotEmpty && entry.value.first.isNotEmpty) {
           chosen = entry.value.first;
           source = "imagesByColor[fallback: ${entry.key}]";
           break;
@@ -151,61 +140,54 @@ class Furniture {
       }
     }
 
-    // 3. Fallback to images.first
-    if (chosen == null && images.isNotEmpty) {
-      chosen = images.first;
-      source = "images.first";
+    // 6. Fallback (Final): imageUrl
+    if ((chosen == null || chosen.isEmpty) && imageUrl.isNotEmpty) {
+      final firstValid = imageUrl.where((e) => e.isNotEmpty).firstOrNull;
+      if (firstValid != null) {
+        chosen = firstValid;
+        source = "imageUrl";
+      }
     }
 
-    // Temporary Debug Logging
+    // 7. LAST RESORT: Smart ID Reconstruction (for missing DB images)
+    if ((chosen == null || chosen.isEmpty) && id.isNotEmpty && !id.contains(RegExp(r'^[0-9]+$'))) {
+      // Products like 'oaknest-coffee-table' usually follow this pattern
+      chosen = 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2F$id%2Fimage1.webp?alt=media';
+      source = "Reconstructed(webp)";
+    }
+
+    // Logging for failure or debugging
     if (chosen == null || chosen.isEmpty) {
       debugPrint('--- IMAGE FAILURE: $name ---');
       debugPrint('Colors: ${colors.map((c) => c.name).toList()}');
       debugPrint('ImagesByColor Keys: ${imagesByColor.keys.toList()}');
-      debugPrint('Images: $images');
+      debugPrint('ImageUrl: $imageUrl');
+      debugPrint('Chosen: $chosen');
       debugPrint('--------------------------');
-    } else {
-      // Optional: success log if you want to see what's working
-      // debugPrint('Image Success: $name -> $source ($chosen)');
     }
 
     return chosen;
   }
 
   List<String> getDisplayImages(String? selectedColor) {
-    final List<String> result = [];
+    final List<String> colorImages = [];
     final String? targetColor = selectedColor?.trim() ?? (colors.isNotEmpty ? colors.first.name.trim() : null);
 
-    if (targetColor != null) {
-      // 1. Try exact match
-      if (imagesByColor.containsKey(targetColor) && imagesByColor[targetColor]!.isNotEmpty) {
-        result.addAll(imagesByColor[targetColor]!);
-      } else {
-        // 2. Try normalized matching
-        final normalizedTarget = targetColor.toLowerCase();
-        bool found = false;
-        for (var entry in imagesByColor.entries) {
-          if (entry.key.trim().toLowerCase() == normalizedTarget) {
-            result.addAll(entry.value);
-            found = true;
-            break;
-          }
-        }
-        
-        // 3. If still nothing, move to first available variant
-        if (!found && imagesByColor.isNotEmpty) {
-          for (var entry in imagesByColor.entries) {
-            if (entry.value.isNotEmpty) {
-              result.addAll(entry.value);
-              break;
-            }
-          }
+    // 1. & 2. & 3. Try imagesByColor logic
+    if (targetColor != null && imagesByColor.containsKey(targetColor) && imagesByColor[targetColor]!.isNotEmpty) {
+      colorImages.addAll(imagesByColor[targetColor]!);
+    } else if (imagesByColor.isNotEmpty) {
+      // Fallback to first non-empty imagesByColor entry
+      for (var entry in imagesByColor.entries) {
+        if (entry.value.isNotEmpty) {
+          colorImages.addAll(entry.value);
+          break;
         }
       }
     }
 
-    // 4. Append common images from images list
-    result.addAll(images);
+    // 4. Append common images (imageUrl) AFTER color-specific images
+    final List<String> result = [...colorImages, ...imageUrl];
 
     // Ensure unique and non-empty
     final finalImages = result.where((e) => e.isNotEmpty).toSet().toList();
@@ -213,9 +195,8 @@ class Furniture {
     if (finalImages.isEmpty) {
       debugPrint('--- CAROUSEL FAILURE: $name ---');
       debugPrint('Selected Color: $selectedColor');
-      debugPrint('Target Color: $targetColor');
       debugPrint('ImagesByColor Keys: ${imagesByColor.keys.toList()}');
-      debugPrint('Images: $images');
+      debugPrint('ImageUrl: $imageUrl');
       debugPrint('------------------------------');
     }
 
@@ -223,8 +204,18 @@ class Furniture {
   }
 
   factory Furniture.fromJson(Map<String, dynamic> json) {
+    final furnitureType = json['furnitureType']?.toString() ?? json['category']?.toString() ?? 'N/A';
+    
+    String dimensions = 'N/A';
+    if (json['dimensions'] != null) {
+      dimensions = json['dimensions'].toString();
+    } else if (json['dimensions_cm'] is Map) {
+      final d = json['dimensions_cm'] as Map;
+      dimensions = 'L: ${d['l']}cm, W: ${d['w']}cm, H: ${d['h']}cm';
+    }
+
     final rawMaterials = (json['materials'] is List)
-        ? (json['materials'] as List).map((e) => e.toString().trim()).where((e) => e.isNotEmpty).toList()
+        ? (json['materials'] as List).map((e) => e.toString().trim()).where((e) => e.isNotEmpty).toList().cast<String>()
         : ((json['material']?.toString().trim().isNotEmpty ?? false)
             ? [json['material'].toString().trim()]
             : <String>[]);
@@ -235,7 +226,7 @@ class Furniture {
       imagesByColorData.forEach((key, value) {
         if (value is List) {
           rawImagesByColor[key.toString().trim()] = 
-              value.map((e) => e.toString().trim()).where((e) => e.isNotEmpty).toList();
+              value.map((e) => e.toString().trim()).where((e) => e.isNotEmpty).toList().cast<String>();
         } else if (value is String && value.trim().isNotEmpty) {
           rawImagesByColor[key.toString().trim()] = [value.trim()];
         }
@@ -278,12 +269,27 @@ class Furniture {
       rawImageUrl.add(json['image_path'].toString().trim());
     }
 
+    // 8. Fallback to 'thumbnail' or 'product_image'
+    if (json['thumbnail'] is String && json['thumbnail'].toString().isNotEmpty) rawImageUrl.add(json['thumbnail']);
+    if (json['product_image'] is String && json['product_image'].toString().isNotEmpty) rawImageUrl.add(json['product_image']);
+
     final rawColors = <ProductColor>[];
-    final colorsData = json['colors'] ?? json['color'];
+    final colorsData = json['colors'] ?? json['color'] ?? json['product_color'] ?? json['product_colors'];
     if (colorsData is List) {
       rawColors.addAll(colorsData.map((e) => ProductColor.fromJson(e)));
     } else if (colorsData != null && colorsData.toString().trim().isNotEmpty) {
       rawColors.add(ProductColor.fromJson(colorsData));
+    }
+
+    // Capture hex colors if available directly
+    if (json['hex_colors'] is List) {
+       // ... potential extra logic
+    }
+
+    if (rawImageUrl.isEmpty && rawImagesByColor.isEmpty) {
+      debugPrint('--- JSON EXTRACTION FAILURE [${json['id']}]: No images found ---');
+      debugPrint('Available Keys: ${json.keys.toList()}');
+      debugPrint('JSON Content: $json');
     }
 
     return Furniture(
@@ -304,7 +310,7 @@ class Furniture {
       rating: (json['rating'] is num)
           ? (json['rating'] as num).toDouble()
           : double.nan,
-      images: rawImageUrl,
+      imageUrl: rawImageUrl,
       imagePath: json['imagePath']?.toString() ?? '',
       modelURL: json['modelURL']?.toString() ?? '',
       materials: rawMaterials,
@@ -316,8 +322,8 @@ class Furniture {
       primaryColor: json['primaryColor']?.toString() ?? '',
       productID: json['productID']?.toString() ?? (json['id']?.toString() ?? ''),
       stockStatus: json['stockStatus'] is bool ? json['stockStatus'] as bool : null,
-      furnitureType: json['furnitureType']?.toString() ?? 'N/A',
-      dimensions: json['dimensions']?.toString() ?? 'N/A',
+      furnitureType: furnitureType,
+      dimensions: dimensions,
       availability: json['availability']?.toString() ?? 
                    (json['stockStatus'] is bool ? ((json['stockStatus'] as bool) ? 'Available' : 'Unavailable') : 'N/A'),
       styleTags: (json['styleTags'] is List)
@@ -327,10 +333,10 @@ class Furniture {
       colors: rawColors,
       imagesByColor: rawImagesByColor,
       similarProducts: (json['similarProducts'] is List)
-          ? (json['similarProducts'] as List).map((e) => e.toString()).toList()
+          ? (json['similarProducts'] as List).map((e) => e.toString()).toList().cast<String>()
           : const [],
       customersAlsoBought: (json['customersAlsoBought'] is List)
-          ? (json['customersAlsoBought'] as List).map((e) => e.toString()).toList()
+          ? (json['customersAlsoBought'] as List).map((e) => e.toString()).toList().cast<String>()
           : const [],
     );
   }
@@ -344,7 +350,7 @@ class Furniture {
       'brand': brand,
       'brandLogoUrl': brandLogoUrl,
       'rating': rating,
-      'images': images,
+      'imageUrl': imageUrl,
       'imagePath': imagePath,
       'modelURL': modelURL,
       'material': material,

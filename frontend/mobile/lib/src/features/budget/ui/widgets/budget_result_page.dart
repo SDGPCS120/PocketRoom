@@ -351,7 +351,7 @@ class _ProductItem extends StatelessWidget {
     final brand = furniture.brand.trim().isEmpty ? "PocketRoom" : furniture.brand;
     final rating = furniture.rating.isNaN ? 4.0 : furniture.rating;
     
-    final imageUrl = furniture.images.isNotEmpty ? furniture.images.first : null;
+    final imageUrl = furniture.getPrimaryImage();
 
     String formatPrice(double p) => "LKR ${p.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
 

@@ -9,7 +9,7 @@ final furnitureData = [
     oldPrice: 105000,
     brand: "FurnitureMan",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1567016432779-1fee89b58389?w=400&h=300&fit=crop",
@@ -34,7 +34,7 @@ final furnitureData = [
     price: 88000,
     brand: "FurnitureMan",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1567016432779-1fee89b58389?w=400&h=300&fit=crop",
@@ -55,7 +55,7 @@ final furnitureData = [
     price: 79000,
     brand: "FurnitureMan",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
     ],
@@ -76,7 +76,7 @@ final furnitureData = [
     oldPrice: 145000,
     brand: "FurnitureMan",
     rating: 4.2,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1567016432779-1fee89b58389?w=400&h=300&fit=crop",
@@ -98,7 +98,7 @@ final furnitureData = [
     oldPrice: 120000,
     brand: "Arpico",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -118,7 +118,7 @@ final furnitureData = [
     price: 1000,
     brand: "Damro",
     rating: 1.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -137,7 +137,7 @@ final furnitureData = [
     price: 100000,
     brand: "Damro",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -158,7 +158,7 @@ final furnitureData = [
     oldPrice: 115000,
     brand: "Arpico",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -178,7 +178,7 @@ final furnitureData = [
     price: 100000,
     brand: "Arpico",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -198,7 +198,7 @@ final furnitureData = [
     price: 54000,
     brand: "Damro",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1618220179428-22790b461013?w=400&h=300&fit=crop",
@@ -219,7 +219,7 @@ final furnitureData = [
     price: 12000,
     brand: "WoodWorks",
     rating: 4.5,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=300&fit=crop",
     ],
     furnitureType: "Chair",
@@ -238,7 +238,7 @@ final furnitureData = [
     price: 45000,
     brand: "Ikea",
     rating: 4.2,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=400&h=300&fit=crop",
     ],
     furnitureType: "Table",
@@ -257,7 +257,7 @@ final furnitureData = [
     price: 8500,
     brand: "LumiLux",
     rating: 4.8,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1507473888900-52e1ad145986?w=400&h=300&fit=crop",
     ],
     furnitureType: "Lamp",
@@ -283,7 +283,7 @@ final mockBudgetProducts = [
     brand: 'ARPICO',
     price: 8500,
     rating: 4.5,
-    images: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
+    imageUrl: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
     furnitureType: 'Table',
     dimensions: '45x45x50 cm',
     description: 'A compact side table perfect for any room.',
@@ -299,7 +299,7 @@ final mockBudgetProducts = [
     brand: 'MAX',
     price: 3200,
     rating: 4.7,
-    images: ['https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=400'],
+    imageUrl: ['https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=400'],
     furnitureType: 'Lamp',
     dimensions: '15x15x40 cm',
     description: 'Bright and ergonomic lamp for focused study.',
@@ -319,7 +319,7 @@ final mockLimitedTimeProducts = [
     price: 95000,
     oldPrice: 125000,
     rating: 4.8,
-    images: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400'],
+    imageUrl: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400'],
     furnitureType: 'Sofa',
     dimensions: '210x95x90 cm',
     description: 'Luxurious velvet sofa for a touch of elegance.',
@@ -336,7 +336,7 @@ final mockLimitedTimeProducts = [
     price: 18500,
     oldPrice: 24000,
     rating: 4.6,
-    images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400'],
+    imageUrl: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400'],
     furnitureType: 'Chair',
     dimensions: '60x60x110 cm',
     description: 'Maximum support for long working hours.',
@@ -353,7 +353,7 @@ final mockLimitedTimeProducts = [
     price: 12000,
     oldPrice: 18000,
     rating: 4.4,
-    images: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
+    imageUrl: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
     furnitureType: 'Table',
     dimensions: '90x90x40 cm',
     description: 'Sleek and simple coffee table for modern living.',

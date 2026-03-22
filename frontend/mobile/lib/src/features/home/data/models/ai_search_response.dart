@@ -85,25 +85,45 @@ class AiSearchProduct {
   factory AiSearchProduct.fromJson(Map<String, dynamic> json) {
     // Handle id as String (e.g., "P001") and convert to int
     final dynamic idValue = json['id'];
-    final int parsedId;
+    int parsedId = 0;
     if (idValue is String) {
-      // Extract numeric part from strings like "P001" -> 1
       final numericPart = idValue.replaceAll(RegExp(r'[^0-9]'), '');
       parsedId = numericPart.isNotEmpty ? int.parse(numericPart) : 0;
-    } else {
-      parsedId = idValue as int;
+    } else if (idValue is num) {
+      parsedId = idValue.toInt();
     }
+
+    // Robust image extraction (similar to Furniture.fromJson)
+    final List<String> rawImages = [];
     
+    void addImage(dynamic val) {
+      if (val is List) {
+        rawImages.addAll(val.map((e) => e.toString().trim()).where((e) => e.isNotEmpty));
+      } else if (val is String && val.trim().isNotEmpty) {
+        rawImages.add(val.trim());
+      }
+    }
+
+    addImage(json['imageUrl']);
+    addImage(json['image_url']);
+    addImage(json['images']);
+    addImage(json['image']);
+    addImage(json['imagePath']);
+    addImage(json['image_path']);
+    addImage(json['imageURL']);
+
+    final String primaryImage = rawImages.isNotEmpty ? rawImages.first : '';
+
     return AiSearchProduct(
       id: parsedId,
-      name: json['name'] as String,
-      price: json['price'] as num,
-      furnitureType: json['furnitureType'] as String? ?? json['category'] as String? ?? '',
-      color: json['color'] as String,
-      material: json['material'] as String,
-      style: json['style'] as String,
-      description: json['description'] as String,
-      image: json['imageUrl'] as String? ?? json['image'] as String? ?? '',
+      name: json['name'] as String? ?? 'Suggested Product',
+      price: json['price'] as num? ?? 0.0,
+      furnitureType: json['furnitureType'] as String? ?? json['category'] as String? ?? 'Furniture',
+      color: json['color'] as String? ?? '',
+      material: json['material'] as String? ?? '',
+      style: json['style'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      image: primaryImage,
       brand: json['brand'] as String? ?? 'Unknown',
       rating: json['rating'] as num? ?? 0.0,
       dimensionsCm: json['dimensions_cm'] as Map<String, dynamic>?,
@@ -127,9 +147,12 @@ class AiSearchProduct {
       price: price.toDouble(),
       brand: brand,
       rating: rating.toDouble(),
-      images: [image],
+      imageUrl: image.isNotEmpty ? [image] : const [],
       furnitureType: furnitureType,
       dimensions: formattedDimensions,
+      materials: material.isNotEmpty ? [material] : const [],
+      colors: color.isNotEmpty ? [color] : const [],
+      imagesByColor: (color.isNotEmpty && image.isNotEmpty) ? {color: [image]} : const {},
     );
   }
 }
