@@ -80,19 +80,23 @@ export class ColorMatcherService {
             return { matches: false, matchType: '' };
         }
 
-        const productColorLower = productColor.toLowerCase();
+        const productColorLower = productColor.toLowerCase().trim();
+        if (!productColorLower) return { matches: false, matchType: '' };
 
-        // Check for exact match first
+        // Check for exact word matches
         for (const queryColor of queryColors) {
-            if (productColorLower === queryColor.toLowerCase()) {
+            const qc = queryColor.toLowerCase();
+            if (productColorLower === qc || productColorLower.includes(qc)) {
                 return { matches: true, matchType: 'exact' };
             }
         }
 
-        // Check for similar shade match
+        // Check for similar shade matches (family words)
         const expanded = this.expandColors(queryColors);
-        if (expanded.has(productColorLower)) {
-            return { matches: true, matchType: 'similar' };
+        for (const shade of expanded) {
+            if (productColorLower.includes(shade)) {
+                return { matches: true, matchType: 'similar' };
+            }
         }
 
         return { matches: false, matchType: '' };
