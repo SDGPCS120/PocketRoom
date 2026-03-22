@@ -60,14 +60,12 @@ class _ProductListState extends ConsumerState<ProductList> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredFurniture = ref.watch(filteredFurnitureProvider);
+
     // If a provider is passed, use it; otherwise, use the default filtered selection.
-    // Fix for the line 70 issue: we need to handle the nested AsyncValue wrap/unwrap correctly.
-    // However, looking at line 70 in original: ref.watch(allFurnitureProvider).whenData((_) => ref.watch(filteredFurnitureProvider));
-    // It seems filteredFurnitureProvider is NOT an AsyncValue, but a Provider<List<Furniture>>.
-    // So we can do:
     final actualAsync = widget.provider != null 
         ? ref.watch(widget.provider!)
-        : ref.watch(allFurnitureProvider).whenData((_) => ref.read(filteredFurnitureProvider));
+        : ref.watch(allFurnitureProvider).whenData((_) => filteredFurniture);
 
     return actualAsync.when(
       loading: () => const SliverFillRemaining(child: Center(child: CircularProgressIndicator())),

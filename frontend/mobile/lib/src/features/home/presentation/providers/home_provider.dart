@@ -129,8 +129,20 @@ List<Furniture> _applyCategoryFilters(List<Furniture> all, String activeType, St
 }
 
 bool _matchesSearch(Furniture item, String query) {
-  return item.name.toLowerCase().contains(query) || 
-         item.brand.toLowerCase().contains(query);
+  final q = _normalize(query);
+  final haystacks = <String>[
+    item.name,
+    item.brand,
+    item.furnitureType,
+    item.primaryColor,
+    item.material,
+    item.materials.join(' '),
+    item.description,
+    item.styleTags.join(' '),
+    item.colors.map((c) => c.name).join(' '),
+  ].map(_normalize);
+
+  return haystacks.any((text) => text.contains(q));
 }
 
 List<Furniture> _applySorting(List<Furniture> items, SortOrder order) {
