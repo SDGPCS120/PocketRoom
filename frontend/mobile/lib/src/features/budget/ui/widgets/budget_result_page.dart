@@ -138,9 +138,9 @@ class _SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final bgColor = ok ? colorScheme.primaryContainer : colorScheme.errorContainer;
-    final textColor = ok ? colorScheme.onPrimaryContainer : colorScheme.onErrorContainer;
-    final borderColor = ok ? colorScheme.primary.withAlpha(76) : colorScheme.error.withAlpha(76);
+    final bgColor = ok ? colorScheme.surface : colorScheme.errorContainer.withAlpha(25);
+    final textColor = ok ? colorScheme.onSurface : colorScheme.error;
+    final borderColor = ok ? colorScheme.primary.withAlpha(128) : colorScheme.error.withAlpha(128);
 
     return Container(
       padding: const EdgeInsets.all(16),
