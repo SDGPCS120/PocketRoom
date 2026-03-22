@@ -18,7 +18,7 @@ class ProfilePage extends ConsumerWidget {
 
   Future<void> _openEditProfile(BuildContext context, WidgetRef ref) async {
     final state = ref.read(profileProvider);
-    final result = await Navigator.of(context).push<Map<String, dynamic>>(
+    await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (context) => EditProfilePage(
           initialName: state.name,
@@ -28,27 +28,13 @@ class ProfilePage extends ConsumerWidget {
         ),
       ),
     );
-
-    if (result != null) {
-      ref.read(profileProvider.notifier).updateUserData(
-            name: result['name'] as String?,
-            email: result['email'] as String?,
-            phone: result['phone'] as String?,
-            address: result['address'] as String?,
-          );
-    }
-  }
-
-  Future<void> _handleLogout(BuildContext context, WidgetRef ref) async {
-    final success = await ref.read(profileProvider.notifier).logout();
-    if (success && context.mounted) {
-      Navigator.of(context).popUntil((route) => route.isFirst);
-    }
   }
 
   Future<void> _showCartDebugJson(BuildContext context, WidgetRef ref) async {
     try {
-      final jsonStr = await ref.read(profileProvider.notifier).fetchCartDebugJson();
+      final jsonStr = await ref
+          .read(profileProvider.notifier)
+          .fetchCartDebugJson();
       if (jsonStr == null) {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -56,7 +42,7 @@ class ProfilePage extends ConsumerWidget {
         );
         return;
       }
-      
+
       if (!context.mounted) return;
       await showDialog<void>(
         context: context,
@@ -68,10 +54,7 @@ class ProfilePage extends ConsumerWidget {
               child: SingleChildScrollView(
                 child: SelectableText(
                   jsonStr,
-                  style: const TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 12,
-                  ),
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
                 ),
               ),
             ),
@@ -144,11 +127,6 @@ class ProfilePage extends ConsumerWidget {
                 ],
                 const SizedBox(height: 20),
                 ProfileOutlinedButton(
-                  label: 'Log out', 
-                  onPressed: () => _handleLogout(context, ref)
-                ),
-                const SizedBox(height: 12),
-                ProfileOutlinedButton(
                   label: 'View Cart Debug JSON',
                   onPressed: () => _showCartDebugJson(context, ref),
                 ),
@@ -167,7 +145,7 @@ class ProfilePage extends ConsumerWidget {
         mobile: content,
         desktop: content,
         useCardOnDesktop: true,
-        maxDesktopWidth: 600, // Slightly wider for profile
+        maxDesktopWidth: 600,
       ),
     );
   }

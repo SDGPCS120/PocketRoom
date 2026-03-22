@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = "com.example.pocketroom"
     compileSdk = 36
-    ndkVersion = "27.2.12479018"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

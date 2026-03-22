@@ -15,7 +15,8 @@ class AuthController {
   final _usernameAllowedRegex = RegExp(r'^[a-z0-9_]+$');
 
   String normalizeUsername(String value) => value.trim().toLowerCase();
-  String sanitizeUsername(String value) => value.trim().replaceAll(RegExp(r'\s+'), '_');
+  String sanitizeUsername(String value) =>
+      value.trim().replaceAll(RegExp(r'\s+'), '_');
 
   Future<AuthOutcome> processUserCredential(UserCredential credential) async {
     final user = credential.user;
@@ -25,7 +26,8 @@ class AuthController {
     final data = snap.data();
     final username = (data?['username'] as String?)?.trim();
 
-    final isValidFirestoreUsername = username != null &&
+    final isValidFirestoreUsername =
+        username != null &&
         _usernameAllowedRegex.hasMatch(username.toLowerCase());
 
     if (!isValidFirestoreUsername) {
@@ -39,28 +41,27 @@ class AuthController {
     }
   }
 
-  Future<AuthOutcome> signInWithEmailPassword(String email, String password) async {
-    final currentUser = auth.currentUser;
-    UserCredential credential;
-
-    if (currentUser != null && currentUser.isAnonymous) {
-      try {
-        final emailCredential = EmailAuthProvider.credential(email: email, password: password);
-        credential = await currentUser.linkWithCredential(emailCredential);
-      } on FirebaseAuthException {
-        credential = await auth.signInWithEmailAndPassword(email: email, password: password);
-      }
-    } else {
-      credential = await auth.signInWithEmailAndPassword(email: email, password: password);
-    }
-
+  Future<AuthOutcome> signInWithEmailPassword(
+    String email,
+    String password,
+  ) async {
+    final credential = await auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
     return processUserCredential(credential);
   }
 
-  Future<AuthOutcome> signUpWithEmailPassword(String email, String password, String rawUsername) async {
+  Future<AuthOutcome> signUpWithEmailPassword(
+    String email,
+    String password,
+    String rawUsername,
+  ) async {
     final username = sanitizeUsername(rawUsername);
     if (!_usernameAllowedRegex.hasMatch(username.toLowerCase())) {
-      throw Exception('Username can only use letters, numbers, and underscores');
+      throw Exception(
+        'Username can only use letters, numbers, and underscores',
+      );
     }
     if (username.length < 3 || username.length > 20) {
       throw Exception('Username must be between 3 and 20 characters');
@@ -68,7 +69,7 @@ class AuthController {
 
     final normalized = normalizeUsername(username);
     final usernameRef = db.collection('usernames').doc(normalized);
-    
+
     // Quick pre-check before hitting Auth
     final checkSnap = await usernameRef.get();
     if (checkSnap.exists) {
@@ -79,10 +80,16 @@ class AuthController {
     UserCredential credential;
 
     if (currentUser != null && currentUser.isAnonymous) {
-      final emailCredential = EmailAuthProvider.credential(email: email, password: password);
+      final emailCredential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
       credential = await currentUser.linkWithCredential(emailCredential);
     } else {
-      credential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+      credential = await auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
     }
 
     final user = credential.user;
@@ -129,7 +136,9 @@ class AuthController {
 
     final username = sanitizeUsername(rawUsername);
     if (!_usernameAllowedRegex.hasMatch(username.toLowerCase())) {
-      throw Exception('Username can only use letters, numbers, and underscores');
+      throw Exception(
+        'Username can only use letters, numbers, and underscores',
+      );
     }
     if (username.length < 3 || username.length > 20) {
       throw Exception('Username must be between 3 and 20 characters');
@@ -149,7 +158,8 @@ class AuthController {
       }
 
       final userSnap = await txn.get(usersRef);
-      final previousNormalized = userSnap.data()?['usernameNormalized'] as String?;
+      final previousNormalized =
+          userSnap.data()?['usernameNormalized'] as String?;
       if (previousNormalized != null && previousNormalized != normalized) {
         final previousRef = db.collection('usernames').doc(previousNormalized);
         final previousSnap = await txn.get(previousRef);
@@ -179,14 +189,22 @@ class AuthController {
     return AuthOutcome.success;
   }
 
-  Future<AuthOutcome> linkExistingAccount(String email, String password, AuthCredential googleCredential) async {
-    final signedIn = await auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<AuthOutcome> linkExistingAccount(
+    String email,
+    String password,
+    AuthCredential googleCredential,
+  ) async {
+    final signedIn = await auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
     final user = signedIn.user;
     if (user != null) {
       try {
         await user.linkWithCredential(googleCredential);
       } on FirebaseAuthException catch (e) {
-        if (e.code != 'provider-already-linked' && e.code != 'credential-already-in-use') {
+        if (e.code != 'provider-already-linked' &&
+            e.code != 'credential-already-in-use') {
           rethrow;
         }
       }

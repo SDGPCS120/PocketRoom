@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../../core/utils/email_validation.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../../data/models/auth_models.dart';
@@ -7,7 +8,7 @@ import '../auth_text_field.dart';
 import '../auth_confirm_password_dialog.dart';
 import '../../login_page.dart';
 import '../../username_page.dart';
-import '../../../../home/presentation/home_page.dart';
+import '../../../../home/presentation/main_screen.dart';
 
 class SignupForm extends ConsumerStatefulWidget {
   const SignupForm({super.key});
@@ -37,31 +38,44 @@ class _SignupFormState extends ConsumerState<SignupForm> {
 
   void _showMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _handleOutcome(AuthOutcome outcome) {
     if (!mounted) return;
     if (outcome == AuthOutcome.needsUsername) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const UsernamePage()));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const UsernamePage()),
+      );
     } else {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HomePage()),
+        MaterialPageRoute(builder: (_) => const MainScreen()),
         (route) => false,
       );
     }
   }
 
-
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
-      final outcome = await ref.read(authControllerProvider).signUpWithEmailPassword(
-        _emailController.text.trim(),
-        _passwordController.text,
-        _nameController.text,
+      final emailError = await EmailValidation.validateForSubmission(
+        _emailController.text,
       );
+      if (emailError != null) {
+        _showMessage(emailError);
+        return;
+      }
+
+      final outcome = await ref
+          .read(authControllerProvider)
+          .signUpWithEmailPassword(
+            _emailController.text.trim(),
+            _passwordController.text,
+            _nameController.text,
+          );
       _handleOutcome(outcome);
     } catch (e) {
       _showMessage(e.toString().replaceAll('Exception: ', ''));
@@ -75,13 +89,18 @@ class _SignupFormState extends ConsumerState<SignupForm> {
     try {
       final outcome = await ref.read(authControllerProvider).signInWithGoogle();
       _handleOutcome(outcome);
-    } on RequiresPasswordException catch(req) {
+    } on RequiresPasswordException catch (req) {
+      if (!mounted) return;
       final password = await AuthConfirmPasswordDialog.show(context, req.email);
+      if (!mounted) return;
+
       if (password != null && password.isNotEmpty) {
         try {
-          final outcome = await ref.read(authControllerProvider).linkExistingAccount(req.email, password, req.credential);
+          final outcome = await ref
+              .read(authControllerProvider)
+              .linkExistingAccount(req.email, password, req.credential);
           _handleOutcome(outcome);
-        } catch(e) {
+        } catch (e) {
           _showMessage('Failed to link account: ${e.toString()}');
         }
       } else {
@@ -113,21 +132,24 @@ class _SignupFormState extends ConsumerState<SignupForm> {
           children: [
             Text(
               'Create Account',
-              style: AppTextStyles.h1(context).copyWith(
-                color: colorScheme.onSurface,
-              ),
+              style: AppTextStyles.h1(
+                context,
+              ).copyWith(color: colorScheme.onSurface),
             ),
             const SizedBox(height: 6),
             Text(
               'Create an account to buy your favorite furniture',
-              style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant),
+              style: textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 36),
             AuthTextField(
               controller: _nameController,
               label: 'Username',
               hint: 'your_username',
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter a username' : null,
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Enter a username' : null,
             ),
             const SizedBox(height: 16),
             AuthTextField(
@@ -135,7 +157,7 @@ class _SignupFormState extends ConsumerState<SignupForm> {
               label: 'Email',
               hint: 'you@example.com',
               keyboardType: TextInputType.emailAddress,
-              validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+              validator: EmailValidation.validateSyntax,
             ),
             const SizedBox(height: 16),
             AuthTextField(
@@ -148,9 +170,11 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                onPressed: () =>
+                    setState(() => _obscurePassword = !_obscurePassword),
               ),
-              validator: (v) => (v == null || v.length < 6) ? 'Min 6 characters' : null,
+              validator: (v) =>
+                  (v == null || v.length < 6) ? 'Min 6 characters' : null,
             ),
             const SizedBox(height: 16),
             AuthTextField(
@@ -163,9 +187,12 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                   _obscureConfirm ? Icons.visibility_off : Icons.visibility,
                   color: colorScheme.onSurfaceVariant,
                 ),
-                onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                onPressed: () =>
+                    setState(() => _obscureConfirm = !_obscureConfirm),
               ),
-              validator: (v) => (v != _passwordController.text) ? 'Passwords do not match' : null,
+              validator: (v) => (v != _passwordController.text)
+                  ? 'Passwords do not match'
+                  : null,
             ),
             const SizedBox(height: 32),
             SizedBox(
@@ -177,9 +204,18 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                     ? SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Theme.of(context).colorScheme.onPrimary),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                       )
-                    : Text('Create account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                    : Text(
+                        'Create account',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
               ),
             ),
             const SizedBox(height: 16),
@@ -210,8 +246,12 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Continue with Google', 
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface)
+                      'Continue with Google',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                     ),
                   ],
                 ),
@@ -224,7 +264,8 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                 Text(
                   'Already have an account? ',
                   style: AppTextStyles.bodyLarge(context).copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 GestureDetector(
                   onTap: () => Navigator.pushReplacement(
@@ -234,9 +275,9 @@ class _SignupFormState extends ConsumerState<SignupForm> {
                   child: Text(
                     'Log in',
                     style: AppTextStyles.bodyMedium(context).copyWith(
-                            color: colorScheme.onSurface,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ],
