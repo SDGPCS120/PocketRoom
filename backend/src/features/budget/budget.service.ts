@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { BudgetBundleRequestDto, BudgetBundleResponseDto } from './dto/budget-bundle.dto';
 import { buildBundle } from './algo/buildBundle';
 import { FirebaseService } from '../../firebase/firebase.service';
-import { FurnitureItem } from '../../furniture/furniture.mock';
+import { FurnitureItem } from './algo/types';
 
 @Injectable()
 export class BudgetService {

@@ -1,4 +1,4 @@
-import { FurnitureItem } from '../../../furniture/furniture.mock';
+import { FurnitureItem } from './types';
 import { BudgetBundleRequestDto, BudgetBundleResponseDto, BundleVariantDto } from '../dto/budget-bundle.dto';
 import { norm, scoreItem } from './scoring';
 import { Candidate, mckp, minCostRequired } from './mckp';
