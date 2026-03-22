@@ -9,6 +9,35 @@ export class ProductLoaderService {
 
     constructor(private readonly firebaseService: FirebaseService) { }
 
+    private ensureStringList(val: any): string[] {
+        if (Array.isArray(val)) {
+            return val
+                .map((item) => this.ensureString(item).trim())
+                .filter((item) => item.length > 0);
+        }
+        if (typeof val === 'string') {
+            const trimmed = val.trim();
+            return trimmed ? [trimmed] : [];
+        }
+        return [];
+    }
+
+    private ensureImagesByColor(val: any): Record<string, string[]> {
+        const result: Record<string, string[]> = {};
+        if (!val || typeof val !== 'object' || Array.isArray(val)) {
+            return result;
+        }
+
+        for (const [key, rawValue] of Object.entries(val)) {
+            const normalized = this.ensureStringList(rawValue);
+            if (normalized.length > 0) {
+                result[String(key).trim()] = normalized;
+            }
+        }
+
+        return result;
+    }
+
     private ensureString(val: any): string {
         if (Array.isArray(val)) {
             return val.join(', ');
@@ -38,13 +67,26 @@ export class ProductLoaderService {
                         name: this.ensureString(data.name),
                         category: this.ensureString(data.category),
                         color: this.ensureString(data.primaryColor || data.color),
+                        colors: Array.isArray(data.colors)
+                            ? data.colors
+                            : (data.primaryColor || data.color ? [data.primaryColor || data.color] : []),
                         material: this.ensureString(data.material),
                         style: Array.isArray(data.styleTags)
                             ? data.styleTags.join(' ')
                             : this.ensureString(data.style),
                         description: this.ensureString(data.description),
                         price: typeof data.price === 'number' ? data.price : parseFloat(data.price) || 0,
-                        imageUrl: this.ensureString(data.imageUrl || data.image),
+                        imageUrl: Array.isArray(data.imageUrl)
+                            ? this.ensureStringList(data.imageUrl)
+                            : (Array.isArray(data.images)
+                                ? this.ensureStringList(data.images)
+                                : (this.ensureString(data.imageUrl || data.image).trim()
+                                    ? [this.ensureString(data.imageUrl || data.image).trim()]
+                                    : [])),
+                        imagesByColor: this.ensureImagesByColor(
+                            data.imagesByColor || data.images_by_color,
+                        ),
+                        imagePath: this.ensureString(data.imagePath || data.image_path),
                         brand: this.ensureString(data.brand),
                         rating: typeof data.rating === 'number' ? data.rating : parseFloat(data.rating) || 0,
                         dimensions_cm: {

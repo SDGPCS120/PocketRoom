@@ -67,13 +67,29 @@ export function buildBundle(
   const requiredGroups = topKByCategory(filtered, required, pref, topK);
   const optionalGroups = topKByCategory(filtered, optional, pref, topK);
 
-  const missing = required.filter((c) => !requiredGroups[c] || requiredGroups[c].length === 0);
-  if (missing.length) {
+  const availableRequired = required.filter(
+    (c) => requiredGroups[c] && requiredGroups[c].length > 0,
+  );
+  const missingRequired = required.filter(
+    (c) => !requiredGroups[c] || requiredGroups[c].length === 0,
+  );
+  const missingOptional = optional.filter(
+    (c) => !optionalGroups[c] || optionalGroups[c].length === 0,
+  );
+
+  const hasAnyAvailableOptional = optional.some(
+    (c) => optionalGroups[c] && optionalGroups[c].length > 0,
+  );
+
+  if (availableRequired.length === 0 && !hasAnyAvailableOptional) {
+    const unavailable = [...missingRequired, ...missingOptional];
     return {
-      ok: false,
+      ok: true,
       totalBudget: req.totalBudget,
       bundles: [],
-      reason: `Missing categories after filtering: ${missing.join(', ')}`,
+      reason: unavailable.length
+        ? `Ignored unavailable categories: ${unavailable.join(', ')}`
+        : 'No matching products are currently available.',
     };
   }
 
@@ -82,7 +98,7 @@ export function buildBundle(
   const MAX_LIMIT = 50;
 
   while (bundles.length < MAX_LIMIT) {
-    const dpRes = mckp(required, requiredGroups, req.totalBudget, step);
+    const dpRes = mckp(availableRequired, requiredGroups, req.totalBudget, step);
     if (!dpRes.ok) {
       if (bundles.length > 0) break;
       return {
@@ -90,7 +106,7 @@ export function buildBundle(
         totalBudget: req.totalBudget,
         bundles: [],
         reason: 'No valid bundle fits the budget.',
-        minPossibleCost: minCostRequired(required, requiredGroups) ?? undefined,
+        minPossibleCost: minCostRequired(availableRequired, requiredGroups) ?? undefined,
       };
     }
 
@@ -112,6 +128,18 @@ export function buildBundle(
     generatedSignatures.add(signature);
 
     const explanations: string[] = [];
+
+    if (missingRequired.length > 0) {
+      explanations.push(
+        `Skipped unavailable required categories: ${missingRequired.join(', ')}`,
+      );
+    }
+
+    if (missingOptional.length > 0) {
+      explanations.push(
+        `Skipped unavailable optional categories: ${missingOptional.join(', ')}`,
+      );
+    }
 
     const requiredBundle = dpRes.picks.map((c) => {
       explanations.push(`${c.product.category}: ${c.product.name} (${c.reason})`);

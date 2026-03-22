@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_avif/flutter_avif.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/foundation.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../home/data/models/furniture_model.dart';
@@ -331,6 +331,69 @@ class _ProductItem extends StatelessWidget {
     required this.onQuantityChanged,
   });
 
+  bool _isNetworkUrl(String path) => path.startsWith('http');
+
+  Widget _buildPlaceholder(ColorScheme colorScheme) {
+    return Container(
+      color: colorScheme.secondary.withAlpha(51),
+      child: Icon(
+        Icons.chair,
+        size: 40,
+        color: colorScheme.onSurfaceVariant.withAlpha(128),
+      ),
+    );
+  }
+
+  Widget _buildProductImage(String? primaryImage, ColorScheme colorScheme) {
+    if (primaryImage == null || primaryImage.isEmpty) {
+      return _buildPlaceholder(colorScheme);
+    }
+
+    final isAvif = primaryImage.toLowerCase().contains('.avif');
+
+    if (_isNetworkUrl(primaryImage)) {
+      if (isAvif) {
+        return AvifImage.network(
+          primaryImage,
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) => _buildPlaceholder(colorScheme),
+        );
+      }
+
+      return Image.network(
+        primaryImage,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _buildPlaceholder(colorScheme),
+        loadingBuilder: (_, child, progress) {
+          if (progress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: progress.expectedTotalBytes != null
+                  ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
+                  : null,
+              strokeWidth: 2.5,
+              color: colorScheme.primary,
+            ),
+          );
+        },
+      );
+    }
+
+    if (isAvif) {
+      return AvifImage.asset(
+        primaryImage,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _buildPlaceholder(colorScheme),
+      );
+    }
+
+    return Image.asset(
+      primaryImage,
+      fit: BoxFit.cover,
+      errorBuilder: (_, _, _) => _buildPlaceholder(colorScheme),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -374,23 +437,11 @@ class _ProductItem extends StatelessWidget {
               color: colorScheme.secondary,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: imageUrl != null && imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: colorScheme.secondary.withAlpha(51),
-                        child: Icon(Icons.chair, size: 40, color: colorScheme.onSurfaceVariant.withAlpha(128)),
-                      ),
-                    )
-                  : Container(
-                      color: colorScheme.secondary.withAlpha(51),
-                      child: Icon(Icons.chair, size: 40, color: colorScheme.onSurfaceVariant.withAlpha(128)),
-                    ),
-            ),
-          ),
+             child: ClipRRect(
+               borderRadius: BorderRadius.circular(12),
+               child: _buildProductImage(imageUrl, colorScheme),
+             ),
+           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

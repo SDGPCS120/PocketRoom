@@ -79,8 +79,8 @@ class _BudgetPlannerPageState extends State<BudgetPlannerPage> {
 
     final payload = {
       "totalBudget": _budget.round(),
-      "requiredCategories": _selectedRequired.toList(),
-      "optionalCategories": _selectedOptional.toList(),
+      "requiredFurnitureTypes": _selectedRequired.toList(),
+      "optionalFurnitureTypes": _selectedOptional.toList(),
       "preferences": {
         "style": _selectedStyle,
         "colors": _selectedColors.toList(),
