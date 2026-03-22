@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/extensions.dart';
 import '../../../home/data/models/furniture_model.dart';
+import '../../../cart/presentation/providers/cart_provider.dart';
+import '../../../cart/data/models/cart_item.dart';
+import '../../../cart/presentation/cart_page.dart';
 
-class BudgetResultPage extends StatefulWidget {
+class BudgetResultPage extends ConsumerStatefulWidget {
   final Map<String, dynamic> result;
 
   const BudgetResultPage({super.key, required this.result});
 
   @override
-  State<BudgetResultPage> createState() => _BudgetResultPageState();
+  ConsumerState<BudgetResultPage> createState() => _BudgetResultPageState();
 }
 
-class _BudgetResultPageState extends State<BudgetResultPage> {
+class _BudgetResultPageState extends ConsumerState<BudgetResultPage> {
   int _currentIndex = 0;
   // Map of item unique ID -> quantity
   final Map<String, int> _itemQuantities = {};
@@ -41,6 +45,48 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
   String _getItemId(Map<String, dynamic> item) {
     final data = (item['product'] is Map) ? item['product'] : item;
     return (data['id'] ?? data['productID'] ?? item.hashCode).toString();
+  }
+
+  void _addToCart(List<dynamic> items) {
+    final List<CartItem> cartItems = [];
+    for (final it in items) {
+      final itemData = (it['product'] is Map) ? Map<String, dynamic>.from(it['product']) : it;
+      final furniture = Furniture.fromJson({
+        ...itemData,
+        'furnitureType': it['category'] ?? itemData['category'] ?? itemData['furnitureType'] ?? "-",
+      });
+      final qty = _itemQuantities[_getItemId(it)] ?? 1;
+      cartItems.add(CartItem(furniture: furniture, quantity: qty));
+    }
+
+    ref.read(cartProvider.notifier).addItems(cartItems);
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("${cartItems.length} items added to cart!"),
+        behavior: SnackBarBehavior.fixed,
+        duration: const Duration(seconds: 2),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        action: SnackBarAction(
+          label: "View Cart",
+          textColor: Colors.white,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CartPage()),
+            );
+          },
+        ),
+      ),
+    );
+
+    // Force hide after 2 seconds just in case the system timer fails
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+      }
+    });
   }
 
   @override
@@ -137,21 +183,40 @@ class _BudgetResultPageState extends State<BudgetResultPage> {
                           textAlign: TextAlign.center,
                         ),
                       )
-                    : ListView.builder(
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index] as Map<String, dynamic>;
-                          final id = _getItemId(item);
-                          return _ProductItem(
-                            product: item,
-                            quantity: _itemQuantities[id] ?? 1,
-                            onQuantityChanged: (newQty) {
-                              setState(() {
-                                _itemQuantities[id] = newQty;
-                              });
-                            },
-                          );
-                        },
+                    : Column(
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final item = items[index] as Map<String, dynamic>;
+                                final id = _getItemId(item);
+                                return _ProductItem(
+                                  product: item,
+                                  quantity: _itemQuantities[id] ?? 1,
+                                  onQuantityChanged: (newQty) {
+                                    setState(() {
+                                      _itemQuantities[id] = newQty;
+                                    });
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          if (items.isNotEmpty && ok) ...[
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 54,
+                              child: ElevatedButton.icon(
+                                onPressed: () => _addToCart(items),
+                                icon: const Icon(Icons.shopping_bag_outlined),
+                                label: const Text("ADD THIS BUNDLE TO CART"),
+                                style: AppButtonStyles.primaryButton(context),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
               ),
             ],
