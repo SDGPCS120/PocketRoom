@@ -33,22 +33,27 @@ Node.js must be installed. Make sure the NestJS backend is actively running, as 
 
 ### Installation
 Navigate to this directory.
+
 ```bash
 npm install
 ```
 
 ### Running the App
 Run the local Vite development server.
+
 ```bash
 npm run dev
 ```
 
 ### Production Build
 Create an optimized production bundle.
+
 ```bash
 npm run build
 ```
+
 Preview the resultant bundle.
+
 ```bash
 npm run preview
 ```
