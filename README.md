@@ -1,10 +1,12 @@
-# PocketRoom
+# PocketRoom 🛋️
 
-An intelligent e-commerce platform for furniture featuring an AI-powered search engine. This project combines a high-performance Flutter mobile application, a React-based web interface, and a robust NestJS backend.
+An AR powered e-commerce platform for furniture to visualize furniture you want to buy. This project combines a high-performance Flutter mobile application, a React-based web interface, and a robust NestJS backend.
 
 ## Features
-- AI-Powered Search: Natural language processing for understanding user queries like "pink chair under 50000".
+- AR visualisation : See furniture with high quality 3D models and accurate scale.
+- AI-Powered Search: Natural language processing for understanding user queries.
 - Cross-Platform Clients: Native mobile application for Android and iOS devices, and a fast, responsive web dashboard.
+- 3D model generation pipeline: Generate 3D models of furniture using a single image
 - Unified Backend Architecture: Centralized API managing products, orders, auth, and complex NLP capabilities.
 - Semantic Relevance: Matches colors to families and filters out non-matching products natively.
 
