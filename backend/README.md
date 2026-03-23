@@ -42,11 +42,13 @@ backend/
 
 ### Installation and Running
 1. Install Dependencies
+
 ```bash
 npm install
 ```
 
 2. Run the Development Server
+
 ```bash
 # standard development
 npm run start
@@ -56,6 +58,7 @@ npm run start:dev
 ```
 
 3. Production Build
+
 ```bash
 npm run build
 npm run start:prod
