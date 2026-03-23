@@ -25,10 +25,12 @@ PocketRoom/
 ```
 
 ## Setup Instructions
+
 To run the entire stack locally, follow these modular instructions.
 
 ### 1. Backend Server Setup
 Navigate into the backend directory, provide the necessary service account files for Firebase, and start the development server.
+
 ```bash
 cd backend
 npm install
@@ -37,6 +39,7 @@ npm run start:dev
 
 ### 2. Web Client Setup
 In a new terminal, navigate to the web frontend directory. Ensure your backend is running.
+
 ```bash
 cd frontend/web
 npm install
@@ -45,6 +48,7 @@ npm run dev
 
 ### 3. Mobile App Setup
 In another terminal, ensure you have a running emulator or a connected physical device.
+
 ```bash
 cd frontend/mobile
 flutter pub get
