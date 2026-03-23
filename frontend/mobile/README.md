@@ -36,18 +36,21 @@ You must have the Flutter SDK natively installed on your operating system along 
 
 ### Installation
 Navigate to this directory and fetch dependencies.
+
 ```bash
 flutter pub get
 ```
 
 ### Operation
 Run the application natively or against a simulator.
+
 ```bash
 flutter run
 ```
 
 ### Production Build
 Generate your release targets.
+
 ```bash
 # Android APK
 flutter build apk --release
