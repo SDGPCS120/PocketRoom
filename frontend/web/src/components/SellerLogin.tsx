@@ -1,30 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../lib/firebase';
+import api, { toUserFacingApiError } from '../lib/api';
+import logoUrl from '../assets/logo.png';
 import './SellerLogin.css';
 
 const SellerLogin: React.FC = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => {
+    // Pre-fill from registration if present
+    const reg = localStorage.getItem('sellerRegistration');
+    if (reg) {
+      try {
+        const data = JSON.parse(reg) as { email?: string };
+        if (data.email) return data.email;
+      } catch {
+        // ignore
+      }
+    }
+    // Restore "remember me" email
+    const remembered = localStorage.getItem('sellerRememberedEmail');
+    return remembered ?? '';
+  });
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
-
-  // Pre-fill from registration if present
-  useEffect(() => {
-    const reg = localStorage.getItem('sellerRegistration');
-    if (reg) {
-      try {
-        const data = JSON.parse(reg);
-        if (data.email) setEmail(data.email);
-      } catch {/* ignore */}
-    }
-    // Restore "remember me" email
-    const remembered = localStorage.getItem('sellerRememberedEmail');
-    if (remembered) setEmail(remembered);
-  }, []);
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
@@ -49,24 +53,24 @@ const SellerLogin: React.FC = () => {
     setIsLoading(true);
     setErrors({});
 
-    // Simulate API call — replace with real Firebase/backend auth
-    await new Promise((res) => setTimeout(res, 1000));
+    try {
+      // 1. Authenticate with Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    // Check against stored registration (mock auth)
-    const reg = localStorage.getItem('sellerRegistration');
-    let authenticated = false;
-
-    if (reg) {
+      // 2. Fetch store information from backend (optional enhancement for UI)
+      let storeName = email.split('@')[0];
+      let storeId = undefined;
       try {
-        const data = JSON.parse(reg);
-        if (data.email === email) authenticated = true;
-      } catch {/* ignore */}
-    }
+        const response = await api.get('/stores/me');
+        if (response.data) {
+           storeName = response.data.storeName || storeName;
+           storeId = response.data.storeId;
+        }
+      } catch (storeError) {
+        console.warn('Store profile not found or error fetching:', storeError);
+      }
 
-    // Also allow any email/password combo (demo mode)
-    if (!authenticated) authenticated = true;
-
-    if (authenticated) {
       if (rememberMe) {
         localStorage.setItem('sellerRememberedEmail', email);
       } else {
@@ -74,14 +78,20 @@ const SellerLogin: React.FC = () => {
       }
 
       const session = {
-        email,
-        username: email.split('@')[0],
+        uid: user.uid,
+        email: user.email,
+        username: storeName,
+        storeId: storeId,
         loggedInAt: new Date().toISOString(),
       };
+      
       localStorage.setItem('currentUser', JSON.stringify(session));
       navigate('/dashboard');
-    } else {
-      setErrors({ general: 'Invalid email or password. Please try again.' });
+    } catch (error: unknown) {
+      console.error('Login error:', error);
+      // Firebase auth errors are usually credential-related; axios errors are connectivity/CORS/back-end.
+      const message = toUserFacingApiError(error);
+      setErrors({ general: message.includes('API error') || message.includes('Network error') ? message : 'Invalid email or password. Please try again.' });
     }
 
     setIsLoading(false);
@@ -89,12 +99,13 @@ const SellerLogin: React.FC = () => {
 
   return (
     <div className="login-page">
-      {/* Left panel */}
       <div className="login-left">
         <div className="login-brand">
-          <div className="brand-logo">PR</div>
-          <h1>PocketRoom</h1>
-          <p>Seller Portal</p>
+          <img src={logoUrl} alt="PocketRoom" className="login-logo-img" />
+          <div>
+            <h1>PocketRoom</h1>
+            <p>Seller Portal</p>
+          </div>
         </div>
 
         <div className="login-illustration">
@@ -140,7 +151,7 @@ const SellerLogin: React.FC = () => {
 
           {errors.general && (
             <div className="alert-error" role="alert">
-              <span className="alert-icon">⚠</span>
+              <span className="alert-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
               {errors.general}
             </div>
           )}

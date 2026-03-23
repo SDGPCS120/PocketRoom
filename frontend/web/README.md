@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
+# PocketRoom Web Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The web-based frontend application for the PocketRoom platform, providing seamless e-commerce interactions natively in the browser.
 
-Currently, two official plugins are available:
+## Features
+- Client-Side Routing: Fast routing powered by React Router DOM.
+- Instant Server Starts: Sub-second hot module replacement powered by Vite.
+- Secure Auth Flow: Integrated deeply with Firebase packages for secure interactions.
+- End-to-End Testing: Integrated Playwright environment for robust testing.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- Framework: React v19
+- Language: TypeScript
+- Bundler: Vite
+- Networking: Axios
+- Authentication: Firebase
 
-## React Compiler
+## Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+web/
+├── src/                   # React source code and views
+├── public/                # Static assets
+├── eslint.config.js       # Linting rules
+├── tsconfig.json          # TypeScript configurations
+└── vite.config.ts         # Vite builder setups
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Setup Instructions
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
+Node.js must be installed. Make sure the NestJS backend is actively running, as this application fetches catalogs from those endpoints.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation
+Navigate to this directory.
+
+```bash
+npm install
 ```
+
+### Running the App
+Run the local Vite development server.
+
+```bash
+npm run dev
+```
+
+### Production Build
+Create an optimized production bundle.
+
+```bash
+npm run build
+```
+
+Preview the resultant bundle.
+
+```bash
+npm run preview
+```
+
+## Screens Overview
+Typical implementation includes general storefront navigation, faceted searches communicating with the AI backend service, product detail screens, and a user authentication flow linking Firebase with your shopping cart.

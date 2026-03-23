@@ -2,13 +2,13 @@ import { IsString, IsOptional } from 'class-validator';
 
 export class StartArSessionDto {
   @IsString()
-  variantId: string;
+  variantId!: string;
 
   @IsString()
-  deviceModel: string;
+  deviceModel!: string;
 
   @IsString()
-  osVersion: string;
+  osVersion!: string;
 
   @IsOptional()
   @IsString()

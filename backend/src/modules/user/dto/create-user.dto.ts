@@ -14,11 +14,11 @@ export enum UserRole {
 }
 export class CreateUserDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsString()
   @IsNotEmpty()
-  fullName: string;
+  fullName!: string;
 
   @IsOptional()
   @IsString()

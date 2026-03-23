@@ -7,23 +7,34 @@ import {
   Patch,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentStatusDto } from './dto/update-payment-status.dto';
+import { FirebaseAuthGuard } from '../auth/guards/firebase-auth.guard';
+
+type AuthenticatedRequest = Request & {
+  user: {
+    uid: string;
+  };
+};
 
 @Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  @Post()
-  createPayment(@Req() req, @Body() dto: CreatePaymentDto) {
+  @UseGuards(FirebaseAuthGuard)
+  @Post('create')
+  createPayment(@Req() req: AuthenticatedRequest, @Body() dto: CreatePaymentDto) {
     const userId = req.user.uid;
     return this.paymentService.createPayment(userId, dto);
   }
 
+  @UseGuards(FirebaseAuthGuard)
   @Get('my-payments')
-  getMyPayments(@Req() req) {
+  getMyPayments(@Req() req: AuthenticatedRequest) {
     const userId = req.user.uid;
     return this.paymentService.getPaymentsByUser(userId);
   }
@@ -54,5 +65,16 @@ export class PaymentController {
   @Delete(':paymentId')
   deletePayment(@Param('paymentId') paymentId: string) {
     return this.paymentService.deletePayment(paymentId);
+  }
+
+  @UseGuards(FirebaseAuthGuard)
+  @Post('verify')
+  verifyPayment(@Body() body: { orderId: string }) {
+    return this.paymentService.verifyPayment(body.orderId);
+  }
+
+  @Post('notify')
+  handleNotify(@Body() body: any) {
+    return this.paymentService.handleNotify(body);
   }
 }

@@ -6,7 +6,7 @@ export class CreateCartDto {
   @ApiProperty({ example: 'product-123' })
   @IsString()
   @IsNotEmpty()
-  id: string;
+  id!: string;
 
   @ApiPropertyOptional({ example: 2, default: 1 })
   @IsOptional()

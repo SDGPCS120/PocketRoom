@@ -7,18 +7,28 @@ import {
   Patch,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { UpdateOrderFulfillmentDto } from './dto/update-order-fulfillment.dto';
+import { FirebaseAuthGuard } from '../auth/guards/firebase-auth.guard';
 
+type AuthenticatedRequest = Request & {
+  user: {
+    uid: string;
+  };
+};
+
+@UseGuards(FirebaseAuthGuard)
 @Controller('orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  createOrder(@Req() req, @Body() dto: CreateOrderDto) {
+  createOrder(@Req() req: AuthenticatedRequest, @Body() dto: CreateOrderDto) {
     const userId = req.user.uid;
     return this.orderService.createOrder(userId, dto);
   }
@@ -29,9 +39,14 @@ export class OrderController {
   }
 
   @Get('my-orders')
-  getUserOrders(@Req() req) {
+  getUserOrders(@Req() req: AuthenticatedRequest) {
     const userId = req.user.uid;
     return this.orderService.getUserOrders(userId);
+  }
+
+  @Get('store/:storeId')
+  getOrdersByStore(@Param('storeId') storeId: string) {
+    return this.orderService.getOrdersByStore(storeId);
   }
 
   @Get()

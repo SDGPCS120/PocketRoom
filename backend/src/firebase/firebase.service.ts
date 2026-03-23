@@ -28,6 +28,7 @@ export class FirebaseService implements OnModuleInit {
       );
       this.app = admin.initializeApp({
         credential: admin.credential.applicationDefault(),
+        storageBucket: this.configService.get<string>('FIREBASE_STORAGE_BUCKET'),
       });
     } else {
       const absolutePath = resolve(serviceAccountPath);
@@ -37,6 +38,7 @@ export class FirebaseService implements OnModuleInit {
 
       this.app = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
+        storageBucket: this.configService.get<string>('FIREBASE_STORAGE_BUCKET'),
       });
     }
 
@@ -54,6 +56,11 @@ export class FirebaseService implements OnModuleInit {
 
   get storage(): admin.storage.Storage {
     return this.app.storage();
+  }
+
+  get storageBucketName(): string | undefined {
+    const bucket = this.app.options.storageBucket;
+    return typeof bucket === 'string' && bucket.trim() ? bucket : undefined;
   }
 
   get fieldValue(): typeof admin.firestore.FieldValue {

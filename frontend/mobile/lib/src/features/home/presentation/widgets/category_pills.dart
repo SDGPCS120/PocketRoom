@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketroom/src/core/theme/app_theme.dart'; // Corrected import path
 import '../../data/mock_data.dart';
-import '../../data/providers.dart';
+import '../providers/home_provider.dart';
 
 class CategoryPills extends ConsumerWidget {
   const CategoryPills({super.key});
@@ -54,7 +53,9 @@ class CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.labelLarge;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textStyle = theme.textTheme.labelLarge;
 
     return GestureDetector(
       onTap: onTap,
@@ -65,12 +66,12 @@ class CategoryChip extends StatelessWidget {
         //this is for the category pills in category page
         decoration: BoxDecoration(
           // Use centralized colors
-          color: isActive ? AppColors.primary : AppColors.secondary,
+          color: isActive ? colorScheme.primary : colorScheme.secondary,
           borderRadius: BorderRadius.circular(25),
           boxShadow: isActive
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.3),
+                    color: colorScheme.primary.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -83,7 +84,7 @@ class CategoryChip extends StatelessWidget {
             label,
             style: textStyle?.copyWith(
               // Use centralized colors
-              color: isActive ? Colors.white : AppColors.textPrimary,
+              color: isActive ? colorScheme.onPrimary : colorScheme.onSurface,
               fontWeight: FontWeight.w600,
             ),
           ),

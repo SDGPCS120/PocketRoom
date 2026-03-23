@@ -17,7 +17,7 @@ class ResponsiveWrapper extends StatelessWidget {
     // Let the web app expand to fill the available screen width instead of 
     // constraining it to a max width.
     return Material(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: child,
     );
   }

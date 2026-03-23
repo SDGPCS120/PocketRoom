@@ -11,14 +11,14 @@ import {
 export class CreateAttributeDto {
   @IsString()
   @IsNotEmpty()
-  attributeName: string;
+  attributeName!: string;
 
   @IsString()
   @IsNotEmpty()
-  attributeCode: string; // UK
+  attributeCode!: string; // UK
 
   @IsIn(['TEXT', 'NUMBER', 'COLOR', 'DROPDOWN'])
-  attributeType: 'TEXT' | 'NUMBER' | 'COLOR' | 'DROPDOWN';
+  attributeType!: 'TEXT' | 'NUMBER' | 'COLOR' | 'DROPDOWN';
 
   @IsOptional()
   @IsString()

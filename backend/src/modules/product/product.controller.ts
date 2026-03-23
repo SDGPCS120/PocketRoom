@@ -31,6 +31,11 @@ export class ProductController {
         return this.productService.createProduct(storeId, sellerId, dto);
     }
 
+    @Get('store/:storeId')
+    getProductsByStore(@Param('storeId') storeId: string) {
+        return this.productService.getProductsByStore(storeId);
+    }
+
     @Get()
     getAllProducts() {
         return this.productService.getAllProducts();

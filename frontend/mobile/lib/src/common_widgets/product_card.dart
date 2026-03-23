@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../core/theme/app_theme.dart'; // Import the new theme file
+import 'package:flutter_avif/flutter_avif.dart';
+import 'package:pocketroom/src/core/theme/app_theme.dart';
+import '../features/auth/presentation/get_started_page.dart';
 import '../features/home/data/models/furniture_model.dart';
 import '../features/home/presentation/product_page.dart';
+import '../features/home/presentation/vendor_page.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pocketroom/src/features/cart/data/cart_provider.dart';
+import 'package:pocketroom/src/features/favorites/presentation/providers/favorites_provider.dart';
 
 class ProductCard extends ConsumerStatefulWidget {
   final Furniture furniture;
@@ -18,15 +22,102 @@ class ProductCard extends ConsumerStatefulWidget {
 class _ProductCardState extends ConsumerState<ProductCard> {
   bool _isHovered = false;
 
+  bool _redirectGuestToGetStarted() {
+    final user = FirebaseAuth.instance.currentUser;
+    final isSignedIn = user != null && !user.isAnonymous;
+    if (isSignedIn) return false;
+
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const GetStartedPage()));
+    return true;
+  }
+
+  bool _isNetworkUrl(String path) => path.startsWith('http');
+
+  Widget _buildProductImage(String? primaryImage, ColorScheme colorScheme) {
+    if (primaryImage == null || primaryImage.isEmpty) {
+      return _buildPlaceholder(colorScheme);
+    }
+
+    final isAvif = primaryImage.toLowerCase().contains('.avif');
+
+    if (_isNetworkUrl(primaryImage)) {
+      if (isAvif) {
+        return AvifImage.network(
+          primaryImage,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(colorScheme),
+        );
+      }
+      return Image.network(
+        primaryImage,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(colorScheme),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+      );
+    } else {
+      // Local Asset Fallback
+      if (isAvif) {
+        return AvifImage.asset(
+          primaryImage,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => _buildPlaceholder(colorScheme),
+        );
+      }
+      return Image.asset(
+        primaryImage,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(colorScheme),
+      );
+    }
+  }
+
+  Widget _buildPlaceholder(ColorScheme colorScheme) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.secondary,
+      ),
+      child: Icon(
+        Icons.chair,
+        size: 50,
+        color: colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final appTheme = theme.extension<AppThemeExtension>();
+    
     final furniture = widget.furniture;
+    final primaryImage = furniture.getPrimaryImage();
+    final favorites = ref.watch(favoritesProvider);
+    final isFavorite = favorites.any((item) => item.id == furniture.id);
+
     final ratingLabel = furniture.rating.isNaN
         ? 'N/A'
         : furniture.rating.toString();
+    String formatPrice(double p) => "LKR ${p.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+
     final priceLabel = furniture.price.isNaN
         ? 'N/A'
-        : "LKR ${furniture.price.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}";
+        : formatPrice(furniture.price);
+    final oldPriceLabel = (furniture.oldPrice != null && !furniture.oldPrice!.isNaN)
+        ? formatPrice(furniture.oldPrice!)
+        : null;
     final brandLabel = furniture.brand.trim().isEmpty
         ? 'N/A'
         : furniture.brand.toUpperCase();
@@ -37,178 +128,195 @@ class _ProductCardState extends ConsumerState<ProductCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
-        transform: _isHovered 
-            ? (Matrix4.identity()..translate(0, -4, 0))
-            : Matrix4.identity(),
+        transform:
+            _isHovered ? Matrix4.translationValues(0, -4, 0) : Matrix4.identity(),
         decoration: BoxDecoration(
-          color: AppColors.background,
+          color: colorScheme.surface,
           border: Border.all(
-            color: _isHovered ? AppColors.primary : AppColors.cardBorder, 
+          color: _isHovered ? colorScheme.primary : (appTheme?.cardBorder ?? colorScheme.outline),
             width: _isHovered ? 1.0 : 0.6,
           ),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: _isHovered 
+          boxShadow: _isHovered
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: colorScheme.primary.withValues(alpha: 0.15),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
                 ]
-              : AppColors.productCardShadow,
+              : (appTheme?.productCardShadow ?? []),
         ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          Navigator.push(
+          Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder: (context) => ProductPage(furniture: furniture),
-            ),
+            '/product/${furniture.id}',
+            arguments: furniture,
           );
         },
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Image container
               AspectRatio(
-                aspectRatio: 156.26 / 147,
+                aspectRatio: 156.26 / 140,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.cardBorder, width: 0.6),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: furniture.images.isNotEmpty
-                        ? Image.network(
-                            furniture.images.first,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: AppColors.secondary,
-                                ),
-                                child: Icon(
-                                  Icons.chair,
-                                  size: 50,
-                                  color: AppColors.textSecondary,
-                                ),
-                              );
-                            },
-                          )
-                        : const DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: AppColors.secondary,
-                            ),
-                            child: Icon(
-                              Icons.chair,
-                              size: 50,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
+                    borderRadius: BorderRadius.circular(16),
+                    child: _buildProductImage(primaryImage, colorScheme),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               // Title
               Text(
                 furniture.name.trim().isEmpty ? 'N/A' : furniture.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                   height: 1.125, // 18/16
-                  color: AppColors.textPrimary,
+                  color: colorScheme.onSurface,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               // Brand and Rating
               Row(
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.star,
-                        color: AppColors.primary,
+                        color: colorScheme.primary,
                         size: 16,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         ratingLabel,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
                           height: 1.33,
-                          color: AppColors.textRating,
+                          color: appTheme?.textRating ?? colorScheme.primary,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      brandLabel,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: false,
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 9,
-                        height: 1.67,
-                        letterSpacing: 1,
-                        color: AppColors.textSecondary,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VendorPage(vendorName: furniture.brand),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        brandLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 9,
+                          height: 1.67,
+                          letterSpacing: 1,
+                          color: appTheme?.priceColor ?? colorScheme.primary,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              const Spacer(),
+              const SizedBox(height: 6),
               // Price and Add to Cart
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    priceLabel,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      height: 1.5,
-                      color: AppColors.priceColor,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (oldPriceLabel != null)
+                        Text(
+                          oldPriceLabel,
+                          style: TextStyle(
+                            fontSize: 11,
+                            decoration: TextDecoration.lineThrough,
+                            color: colorScheme.onSurfaceVariant,
+                            height: 1.1,
+                          ),
+                        ),
+                      Text(
+                        priceLabel,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.2,
+                          color: appTheme?.priceColor ?? colorScheme.primary,
+                        ),
+                      ),
+                    ],
                   ),
                   GestureDetector(
                     onTap: () {
-                      ref.read(cartProvider.notifier).addItem(furniture);
+                      if (_redirectGuestToGetStarted()) {
+                        return;
+                      }
+                      ref.read(favoritesProvider.notifier).toggleFavorite(furniture);
+                      ScaffoldMessenger.of(context).clearSnackBars();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('${furniture.name} added to cart'),
+                          content: Text(
+                            isFavorite 
+                                ? '${furniture.name} removed from favorites' 
+                                : '${furniture.name} added to favorites',
+                            style: TextStyle(
+                              color: isFavorite 
+                                  ? colorScheme.onSurface 
+                                  : colorScheme.onPrimary,
+                            ),
+                          ),
                           duration: const Duration(seconds: 1),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: isFavorite 
+                              ? colorScheme.surfaceContainerHighest 
+                              : colorScheme.primary,
                         ),
                       );
                     },
                     child: Container(
-                      width: 22,
-                      height: 22,
+                      width: 28,
+                      height: 28,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary, width: 1),
+                        color: isFavorite 
+                          ? colorScheme.primary.withValues(alpha: 0.1) 
+                          : Colors.transparent,
+                        border: Border.all(
+                          color: isFavorite ? colorScheme.primary : (appTheme?.cardBorder ?? colorScheme.outline), 
+                          width: 1
+                        ),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Icon(
-                          Icons.add_shopping_cart,
-                          size: 12,
-                          color: AppColors.primary,
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          size: 16,
+                          color: isFavorite ? colorScheme.primary : colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -218,8 +326,8 @@ class _ProductCardState extends ConsumerState<ProductCard> {
             ],
           ),
         ),
-        ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

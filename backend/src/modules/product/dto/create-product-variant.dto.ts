@@ -11,19 +11,19 @@ import {
 export class CreateProductVariantDto {
   @IsString()
   @IsNotEmpty()
-  productId: string; // FK to PRODUCT
+  productId!: string; // FK to PRODUCT
 
   @IsString()
   @IsNotEmpty()
-  sku: string; // should be unique
+  sku!: string; // should be unique
 
   @IsNumber()
   @Min(0)
-  price: number;
+  price!: number;
 
   @IsInt()
   @Min(0)
-  stock: number;
+  stock!: number;
 
   @IsOptional()
   @IsBoolean()

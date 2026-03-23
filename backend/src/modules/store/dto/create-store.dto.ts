@@ -9,21 +9,25 @@ import {
 export class CreateStoreDto {
   @IsString()
   @IsNotEmpty()
-  sellerId: string; // FK to SELLER
+  sellerId!: string; // FK to SELLER
 
   @IsString()
   @IsNotEmpty()
-  storeName: string;
+  storeName!: string;
 
   // slug should be URL-friendly (lowercase + hyphens)
   @IsString()
   @IsNotEmpty()
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
-  storeSlug: string;
+  storeSlug!: string;
 
   @IsOptional()
   @IsString()
   storeDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  storeLogo?: string;
 
   @IsOptional()
   @IsBoolean()

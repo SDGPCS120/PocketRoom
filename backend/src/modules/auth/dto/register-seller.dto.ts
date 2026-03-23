@@ -4,7 +4,7 @@ import { BaseUserDto } from './base-user.dto';
 export class RegisterSellerDto extends BaseUserDto {
   @IsString()
   @IsNotEmpty()
-  storeName: string;
+  storeName!: string;
 
   @IsString()
   @IsOptional()

@@ -1,13 +1,15 @@
 # env
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
 service-account.json
 
 # compiled output
 /dist
 /node_modules
 /build
-
 dist/
 node_modules/
 
@@ -43,16 +45,22 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-
 # temp directory
 .temp
 .tmp
+
+# Python (Cleanup from previous porting)
+__pycache__/
+*.pyc
+.venv/
+venv/
+.cache/
+
+# Data and Utility files
+config/*.json
+config/pocketroom-80f62-firebase-adminsdk-fbsvc-f7c34c2e27.json
+products.json
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Runtime data
 pids
@@ -60,5 +68,5 @@ pids
 *.seed
 *.pid.lock
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+# Gradle / Unity Stub
+src/modules/unityLibrary-stub/.gradle/

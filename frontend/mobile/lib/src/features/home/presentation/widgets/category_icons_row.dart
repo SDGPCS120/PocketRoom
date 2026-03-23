@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/theme/app_theme.dart';
 import '../../data/mock_data.dart'; 
-import '../../data/providers.dart'; 
+import '../providers/home_provider.dart'; 
 import '../category_products_page.dart';
 
 class CategoryIconsRow extends ConsumerWidget {
@@ -82,6 +81,9 @@ class CategoryIconItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -93,11 +95,11 @@ class CategoryIconItem extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: isActive ? AppColors.primary : Colors.white,
+                color: isActive ? colorScheme.primary : colorScheme.surface,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: colorScheme.shadow.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -105,15 +107,15 @@ class CategoryIconItem extends StatelessWidget {
               ),
               child: Icon(
                 icon,
-                color: isActive ? Colors.white : AppColors.primary,
+                color: isActive ? colorScheme.onPrimary : colorScheme.primary,
                 size: 24,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               label.toUpperCase(),
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: isActive ? AppColors.primary : AppColors.textSecondary,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: isActive ? colorScheme.primary : colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w600,
                 fontSize: 10,
               ),

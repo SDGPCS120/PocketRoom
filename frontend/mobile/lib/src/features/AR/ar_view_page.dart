@@ -1,152 +1,114 @@
 import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_unity_widget_2/flutter_unity_widget_2.dart';
-import 'package:http/http.dart' as http;
-import 'package:pocketroom/src/core/api_config.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pocketroom/src/core/firebase_providers.dart';
+import 'package:pocketroom/src/features/cart/presentation/providers/cart_provider.dart';
 
-class ArViewPage extends StatefulWidget {
+class ArViewPage extends ConsumerStatefulWidget {
   const ArViewPage({super.key});
 
   @override
-  State<ArViewPage> createState() => _ArViewPageState();
+  ConsumerState<ArViewPage> createState() => _ArViewPageState();
 }
 
-class _ArViewPageState extends State<ArViewPage> {
-  UnityWidgetController? _unityController;
-  Map<String, dynamic>? _cartPayload;
+class _ArViewPageState extends ConsumerState<ArViewPage>
+    with WidgetsBindingObserver {
+  static const MethodChannel _unityArChannel = MethodChannel(
+    'com.example.pocketroom/unity_ar',
+  );
+
+  bool _isLaunching = true;
   String? _errorMessage;
-  bool _isLoadingCart = true;
-  bool _didSendInitialCart = false;
+  bool _didBackgroundAfterLaunch = false;
 
   @override
   void initState() {
     super.initState();
-    _loadCartForUnity();
+    WidgetsBinding.instance.addObserver(this);
+    _launchNativeAr();
   }
 
   @override
   void dispose() {
-    _unityController?.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  Future<void> _loadCartForUnity() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null || user.isAnonymous) {
-      setState(() {
-        _isLoadingCart = false;
-        _errorMessage = 'Log in with a non-anonymous account to view your cart in AR.';
-      });
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_errorMessage != null) {
       return;
     }
 
-    try {
-      final token = await user.getIdToken(true);
-      final response = await http.get(
-        Uri.parse('${ApiConfig.baseUrl}/cart/me'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Accept': 'application/json',
-        },
-      );
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      _didBackgroundAfterLaunch = true;
+      return;
+    }
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to load cart (status ${response.statusCode})');
-      }
-
-      final body = jsonDecode(response.body);
-      final items =
-          body is Map<String, dynamic> && body['data'] is List<dynamic>
-          ? body['data'] as List<dynamic>
-          : (body is List<dynamic> ? body : const <dynamic>[]);
-
-      _cartPayload = {
-        'uid': user.uid,
-        'email': user.email,
-        'cart': items,
-      };
-
+    if (state == AppLifecycleState.resumed && _didBackgroundAfterLaunch) {
+      _didBackgroundAfterLaunch = false;
       if (!mounted) return;
-      setState(() {
-        _isLoadingCart = false;
-        _errorMessage = null;
-      });
-
-      await _sendCartToUnityIfReady();
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _isLoadingCart = false;
-        _errorMessage = error.toString();
-      });
+      Navigator.of(context).maybePop();
     }
   }
 
-  Future<void> _sendCartToUnityIfReady() async {
-    final controller = _unityController;
-    final payload = _cartPayload;
-    if (_didSendInitialCart || controller == null || payload == null) {
-      return;
-    }
+  Future<void> _launchNativeAr() async {
+    try {
+      final cartItems = ref.read(cartProvider);
+      final currentUser = ref.read(firebaseAuthProvider).currentUser;
+      final cartPayload = cartItems.isEmpty
+          ? null
+          : jsonEncode({
+              'uid': currentUser?.uid ?? '',
+              'cart': cartItems
+                  .map(
+                    (item) => {
+                      'id': item.furniture.id,
+                      'quantity': item.quantity,
+                      'furniture': item.furniture.toJson(),
+                    },
+                  )
+                  .toList(),
+            });
 
-    await controller.postMessage(
-      'FlutterCartBridge',
-      'ReceiveCartPayload',
-      jsonEncode(payload),
-    );
-    _didSendInitialCart = true;
+      await _unityArChannel.invokeMethod<void>('launchNativeAr', {
+        if (cartPayload != null) 'cartPayload': cartPayload,
+      });
+      if (!mounted) return;
+      setState(() {
+        _isLaunching = false;
+      });
+    } on PlatformException catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _isLaunching = false;
+        _errorMessage = error.message ?? error.code;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _isLaunching = false;
+        _errorMessage = error.toString();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('View in AR')),
-      body: Stack(
-        children: [
-          UnityWidget(
-            onUnityCreated: (controller) {
-              _unityController = controller;
-              _sendCartToUnityIfReady();
-            },
+      body: Center(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: _errorMessage != null
+                ? Text(_errorMessage!)
+                : Text(_isLaunching ? 'Starting native AR...' : 'AR opened'),
           ),
-          if (_isLoadingCart)
-            const Positioned(
-              top: 16,
-              left: 16,
-              right: 16,
-              child: Card(
-                child: Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(child: Text('Loading your cart for AR...')),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          if (!_isLoadingCart && _errorMessage != null)
-            Positioned(
-              top: 16,
-              left: 16,
-              right: 16,
-              child: Card(
-                color: Theme.of(context).colorScheme.errorContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(_errorMessage!),
-                ),
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

@@ -9,7 +9,7 @@ export enum PaymentStatus {
 
 export class UpdatePaymentStatusDto {
   @IsEnum(PaymentStatus)
-  paymentStatus: PaymentStatus;
+  paymentStatus!: PaymentStatus;
 
   @IsOptional()
   @IsString()

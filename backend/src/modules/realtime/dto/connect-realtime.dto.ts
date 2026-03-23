@@ -8,11 +8,11 @@ export enum Platform {
 
 export class ConnectRealtimeDto {
   @IsString()
-  roomId: string;
+  roomId!: string;
 
   @IsString()
-  deviceType: string;
+  deviceType!: string;
 
   @IsEnum(Platform)
-  platform: Platform;
+  platform!: Platform;
 }

@@ -1,0 +1,79 @@
+00:00 +0: loading C:/Users/User/AndroidStudioProjects/pocketroom/frontend/mobile/test/core/theme/app_theme_test.dart
+00:00 +0: AppTheme ColorScheme & Extensions lightTheme has correct ColorScheme and AppThemeExtension defaults
+00:00 +1: AppTheme ColorScheme & Extensions darkTheme has correct ColorScheme and AppThemeExtension overrides
+00:00 +1: AppTheme ColorScheme & Extensions lightTheme has correct ColorScheme and AppThemeExtension defaults
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Exception: Failed to load font with url: https://fonts.gstatic.com/s/a/2a5db7832feb3b8261603fc01e4411601c9b08d4107d3ddacc6b1a1b24a98078.ttf
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+00:00 +0 -1: AppTheme ColorScheme & Extensions darkTheme has correct ColorScheme and AppThemeExtension overrides
+00:00 +0 -1: AppTheme ColorScheme & Extensions lightTheme has correct ColorScheme and AppThemeExtension defaults [E]
+  Exception: Failed to load font with url: https://fonts.gstatic.com/s/a/2a5db7832feb3b8261603fc01e4411601c9b08d4107d3ddacc6b1a1b24a98078.ttf
+  package:google_fonts/src/google_fonts_base.dart 286:5            _httpFetchFontAndSaveToDevice
+  ===== asynchronous gap ===========================
+  dart:async                                                       _CustomZone.registerBinaryCallback
+  package:google_fonts/src/google_fonts_base.dart 145:23           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 9:30                         main.<fn>.<fn>
+  
+Warning: At least one test in this suite creates an HttpClient. When running a test suite that uses
+TestWidgetsFlutterBinding, all HTTP requests will return status code 400, and no network request
+will actually be made. Any test expecting a real network connection and status code will fail.
+To test code that needs an HttpClient, provide your own HttpClient implementation to the code under
+test, so that your test can consistently provide a testable response to the code under test.
+  This test failed after it had already completed.
+  Make sure to use a matching library which informs the test runner
+  of pending async work.
+  package:google_fonts/src/google_fonts_base.dart 286:5            _httpFetchFontAndSaveToDevice
+  ===== asynchronous gap ===========================
+  dart:async                                                       _CustomZone.registerBinaryCallback
+  package:google_fonts/src/google_fonts_base.dart 145:23           loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 229:44          AppTheme.lightTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.lightTheme
+  test\core\theme\app_theme_test.dart 9:30                         main.<fn>.<fn>
+  
+00:00 +1 -1: AppTheme ColorScheme & Extensions darkTheme has correct ColorScheme and AppThemeExtension overrides
+Error: google_fonts was unable to load font Fredoka-Regular because the following exception occurred:
+Exception: Failed to load font with url: https://fonts.gstatic.com/s/a/2a5db7832feb3b8261603fc01e4411601c9b08d4107d3ddacc6b1a1b24a98078.ttf
+
+There is likely something wrong with your test. Please see https://github.com/flutter/packages/blob/main/packages/google_fonts/example/test for examples of how to test with google_fonts.
+If troubleshooting doesn't solve the problem, please file an issue at https://github.com/flutter/flutter/issues/new/choose.
+
+00:00 +0 -2: AppTheme ColorScheme & Extensions darkTheme has correct ColorScheme and AppThemeExtension overrides [E]
+  Exception: Failed to load font with url: https://fonts.gstatic.com/s/a/2a5db7832feb3b8261603fc01e4411601c9b08d4107d3ddacc6b1a1b24a98078.ttf
+  package:google_fonts/src/google_fonts_base.dart 286:5            _httpFetchFontAndSaveToDevice
+  ===== asynchronous gap ===========================
+  dart:async                                                       _CustomZone.registerBinaryCallback
+  package:google_fonts/src/google_fonts_base.dart 153:9            loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 23:30                        main.<fn>.<fn>
+  
+  This test failed after it had already completed.
+  Make sure to use a matching library which informs the test runner
+  of pending async work.
+  package:google_fonts/src/google_fonts_base.dart 286:5            _httpFetchFontAndSaveToDevice
+  ===== asynchronous gap ===========================
+  dart:async                                                       _CustomZone.registerBinaryCallback
+  package:google_fonts/src/google_fonts_base.dart 153:9            loadFontIfNecessary
+  package:google_fonts/src/google_fonts_base.dart 108:38           googleFontsTextStyle
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4830:12  PartF.fredoka
+  package:google_fonts/src/google_fonts_parts/part_f.dart 4863:21  PartF.fredokaTextTheme
+  package:pocketroom/src/core/theme/app_theme.dart 251:44          AppTheme.darkTheme
+  package:pocketroom/src/core/theme/app_theme.dart                 AppTheme.darkTheme
+  test\core\theme\app_theme_test.dart 23:30                        main.<fn>.<fn>
+  
+00:00 +0 -2: AppTheme ColorScheme & Extensions AppColorSchemes light and dark are distinct
+00:00 +1 -2: Some tests failed.

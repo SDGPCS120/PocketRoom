@@ -9,7 +9,7 @@ final furnitureData = [
     oldPrice: 105000,
     brand: "FurnitureMan",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1567016432779-1fee89b58389?w=400&h=300&fit=crop",
@@ -18,11 +18,15 @@ final furnitureData = [
     dimensions: "H:90 cm  W:200 cm  D:100 cm",
     description:
         "A modern upholstered sofa crafted for everyday comfort. Its deep cushioning and durable fabric finish make it perfect for living rooms, lounges, and open-plan spaces.",
-    colorOptions: [
-      Color(0xFF2D2D2D),
-      Color(0xFFFFFFFF),
-      Color(0xFFB5A08A),
+    colors: [
+      {'name': 'Charcoal', 'hex': '0xFF36454F'}, 
+      {'name': 'White', 'hex': '0xFFFFFFFF'}, 
+      {'name': 'Beige', 'hex': '0xFFF5F5DC'}
     ],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '1b',
@@ -30,7 +34,7 @@ final furnitureData = [
     price: 88000,
     brand: "FurnitureMan",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1567016432779-1fee89b58389?w=400&h=300&fit=crop",
@@ -39,10 +43,11 @@ final furnitureData = [
     dimensions: "H:90 cm  W:200 cm  D:100 cm",
     description:
         "Timeless classic lines with contemporary upholstery. Sink into plush comfort after a long day.",
-    colorOptions: [
-      Color(0xFF8B7355),
-      Color(0xFFE8D5C4),
-    ],
+    colors: ['Brown', 'Cream'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '1c',
@@ -50,7 +55,7 @@ final furnitureData = [
     price: 79000,
     brand: "FurnitureMan",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
     ],
@@ -58,10 +63,11 @@ final furnitureData = [
     dimensions: "H:86 cm  W:185 cm  D:92 cm",
     description:
         "Space-saving slim profile sofa ideal for apartments and compact living rooms.",
-    colorOptions: [
-      Color(0xFF4A4A4A),
-      Color(0xFFD4C5B5),
-    ],
+    colors: ['Grey', 'Beige'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '1d',
@@ -70,7 +76,7 @@ final furnitureData = [
     oldPrice: 145000,
     brand: "FurnitureMan",
     rating: 4.2,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1567016432779-1fee89b58389?w=400&h=300&fit=crop",
@@ -79,11 +85,11 @@ final furnitureData = [
     dimensions: "H:90 cm  W:280 cm  D:180 cm",
     description:
         "L-shaped corner sofa for maximum seating. Great for family rooms and home cinema setups.",
-    colorOptions: [
-      Color(0xFF1C1C1C),
-      Color(0xFF7A6552),
-      Color(0xFFF5F0EB),
-    ],
+    colors: ['Black', 'Brown', 'White'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '2',
@@ -92,7 +98,7 @@ final furnitureData = [
     oldPrice: 120000,
     brand: "Arpico",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -100,11 +106,11 @@ final furnitureData = [
     dimensions: "H:95 cm  W:220 cm  D:105 cm",
     description:
         "The premium Sofa Max delivers unrivalled support and style. High-resilience foam core with hardwood legs.",
-    colorOptions: [
-      Color(0xFF3E2723),
-      Color(0xFF795548),
-      Color(0xFFD7CCC8),
-    ],
+    colors: ['Dark Brown', 'Brown', 'Light Brown'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '2b',
@@ -112,16 +118,18 @@ final furnitureData = [
     price: 1000,
     brand: "Damro",
     rating: 1.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
     furnitureType: "Sofa",
     dimensions: "H:95 cm  W:220 cm  D:105 cm",
     description: "Entry-level sofa at a budget-friendly price point.",
-    colorOptions: [
-      Color(0xFF9E9E9E),
-    ],
+    colors: ['Grey'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '2c',
@@ -129,7 +137,7 @@ final furnitureData = [
     price: 100000,
     brand: "Damro",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -137,10 +145,11 @@ final furnitureData = [
     dimensions: "H:95 cm  W:220 cm  D:105 cm",
     description:
         "Lightweight construction makes repositioning easy. Durable microfibre upholstery resists everyday wear.",
-    colorOptions: [
-      Color(0xFF5D4037),
-      Color(0xFFEFEBE9),
-    ],
+    colors: ['Brown', 'Cream'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '2d',
@@ -149,7 +158,7 @@ final furnitureData = [
     oldPrice: 115000,
     brand: "Arpico",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -157,10 +166,11 @@ final furnitureData = [
     dimensions: "H:95 cm  W:220 cm  D:105 cm",
     description:
         "Ultra-wide seating for the whole family. Reinforced frame rated for heavy daily use.",
-    colorOptions: [
-      Color(0xFF212121),
-      Color(0xFFBCAAA4),
-    ],
+    colors: ['Black', 'Beige'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '2e',
@@ -168,7 +178,7 @@ final furnitureData = [
     price: 100000,
     brand: "Arpico",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1540574163026-643ea20ade25?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&h=300&fit=crop",
     ],
@@ -176,11 +186,11 @@ final furnitureData = [
     dimensions: "H:95 cm  W:220 cm  D:105 cm",
     description:
         "Professional-grade comfort meets designer aesthetics. Removable, washable cushion covers included.",
-    colorOptions: [
-      Color(0xFF37474F),
-      Color(0xFF78909C),
-      Color(0xFFECEFF1),
-    ],
+    colors: ['Navy', 'Blue', 'White'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '3',
@@ -188,7 +198,7 @@ final furnitureData = [
     price: 54000,
     brand: "Damro",
     rating: 4.0,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&h=300&fit=crop",
       "https://images.unsplash.com/photo-1618220179428-22790b461013?w=400&h=300&fit=crop",
@@ -197,10 +207,11 @@ final furnitureData = [
     dimensions: "H:85 cm  W:180 cm  D:90 cm",
     description:
         "Compact and versatile, the Sofa Lite fits effortlessly into studios and small apartments without sacrificing style.",
-    colorOptions: [
-      Color(0xFFE0E0E0),
-      Color(0xFF9E9E9E),
-    ],
+    colors: ['White', 'Grey'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '4',
@@ -208,17 +219,18 @@ final furnitureData = [
     price: 12000,
     brand: "WoodWorks",
     rating: 4.5,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&h=300&fit=crop",
     ],
     furnitureType: "Chair",
     dimensions: "H:90 cm  W:50 cm  D:50 cm",
     description:
         "Solid kiln-dried hardwood frame with a soft fabric seat. Timeless design that complements any interior style.",
-    colorOptions: [
-      Color(0xFF4E342E),
-      Color(0xFF8D6E63),
-    ],
+    colors: ['Brown', 'Tan'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '5',
@@ -226,18 +238,18 @@ final furnitureData = [
     price: 45000,
     brand: "Ikea",
     rating: 4.2,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=400&h=300&fit=crop",
     ],
     furnitureType: "Table",
     dimensions: "H:75 cm  W:120 cm  D:80 cm",
     description:
         "Clean Scandinavian lines and matte finish make this dining table the centrepiece of any modern kitchen or dining room.",
-    colorOptions: [
-      Color(0xFFFFFFFF),
-      Color(0xFF757575),
-      Color(0xFF3E2723),
-    ],
+    colors: ['White', 'Grey', 'Brown'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
   Furniture(
     id: '6',
@@ -245,20 +257,111 @@ final furnitureData = [
     price: 8500,
     brand: "LumiLux",
     rating: 4.8,
-    images: [
+    imageUrl: [
       "https://images.unsplash.com/photo-1507473888900-52e1ad145986?w=400&h=300&fit=crop",
     ],
     furnitureType: "Lamp",
     dimensions: "H:150 cm  W:30 cm  D:30 cm",
     description:
         "Adjustable arc floor lamp with warm LED output. Energy-efficient and flicker-free for long reading sessions.",
-    colorOptions: [
-      Color(0xFF212121),
-      Color(0xFFB0BEC5),
-    ],
+    colors: ['Black', 'Silver'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
   ),
 ];
 
 final furnitureTypes = ["All", "Sofa", "Chair", "Table", "Lamp"];
 
 final categories = ["Best sellers", "Arpico", "Modern", "Max", "Minimalistic", "Damro"];
+
+final mockBudgetProducts = [
+  Furniture(
+    id: 'mock_budget_1',
+    name: 'Side Table',
+    brand: 'ARPICO',
+    price: 8500,
+    rating: 4.5,
+    imageUrl: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Table',
+    dimensions: '45x45x50 cm',
+    description: 'A compact side table perfect for any room.',
+    colors: ['Oak'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
+  ),
+  Furniture(
+    id: 'mock_budget_2',
+    name: 'Study Lamp',
+    brand: 'MAX',
+    price: 3200,
+    rating: 4.7,
+    imageUrl: ['https://images.unsplash.com/photo-1534073828943-f801091bb18c?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Lamp',
+    dimensions: '15x15x40 cm',
+    description: 'Bright and ergonomic lamp for focused study.',
+    colors: ['Black'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
+  ),
+];
+
+final mockLimitedTimeProducts = [
+  Furniture(
+    id: 'mock_deal_1',
+    name: 'Modern Velvet Sofa',
+    brand: 'DAMRO',
+    price: 95000,
+    oldPrice: 125000,
+    rating: 4.8,
+    imageUrl: ['https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Sofa',
+    dimensions: '210x95x90 cm',
+    description: 'Luxurious velvet sofa for a touch of elegance.',
+    colors: ['Navy'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
+  ),
+  Furniture(
+    id: 'mock_deal_2',
+    name: 'Ergonomic Office Chair',
+    brand: 'ARPICO',
+    price: 18500,
+    oldPrice: 24000,
+    rating: 4.6,
+    imageUrl: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Chair',
+    dimensions: '60x60x110 cm',
+    description: 'Maximum support for long working hours.',
+    colors: ['Black'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
+  ),
+  Furniture(
+    id: 'mock_deal_3',
+    name: 'Minimalist Coffee Table',
+    brand: 'MAX',
+    price: 12000,
+    oldPrice: 18000,
+    rating: 4.4,
+    imageUrl: ['https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&q=80&w=400'],
+    furnitureType: 'Table',
+    dimensions: '90x90x40 cm',
+    description: 'Sleek and simple coffee table for modern living.',
+    colors: ['White'],
+    brandLogoUrl: '',
+    imagesByColor: {},
+    similarProducts: [],
+    customersAlsoBought: [],
+  ),
+];
+

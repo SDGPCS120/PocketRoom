@@ -11,7 +11,7 @@ import {
 export class CreateAttributeValueDto {
   @IsString()
   @IsNotEmpty()
-  attributeId: string; // FK -> ATTRIBUTE
+  attributeId!: string; // FK -> ATTRIBUTE
 
   @IsOptional()
   @IsString()

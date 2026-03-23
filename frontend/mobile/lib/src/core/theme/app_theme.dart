@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+/// Controls the app-wide theme mode. Defaults to light.
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.light);
 
 // A dedicated class for holding your app's custom colors.
 class AppColors {
@@ -11,59 +15,21 @@ class AppColors {
   static const Color secondary = Color(0xFFFFE5D3);
   static const Color background = Color(0xFFFFF8F3);
 
-  // New colours
-  static const Color cardBorder = background;
-  static const Color textRating = secondary;
-  static const Color priceColor = primary;
-
-  // Card shadow
-  static const List<BoxShadow> productCardShadow = [
-    BoxShadow(
-      color: Color(0x14FF8A3D), // ~8% opacity primary
-      blurRadius: 8,
-      spreadRadius: 0,
-      offset: Offset(0, 4),
-    ),
-  ];
-
   // Text colors
   static const Color textPrimary = Color(0xFF2D2D2D);
   static const Color textSecondary = Color(0xFF757575);
   static const Color textRating = Color(0xFFFFA726);
 
-  // Product card
-  static const Color cardBorder = Color(0xFFE0E0E0);
-  static const Color priceColor = Color(0xFFFF8A3D);
+  // Product card styling
+  static const Color cardBorder = Color(0xFFE79742);
+  static const Color priceColor = primary;
   static const List<BoxShadow> productCardShadow = [
-    BoxShadow(color: Color(0x14000000), blurRadius: 8, offset: Offset(0, 2)),
+    BoxShadow(
+      color: Color(0x14000000),
+      blurRadius: 8,
+      offset: Offset(0, 2),
+    ),
   ];
-
-  //===== DUPLICATE COLORS ===========================
-
-  // static const Color textSecondary = Color(
-  //   0xFF757575,
-  // ); // A slightly lighter grey
-  // static const Color textRating = Color(0xFF444D5C);
-  // static const Color priceColor = Color(0xFFE79742);
-  // static const Color cardBorder = Color(0xFFE79742);
-
-  // static List<BoxShadow> productCardShadow = [
-  //   BoxShadow(
-  //     color: const Color(0xFFE79742).withOpacity(0.12),
-  //     offset: const Offset(0, 10),
-  //     blurRadius: 25,
-  //     spreadRadius: -5,
-  //   ),
-  //   BoxShadow(
-  //     color: Colors.black.withOpacity(0.02),
-  //     offset: const Offset(0, 8),
-  //     blurRadius: 10,
-  //     spreadRadius: -6,
-  //   ),
-  // ];
-
-  //===================================================
-
   // Gradient for cards
   static const Gradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
@@ -72,20 +38,243 @@ class AppColors {
   );
 }
 
+class AppSizes {
+  AppSizes._();
+  
+  static const double pagePadding = 20.0;
+  static const double cardRadius = 16.0;
+  static const double buttonRadius = 28.0;
+  static const double buttonHeight = 52.0;
+}
+
+/// Custom theme extension for properties that don't fit into [ColorScheme].
+class AppThemeExtension extends ThemeExtension<AppThemeExtension> {
+  final Color? cardBorder;
+  final Color? priceColor;
+  final Gradient? cardGradient;
+  final List<BoxShadow>? productCardShadow;
+  final Color? textRating;
+
+  const AppThemeExtension({
+    required this.cardBorder,
+    required this.priceColor,
+    required this.cardGradient,
+    required this.productCardShadow,
+    required this.textRating,
+  });
+
+  @override
+  ThemeExtension<AppThemeExtension> copyWith({
+    Color? cardBorder,
+    Color? priceColor,
+    Gradient? cardGradient,
+    List<BoxShadow>? productCardShadow,
+    Color? textRating,
+  }) {
+    return AppThemeExtension(
+      cardBorder: cardBorder ?? this.cardBorder,
+      priceColor: priceColor ?? this.priceColor,
+      cardGradient: cardGradient ?? this.cardGradient,
+      productCardShadow: productCardShadow ?? this.productCardShadow,
+      textRating: textRating ?? this.textRating,
+    );
+  }
+
+  @override
+  ThemeExtension<AppThemeExtension> lerp(
+    ThemeExtension<AppThemeExtension>? other,
+    double t,
+  ) {
+    if (other is! AppThemeExtension) {
+      return this;
+    }
+    return AppThemeExtension(
+      cardBorder: Color.lerp(cardBorder, other.cardBorder, t),
+      priceColor: Color.lerp(priceColor, other.priceColor, t),
+      cardGradient: Gradient.lerp(cardGradient, other.cardGradient, t),
+      productCardShadow: BoxShadow.lerpList(productCardShadow, other.productCardShadow, t),
+      textRating: Color.lerp(textRating, other.textRating, t),
+    );
+  }
+}
+
+class AppColorSchemes {
+  AppColorSchemes._();
+
+  static const ColorScheme light = ColorScheme(
+    brightness: Brightness.light,
+    primary: AppColors.primary,
+    onPrimary: Colors.white,
+    secondary: AppColors.secondary,
+    onSecondary: AppColors.primary,
+    surface: AppColors.background,
+    onSurface: AppColors.textPrimary,
+    onSurfaceVariant: AppColors.textSecondary,
+    error: Colors.redAccent,
+    onError: Colors.white,
+    outline: AppColors.cardBorder,
+  );
+
+  static const ColorScheme dark = ColorScheme(
+    brightness: Brightness.dark,
+    primary: AppColors.primary,
+    onPrimary: Colors.white,
+    secondary: Color(0xFF3D2C20),
+    onSecondary: Color(0xFFFFB385),
+    surface: Color(0xFF121212),
+    onSurface: Color(0xFFF5F5F5),
+    onSurfaceVariant: Color(0xFFB0B0B0),
+    error: Colors.redAccent,
+    onError: Colors.white,
+    outline: AppColors.cardBorder,
+  );
+}
+
+class AppTextStyles {
+  AppTextStyles._();
+  
+  static TextStyle appBarTitle(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
+    fontWeight: FontWeight.w700,
+    fontSize: 20,
+  );
+  
+  static TextStyle buttonText(BuildContext context) => TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: Theme.of(context).colorScheme.onPrimary,
+  );
+  
+  static TextStyle sectionTitle(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+  );
+  
+  static TextStyle profileName(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurface,
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
+  );
+  
+  static TextStyle profileEmail(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.onSurfaceVariant,
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
+  );
+  
+  static TextStyle profileEdit(BuildContext context) => TextStyle(
+    color: Theme.of(context).colorScheme.secondary,
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+
+  static TextStyle h1(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle b1(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle bodyLarge(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+
+  static TextStyle bodyMedium(BuildContext context) => GoogleFonts.fredoka(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    color: Theme.of(context).colorScheme.onSurface,
+  );
+}
+
+class AppButtonStyles {
+  AppButtonStyles._();
+  
+  static ButtonStyle primaryButton(BuildContext context) => ElevatedButton.styleFrom(
+    backgroundColor: Theme.of(context).colorScheme.primary,
+    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
+    ),
+  );
+  
+  static ButtonStyle outlinedButton(BuildContext context) => OutlinedButton.styleFrom(
+    foregroundColor: Theme.of(context).colorScheme.onSurface,
+    side: BorderSide(
+      color: Theme.of(context).extension<AppThemeExtension>()?.cardBorder ?? 
+             Theme.of(context).colorScheme.outline
+    ),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
+    ),
+  );
+}
+
 class AppTheme {
   AppTheme._();
 
+  static const lightExtension = AppThemeExtension(
+    cardBorder: AppColors.cardBorder,
+    priceColor: AppColors.primary,
+    cardGradient: AppColors.cardGradient,
+    productCardShadow: AppColors.productCardShadow,
+    textRating: AppColors.textRating,
+  );
+
   static final ThemeData lightTheme = ThemeData(
-    // Use the new AppColors class for consistency.
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: AppColors.background,
+    useMaterial3: true,
+    brightness: Brightness.light,
+    colorScheme: AppColorSchemes.light,
+    scaffoldBackgroundColor: AppColorSchemes.light.surface,
     textTheme: GoogleFonts.fredokaTextTheme(),
-    colorScheme: const ColorScheme.light(
-      primary: AppColors.primary,
-      secondary: AppColors.secondary,
-      surface: AppColors.background,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
     ),
-    // You could also define a text theme here to use AppColors.textPrimary
-    // as the default text color throughout the app.
+    extensions: const [lightExtension],
+  );
+
+  static const darkExtension = AppThemeExtension(
+    cardBorder: AppColors.cardBorder,
+    priceColor: Color(0xFFFFB385),
+    cardGradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [Color(0xFF2C2C2C), Color(0xFF131313)],
+    ),
+    productCardShadow: [
+      BoxShadow(
+        color: Colors.black54,
+        blurRadius: 10,
+        offset: Offset(0, 4),
+      ),
+    ],
+    textRating: Color(0xFFFFB74D),
+  );
+
+  static final ThemeData darkTheme = ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    colorScheme: AppColorSchemes.dark,
+    scaffoldBackgroundColor: AppColorSchemes.dark.surface,
+    textTheme: GoogleFonts.fredokaTextTheme(
+      ThemeData(brightness: Brightness.dark).textTheme,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+    ),
+    extensions: const [darkExtension],
   );
 }
+

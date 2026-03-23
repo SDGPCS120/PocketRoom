@@ -7,7 +7,7 @@ export enum ArSessionStatus {
 
 export class EndArSessionDto {
   @IsEnum(ArSessionStatus)
-  sessionStatus: ArSessionStatus;
+  sessionStatus!: ArSessionStatus;
 
   @IsOptional()
   @IsInt()

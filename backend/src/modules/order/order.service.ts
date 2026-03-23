@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { generateMeaningfulId } from '../../common/utils/generate-id.util';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { CreateOrderDto, OrderStatus } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -26,7 +27,8 @@ export class OrderService {
       }, 0);
     }
 
-    const docRef = this.collection().doc();
+    const customId = generateMeaningfulId('order-' + Date.now());
+    const docRef = this.collection().doc(customId);
 
     const data = {
       orderId: docRef.id,
@@ -39,6 +41,7 @@ export class OrderService {
       estimatedDelivery: dto.estimatedDelivery ?? null,
       shippedAt: null,
       deliveredAt: null,
+      storeId: dto.storeId ?? null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -47,13 +50,24 @@ export class OrderService {
       await docRef.set(data);
       return data;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to create order');
+      console.error('[OrderService] Create Order Error:', error);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new InternalServerErrorException(`Failed to create order: ${message}`);
     }
   }
 
   async getUserOrders(userId: string) {
     const snapshot = await this.collection()
       .where('customerId', '==', userId)
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    return snapshot.docs.map((doc) => doc.data());
+  }
+
+  async getOrdersByStore(storeId: string) {
+    const snapshot = await this.collection()
+      .where('storeId', '==', storeId)
       .orderBy('createdAt', 'desc')
       .get();
 

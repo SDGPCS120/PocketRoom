@@ -6,12 +6,29 @@ import {
   IsOptional,
   IsInt,
   IsArray,
+  IsObject,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class DimensionsDto {
+  @IsOptional()
+  @IsNumber()
+  height?: number;
+
+  @IsOptional()
+  @IsNumber()
+  length?: number;
+
+  @IsOptional()
+  @IsNumber()
+  width?: number;
+}
 
 export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsOptional()
   @IsString()
@@ -19,7 +36,7 @@ export class CreateProductDto {
 
   @IsNumber()
   @Min(0)
-  price: number;
+  price!: number;
 
   @IsOptional()
   @IsInt()
@@ -31,6 +48,10 @@ export class CreateProductDto {
   brand?: string;
 
   @IsOptional()
+  @IsString()
+  brandLogoUrl?: string;
+
+  @IsOptional()
   @IsNumber()
   @Min(0)
   rating?: number;
@@ -38,13 +59,55 @@ export class CreateProductDto {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  images?: string[];
+  imageUrl?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  colors?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  materials?: string[];
+
+  @IsOptional()
+  @IsObject()
+  imagesByColor?: Record<string, string[]>;
 
   @IsOptional()
   @IsString()
   furnitureType?: string;
 
   @IsOptional()
+  @ValidateNested()
+  @Type(() => DimensionsDto)
+  dimensions?: DimensionsDto;
+
+  @IsOptional()
   @IsString()
-  dimensions?: string;
+  modelURL?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  similarProducts?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  customersAlsoBought?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  styleTags?: string[];
+
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
+  audio?: string;
 }
