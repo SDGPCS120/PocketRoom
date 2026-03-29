@@ -23,6 +23,7 @@ dependencies:
   # Networking
   http: ^1.2.2
   dio: ^5.4.0
+  crypto: ^3.0.3
 
   # UI and Features
   flutter_unity_widget_2: ^6000.0.0
