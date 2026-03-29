@@ -9,6 +9,7 @@ class ProfilePersonalInfoSection extends StatelessWidget {
   final String phone;
   final String address;
   final VoidCallback onEditProfile;
+  final VoidCallback onManageAddress;
 
   const ProfilePersonalInfoSection({
     super.key,
@@ -17,6 +18,7 @@ class ProfilePersonalInfoSection extends StatelessWidget {
     required this.phone,
     required this.address,
     required this.onEditProfile,
+    required this.onManageAddress,
   });
 
   @override
@@ -47,9 +49,9 @@ class ProfilePersonalInfoSection extends StatelessWidget {
         const ProfileSectionDivider(),
         SectionItem(
           icon: Icons.home_outlined,
-          label: 'Address',
+          label: 'Shipping Address',
           value: address.isEmpty ? 'Add address' : address,
-          onTap: onEditProfile,
+          onTap: onManageAddress,
         ),
       ],
     );

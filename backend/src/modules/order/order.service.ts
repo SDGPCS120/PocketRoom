@@ -32,18 +32,36 @@ export class OrderService {
 
     const data = {
       orderId: docRef.id,
-      ...dto,
-      customerId: userId,
-      orderStatus: OrderStatus.PENDING_PAYMENT,
+      // Spread scalar DTO fields (not items — those need to be plain objects)
+      shippingAddressId: dto.shippingAddressId,
+      billingAddressId: dto.billingAddressId,
+      ...(dto.orderNumber    && { orderNumber:    dto.orderNumber }),
+      ...(dto.subtotal       !== undefined && { subtotal:       dto.subtotal }),
+      ...(dto.taxAmount      !== undefined && { taxAmount:      dto.taxAmount }),
+      ...(dto.shippingCost   !== undefined && { shippingCost:   dto.shippingCost }),
+      ...(dto.discountAmount !== undefined && { discountAmount: dto.discountAmount }),
+      ...(dto.currency       && { currency:       dto.currency }),
+      ...(dto.storeId        && { storeId:         dto.storeId }),
+      // Explicitly convert each item to a plain object — Firestore rejects class instances
+      items: dto.items.map((item) => ({
+        productId:   item.productId,
+        productName: item.productName,
+        quantity:    item.quantity,
+        unitPrice:   item.unitPrice,
+        ...(item.variantId  !== undefined && { variantId:  item.variantId }),
+        ...(item.itemTotal  !== undefined && { itemTotal:  item.itemTotal }),
+      })),
+      customerId:        userId,
+      orderStatus:       OrderStatus.PENDING_PAYMENT,
       totalAmount,
-      trackingNumber: null,
-      courierName: null,
+      trackingNumber:    null,
+      courierName:       null,
       estimatedDelivery: dto.estimatedDelivery ?? null,
-      shippedAt: null,
-      deliveredAt: null,
-      storeId: dto.storeId ?? null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      shippedAt:         null,
+      deliveredAt:       null,
+      storeId:           dto.storeId ?? null,
+      createdAt:         new Date(),
+      updatedAt:         new Date(),
     };
 
     try {

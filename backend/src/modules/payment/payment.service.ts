@@ -64,6 +64,12 @@ export class PaymentService {
     const amount = dto.amount ?? orderData.totalAmount;
     const currency = dto.currency ?? orderData.currency ?? 'LKR';
 
+    if (amount === undefined || amount === null || isNaN(Number(amount))) {
+      throw new InternalServerErrorException(
+        `Order ${dto.orderId} has no totalAmount. Cannot create payment.`,
+      );
+    }
+
     const customId = generateMeaningfulId('payment-' + Date.now());
     const docRef = this.paymentCollection().doc(customId);
 
@@ -93,10 +99,11 @@ export class PaymentService {
         amount: amount,
         currency: currency,
         hash: hash,
-        first_name: orderData.firstName ?? 'Customer',
-        last_name: orderData.lastName ?? '',
-        email: orderData.email ?? '',
-        phone: orderData.phone ?? '',
+        // PayHere requires non-empty strings — use order data with hardcoded fallbacks
+        first_name: orderData.firstName ?? orderData.customerName ?? 'PocketRoom',
+        last_name: orderData.lastName ?? 'Customer',
+        email: orderData.email ?? 'orders@pocketroom.app',
+        phone: orderData.phone ?? '0771234567',
         notify_url: this.NOTIFY_URL,
         items: `Order ${dto.orderId}`,
       };
