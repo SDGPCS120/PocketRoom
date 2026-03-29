@@ -116,7 +116,13 @@ class CartPage extends ConsumerWidget {
                       }
 
                       // ── Step 2: Launch PayHere sandbox payment ─────────────
-                      final success = await paymentService.startPayment(orderId);
+                      // Hash is generated locally in payment_service.dart —
+                      // no call to the backend /payments/create endpoint needed.
+                      final success = await paymentService.startPayment(
+                        orderId,
+                        amount: totalPrice,
+                        currency: 'LKR',
+                      );
 
                       // Dismiss loading
                       if (context.mounted) Navigator.of(context).pop();
