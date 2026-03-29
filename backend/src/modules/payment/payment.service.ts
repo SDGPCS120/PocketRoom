@@ -99,10 +99,11 @@ export class PaymentService {
         amount: amount,
         currency: currency,
         hash: hash,
-        first_name: orderData.firstName ?? 'Customer',
-        last_name: orderData.lastName ?? '',
-        email: orderData.email ?? '',
-        phone: orderData.phone ?? '',
+        // PayHere requires non-empty strings — use order data with hardcoded fallbacks
+        first_name: orderData.firstName ?? orderData.customerName ?? 'PocketRoom',
+        last_name: orderData.lastName ?? 'Customer',
+        email: orderData.email ?? 'orders@pocketroom.app',
+        phone: orderData.phone ?? '0771234567',
         notify_url: this.NOTIFY_URL,
         items: `Order ${dto.orderId}`,
       };

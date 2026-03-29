@@ -60,8 +60,10 @@ class _ManageAddressPageState extends ConsumerState<ManageAddressPage> {
         queryParameters: {'userId': user.uid, 'isDefault': 'true'},
       );
 
-      final List<dynamic> addresses =
-          response.data is List ? response.data as List : [];
+      // Backend wraps all responses as { success, data, meta }
+      final envelope = response.data as Map<String, dynamic>?;
+      final raw = envelope?['data'];
+      final List<dynamic> addresses = raw is List ? raw : [];
 
       if (addresses.isNotEmpty) {
         final addr = addresses.first as Map<String, dynamic>;
@@ -76,7 +78,15 @@ class _ManageAddressPageState extends ConsumerState<ManageAddressPage> {
         _countryController.text = addr['country'] as String? ?? 'Sri Lanka';
       }
     } catch (e) {
-      // If fetch fails, start with empty form
+      // Show error to user instead of silently swallowing it
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not load existing address: $e'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -131,9 +141,10 @@ class _ManageAddressPageState extends ConsumerState<ManageAddressPage> {
           data: payload,
         );
       } else {
-        // Create new address
+        // Create new address — backend returns { success, data: {...}, meta }
         final response = await apiClient.post('/addresses', data: payload);
-        final created = response.data as Map<String, dynamic>?;
+        final envelope = response.data as Map<String, dynamic>?;
+        final created = envelope?['data'] as Map<String, dynamic>?;
         _existingAddressId = created?['id'] as String?;
       }
 

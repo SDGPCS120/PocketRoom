@@ -31,7 +31,13 @@ class PaymentService {
         throw Exception('Failed to create payment on backend');
       }
 
-      final paymentData = Map<String, dynamic>.from(response.data as Map);
+      // Backend wraps all responses as { success, data: {...}, meta }
+      final envelope = response.data as Map<String, dynamic>?;
+      final inner = envelope?['data'] as Map<String, dynamic>?;
+      if (inner == null) {
+        throw Exception('Invalid payment response from server');
+      }
+      final paymentData = Map<String, dynamic>.from(inner);
       
       // Ensure sandbox flag is present for sandbox credentials
       paymentData['sandbox'] = true;
