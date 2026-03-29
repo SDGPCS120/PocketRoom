@@ -41,30 +41,19 @@ class ProductMaterialsChips extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isSelected ? colorScheme.primary : colorScheme.surface,
+                  color: isSelected ? Colors.orange.shade400 : colorScheme.surface,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: isSelected 
-                        ? colorScheme.primary 
-                        : colorScheme.outline.withValues(alpha: 0.1),
-                    width: isSelected ? 2 : 1,
+                  border: isSelected ? null : Border.all(
+                    color: colorScheme.outline.withValues(alpha: 0.15),
+                    width: 1,
                   ),
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: colorScheme.primary.withValues(alpha: 0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          )
-                        ]
-                      : null,
                 ),
                 child: Text(
                   material,
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                    color: isSelected ? Colors.white : colorScheme.onSurface,
                   ),
                 ),
               ),

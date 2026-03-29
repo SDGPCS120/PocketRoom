@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/core/theme/app_theme.dart';
 import 'package:pocketroom/src/core/utils/extensions.dart';
 import 'package:pocketroom/src/features/home/data/models/furniture_model.dart';
 import 'package:pocketroom/src/features/home/presentation/vendor_page.dart';
+import '../../providers/reviews_provider.dart';
 
-class ProductDetailsHeader extends StatelessWidget {
+class ProductDetailsHeader extends ConsumerWidget {
   final Furniture furniture;
 
   const ProductDetailsHeader({super.key, required this.furniture});
@@ -27,9 +29,16 @@ class ProductDetailsHeader extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final f = furniture;
     final colorScheme = Theme.of(context).colorScheme;
+
+    final reviews = ref.watch(reviewsProvider)[f.id] ??
+        ref.read(reviewsProvider.notifier).getInitialReviews(f.id);
+
+    final avgRating = reviews.isEmpty 
+        ? (f.rating.isNaN ? 4.8 : f.rating)
+        : reviews.map((r) => r.rating).reduce((a, b) => a + b) / reviews.length;
 
     // Pricing Logic
     final hasDiscount = f.oldPrice != null && f.oldPrice! > f.price;
@@ -89,64 +98,60 @@ class ProductDetailsHeader extends StatelessWidget {
         const SizedBox(height: 16),
         
         // 3. CONSOLIDATED INFO ROW
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              // Rating
-              Row(
-                children: [
-                  Icon(Icons.star_rounded, color: Colors.orange.shade400, size: 16),
-                  const SizedBox(width: 4),
-                  Text(
-                    f.rating.isNaN ? '4.8' : f.rating.toString(),
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: colorScheme.onSurface),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '(128)',
-                    style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
-                  ),
-                ],
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(Icons.star_rounded, color: Colors.orange.shade400, size: 24),
+            const SizedBox(width: 6),
+            Text(
+              avgRating.toStringAsFixed(1),
+              style: TextStyle(
+                fontSize: 20, 
+                fontWeight: FontWeight.w800, 
+                color: colorScheme.onSurface,
+                letterSpacing: -0.5,
               ),
-              _buildSeparator(colorScheme),
-              // Delivery
-              Row(
-                children: [
-                  Icon(Icons.local_shipping_outlined, color: colorScheme.onSurfaceVariant.withOpacity(0.7), size: 16),
-                  const SizedBox(width: 4),
-                  Text(
-                    '3–5 days',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: colorScheme.onSurfaceVariant),
-                  ),
-                ],
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '·  ${reviews.length} reviews',
+              style: TextStyle(
+                fontSize: 18, 
+                fontWeight: FontWeight.w500, 
+                color: colorScheme.onSurfaceVariant.withOpacity(0.6),
               ),
-              _buildSeparator(colorScheme),
-              // Stock
-              Row(
-                children: [
-                  Icon(
-                    f.availability.toLowerCase().contains('only') 
-                        ? Icons.error_outline_rounded 
-                        : Icons.check_circle_rounded, 
-                    color: f.availability.toLowerCase().contains('only') 
-                        ? Colors.orange.shade800 
-                        : Colors.green.shade600, 
-                    size: 16,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    f.availability.toLowerCase().contains('only') ? f.availability : 'In Stock',
-                    style: TextStyle(
-                      fontSize: 13, 
-                      fontWeight: FontWeight.w600, 
-                      color: f.availability.toLowerCase().contains('only') ? Colors.orange.shade800 : Colors.green.shade600,
-                    ),
-                  ),
-                ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.green.shade50.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(8),
               ),
-            ],
-          ),
+              child: Text(
+                f.availability.toLowerCase().contains('only') ? f.availability : 'In Stock',
+                style: TextStyle(
+                  fontSize: 14, 
+                  fontWeight: FontWeight.w700, 
+                  color: f.availability.toLowerCase().contains('only') ? Colors.orange.shade800 : Colors.green.shade700,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              '· Delivery in 3–5 days',
+              style: TextStyle(
+                fontSize: 16, 
+                fontWeight: FontWeight.w500, 
+                color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 24),
 
@@ -161,10 +166,10 @@ class ProductDetailsHeader extends StatelessWidget {
                 Text(
                   _formatPrice(f.price),
                   style: TextStyle(
-                    fontSize: 34,
-                    fontWeight: FontWeight.w900,
-                    color: colorScheme.onSurface,
-                    letterSpacing: -1,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.orange.shade400, // Matching the orange price text
+                    letterSpacing: -0.5,
                   ),
                 ),
                 if (hasDiscount) ...[
@@ -182,24 +187,12 @@ class ProductDetailsHeader extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            RichText(
-              text: TextSpan(
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-                ),
-                children: [
-                  const TextSpan(text: 'or '),
-                  TextSpan(
-                    text: 'LKR ${_formatRawValue(f.price / 3)} x 3',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                  const TextSpan(text: ' (0% interest)'),
-                ],
+            Text(
+              'or 3x LKR ${_formatRawValue(f.price / 3)} with Interest Free Plans',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurfaceVariant.withOpacity(0.7),
               ),
             ),
           ],

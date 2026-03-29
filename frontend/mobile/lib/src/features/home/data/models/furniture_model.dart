@@ -207,7 +207,15 @@ class Furniture {
     final furnitureType = json['furnitureType']?.toString() ?? json['category']?.toString() ?? 'N/A';
     
     String dimensions = 'N/A';
-    if (json['dimensions'] != null) {
+    if (json['dimensions'] is Map) {
+      final d = json['dimensions'] as Map;
+      final parts = <String>[];
+      if (d['height'] != null) parts.add('H:${d['height']} cm');
+      if (d['width'] != null) parts.add('W:${d['width']} cm');
+      if (d['length'] != null) parts.add('L:${d['length']} cm');
+      if (d['depth'] != null) parts.add('D:${d['depth']} cm');
+      dimensions = parts.isNotEmpty ? parts.join('  ') : d.toString();
+    } else if (json['dimensions'] != null) {
       dimensions = json['dimensions'].toString();
     } else if (json['dimensions_cm'] is Map) {
       final d = json['dimensions_cm'] as Map;
