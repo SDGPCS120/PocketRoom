@@ -64,6 +64,12 @@ export class PaymentService {
     const amount = dto.amount ?? orderData.totalAmount;
     const currency = dto.currency ?? orderData.currency ?? 'LKR';
 
+    if (amount === undefined || amount === null || isNaN(Number(amount))) {
+      throw new InternalServerErrorException(
+        `Order ${dto.orderId} has no totalAmount. Cannot create payment.`,
+      );
+    }
+
     const customId = generateMeaningfulId('payment-' + Date.now());
     const docRef = this.paymentCollection().doc(customId);
 
