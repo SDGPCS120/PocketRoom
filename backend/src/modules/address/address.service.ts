@@ -58,19 +58,21 @@ export class AddressService {
 
     // if this address is set as default, unset other default addresses of same user
     if (data.isDefault === true) {
-      const existingDefaults = await this.col()
+      // Single-field query + in-memory filter to avoid composite index requirement
+      const allUserAddresses = await this.col()
         .where('userId', '==', dto.userId)
-        .where('isDeleted', '==', false)
-        .where('isDefault', '==', true)
         .get();
 
       const batch = this.firebaseService.firestore.batch();
 
-      existingDefaults.docs.forEach((doc) => {
-        batch.update(doc.ref, {
-          isDefault: false,
-          updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
-        });
+      allUserAddresses.docs.forEach((doc) => {
+        const d = doc.data() as any;
+        if (!d.isDeleted && d.isDefault === true) {
+          batch.update(doc.ref, {
+            isDefault: false,
+            updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
+          });
+        }
       });
 
       batch.set(ref, data);
@@ -84,13 +86,24 @@ export class AddressService {
   }
 
   async findAll(userId?: string, isDefault?: boolean) {
-    let q = this.col().where('isDeleted', '==', false);
+    // Use a single-field query to avoid composite index requirements.
+    // Filter isDeleted and isDefault in memory.
+    let q: FirebaseFirestore.Query = this.col();
 
-    if (userId) q = q.where('userId', '==', userId);
-    if (typeof isDefault === 'boolean') q = q.where('isDefault', '==', isDefault);
+    if (userId) {
+      q = q.where('userId', '==', userId);
+    }
 
     const snap = await q.get();
-    return snap.docs.map((d) => d.data());
+    let results = snap.docs.map((d) => d.data() as any);
+
+    // In-memory filters (avoids composite index requirement)
+    results = results.filter((r: any) => !r.isDeleted);
+    if (typeof isDefault === 'boolean') {
+      results = results.filter((r: any) => r.isDefault === isDefault);
+    }
+
+    return results;
   }
 
   async findOne(id: string) {
@@ -133,20 +146,22 @@ export class AddressService {
     if (dto.isDefault === true) {
       const targetUserId = dto.userId ?? current.userId;
 
-      const existingDefaults = await this.col()
+      // Single-field query + in-memory filter to avoid composite index requirement
+      const allUserAddresses = await this.col()
         .where('userId', '==', targetUserId)
-        .where('isDeleted', '==', false)
-        .where('isDefault', '==', true)
         .get();
 
       const batch = this.firebaseService.firestore.batch();
 
-      existingDefaults.docs.forEach((doc) => {
+      allUserAddresses.docs.forEach((doc) => {
         if (doc.id !== id) {
-          batch.update(doc.ref, {
-            isDefault: false,
-            updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
-          });
+          const d = doc.data() as any;
+          if (!d.isDeleted && d.isDefault === true) {
+            batch.update(doc.ref, {
+              isDefault: false,
+              updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
+            });
+          }
         }
       });
 

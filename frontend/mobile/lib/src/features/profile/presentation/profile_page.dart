@@ -4,6 +4,7 @@ import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart'
 import '../../../core/theme/app_theme.dart';
 import '../../../common_widgets/responsive_layout.dart';
 import 'edit_profile_page.dart';
+import 'manage_address_page.dart';
 import 'providers/profile_provider.dart';
 
 import 'widgets/profile/profile_header_card.dart';
@@ -29,6 +30,17 @@ class ProfilePage extends ConsumerWidget {
       ),
     );
   }
+
+  Future<void> _openManageAddress(BuildContext context, WidgetRef ref) async {
+    await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (context) => const ManageAddressPage(),
+      ),
+    );
+    // Refresh profile in case something related changed
+    ref.read(profileProvider.notifier).loadUserData();
+  }
+
 
   Future<void> _showCartDebugJson(BuildContext context, WidgetRef ref) async {
     try {
@@ -107,6 +119,7 @@ class ProfilePage extends ConsumerWidget {
                   phone: state.phone,
                   address: state.address,
                   onEditProfile: () => _openEditProfile(context, ref),
+                  onManageAddress: () => _openManageAddress(context, ref),
                 ),
                 const SizedBox(height: 20),
                 const ProfileActivitySection(),

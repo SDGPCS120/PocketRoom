@@ -33,11 +33,6 @@ export class OrderController {
     return this.orderService.createOrder(userId, dto);
   }
 
-  @Get()
-  ping() {
-    return { message: 'Order endpoint is online' };
-  }
-
   @Get('my-orders')
   getUserOrders(@Req() req: AuthenticatedRequest) {
     const userId = req.user.uid;
