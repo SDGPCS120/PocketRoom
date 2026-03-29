@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../core/theme/app_theme.dart';
 import 'providers/cart_provider.dart';
 import 'widgets/cart_app_bar.dart';
@@ -73,10 +74,71 @@ class CartPage extends ConsumerWidget {
                       final apiClient = ref.read(apiClientProvider);
                       final paymentService = ref.read(paymentServiceProvider);
 
-                      // 1. Create Order
+                      // 1. Get the current user's UID
+                      final currentUser = FirebaseAuth.instance.currentUser;
+                      if (currentUser == null) {
+                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('You must be logged in to checkout.'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                        return;
+                      }
+
+                      // 2. Fetch the user's default address
+                      final addressResponse = await apiClient.get(
+                        '/addresses',
+                        queryParameters: {
+                          'userId': currentUser.uid,
+                          'isDefault': 'true',
+                        },
+                      );
+
+                      final List<dynamic> addresses =
+                          addressResponse.data is List ? addressResponse.data as List : [];
+
+                      if (addresses.isEmpty) {
+                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'No default address found. Please add an address in your profile before checking out.',
+                              ),
+                              backgroundColor: Colors.orange,
+                              duration: Duration(seconds: 4),
+                            ),
+                          );
+                        }
+                        return;
+                      }
+
+                      final defaultAddressId =
+                          addresses.first['id'] as String? ?? '';
+
+                      if (defaultAddressId.isEmpty) {
+                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Could not resolve your default address. Please update your profile.',
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                        return;
+                      }
+
+                      // 3. Create Order using the real address ID
                       final orderResponse = await apiClient.post('/orders', data: {
-                        'shippingAddressId': 'default-address-id',
-                        'billingAddressId': 'default-address-id',
+                        'shippingAddressId': defaultAddressId,
+                        'billingAddressId': defaultAddressId,
                         'items': cartItems.map((item) => {
                           'productId': item.furniture.id,
                           'productName': item.furniture.name,
@@ -97,14 +159,14 @@ class CartPage extends ConsumerWidget {
 
                       final orderId = orderResponse.data['orderId'];
 
-                      // 2. Start Payment
+                      // 4. Start Payment
                       final success = await paymentService.startPayment(orderId);
 
                       // Close loading dialog
                       if (context.mounted) Navigator.of(context).pop();
 
                       if (success) {
-                        // 3. Success Feedback
+                        // 5. Success Feedback
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
