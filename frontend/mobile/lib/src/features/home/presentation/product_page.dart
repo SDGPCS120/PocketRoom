@@ -64,24 +64,19 @@ class _ProductPageState extends State<ProductPage> {
                             const SizedBox(height: 32),
                             
                             // Variant Summary
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Row(
+                            RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: colorScheme.onSurfaceVariant.withOpacity(0.8),
+                                ),
                                 children: [
-                                  Icon(Icons.info_outline_rounded, size: 18, color: colorScheme.primary),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      'Selected: ${_selectedColor.isNotEmpty ? _selectedColor : 'None'} / ${_selectedMaterial.isNotEmpty ? _selectedMaterial : 'None'} / Standard',
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
+                                  const TextSpan(text: 'Selected:  '),
+                                  TextSpan(
+                                    text: 'Default • ${_selectedMaterial.isNotEmpty ? _selectedMaterial : 'None'} • Small',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      color: colorScheme.onSurface,
                                     ),
                                   ),
                                 ],

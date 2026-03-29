@@ -59,36 +59,24 @@ class ProductColorPicker extends StatelessWidget {
                   duration: const Duration(milliseconds: 200),
                   width: 44,
                   height: 44,
+                  padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
-                    color: swatchColor,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isSelected 
-                          ? Colors.orange.shade700 // Explicit orange border as requested
-                          : colorScheme.outline.withOpacity(0.1),
-                      width: isSelected ? 2.5 : 1,
+                      color: isSelected ? Colors.orange.shade400 : Colors.transparent,
+                      width: 2,
                     ),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: Colors.orange.shade700.withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            )
-                          ]
-                        : null,
                   ),
-                  child: isSelected
-                      ? Center(
-                          child: Icon(
-                            Icons.check_rounded,
-                            color: swatchColor.computeLuminance() > 0.6 
-                                ? Colors.black87 
-                                : Colors.white,
-                            size: 22,
-                          ),
-                        )
-                      : null,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: swatchColor,
+                      shape: BoxShape.circle,
+                      border: isSelected ? null : Border.all(
+                        color: colorScheme.outline.withValues(alpha: 0.15),
+                        width: 1,
+                      ),
+                    ),
+                  ),
                 ),
               );
             },
