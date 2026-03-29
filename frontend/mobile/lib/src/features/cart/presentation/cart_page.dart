@@ -61,140 +61,104 @@ class CartPage extends ConsumerWidget {
                   onCheckout: () async {
                     if (cartItems.isEmpty) return;
 
-                    try {
-                      // Show loading dialog
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => const Center(
-                          child: CircularProgressIndicator(),
+                    // Ensure user is logged in
+                    final currentUser = FirebaseAuth.instance.currentUser;
+                    if (currentUser == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('You must be logged in to checkout.'),
+                          backgroundColor: Colors.red,
                         ),
                       );
+                      return;
+                    }
 
+                    // Show loading
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+
+                    try {
                       final apiClient = ref.read(apiClientProvider);
                       final paymentService = ref.read(paymentServiceProvider);
 
-                      // 1. Get the current user's UID
-                      final currentUser = FirebaseAuth.instance.currentUser;
-                      if (currentUser == null) {
-                        if (context.mounted) Navigator.of(context).pop();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('You must be logged in to checkout.'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                        return;
-                      }
-
-                      // 2. Fetch the user's default address
-                      final addressResponse = await apiClient.get(
-                        '/addresses',
-                        queryParameters: {
-                          'userId': currentUser.uid,
-                          'isDefault': 'true',
-                        },
-                      );
-
-                      final List<dynamic> addresses =
-                          addressResponse.data is List ? addressResponse.data as List : [];
-
-                      if (addresses.isEmpty) {
-                        if (context.mounted) Navigator.of(context).pop();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'No default address found. Please add an address in your profile before checking out.',
-                              ),
-                              backgroundColor: Colors.orange,
-                              duration: Duration(seconds: 4),
-                            ),
-                          );
-                        }
-                        return;
-                      }
-
-                      final defaultAddressId =
-                          addresses.first['id'] as String? ?? '';
-
-                      if (defaultAddressId.isEmpty) {
-                        if (context.mounted) Navigator.of(context).pop();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Could not resolve your default address. Please update your profile.',
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                        return;
-                      }
-
-                      // 3. Create Order using the real address ID
+                      // ── Step 1: Create Order ───────────────────────────────
+                      // shippingAddressId is a plain string—no FK validation.
+                      // Using 'mock-address' so checkout works without a saved address.
                       final orderResponse = await apiClient.post('/orders', data: {
-                        'shippingAddressId': defaultAddressId,
-                        'billingAddressId': defaultAddressId,
+                        'shippingAddressId': 'mock-address',
+                        'billingAddressId': 'mock-address',
                         'items': cartItems.map((item) => {
-                          'productId': item.furniture.id,
-                          'productName': item.furniture.name,
-                          'quantity': item.quantity,
-                          'unitPrice': item.furniture.price,
-                        }).toList(),
+                              'productId': item.furniture.id,
+                              'productName': item.furniture.name,
+                              'quantity': item.quantity,
+                              'unitPrice': item.furniture.price,
+                              'itemTotal': item.furniture.price * item.quantity,
+                            }).toList(),
                         'totalAmount': totalPrice,
                         'currency': 'LKR',
                       });
 
-                      if (orderResponse.statusCode != 200 && orderResponse.statusCode != 201) {
-                        final errorBody = orderResponse.data;
-                        final errorMessage = (errorBody is Map && errorBody.containsKey('message'))
-                            ? errorBody['message']
-                            : 'Failed to create order';
-                        throw Exception(errorMessage);
+                      // Unwrap { success, data, meta } envelope
+                      final orderEnvelope =
+                          orderResponse.data as Map<String, dynamic>?;
+                      final orderData =
+                          orderEnvelope?['data'] as Map<String, dynamic>?;
+                      final orderId = orderData?['orderId'] as String?;
+
+                      if (orderId == null || orderId.isEmpty) {
+                        throw Exception(
+                            'Order was created but no orderId was returned.');
                       }
 
-                      final orderId = orderResponse.data['orderId'];
-
-                      // 4. Start Payment
+                      // ── Step 2: Launch PayHere sandbox payment ─────────────
                       final success = await paymentService.startPayment(orderId);
 
-                      // Close loading dialog
+                      // Dismiss loading
                       if (context.mounted) Navigator.of(context).pop();
 
                       if (success) {
-                        // 5. Success Feedback
+                        // Clear the cart after successful payment
+                        final itemIds =
+                            cartItems.map((i) => i.furniture.id).toList();
+                        for (final id in itemIds) {
+                          ref.read(cartProvider.notifier).removeItem(id);
+                        }
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Payment Successful! Order Confirmed.'),
+                              content:
+                                  Text('🎉 Payment Successful! Order Confirmed.'),
                               backgroundColor: Colors.green,
+                              duration: Duration(seconds: 3),
                             ),
                           );
-                          // Clear cart or navigate to success page
-                          // Assuming we just clear the local state for now if not auto-synced
                         }
                       } else {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Payment Cancelled or Failed.'),
+                              content: Text(
+                                  'Payment cancelled or failed. Your cart is unchanged.'),
                               backgroundColor: Colors.orange,
                             ),
                           );
                         }
                       }
                     } catch (e) {
-                      // Close loading dialog if open
                       if (context.mounted) {
-                        if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+                        if (Navigator.of(context).canPop()) {
+                          Navigator.of(context).pop();
+                        }
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Error: $e'),
+                            content: Text('Checkout error: $e'),
                             backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 5),
                           ),
                         );
                       }
