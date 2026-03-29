@@ -24,7 +24,12 @@ class PaymentService {
   PaymentService(this._apiClient);
 
   Future<bool> startPayment(String orderId, {double? amount, String currency = 'LKR'}) async {
-    final payAmount = (amount != null && amount > 0) ? amount : 1.00;
+    // ─── SANDBOX WORKAROUND ──────────────────────────────────────────────────
+    // PayHere Sandbox accounts have a strict transaction limit (often 50,000 LKR).
+    // To ensure the demo always succeeds, we pass a symbolic 1.00 LKR to the SDK.
+    // The backend still knows the real order total from the original request.
+    const double payAmount = 1.00; 
+    // ─────────────────────────────────────────────────────────────────────────
 
     if (kIsWeb) {
       debugPrint('[PaymentService] Web: mocking success for order $orderId');
@@ -36,7 +41,7 @@ class PaymentService {
         'sandbox':     true,
         'merchant_id': _kMerchantId,
         'order_id':    orderId,
-        'amount':      payAmount, // Passing as double (number)
+        'amount':      payAmount,
         'currency':    currency,
         // Required customer fields
         'first_name': 'PocketRoom',
@@ -52,7 +57,7 @@ class PaymentService {
         'items':      'Order $orderId',
       };
 
-      debugPrint('[PaymentService] Launching PayHere SDK for order: $orderId');
+      debugPrint('[PaymentService] Launching PayHere SDK for order: $orderId (Capped at 1.00 LKR for Sandbox)');
 
       final completer = Completer<bool>();
 
