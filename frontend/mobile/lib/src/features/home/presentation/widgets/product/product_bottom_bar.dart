@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/presentation/providers/cart_provider.dart';
 import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/features/home/data/models/furniture_model.dart';
+import 'package:pocketroom/src/core/services/ar_service.dart';
 
 class ProductBottomBar extends ConsumerWidget {
   final Furniture furniture;
@@ -88,9 +89,17 @@ class ProductBottomBar extends ConsumerWidget {
             child: SizedBox(
               height: 56,
               child: OutlinedButton(
-                onPressed: () {
+                onPressed: () async {
                   HapticFeedback.mediumImpact();
-                  // AR logic placeholder
+                  final success = await ref.read(arServiceProvider).launchExternalArApp();
+                  if (!success && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("AR App 'PocketRoomAR' or 'com.example.please_work' not found."),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: colorScheme.primary,

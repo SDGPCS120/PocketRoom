@@ -44,7 +44,7 @@ class AppSizes {
   static const double pagePadding = 20.0;
   static const double cardRadius = 16.0;
   static const double buttonRadius = 28.0;
-  static const double buttonHeight = 52.0;
+  static const double buttonHeight = 56.0;
 }
 
 /// Custom theme extension for properties that don't fit into [ColorScheme].
