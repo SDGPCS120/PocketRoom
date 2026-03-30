@@ -29,17 +29,6 @@ class MainActivity : FlutterUnityActivity() {
                     result.success(true)
                 }
 
-                "launchExternalArApp" -> {
-                    val packageName = "com.example.please_work"
-                    val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
-                    if (launchIntent != null) {
-                        startActivity(launchIntent)
-                        result.success(true)
-                    } else {
-                        result.error("APP_NOT_FOUND", "PocketRoomAR (com.example.please_work) is not installed", null)
-                    }
-                }
-
                 else -> result.notImplemented()
             }
         }
