@@ -5,12 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pocketroom/src/features/cart/presentation/providers/cart_provider.dart';
 import 'package:pocketroom/src/features/auth/presentation/get_started_page.dart';
 import 'package:pocketroom/src/features/home/data/models/furniture_model.dart';
-import 'package:pocketroom/src/core/services/ar_service.dart';
 
-class ProductBottomBar extends ConsumerWidget {
+class WebProductActions extends ConsumerWidget {
   final Furniture furniture;
 
-  const ProductBottomBar({super.key, required this.furniture});
+  const WebProductActions({super.key, required this.furniture});
 
   bool _redirectGuestToGetStarted(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -26,20 +25,10 @@ class ProductBottomBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(24, 16, 24, bottomPadding + 16),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.onSurface.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 24),
       child: Row(
         children: [
           Expanded(
@@ -89,17 +78,9 @@ class ProductBottomBar extends ConsumerWidget {
             child: SizedBox(
               height: 56,
               child: OutlinedButton(
-                onPressed: () async {
+                onPressed: () {
                   HapticFeedback.mediumImpact();
-                  final success = await ref.read(arServiceProvider).launchExternalArApp();
-                  if (!success && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("AR App 'PocketRoomAR' or 'com.example.please_work' not found."),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
+                  // AR logic placeholder
                 },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: colorScheme.primary,

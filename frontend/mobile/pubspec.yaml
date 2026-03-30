@@ -32,10 +32,13 @@ dependencies:
   google_fonts: ^8.0.0
   flutter_svg: ^2.2.3
   url_launcher: ^6.3.1
+  external_app_launcher: ^4.0.3
   speech_to_text: ^7.0.0
   permission_handler: ^11.3.1
   intl: ^0.20.2
   payhere_mobilesdk_flutter: ^3.0.3
+  image_picker: ^1.2.1
+  firebase_storage: ^12.4.10
 
 dev_dependencies:
   flutter_test:

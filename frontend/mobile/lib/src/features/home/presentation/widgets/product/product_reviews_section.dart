@@ -104,28 +104,33 @@ class _ReviewsSummary extends StatelessWidget {
               Text(
                 avgRating.toStringAsFixed(1),
                 style: TextStyle(
-                  fontSize: 48,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 64,
+                  fontWeight: FontWeight.w500,
                   color: colorScheme.onSurface,
-                  letterSpacing: -1,
+                  letterSpacing: -2,
+                  height: 1.1,
                 ),
               ),
+              const SizedBox(height: 12),
               Row(
                 children: List.generate(5, (i) {
-                  return Icon(
-                    i < avgRating.floor() ? Icons.star_rounded : Icons.star_outline_rounded,
-                    color: colorScheme.primary,
-                    size: 20,
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 2),
+                    child: Icon(
+                      i < avgRating.floor() ? Icons.star_rounded : Icons.star_outline_rounded,
+                      color: Colors.orange.shade400,
+                      size: 24,
+                    ),
                   );
                 }),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Text(
                 'Based on ${reviews.length} reviews',
                 style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onSurfaceVariant,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: colorScheme.onSurfaceVariant.withOpacity(0.8),
                 ),
               ),
             ],
@@ -142,7 +147,7 @@ class _ReviewsSummary extends StatelessWidget {
               final percentage = maxCount == 0 ? 0.0 : count / maxCount;
               
               return Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
                     SizedBox(
@@ -150,34 +155,34 @@ class _ReviewsSummary extends StatelessWidget {
                       child: Text(
                         '$star',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: colorScheme.onSurfaceVariant,
+                          color: colorScheme.onSurfaceVariant.withOpacity(0.8),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
                           value: percentage,
-                          minHeight: 6,
-                          backgroundColor: colorScheme.surfaceContainerHighest,
-                          valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                          minHeight: 8,
+                          backgroundColor: Colors.orange.shade50,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orange.shade400),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 12),
                     SizedBox(
-                      width: 30,
+                      width: 36,
                       child: Text(
                         '${(percentage * 100).toInt()}%',
                         textAlign: TextAlign.end,
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurfaceVariant,
+                          color: colorScheme.onSurfaceVariant.withOpacity(0.8),
                         ),
                       ),
                     ),
@@ -295,7 +300,7 @@ class _ReviewTile extends StatelessWidget {
                 children: List.generate(5, (i) {
                   return Icon(
                     i < review.rating ? Icons.star_rounded : Icons.star_outline_rounded,
-                    color: colorScheme.primary,
+                    color: Colors.orange.shade400,
                     size: 16,
                   );
                 }),

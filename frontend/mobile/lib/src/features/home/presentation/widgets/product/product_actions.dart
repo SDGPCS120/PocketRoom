@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../cart/presentation/providers/cart_provider.dart';
 import '../../../../auth/presentation/get_started_page.dart';
 import '../../../data/models/furniture_model.dart';
+import '../../../../../core/services/ar_service.dart';
 
 class ProductActions extends ConsumerStatefulWidget {
   final Furniture furniture;
@@ -143,9 +144,17 @@ class _ProductActionsState extends ConsumerState<ProductActions> {
           width: double.infinity,
           height: 56,
           child: OutlinedButton(
-            onPressed: () {
+            onPressed: () async {
                HapticFeedback.mediumImpact();
-               // AR view logic here
+               final success = await ref.read(arServiceProvider).launchExternalArApp();
+               if (!success && context.mounted) {
+                 ScaffoldMessenger.of(context).showSnackBar(
+                   const SnackBar(
+                    content: Text("AR App 'PocketRoomAR' or 'com.example.please_work' not found."),
+                    backgroundColor: Colors.red,
+                   ),
+                 );
+               }
             },
             style: OutlinedButton.styleFrom(
               foregroundColor: colorScheme.primary,

@@ -55,26 +55,37 @@ class CartSummaryBottomBar extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: onCheckout,
-            style: AppButtonStyles.primaryButton(context),
-            child: const Text('Checkout'),
+          SizedBox(
+            width: double.infinity,
+            height: AppSizes.buttonHeight,
+            child: ElevatedButton(
+              onPressed: onCheckout,
+              style: AppButtonStyles.primaryButton(context),
+              child: const Text('Checkout'),
+            ),
           ),
           const SizedBox(height: 12),
-          OutlinedButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const ArViewPage(),
+          SizedBox(
+            width: double.infinity,
+            height: AppSizes.buttonHeight,
+            child: OutlinedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ArViewPage(),
+                  ),
+                );
+              },
+              style: AppButtonStyles.outlinedButton(context).copyWith(
+                side: WidgetStateProperty.all(
+                  BorderSide(color: Theme.of(context).colorScheme.primary),
                 ),
-              );
-            },
-            style: AppButtonStyles.outlinedButton(context).copyWith(
-              minimumSize: WidgetStateProperty.all(const Size(double.infinity, 50)),
-              side: WidgetStateProperty.all(BorderSide(color: Theme.of(context).colorScheme.primary)),
-              foregroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
+                foregroundColor: WidgetStateProperty.all(
+                  Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              child: const Text('View in AR'),
             ),
-            child: const Text('View in AR'),
           ),
           SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
