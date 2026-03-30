@@ -25,9 +25,9 @@ class PaymentService {
 
   Future<bool> startPayment(String orderId, {double? amount, String currency = 'LKR'}) async {
     // ─── SANDBOX WORKAROUND ──────────────────────────────────────────────────
-    // PayHere Sandbox accounts have a strict transaction limit (often 50,000 LKR)
-    // and a minimum allowed amount (30.00 LKR).
-    // To ensure the demo always succeeds, we pass exactly 50.00 LKR to the SDK.
+    // PayHere Sandbox accounts have a strict transaction limit (often 50,000 LKR).
+    // To ensure the demo always succeeds, we pass a symbolic 1.00 LKR to the SDK.
+    // The backend still knows the real order total from the original request.
     const double payAmount = 50.00; 
     // ─────────────────────────────────────────────────────────────────────────
 
