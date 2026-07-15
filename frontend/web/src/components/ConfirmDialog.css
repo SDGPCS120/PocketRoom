@@ -1,0 +1,9 @@
+/* ConfirmDialog uses shared feedback.css overlay/dialog styles.
+   This file exists for any dialog-specific overrides. */
+
+.confirm-dialog .btn-secondary,
+.confirm-dialog .btn-primary,
+.confirm-dialog .btn-danger {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+}

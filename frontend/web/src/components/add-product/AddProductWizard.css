@@ -1,0 +1,591 @@
+/* ── Wizard Container ──────────────────────────────────────────────────────── */
+.wizard-container {
+  padding: 0;
+}
+
+/* ── Banner preview ───────────────────────────────────────────────────────── */
+.wizard-banner {
+  height: 280px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-2, #f4f6f9);
+  position: relative;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -40px; /* overlap card */
+}
+
+.wizard-banner-placeholder {
+  color: var(--text-secondary, #9aada0);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+.wizard-card {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: var(--color-0, #ffffff);
+  border-radius: 1rem;
+  border: 1px solid var(--color-6, #e5ceba);
+  box-shadow: 0 4px 12px rgba(205, 91, 0, 0.05);
+  padding: 2.5rem;
+  position: relative; /* so z-index stacks above banner */
+  z-index: 1;
+}
+
+/* ── Card Header ──────────────────────────────────────────────────────────── */
+.wizard-card-header {
+  margin-bottom: 2rem;
+}
+
+.wizard-product-name {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-text-primary, #3d1a00);
+  margin: 0 0 6px 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.wizard-brand-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #757575);
+  margin: 0;
+}
+
+.wizard-brand {
+  color: var(--color-primary, #FF8A3D);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ── Step indicator (4-step layout) ──────────────────────────────────────── */
+.add-product-steps {
+  margin-bottom: 2rem;
+}
+
+.wizard-4 {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+}
+
+.wizard-4 .step-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--color-5, #e9edf2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.25s, color 0.25s;
+}
+
+.wizard-4 .step-dot span {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-secondary, #757575);
+}
+
+.wizard-4 .step-dot.active {
+  background-color: var(--accent-primary, #cd5b00);
+}
+
+.wizard-4 .step-dot.active span {
+  color: #fff;
+}
+
+.wizard-4 .step-line {
+  flex: 1;
+  height: 3px;
+  background-color: var(--color-5, #e9edf2);
+  transition: background-color 0.25s;
+}
+
+.wizard-4 .step-line.active {
+  background-color: var(--accent-primary, #cd5b00);
+}
+
+.wizard-4-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+
+.wizard-4-labels span {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #757575);
+  font-weight: 500;
+  text-align: center;
+  flex: 1;
+}
+
+.wizard-4-labels .label-active {
+  color: var(--accent-primary, #cd5b00);
+  font-weight: 700;
+}
+
+/* ── Global error ─────────────────────────────────────────────────────────── */
+.wizard-global-error {
+  margin-bottom: 1.25rem;
+}
+
+/* ── Step body ────────────────────────────────────────────────────────────── */
+.wizard-step-body {
+  min-height: 280px;
+}
+
+/* ── Step common ──────────────────────────────────────────────────────────── */
+.form-step {
+  animation: fadeInUp 0.2s ease;
+}
+
+.form-subtitle {
+  color: var(--text-secondary, #757575);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 1.75rem 0;
+  line-height: 1.5;
+}
+
+.form-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent-primary, #cd5b00);
+  margin: 1.5rem 0 0.75rem 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Step 2 — dimensions form row ─────────────────────────────────────────── */
+.form-row.three-col {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-row.three-col > * {
+  flex: 1;
+}
+
+/* ── Step 3 — Media section ───────────────────────────────────────────────── */
+.file-upload-group {
+  border: 2px dashed var(--color-7, #d4c4b4);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background-color: var(--color-3, #f8f4f0);
+  transition: all 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.file-upload-group:hover {
+  border-color: var(--accent-secondary, #e87a2a);
+  background-color: var(--color-2, #f4f6f9);
+}
+
+.file-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.file-title {
+  font-weight: 700;
+  color: var(--text-primary, #2D2D2D);
+  margin-bottom: 0.25rem;
+}
+
+.file-title .required {
+  color: var(--accent-primary, #cd5b00);
+  margin-left: 2px;
+}
+
+.file-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #757575);
+  margin-bottom: 1rem;
+}
+
+.file-input {
+  display: flex;
+  font-size: 14px;
+}
+
+.image-previews {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.image-preview-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5ceba;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.image-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-remove-img {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c53030;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.15s, background 0.15s;
+}
+
+.btn-remove-img:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.gen-selectors {
+  margin-top: 0;
+}
+
+.gen-select-item {
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.gen-select-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.gen-select-item.selected {
+  border-color: var(--accent-primary, #cd5b00) !important;
+  box-shadow: 0 0 0 3px rgba(205, 91, 0, 0.15) !important;
+}
+
+.sel-check {
+  position: absolute;
+  top: 6px;
+  right: 32px;
+  background: var(--accent-primary, #cd5b00);
+  color: #fff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.sel-check svg {
+  margin: 0 !important;
+  width: 14px;
+  height: 14px;
+}
+
+/* 3D toggle */
+.generate-3d-toggle {
+  background: var(--color-3, #f8f4f0);
+  border: 1px solid var(--color-6, #e5ceba);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  cursor: pointer;
+}
+
+.toggle-label input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.2rem;
+  accent-color: var(--accent-primary, #cd5b00);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.toggle-text strong {
+  color: var(--text-primary, #2D2D2D);
+  font-size: 0.95rem;
+}
+
+.toggle-sub {
+  font-size: 0.82rem;
+  color: var(--text-secondary, #757575);
+  line-height: 1.4;
+}
+
+/* ── Step 4 — Review layout ───────────────────────────────────────────────── */
+.review-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.review-preview-card {
+  border: 1px solid var(--color-6, #e5ceba);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-0, #ffffff);
+  box-shadow: var(--shadow-card, 0 4px 12px rgba(0,0,0,0.04));
+}
+
+.review-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.review-block {
+  border: 1px solid var(--color-5, #e9edf2);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  background: var(--color-1, #fffaf6);
+}
+
+.review-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.review-block-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--accent-primary, #cd5b00);
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--accent-primary, #cd5b00);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  font-family: inherit;
+}
+
+.btn-link:hover {
+  color: var(--accent-secondary, #e87a2a);
+}
+
+.review-dl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.review-dl > div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.review-dl dt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary, #757575);
+  min-width: 90px;
+  flex-shrink: 0;
+}
+
+.review-dl dd {
+  font-size: 0.8rem;
+  color: var(--text-primary, #2D2D2D);
+  margin: 0;
+}
+
+.review-desc {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+/* Catalog card styles (used by review preview & SellerProducts) */
+.product-image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: var(--color-2, #f4f6f9);
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #9aada0);
+  font-weight: 500;
+}
+
+.product-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  line-height: 1.4;
+}
+
+.badge-warning {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.badge-info {
+  background: var(--color-2, #f4f6f9);
+  color: var(--text-primary, #2D2D2D);
+  border: 1px solid var(--color-5, #e9edf2);
+}
+
+.ar-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  line-height: 1.4;
+  background: linear-gradient(135deg, #FF8A3D, #cd5b00);
+  color: #fff;
+}
+
+.product-info {
+  padding: 0.85rem 1rem;
+}
+
+.product-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.product-category {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary, #757575);
+}
+
+.product-price {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--accent-primary, #cd5b00);
+}
+
+.product-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #2D2D2D);
+  margin: 0 0 0.3rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-description {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #757575);
+  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+}
+
+.product-dimensions {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #757575);
+  font-family: monospace;
+}
+
+/* ── Actions bar ──────────────────────────────────────────────────────────── */
+.wizard-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-5, #e9edf2);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .review-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row.three-col {
+    flex-direction: column;
+  }
+
+  .wizard-card {
+    padding: 1.5rem;
+  }
+
+  .wizard-banner {
+    height: 180px;
+  }
+}

@@ -1,0 +1,40 @@
+/* Shared design tokens for the seller portal */
+:root {
+  --color-primary: #FF8A3D;
+  --color-secondary: #FFE5D3;
+  --color-background: #FFF8F3;
+  --color-text-primary: #2D2D2D;
+  --color-text-secondary: #757575;
+  --color-card-border: #E0E0E0;
+
+  /* Accent aliases used by product forms */
+  --accent-primary: #cd5b00;
+  --accent-secondary: #e87a2a;
+  --btn-text: #ffffff;
+
+  /* Neutral scale */
+  --color-0: #ffffff;
+  --color-1: #fffaf6;
+  --color-2: #f4f6f9;
+  --color-3: #f8f4f0;
+  --color-4: #eee6dc;
+  --color-5: #e9edf2;
+  --color-6: #e5ceba;
+  --color-7: #d4c4b4;
+
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --bg-primary: var(--color-background);
+
+  --input-border: #e5ceba;
+  --input-focus: #cd5b00;
+
+  --font-primary: 'Fredoka', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
