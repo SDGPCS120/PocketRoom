@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
 import { useSellerSession } from '../auth/sellerSession';
+import { getMockOrders, getMockProducts } from '../lib/mockData';
 import AppShell from './AppShell';
 import './SellerDashboard.css';
 
@@ -70,12 +71,17 @@ const SellerDashboard: React.FC = () => {
         }
 
         if (storeId) {
-          const [productsRes, ordersRes] = await Promise.all([
-            api.get(`/products/store/${storeId}`).catch(() => ({ data: [] })),
-            api.get(`/orders/store/${storeId}`).catch(() => ({ data: [] }))
-          ]);
-          setProducts(productsRes.data || []);
-          setOrders(ordersRes.data || []);
+          if (session?.email === 'arpico_vendor@test.com') {
+            setProducts(getMockProducts());
+            setOrders(getMockOrders());
+          } else {
+            const [productsRes, ordersRes] = await Promise.all([
+              api.get(`/products/store/${storeId}`).catch(() => ({ data: [] })),
+              api.get(`/orders/store/${storeId}`).catch(() => ({ data: [] }))
+            ]);
+            setProducts(productsRes.data || []);
+            setOrders(ordersRes.data || []);
+          }
         }
       } catch (err) {
         console.error('Failed to load dashboard data', err);
