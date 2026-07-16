@@ -3,6 +3,7 @@ import {
   MAX_IMAGES,
   MAX_IMAGE_BYTES,
   validateImageFile,
+  validateModelFile,
   type FormErrors,
 } from './useAddProductForm';
 
@@ -27,11 +28,13 @@ interface StepMediaProps {
   imageFiles: File[];
   generate3D: boolean;
   selectedGenIndex: number;
+  modelFile: File | null;
   errors: FormErrors;
   onAddImages: (files: File[]) => void;
   onRemoveImage: (index: number) => void;
   onGenerate3DChange: (checked: boolean) => void;
   onSelectGenIndex: (index: number) => void;
+  onModelFileChange: (file: File | null) => void;
   onImageError: (message: string) => void;
 }
 
@@ -44,6 +47,7 @@ const StepMedia: React.FC<StepMediaProps> = ({
   onRemoveImage,
   onGenerate3DChange,
   onSelectGenIndex,
+  onModelFileChange,
   onImageError,
 }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +75,21 @@ const StepMedia: React.FC<StepMediaProps> = ({
     e.target.value = '';
   };
 
+  const handleModelFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      onModelFileChange(null);
+      return;
+    }
+    const file = e.target.files[0];
+    const err = validateModelFile(file);
+    if (err) {
+      onImageError(err);
+      e.target.value = '';
+      return;
+    }
+    onModelFileChange(file);
+  };
+
   return (
     <div className="form-step">
       <h2>Media &amp; AR Assets</h2>
@@ -80,6 +99,7 @@ const StepMedia: React.FC<StepMediaProps> = ({
       </p>
 
       {errors.images && <div className="form-error">{errors.images}</div>}
+      {errors.model && <div className="form-error">{errors.model}</div>}
 
       <div className="file-upload-group">
         <label className="file-label">
@@ -157,6 +177,26 @@ const StepMedia: React.FC<StepMediaProps> = ({
             </span>
           </span>
         </label>
+      </div>
+      <div className="file-upload-group" style={{ marginTop: '1rem' }}>
+        <label className="file-label">
+          <span className="file-title">Upload Custom 3D Model</span>
+          <span className="file-desc">
+            Have your own 3D model? Upload a .glb or .gltf file directly.
+          </span>
+          <input
+            type="file"
+            accept=".glb,.gltf"
+            onChange={handleModelFileChange}
+            className="file-input"
+            disabled={generate3D}
+          />
+        </label>
+        {modelFile && (
+          <div style={{ marginTop: '1rem', fontSize: '14px', color: '#cd5b00', fontWeight: 'bold' }}>
+            <CheckIcon /> Selected: {modelFile.name}
+          </div>
+        )}
       </div>
     </div>
   );

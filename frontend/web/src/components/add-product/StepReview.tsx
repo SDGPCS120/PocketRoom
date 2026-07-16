@@ -6,6 +6,7 @@ interface StepReviewProps {
   imageFiles: File[];
   generate3D: boolean;
   selectedGenIndex: number;
+  modelFile: File | null;
   onGoToStep: (step: 1 | 2 | 3) => void;
 }
 
@@ -14,6 +15,7 @@ const StepReview: React.FC<StepReviewProps> = ({
   imageFiles,
   generate3D,
   selectedGenIndex,
+  modelFile,
   onGoToStep,
 }) => {
   const previewUrl = useMemo(
@@ -159,6 +161,12 @@ const StepReview: React.FC<StepReviewProps> = ({
                   {generate3D
                     ? `Yes (image ${selectedGenIndex + 1})`
                     : 'No — can generate later'}
+                </dd>
+              </div>
+              <div>
+                <dt>Custom 3D</dt>
+                <dd>
+                  {modelFile ? modelFile.name : 'None uploaded'}
                 </dd>
               </div>
             </dl>

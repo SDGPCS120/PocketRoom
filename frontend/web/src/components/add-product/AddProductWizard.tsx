@@ -36,6 +36,7 @@ const SellerAddProductWizard: React.FC = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [generate3D, setGenerate3D] = useState(false);
   const [selectedGenIndex, setSelectedGenIndex] = useState(0);
+  const [modelFile, setModelFile] = useState<File | null>(null);
 
   // ── Publish state ────────────────────────────────────────────────────────────
   const [loadingStep, setLoadingStep] = useState<LoadingStep>('idle');
@@ -70,7 +71,7 @@ const SellerAddProductWizard: React.FC = () => {
 
   // ── Navigation ───────────────────────────────────────────────────────────────
   const handleNext = () => {
-    const stepErrors = validateStep(step as 1 | 2 | 3 | 4, form, imageFiles, generate3D);
+    const stepErrors = validateStep(step as 1 | 2 | 3 | 4, form, imageFiles, generate3D, modelFile);
     if (Object.keys(stepErrors).length > 0) {
       setErrors(stepErrors);
       return;
@@ -95,7 +96,7 @@ const SellerAddProductWizard: React.FC = () => {
   // ── Publish pipeline ─────────────────────────────────────────────────────────
   const handlePublish = async () => {
     // Final validation across all steps
-    const allErrors = validateStep(4, form, imageFiles, generate3D);
+    const allErrors = validateStep(4, form, imageFiles, generate3D, modelFile);
     if (Object.keys(allErrors).length > 0) {
       setErrors(allErrors);
       setGlobalError('Please fix the errors below before publishing.');
@@ -166,7 +167,9 @@ const SellerAddProductWizard: React.FC = () => {
       const response = await api.post(`/products/store/${storeId}`, body);
       productId = response.data.productId as string;
 
-      // ── Step 2: Upload images ─────────────────────────────────────────────────
+      // ── Step 2: Upload images and/or model ─────────────────────────────────────
+      const updatePayload: any = {};
+      
       if (imageFiles.length > 0) {
         setLoadingStep('uploading');
         const uploadedUrls: string[] = [];
@@ -176,7 +179,19 @@ const SellerAddProductWizard: React.FC = () => {
           const downloadUrl = await getDownloadURL(snapshot.ref);
           uploadedUrls.push(downloadUrl);
         }
-        await api.put(`/products/${productId}`, { imageUrl: uploadedUrls });
+        updatePayload.imageUrl = uploadedUrls;
+      }
+      
+      if (modelFile) {
+        setLoadingStep('uploading');
+        const storageRef = ref(storage, `products/${productId}/model_${Date.now()}_${modelFile.name}`);
+        const snapshot = await uploadBytes(storageRef, modelFile);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+        updatePayload.modelURL = downloadUrl;
+      }
+      
+      if (Object.keys(updatePayload).length > 0) {
+        await api.put(`/products/${productId}`, updatePayload);
       }
     } catch (err: unknown) {
       setGlobalError(toUserFacingApiError(err));
@@ -268,11 +283,13 @@ const SellerAddProductWizard: React.FC = () => {
                 imageFiles={imageFiles}
                 generate3D={generate3D}
                 selectedGenIndex={selectedGenIndex}
+                modelFile={modelFile}
                 errors={errors}
                 onAddImages={handleAddImages}
                 onRemoveImage={handleRemoveImage}
                 onGenerate3DChange={setGenerate3D}
                 onSelectGenIndex={setSelectedGenIndex}
+                onModelFileChange={setModelFile}
                 onImageError={handleImageError}
               />
             )}
@@ -282,6 +299,7 @@ const SellerAddProductWizard: React.FC = () => {
                 imageFiles={imageFiles}
                 generate3D={generate3D}
                 selectedGenIndex={selectedGenIndex}
+                modelFile={modelFile}
                 onGoToStep={handleGoToStep}
               />
             )}

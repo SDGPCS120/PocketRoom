@@ -1,6 +1,7 @@
 export const MAX_IMAGES = 8;
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+export const MAX_MODEL_BYTES = 20 * 1024 * 1024; // 20MB
 
 export interface AddProductFormData {
   name: string;
@@ -100,15 +101,32 @@ export function validateImageFile(file: File): string | null {
   return null;
 }
 
+export function validateModelFile(file: File | null): string | null {
+  if (!file) return null;
+  const name = file.name.toLowerCase();
+  if (!name.endsWith('.glb') && !name.endsWith('.gltf')) {
+    return `"${file.name}" must be a .glb or .gltf file.`;
+  }
+  if (file.size > MAX_MODEL_BYTES) {
+    return `"${file.name}" exceeds the 20MB size limit for 3D models.`;
+  }
+  return null;
+}
+
 export function validateMedia(
   imageFiles: File[],
   generate3D: boolean,
+  modelFile: File | null,
 ): FormErrors {
   const errors: FormErrors = {};
 
   if (generate3D && imageFiles.length === 0) {
     errors.images =
       'Upload at least one image to generate a 3D model, or uncheck “Generate 3D Model now”.';
+  }
+  
+  if (generate3D && modelFile) {
+    errors.model = 'You cannot both generate a 3D model and upload a custom one. Please choose one.';
   }
 
   if (imageFiles.length > MAX_IMAGES) {
@@ -123,6 +141,11 @@ export function validateMedia(
     }
   }
 
+  const modelErr = validateModelFile(modelFile);
+  if (modelErr) {
+    errors.model = modelErr;
+  }
+
   return errors;
 }
 
@@ -131,6 +154,7 @@ export function validateStep(
   form: AddProductFormData,
   imageFiles: File[],
   generate3D: boolean,
+  modelFile: File | null,
 ): FormErrors {
   switch (step) {
     case 1:
@@ -138,12 +162,12 @@ export function validateStep(
     case 2:
       return validateDetails(form);
     case 3:
-      return validateMedia(imageFiles, generate3D);
+      return validateMedia(imageFiles, generate3D, modelFile);
     case 4:
       return {
         ...validateBasics(form),
         ...validateDetails(form),
-        ...validateMedia(imageFiles, generate3D),
+        ...validateMedia(imageFiles, generate3D, modelFile),
       };
     default:
       return {};
