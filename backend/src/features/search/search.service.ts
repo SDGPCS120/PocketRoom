@@ -204,7 +204,11 @@ export class SearchService implements OnModuleInit {
         }
 
         scored.sort((a, b) => b.score - a.score);
-        const top = scored.filter((item) => item.score > 0).slice(0, topK);
+        const highestScore = scored.length > 0 ? scored[0].score : 0;
+        const relativeThreshold = highestScore * 0.75;
+        const top = scored
+            .filter((item) => item.score > 0 && item.score >= relativeThreshold)
+            .slice(0, topK);
 
         const response: any = {
             query: query,
