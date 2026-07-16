@@ -42,6 +42,7 @@ const StepMedia: React.FC<StepMediaProps> = ({
   imageFiles,
   generate3D,
   selectedGenIndex,
+  modelFile,
   errors,
   onAddImages,
   onRemoveImage,
