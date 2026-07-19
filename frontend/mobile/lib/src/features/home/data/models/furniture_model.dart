@@ -55,6 +55,10 @@ class ProductColor {
       return Colors.grey.shade300;
     }
   }
+
+  Map<String, dynamic> toJson() {
+    return {'name': name, 'hex': hex};
+  }
 }
 
 class Furniture {
@@ -116,7 +120,6 @@ class Furniture {
 
   String? getPrimaryImage() {
     String? chosen;
-    String source = "none";
 
     // 1. Try imagesByColor[firstColor]
     if (colors.isNotEmpty) {
@@ -125,7 +128,6 @@ class Furniture {
           imagesByColor[firstColor]!.isNotEmpty && 
           imagesByColor[firstColor]!.first.isNotEmpty) {
         chosen = imagesByColor[firstColor]!.first;
-        source = "imagesByColor[$firstColor]";
       }
     }
 
@@ -134,7 +136,6 @@ class Furniture {
       for (var entry in imagesByColor.entries) {
         if (entry.value.isNotEmpty && entry.value.first.isNotEmpty) {
           chosen = entry.value.first;
-          source = "imagesByColor[fallback: ${entry.key}]";
           break;
         }
       }
@@ -145,7 +146,6 @@ class Furniture {
       final firstValid = imageUrl.where((e) => e.isNotEmpty).firstOrNull;
       if (firstValid != null) {
         chosen = firstValid;
-        source = "imageUrl";
       }
     }
 
@@ -153,7 +153,6 @@ class Furniture {
     if ((chosen == null || chosen.isEmpty) && id.isNotEmpty && !id.contains(RegExp(r'^[0-9]+$'))) {
       // Products like 'oaknest-coffee-table' usually follow this pattern
       chosen = 'https://firebasestorage.googleapis.com/v0/b/pocketroom-80f62.firebasestorage.app/o/Images%2Fproducts%2F$id%2Fimage1.webp?alt=media';
-      source = "Reconstructed(webp)";
     }
 
     // Logging for failure or debugging
@@ -307,7 +306,7 @@ class Furniture {
           : 'N/A',
       price: (json['price'] is num)
           ? (json['price'] as num).toDouble()
-          : double.nan,
+          : 0.0,
       oldPrice: (json['oldPrice'] is num)
           ? (json['oldPrice'] as num).toDouble()
           : null,
@@ -317,7 +316,7 @@ class Furniture {
       brandLogoUrl: json['brandLogoUrl']?.toString() ?? '',
       rating: (json['rating'] is num)
           ? (json['rating'] as num).toDouble()
-          : double.nan,
+          : 0.0,
       imageUrl: rawImageUrl,
       imagePath: json['imagePath']?.toString() ?? '',
       modelURL: json['modelURL']?.toString() ?? '',
@@ -373,7 +372,7 @@ class Furniture {
       'availability': availability,
       'styleTags': styleTags,
       'description': description,
-      'colors': colors,
+      'colors': colors.map((color) => color.toJson()).toList(),
       'imagesByColor': imagesByColor,
       'similarProducts': similarProducts,
       'customersAlsoBought': customersAlsoBought,
