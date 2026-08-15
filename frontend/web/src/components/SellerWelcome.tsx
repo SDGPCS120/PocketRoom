@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import logoUrl from '../assets/logo.png';
-import './SellerWelcome.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import logoUrl from "../assets/logo.png";
+import "./SellerWelcome.css";
 
 const SellerWelcome: React.FC = () => {
   return (
@@ -34,9 +34,9 @@ const SellerWelcome: React.FC = () => {
               <span> PocketRoom Sellers</span>
             </h1>
             <p>
-              Turn your rooms, decor and furniture into a thriving online business.
-              PocketRoom gives you a modern dashboard, AR-powered previews and
-              tools that make selling beautifully simple.
+              Turn your rooms, decor and furniture into a thriving online
+              business. PocketRoom gives you a modern dashboard, AR-powered
+              previews and tools that make selling beautifully simple.
             </p>
 
             <div className="welcome-actions">
@@ -49,7 +49,26 @@ const SellerWelcome: React.FC = () => {
             </div>
 
             <div className="welcome-meta">
-              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',marginRight:'4px',verticalAlign:'text-bottom'}}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> No setup fees</span>
+              <span>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{
+                    display: "inline",
+                    marginRight: "4px",
+                    verticalAlign: "text-bottom",
+                  }}
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>{" "}
+                No setup fees
+              </span>
               <span>•</span>
               <span>Real-time analytics</span>
               <span>•</span>
@@ -70,24 +89,28 @@ const SellerWelcome: React.FC = () => {
             <div className="welcome-stats-grid">
               <div className="welcome-stat">
                 <span className="welcome-stat-label">Today&apos;s revenue</span>
-                <span className="welcome-stat-value">$2,430</span>
-                <span className="welcome-stat-trend up">+18.4% vs yesterday</span>
+                <span className="welcome-stat-value">LKR 2,430.00</span>
+                <span className="welcome-stat-trend up">
+                  +18.4% vs yesterday
+                </span>
               </div>
               <div className="welcome-stat">
                 <span className="welcome-stat-label">Active listings</span>
                 <span className="welcome-stat-value">48</span>
-                <span className="welcome-stat-trend neutral">2 drafts pending</span>
+                <span className="welcome-stat-trend neutral">
+                  2 drafts pending
+                </span>
               </div>
             </div>
 
             <div className="welcome-chart">
               <div className="welcome-chart-bars">
-                <span style={{ height: '35%' }} />
-                <span style={{ height: '60%' }} />
-                <span style={{ height: '50%' }} />
-                <span style={{ height: '80%' }} />
-                <span style={{ height: '65%' }} />
-                <span style={{ height: '90%' }} />
+                <span style={{ height: "35%" }} />
+                <span style={{ height: "60%" }} />
+                <span style={{ height: "50%" }} />
+                <span style={{ height: "80%" }} />
+                <span style={{ height: "65%" }} />
+                <span style={{ height: "90%" }} />
               </div>
               <div className="welcome-chart-footer">
                 <span>This week</span>
@@ -101,8 +124,9 @@ const SellerWelcome: React.FC = () => {
           <div className="welcome-highlight">
             <h3>Beautiful product experiences</h3>
             <p>
-              Showcase your pieces with high-impact visuals and immersive previews
-              that help buyers imagine your products in their own spaces.
+              Showcase your pieces with high-impact visuals and immersive
+              previews that help buyers imagine your products in their own
+              spaces.
             </p>
           </div>
           <div className="welcome-highlight">
@@ -126,4 +150,3 @@ const SellerWelcome: React.FC = () => {
 };
 
 export default SellerWelcome;
-
