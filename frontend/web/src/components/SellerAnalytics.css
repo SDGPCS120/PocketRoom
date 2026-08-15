@@ -18,7 +18,15 @@
   align-items: flex-start;
 }
 
-.analytics-header p {
+.analytics-header-text h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.analytics-header-text p {
   max-width: 560px;
   font-size: 14px;
   color: #64748b;
