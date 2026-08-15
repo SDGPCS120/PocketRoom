@@ -133,12 +133,10 @@ const SellerAnalytics: React.FC = () => {
               <div className="analytics-card kpi">
                 <span className="kpi-label">Revenue</span>
                 <span className="kpi-value">
-                  {totalRevenue.toLocaleString("en-LK", {
-                    style: "currency",
-                    currency: "LKR",
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  {`Rs. ${totalRevenue.toLocaleString("en-US", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}`}
                 </span>
                 <span className="kpi-trend neutral">All time total</span>
               </div>
@@ -179,12 +177,10 @@ const SellerAnalytics: React.FC = () => {
                           style={{
                             height: `${Math.max(5, (rev / maxDailyRevenue) * 100)}%`,
                           }}
-                          title={rev.toLocaleString("en-LK", {
-                            style: "currency",
-                            currency: "LKR",
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
+                          title={`Rs. ${rev.toLocaleString("en-US", {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}`}
                         />
                       ))}
                     </div>
@@ -226,12 +222,10 @@ const SellerAnalytics: React.FC = () => {
                           <p>Popular choice</p>
                         </div>
                         <span className="product-metric">
-                          {p.rev.toLocaleString("en-LK", {
-                            style: "currency",
-                            currency: "LKR",
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
+                          {`Rs. ${p.rev.toLocaleString("en-US", {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}`}
                         </span>
                       </li>
                     ))}

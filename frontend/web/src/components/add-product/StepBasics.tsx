@@ -55,7 +55,7 @@ const StepBasics: React.FC<StepBasicsProps> = ({ form, errors, onChange }) => (
         </select>
       </FormField>
 
-      <FormField id="price" label="Price (LKR)" required error={errors.price}>
+      <FormField id="price" label="Price (Rs.)" required error={errors.price}>
         <input
           type="number"
           id="price"

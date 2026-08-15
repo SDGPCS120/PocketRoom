@@ -67,7 +67,7 @@ const StepReview: React.FC<StepReviewProps> = ({
             <div className="product-header-row">
               <span className="product-category">{form.furnitureType || '—'}</span>
               <span className="product-price">
-                LKR {form.price ? Number(form.price).toFixed(2) : '0.00'}
+                Rs. {form.price ? Math.round(Number(form.price)).toLocaleString('en-US') : '0'}
               </span>
             </div>
             <h3 className="product-name">{form.name || 'Untitled product'}</h3>
@@ -103,7 +103,7 @@ const StepReview: React.FC<StepReviewProps> = ({
               </div>
               <div>
                 <dt>Price</dt>
-                <dd>LKR {form.price ? Number(form.price).toFixed(2) : '—'}</dd>
+                <dd>Rs. {form.price ? Math.round(Number(form.price)).toLocaleString('en-US') : '—'}</dd>
               </div>
               <div>
                 <dt>Description</dt>

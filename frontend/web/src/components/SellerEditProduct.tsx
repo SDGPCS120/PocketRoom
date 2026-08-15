@@ -292,7 +292,7 @@ const SellerEditProduct: React.FC = () => {
                   </select>
                 </div>
                 <div className="form-group half">
-                  <label htmlFor="price">Price (LKR) *</label>
+                  <label htmlFor="price">Price (Rs.) *</label>
                   <input
                     type="number" id="price" name="price" min="0" step="0.01" required
                     value={formData.price} onChange={handleInputChange} placeholder="29999"

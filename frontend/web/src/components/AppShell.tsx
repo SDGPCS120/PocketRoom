@@ -103,7 +103,7 @@ const AppShell: React.FC<AppShellProps> = ({ children, pageTitle }) => {
         // Map top 4 recent orders to notifications
         const recentNotifs = orders.slice(0, 4).map((order: any) => ({
           id: order.id,
-          text: `New order #${order.id.slice(0, 6)} received for LKR ${order.totalAmount.toFixed(2)}`,
+          text: `New order #${order.id.slice(0, 6)} received for Rs. ${Math.round(order.totalAmount).toLocaleString('en-US')}`,
           time: timeAgo(order.createdAt),
           read: false, // In a real app, this would be tracked per user
         }));

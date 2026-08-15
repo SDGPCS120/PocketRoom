@@ -235,7 +235,7 @@ const SellerAddProduct: React.FC = () => {
                   </select>
                 </div>
                 <div className="form-group half">
-                  <label htmlFor="price">Price (LKR) *</label>
+                  <label htmlFor="price">Price (Rs.) *</label>
                   <input
                     type="number"
                     id="price"

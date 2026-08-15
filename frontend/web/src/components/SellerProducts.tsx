@@ -312,7 +312,7 @@ const SellerProducts: React.FC = () => {
                       <div className="product-header-row">
                         <span className="product-category">{product.furnitureType}</span>
                         <span className="product-price">
-                          LKR {Number(product.price).toFixed(2)}
+                          Rs. {Math.round(Number(product.price)).toLocaleString('en-US')}
                         </span>
                       </div>
                       <h3 className="product-name">{product.name}</h3>

@@ -131,7 +131,7 @@ const SellerDashboard: React.FC = () => {
             </div>
             <div className="kpi-body">
               <span className="kpi-label">Total Revenue</span>
-              <span className="kpi-value">{totalRevenue.toLocaleString('en-LK', { style: 'currency', currency: 'LKR', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="kpi-value">{`Rs. ${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}</span>
               <span className="kpi-change kpi-change--neutral">Based on all orders</span>
             </div>
           </div>
@@ -200,7 +200,7 @@ const SellerDashboard: React.FC = () => {
                         <td className="order-id">#{o.orderId.substring(0, 8).toUpperCase()}</td>
                         <td className="order-product">{o.items?.[0]?.productName || 'Multiple Items'}</td>
                         <td className="order-date">{new Date(o.createdAt).toLocaleDateString()}</td>
-                        <td className="order-amount">{(o.totalAmount || 0).toLocaleString('en-LK', { style: 'currency', currency: 'LKR', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td className="order-amount">{`Rs. ${(o.totalAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}</td>
                         <td>
                           <span className={`status-badge ${statusColor[o.orderStatus] || 'status--processing'}`}>
                             {o.orderStatus.replace('_', ' ')}

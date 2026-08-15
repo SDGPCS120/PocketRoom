@@ -89,7 +89,7 @@ const SellerWelcome: React.FC = () => {
             <div className="welcome-stats-grid">
               <div className="welcome-stat">
                 <span className="welcome-stat-label">Today&apos;s revenue</span>
-                <span className="welcome-stat-value">LKR 2,430.00</span>
+                <span className="welcome-stat-value">Rs. 2,430</span>
                 <span className="welcome-stat-trend up">
                   +18.4% vs yesterday
                 </span>
