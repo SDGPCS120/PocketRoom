@@ -109,12 +109,6 @@ const SellerAnalytics: React.FC = () => {
     <AppShell pageTitle="Analytics">
       <div className="analytics-page">
         <header className="analytics-header">
-          <div className="analytics-header-text">
-            <h2>Store Performance</h2>
-            <p>
-              Track your revenue, monitor order volume, and discover which items are driving the most sales.
-            </p>
-          </div>
           <div className="analytics-filters">
             <select defaultValue="all">
               <option value="all">All time</option>
