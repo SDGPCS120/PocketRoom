@@ -247,6 +247,24 @@
 }
 .qa-btn:hover .qa-icon { color: var(--color-primary); }
 
+.qa-btn.qa-btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  transform: none;
+}
+.qa-btn.qa-btn--disabled .qa-icon {
+  color: #94a3b8;
+}
+.qa-btn.qa-btn--disabled:hover {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  transform: none;
+}
+
 /* ══════════════════════════════════════════════
    Responsive
 ══════════════════════════════════════════════ */

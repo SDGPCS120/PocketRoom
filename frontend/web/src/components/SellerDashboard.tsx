@@ -127,7 +127,7 @@ const SellerDashboard: React.FC = () => {
         <div className="kpi-grid">
           <div className="kpi-card">
             <div className="kpi-icon kpi-icon--revenue">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3h12"/><path d="M6 8h12"/><path d="M6 13h8.5l-8.5 8"/><path d="M6 13h3"/><path d="M9 13c6.667 0 6.667-10 0-10"/></svg>
             </div>
             <div className="kpi-body">
               <span className="kpi-label">Total Revenue</span>
@@ -228,19 +228,19 @@ const SellerDashboard: React.FC = () => {
                 <span className="qa-icon"><ChartIcon /></span>
                 <span>View Analytics</span>
               </Link>
-              <button className="qa-btn">
+              <button className="qa-btn qa-btn--disabled" disabled title="Coming soon">
                 <span className="qa-icon"><TagIcon /></span>
                 <span>Manage Pricing</span>
               </button>
-              <button className="qa-btn">
+              <button className="qa-btn qa-btn--disabled" disabled title="Coming soon">
                 <span className="qa-icon"><TruckIcon /></span>
                 <span>Track Shipments</span>
               </button>
-              <button className="qa-btn">
+              <button className="qa-btn qa-btn--disabled" disabled title="Coming soon">
                 <span className="qa-icon"><MessageIcon /></span>
                 <span>Customer Messages</span>
               </button>
-              <button className="qa-btn">
+              <button className="qa-btn qa-btn--disabled" disabled title="Coming soon">
                 <span className="qa-icon"><SettingsIcon /></span>
                 <span>Store Settings</span>
               </button>
