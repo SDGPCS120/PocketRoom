@@ -35,12 +35,18 @@ The engine successfully boots on physical Android devices, requests permissions,
 | **Renderer Engine** | Handwritten OpenGL ES 2.0 (`BackgroundRenderer`, `CubeRenderer`) | Google Filament (`SurfaceView` integration) | Phase 3 |
 | **Object Management** | Single `pendingCubeConfig` / basic `placedCubes` list | Formal `ObjectRegistry` & `AnchorManager` with native UUIDs | Phase 2 |
 | **Tap Handling** | Raw `queuedTap` touch event in `ArManager` | Dedicated `GestureManager` with hit-test coordinate translation | Phase 2 / Phase 4 |
-| **Package Structure** | Embedded in Flutter app root (`lib/ar/`, `android/app/.../ar/`) | Standalone Flutter package (`packages/ar_engine/`) | Phase 10 |
+| **Package Structure** | Embedded in Flutter app root (`lib/ar/`, `android/app/.../ar/`) | Standard Flutter Plugin with `example/` test harness | Phase 1.5 (Immediate) |
 
 ---
 
-## 3. Active Roadmap Tasks (Phase 2)
+## 3. Active Roadmap Tasks
 
+### Immediate (Phase 1.5: Plugin Restructuring)
+- [ ] Convert repository to standard Flutter Plugin structure (`lib/`, `android/`, `ios/`, `example/`).
+- [ ] Move demo screen to `example/lib/main.dart` to serve as isolated local test runner.
+- [ ] Ensure `example` app compiles, tests, and deploys cleanly to devices.
+
+### Next (Phase 2: Object Placement & Registry)
 - [ ] Refactor `ArManager` to extract `AnchorManager` and `ObjectRegistry`.
 - [ ] Implement native UUID generation for placed objects and emit `objectPlaced(id, position)` to Flutter.
 - [ ] Add `removeObject(id)` and `clearObjects()` to Dart `ARSession` and native `ArMethodChannelHandler`.

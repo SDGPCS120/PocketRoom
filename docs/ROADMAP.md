@@ -33,6 +33,14 @@
   - Basic camera background feed & prototype cube rendering
 - **Status:** Completed & Verified.
 
+### Phase 1.5: Plugin Package Restructuring (Pre-Phase 2)
+- **Goal:** Establish the reusable Flutter Plugin package boundary early rather than deferring to Phase 10.
+- **Deliverables:**
+  - Convert project structure to standard Flutter Plugin format (`lib/`, `android/`, `ios/`).
+  - Move standalone demo screen into `example/lib/main.dart` for isolated local testing.
+  - Allows the existing e-commerce app to consume the engine via `path: ../cool_ar` at any stage without copying native code.
+- **Status:** In Progress.
+
 ### Phase 2: Object Placement (Current Focus)
 - **Goal:** Native anchor management and procedural object placement.
 - **Deliverables:**
@@ -83,9 +91,12 @@
 
 ### Phase 7: Collaboration (Multiplayer)
 - **Goal:** Shared AR sessions between multiple users in the same room.
+- **Two-Tier Architecture:**
+  - **Tier 1 (Spatial Alignment):** Google Cloud Anchors (or physical QR code/marker on floor) to align both devices to the exact same $(0,0,0)$ origin.
+  - **Tier 2 (Real-Time State Sync):** Real-time network transport (Local Wi-Fi / WebSockets / Firebase) streaming 60 FPS delta messages (`place`, `move`, `rotate`, `scale`, `delete`).
 - **Deliverables:**
-  - Server-authoritative state synchronization (avoiding premature CRDT complexity)
-  - Real-time delta updates: only send creation, deletion, transform, and selection changes
+  - Coordinate origin resolver (Cloud Anchors Android + iOS)
+  - Network sync adapter for lightweight JSON delta messages
   - Object ownership management (`ownerId`) for conflict resolution during concurrent manipulation
 
 ### Phase 8: Persistence
@@ -104,10 +115,9 @@
   - Image-Based Lighting (IBL) & HDR environment reflection probes
   - Distance-based Level of Detail (LOD)
 
-### Phase 10: Production Engine & Package Extraction
-- **Goal:** Extract engine into a standalone, reusable package (`ar_engine`).
+### Phase 10: Production Engine Polish & Release
+- **Goal:** Commercial release hardening and production telemetry.
 - **Deliverables:**
-  - Standalone package structure (`packages/ar_engine/`)
   - In-engine performance monitoring (FPS HUD, memory budget, tracking telemetry)
-  - Automated unit and integration test suite
-  - Developer documentation and example showcase app
+  - Automated unit and integration test suite in CI
+  - Public API documentation and comprehensive example showcase app
