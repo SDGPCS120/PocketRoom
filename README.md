@@ -68,11 +68,14 @@ The repository maintains an up-to-date, living documentation system:
 
 | Document | Purpose |
 |---|---|
+| [MD_FILE_GUIDE_FOR_HUMANS.md](MD_FILE_GUIDE_FOR_HUMANS.md) | **Guide for Humans:** Plain-English explanation of all documentation files and how teammates & AI agents collaborate. |
 | [docs/PRD.md](docs/PRD.md) | **Product Requirements Document:** Target audience, business goals, user journeys, functional & non-functional requirements. |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | **10-Phase Roadmap:** Master milestone sequence from initial session foundation to commercial release. |
 | [docs/STATE.md](docs/STATE.md) | **Current Implementation State:** Verified features, active technical debt, and immediate next tasks. |
+| [docs/HANDOFF.md](docs/HANDOFF.md) | **Teammate Handoff Log:** Live log of active workstreams and in-flight tasks between collaborators. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | **System Architecture:** Detailed topology diagrams, threading boundaries, and invariant rules. |
 | [docs/TESTING.md](docs/TESTING.md) | **Testing & QA Runbook:** The 4-tier testing pyramid, channel mocking guide, and physical device runbook. |
+| [docs/TEAMWORK.md](docs/TEAMWORK.md) | **Teamwork Guide:** Multi-developer and multi-agent collaboration practices. |
 | [docs/decisions/](docs/decisions/) | **Architecture Decision Records (ADRs):** Recorded justifications for major architectural forks. |
 | [AGENTS.md](AGENTS.md) | **AI Operating Instructions:** Strict operational guardrails for AI coding assistants working in this repository. |
 
