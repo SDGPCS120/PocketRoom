@@ -53,6 +53,8 @@ All AI coding agents operating in this repository must adhere to the following n
 Always consult these living project files:
 - [docs/ROADMAP.md](docs/ROADMAP.md): Master 10-phase plan and deliverable milestones.
 - [docs/STATE.md](docs/STATE.md): Active implementation state, verified features, and known technical debt.
+- [docs/HANDOFF.md](docs/HANDOFF.md): Live multi-developer handoff log (must read on session start and update on session end).
+- [docs/TEAMWORK.md](docs/TEAMWORK.md): Multi-developer and multi-agent collaboration guidelines.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): System topology, threading boundaries, and invariants.
 - [docs/TESTING.md](docs/TESTING.md): Testing pyramid, channel mocking, and physical device runbook.
 
