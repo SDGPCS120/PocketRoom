@@ -48,7 +48,26 @@ All AI coding agents operating in this repository must adhere to the following n
 
 ---
 
-## 4. Source of Truth Documentation
+## 4. Multi-Agent & Multi-Developer Coordination Rules
+
+Because multiple developers and AI agents collaborate on this repository simultaneously, all agents MUST follow this automatic protocol:
+
+1. **Automatic Session-Start Protocol:**
+   - On the very first turn of any task, the agent MUST read [docs/HANDOFF.md](docs/HANDOFF.md) and [docs/STATE.md](docs/STATE.md).
+   - Check the **Active Workstreams** table in `HANDOFF.md` to identify what the other developer is currently building.
+   - NEVER modify or refactor files currently owned by the other developer.
+2. **Contract-First Platform Channels:**
+   - If a feature requires a new MethodChannel call or event, the agent MUST document the method name, argument map, and return type in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and [docs/HANDOFF.md](docs/HANDOFF.md) before writing code.
+3. **Automatic Session-End Protocol:**
+   - At the conclusion of any feature, bug fix, or session, the agent MUST update:
+     - [docs/STATE.md](docs/STATE.md) (verified capabilities, open debt).
+     - [docs/HANDOFF.md](docs/HANDOFF.md) (what was finished, what is in-flight, notes for the other developer/agent).
+4. **Surgical Diffs Only:**
+   - Absolutely no reformatting, cosmetic cleanup, or method reordering of files outside the direct scope of the assigned task.
+
+---
+
+## 5. Source of Truth Documentation
 
 Always consult these living project files:
 - [docs/ROADMAP.md](docs/ROADMAP.md): Master 10-phase plan and deliverable milestones.
@@ -60,7 +79,7 @@ Always consult these living project files:
 
 ---
 
-## 5. Standard Verification Commands
+## 6. Standard Verification Commands
 
 Before concluding any implementation task, run and verify:
 ```bash

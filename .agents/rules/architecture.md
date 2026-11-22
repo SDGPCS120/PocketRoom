@@ -27,3 +27,8 @@ These rules apply to all AI agents and contributors working in this repository.
 ## Rule 5: Phase Discipline
 - Do not implement future phase features prematurely (e.g., do not add GLB loading in Phase 2; do not add collaboration in Phase 3).
 - Always consult `docs/ROADMAP.md` and verify against `docs/STATE.md`.
+
+## Rule 6: Multi-Agent Synchronization & Handoff
+- Always consult `docs/HANDOFF.md` before proposing or editing files to verify the other developer's active workstream.
+- Never edit files currently assigned to the other developer in `docs/HANDOFF.md`.
+- Update `docs/HANDOFF.md` and `docs/STATE.md` at the conclusion of every session or feature milestone.
