@@ -41,7 +41,7 @@ void main() {
 
       expect(products.length, 1);
       expect(products.first.name, 'Mini Table');
-      expect(products.first.price, isNaN); 
+      expect(products.first.price, 0.0);
     });
 
   });
