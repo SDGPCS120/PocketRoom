@@ -59,6 +59,16 @@ class CartNotifier extends Notifier<List<CartItem>> {
     unawaited(_persistCartForSignedInUser());
   }
 
+  void removePurchasedItems(Map<String, int> quantities) {
+    final remaining = <CartItem>[];
+    for (final item in state) {
+      final count = item.quantity - (quantities[item.furniture.id] ?? 0);
+      if (count > 0) remaining.add(item.copyWith(quantity: count));
+    }
+    state = remaining;
+    unawaited(_persistCartForSignedInUser());
+  }
+
   void incrementQuantity(String furnitureId) {
     final index = state.indexWhere((item) => item.furniture.id == furnitureId);
     if (index != -1) {

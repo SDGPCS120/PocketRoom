@@ -1,11 +1,10 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
+  Req,
+  UseGuards,
   UseInterceptors,
   UploadedFile,
   HttpCode,
@@ -13,18 +12,21 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { GenerationsService } from './generations.service';
+import { GenerationsService, type GenerationImage } from './generations.service';
 import { GenerateModelDto } from './dto/generate-model.dto';
+import { FirebaseAuthGuard } from '../../../modules/auth/guards/firebase-auth.guard';
+import type { AuthenticatedRequest } from '../../../modules/auth/types/authenticated-request';
 
 @Controller('model-generation')
 export class GenerationsController {
   constructor(private readonly generationsService: GenerationsService) {}
 
   /**
-   * POST /products/:id/generate
+   * POST /model-generation/:id/generate
    * Accepts an image file and dimensions to generate a 3D model
    */
   @Post(':id/generate')
+  @UseGuards(FirebaseAuthGuard)
   @HttpCode(HttpStatus.ACCEPTED)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -44,7 +46,8 @@ export class GenerationsController {
   )
   async generateModel(
     @Param('id') id: string,
-    @UploadedFile() file: any,
+    @Req() request: AuthenticatedRequest,
+    @UploadedFile() file: GenerationImage | undefined,
     @Body() dimensions: GenerateModelDto,
   ) {
     if (!file) {
@@ -58,6 +61,6 @@ export class GenerationsController {
       z: Number(dimensions.z),
     };
 
-    return this.generationsService.generateModel(id, file, parsedDimensions);
+    return this.generationsService.generateModel(id, request.user, file, parsedDimensions);
   }
 }

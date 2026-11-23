@@ -37,7 +37,7 @@ backend/
 ## Setup Instructions
 
 ### Environment Setup
-1. Place your Firebase service-account.json and google-services.json securely at the root of the backend folder.
+1. Configure Firebase Admin with Application Default Credentials. On Cloud Run, use the service's attached identity. For local development, use local ADC or set `GOOGLE_APPLICATION_CREDENTIALS` to a credential file outside the repository. The server also accepts an external path via `FIREBASE_SERVICE_ACCOUNT_PATH`.
 2. Initialize environment variables via a .env file as outlined in .env.example.
 
 ### Installation and Running
@@ -66,3 +66,21 @@ npm run start:prod
 
 ## API Overview
 Once the server is running on the default local port, explore the complete live documentation via Swagger UI. Common domains include `/search`, `/products`, `/orders`, and `/users`.
+
+## Sandbox checkout and administration
+
+Use a sandbox Firebase project for checkout. Set `PAYHERE_MODE=sandbox`, the
+sandbox merchant ID, a fresh merchant secret, and the public HTTPS backend origin
+using the deployment's secret configuration. Register that origin with PayHere.
+PayHere must be able to reach `POST /payments/notify`. Configure no production
+keys for this flow. [PayHere Checkout API](https://support.payhere.lk/api-%26-mobile-sdk/checkout-api)
+
+Only Firebase accounts with the server-issued boolean custom claim `admin` have
+administrator access. Assign the claim to confirmed administrators via the
+Firebase Admin SDK, preserving their other custom claims, and have them refresh
+their ID tokens. Firestore profile roles do not grant administrator access.
+
+New orders use catalog prices and own one fulfillment per store. Existing
+orders remain visible to their customers and administrators. Review their store
+assignments and payment evidence before creating seller fulfillments or taking
+action based on an old payment status.

@@ -4,23 +4,31 @@ import axios from 'axios';
 import { Logger } from '@nestjs/common';
 import { FirebaseService } from '../../../firebase/firebase.service.js';
 import { optimizeGLB } from './utils/optimization.util';
+import { GenerationOwnershipService, type GenerationRequest } from './generation-ownership.service';
 
-interface GenerationJobData {
-  productId: string;
+interface GenerationJobData extends GenerationRequest {
   imageUrl: string;
-  dimensions?: any;
 }
 
 @Processor('generation-queue')
 export class GenerationProcessor extends WorkerHost {
   private readonly logger = new Logger(GenerationProcessor.name);
 
-  constructor(private readonly firebaseService: FirebaseService) {
+  constructor(
+    private readonly firebaseService: FirebaseService,
+    private readonly ownership: GenerationOwnershipService,
+  ) {
     super();
   }
 
   async process(job: Job<GenerationJobData, any, string>): Promise<any> {
     const { productId, imageUrl } = job.data;
+    const { requestId, sellerId } = job.data;
+    // Jobs queued before authorization was introduced cannot establish ownership.
+    if (typeof sellerId !== 'string' || !sellerId || typeof requestId !== 'string' || !requestId
+        || !await this.ownership.updateCurrent(job.data)) {
+      return { success: false, skipped: true };
+    }
     const apiKey = process.env.TRIPO_API_KEY;
 
     this.logger.log(`[Tripo] Starting Job ${job.id} for Product ${productId}`);
@@ -33,7 +41,7 @@ export class GenerationProcessor extends WorkerHost {
       // ---------------------------------------------------------
       // 1. START GENERATION TASK
       // ---------------------------------------------------------
-      this.logger.log(`[Tripo] Step 1: Sending Image: ${imageUrl}`);
+      this.logger.log('[Tripo] Step 1: Sending source image');
 
       const extension =
         imageUrl.split(/[#?]/)[0].split('.').pop()?.toLowerCase() || 'jpg';
@@ -52,8 +60,6 @@ export class GenerationProcessor extends WorkerHost {
         },
         model_version: 'v1.4-20240625',
       };
-
-      this.logger.log(`[Tripo] Image URL being sent: ${imageUrl}`);
 
       const startResponse = await axios.post(
         'https://api.tripo3d.ai/v2/openapi/task',
@@ -108,9 +114,12 @@ export class GenerationProcessor extends WorkerHost {
       // 4. UPLOAD TO FIREBASE & UPDATE DB
       // ---------------------------------------------------------
       this.logger.log('[Processor] Step 4: Saving to Firebase...');
+      if (!await this.ownership.updateCurrent(job.data)) {
+        return { success: false, skipped: true };
+      }
       const storage = this.firebaseService.storage;
       const bucket = storage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
-      const filename = `3DModel/${productId}_${Date.now()}.glb`;
+      const filename = `3DModel/${productId}_${requestId}.glb`;
       const file = bucket.file(filename);
 
       await file.save(optimizedBuffer, {
@@ -120,12 +129,15 @@ export class GenerationProcessor extends WorkerHost {
 
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
 
-      const db = this.firebaseService.firestore;
-      await db.collection('products').doc(productId).update({
+      const published = await this.ownership.updateCurrent(job.data, {
         modelStatus: 'completed',
         modelURL: publicUrl,
         updatedAt: new Date(),
       });
+      if (!published) {
+        await file.delete({ ignoreNotFound: true });
+        return { success: false, skipped: true };
+      }
 
       this.logger.log(`[Processor] Job Finished. URL: ${publicUrl}`);
       return { success: true, url: publicUrl };
@@ -135,8 +147,7 @@ export class GenerationProcessor extends WorkerHost {
         : error.message;
       this.logger.error(`[Processor] FAILED:`, errorMessage);
 
-      const db = this.firebaseService.firestore;
-      await db.collection('products').doc(productId).update({
+      await this.ownership.updateCurrent(job.data, {
         modelStatus: 'failed',
         modelError: errorMessage,
         updatedAt: new Date(),

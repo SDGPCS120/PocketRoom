@@ -1,3 +1,6 @@
+import { BadRequestException } from '@nestjs/common';
+import { budgetStateCount, MAX_BUDGET_CATEGORIES } from './budget-limits';
+
 export type Candidate = {
   category: string;
   product: any;
@@ -12,8 +15,11 @@ export function mckp(
   totalBudget: number,
   step: number,
 ): { ok: boolean; picks: Candidate[]; totalCost: number } {
-  const B = Math.floor(totalBudget / step);
+  const B = budgetStateCount(totalBudget, step) - 1;
   const n = requiredOrder.length;
+  if (n > MAX_BUDGET_CATEGORIES) {
+    throw new BadRequestException('Too many required furniture categories');
+  }
 
   const NEG = -1e15;
   let dp = new Array<number>(B + 1).fill(NEG);

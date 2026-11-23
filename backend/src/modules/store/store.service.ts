@@ -23,7 +23,7 @@ export class StoreService {
             createdAt: new Date(),
         };
 
-        await docRef.set(data);
+        await docRef.create(data);
 
         return data;
     }

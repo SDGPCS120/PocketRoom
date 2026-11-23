@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../../core/theme/app_theme.dart';
+
+import '../data/models/cart_item.dart';
 import 'providers/cart_provider.dart';
 import 'widgets/cart_app_bar.dart';
 import 'widgets/cart_item_card.dart';
@@ -9,11 +10,145 @@ import 'widgets/cart_summary_bottom_bar.dart';
 import '../../../core/services/api_client.dart';
 import '../../../core/services/payment_service.dart';
 
-class CartPage extends ConsumerWidget {
+class CartPage extends ConsumerStatefulWidget {
   const CartPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends ConsumerState<CartPage> {
+  bool _checkoutBusy = false;
+
+  void _message(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  Future<void> _checkout(List<CartItem> cartItems) async {
+    if (_checkoutBusy || cartItems.isEmpty) return;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.isAnonymous) {
+      _message('Sign in to check out.');
+      return;
+    }
+
+    _checkoutBusy = true;
+    final apiClient = ref.read(apiClientProvider);
+    final paymentService = ref.read(paymentServiceProvider);
+    try {
+      var pending = paymentService.pendingCheckouts[user.uid];
+      if (pending == null) {
+        final addresses = await apiClient.get(
+          '/addresses',
+          queryParameters: {'isDefault': 'true'},
+        );
+        final envelope = addresses.data as Map<String, dynamic>;
+        final rows = envelope['data'] as List<dynamic>;
+        final addressId = rows.isEmpty
+            ? 'mock-address'
+            : (rows.first as Map<String, dynamic>)['id'] as String;
+        if (!mounted || FirebaseAuth.instance.currentUser?.uid != user.uid) {
+          return;
+        }
+        final orderResponse = await apiClient.post(
+          '/orders',
+          data: {
+            'shippingAddressId': addressId,
+            'billingAddressId': addressId,
+            'items': cartItems
+                .map(
+                  (item) => {
+                    'productId': item.furniture.id,
+                    'productName': item.furniture.name,
+                    'quantity': item.quantity,
+                    'unitPrice': item.furniture.price,
+                  },
+                )
+                .toList(),
+            'currency': 'LKR',
+          },
+        );
+        final orderEnvelope = orderResponse.data as Map<String, dynamic>;
+        final order = orderEnvelope['data'] as Map<String, dynamic>;
+        pending = PendingCheckout(order['orderId'] as String, {
+          for (final item in cartItems) item.furniture.id: item.quantity,
+        });
+        paymentService.pendingCheckouts[user.uid] = pending;
+      }
+
+      final status = await paymentService.paymentStatus(pending.orderId);
+      if (!mounted || FirebaseAuth.instance.currentUser?.uid != user.uid) {
+        return;
+      }
+      if (status == 'SUCCESS') {
+        paymentService.pendingCheckouts.remove(user.uid);
+        ref
+            .read(cartProvider.notifier)
+            .removePurchasedItems(pending.quantities);
+        _message('Payment verified. Your order is confirmed.');
+        return;
+      }
+      if (status == 'FAILED' || status == 'CANCELLED') {
+        paymentService.pendingCheckouts.remove(user.uid);
+        _message('Payment did not complete. Your cart is ready to try again.');
+        return;
+      }
+      final url = await paymentService.prepareCheckout(pending.orderId);
+      if (!mounted || FirebaseAuth.instance.currentUser?.uid != user.uid) {
+        return;
+      }
+      if (url == null) {
+        _message(
+          'Payment is pending. Return here and tap Checkout to check its status.',
+        );
+        return;
+      }
+      final opened = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('PayHere sandbox checkout'),
+          content: const Text(
+            'Complete payment in your browser, then return here to check its status.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Back'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                try {
+                  await paymentService.openCheckout(url);
+                  if (dialogContext.mounted) {
+                    Navigator.of(dialogContext).pop(true);
+                  }
+                } catch (_) {
+                  if (dialogContext.mounted) {
+                    Navigator.of(dialogContext).pop(false);
+                  }
+                  _message('Unable to open the checkout link. Try again.');
+                }
+              },
+              child: const Text('Open PayHere'),
+            ),
+          ],
+        ),
+      );
+      if (opened == true) {
+        _message('Tap Checkout again after returning from PayHere.');
+      }
+    } catch (_) {
+      _message('Checkout is unavailable. Your cart has been kept.');
+    } finally {
+      _checkoutBusy = false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final cartItems = ref.watch(cartProvider);
     final totalPrice = ref.read(cartProvider.notifier).totalPrice;
     final colorScheme = Theme.of(context).colorScheme;
@@ -58,118 +193,7 @@ class CartPage extends ConsumerWidget {
                 ),
                 CartSummaryBottomBar(
                   totalPrice: totalPrice,
-                  onCheckout: () async {
-                    if (cartItems.isEmpty) return;
-
-                    // Ensure user is logged in
-                    final currentUser = FirebaseAuth.instance.currentUser;
-                    if (currentUser == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('You must be logged in to checkout.'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                      return;
-                    }
-
-                    // Show loading
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (_) => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-
-                    try {
-                      final apiClient = ref.read(apiClientProvider);
-                      final paymentService = ref.read(paymentServiceProvider);
-
-                      // ── Step 1: Create Order ───────────────────────────────
-                      // shippingAddressId is a plain string—no FK validation.
-                      // Using 'mock-address' so checkout works without a saved address.
-                      final orderResponse = await apiClient.post('/orders', data: {
-                        'shippingAddressId': 'mock-address',
-                        'billingAddressId': 'mock-address',
-                        'items': cartItems.map((item) => {
-                              'productId': item.furniture.id,
-                              'productName': item.furniture.name,
-                              'quantity': item.quantity,
-                              'unitPrice': item.furniture.price,
-                              'itemTotal': item.furniture.price * item.quantity,
-                            }).toList(),
-                        'totalAmount': totalPrice,
-                        'currency': 'LKR',
-                      });
-
-                      // Unwrap { success, data, meta } envelope
-                      final orderEnvelope =
-                          orderResponse.data as Map<String, dynamic>?;
-                      final orderData =
-                          orderEnvelope?['data'] as Map<String, dynamic>?;
-                      final orderId = orderData?['orderId'] as String?;
-
-                      if (orderId == null || orderId.isEmpty) {
-                        throw Exception(
-                            'Order was created but no orderId was returned.');
-                      }
-
-                      // ── Step 2: Launch PayHere sandbox payment ─────────────
-                      // Hash is generated locally in payment_service.dart —
-                      // no call to the backend /payments/create endpoint needed.
-                      final success = await paymentService.startPayment(
-                        orderId,
-                        amount: totalPrice,
-                        currency: 'LKR',
-                      );
-
-                      // Dismiss loading
-                      if (context.mounted) Navigator.of(context).pop();
-
-                      if (success) {
-                        // Clear the cart after successful payment
-                        final itemIds =
-                            cartItems.map((i) => i.furniture.id).toList();
-                        for (final id in itemIds) {
-                          ref.read(cartProvider.notifier).removeItem(id);
-                        }
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('🎉 Payment Successful! Order Confirmed.'),
-                              backgroundColor: Colors.green,
-                              duration: Duration(seconds: 3),
-                            ),
-                          );
-                        }
-                      } else {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  'Payment cancelled or failed. Your cart is unchanged.'),
-                              backgroundColor: Colors.orange,
-                            ),
-                          );
-                        }
-                      }
-                    } catch (e) {
-                      if (context.mounted) {
-                        if (Navigator.of(context).canPop()) {
-                          Navigator.of(context).pop();
-                        }
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Checkout error: $e'),
-                            backgroundColor: Colors.red,
-                            duration: const Duration(seconds: 5),
-                          ),
-                        );
-                      }
-                    }
-                  },
+                  onCheckout: () => _checkout(cartItems),
                 ),
               ],
             ),

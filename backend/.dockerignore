@@ -6,6 +6,8 @@ Dockerfile
 npm-debug.log
 .env
 .env.*
+**/service-account.json
+**/*-firebase-adminsdk-*.json
 coverage
 .idea
 .vscode

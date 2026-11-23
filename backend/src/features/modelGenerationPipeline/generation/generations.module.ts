@@ -4,6 +4,7 @@ import { GenerationsController } from './generations.controller';
 import { FirebaseModule } from '../../../firebase/firebase.module';
 import { BullModule } from '@nestjs/bullmq';
 import { GenerationProcessor } from './generation.processor';
+import { GenerationOwnershipService } from './generation-ownership.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { GenerationProcessor } from './generation.processor';
     }),
   ],
   controllers: [GenerationsController],
-  providers: [GenerationsService, GenerationProcessor],
+  providers: [GenerationsService, GenerationProcessor, GenerationOwnershipService],
 })
 export class ModelGenerationModule {}

@@ -1,10 +1,9 @@
 import * as admin from 'firebase-admin';
 import { products } from '../scripts/data/products.seed';
-import * as serviceAccount from '../service-account.json';
 
 if (!admin.apps.length) {
     admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+        credential: admin.credential.applicationDefault(),
     });
 }
 

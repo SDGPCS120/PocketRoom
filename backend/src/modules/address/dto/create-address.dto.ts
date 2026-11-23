@@ -6,9 +6,11 @@ export enum AddressType {
 
 
 export class CreateAddressDto {
+  // Retained for existing clients. Ownership is derived from the verified token.
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  userId!: string;
+  userId?: string;
 
   @IsString()
   @IsNotEmpty()

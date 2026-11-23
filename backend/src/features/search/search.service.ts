@@ -13,6 +13,7 @@ export class SearchService implements OnModuleInit {
     private products: any[] = [];
     private docs: string[] = [];
     private tfidf = new TfIdf();
+    private rebuildInProgress?: Promise<void>;
 
     private readonly STOP_WORDS = new Set([
         'i',
@@ -71,14 +72,23 @@ export class SearchService implements OnModuleInit {
         }
     }
 
-    async rebuildSearchIndex() {
-        this.products = await this.productLoader.loadProductsFromFirestore();
-        this.docs = this.products.map((p) => this.getProductDoc(p));
+    rebuildSearchIndex(): Promise<void> {
+        this.rebuildInProgress ??= this.loadSearchIndex().finally(() => {
+            this.rebuildInProgress = undefined;
+        });
+        return this.rebuildInProgress;
+    }
 
-        this.tfidf = new TfIdf();
-        this.docs.forEach((doc) => this.tfidf.addDocument(doc));
+    private async loadSearchIndex(): Promise<void> {
+        const products = await this.productLoader.loadProductsFromFirestore();
+        const docs = products.map((product) => this.getProductDoc(product));
+        const tfidf = new TfIdf();
+        docs.forEach((doc) => tfidf.addDocument(doc));
 
-        this.logger.log(`Loaded ${this.products.length} products from Firestore`);
+        this.products = products;
+        this.docs = docs;
+        this.tfidf = tfidf;
+        this.logger.log(`Loaded ${products.length} products from Firestore`);
     }
 
     private getProductDoc(p: any): string {

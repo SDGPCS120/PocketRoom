@@ -3,6 +3,10 @@ export interface EnvironmentVariables {
   NODE_ENV: string;
   FIREBASE_SERVICE_ACCOUNT_PATH?: string;
   FIREBASE_STORAGE_BUCKET?: string;
+  PAYHERE_MODE?: string;
+  PAYHERE_MERCHANT_ID?: string;
+  PAYHERE_MERCHANT_SECRET?: string;
+  PAYHERE_PUBLIC_BASE_URL?: string;
 }
 
 export function validate(
@@ -23,5 +27,9 @@ export function validate(
       | string
       | undefined,
     FIREBASE_STORAGE_BUCKET: config.FIREBASE_STORAGE_BUCKET as string | undefined,
+    PAYHERE_MODE: config.PAYHERE_MODE as string | undefined,
+    PAYHERE_MERCHANT_ID: config.PAYHERE_MERCHANT_ID as string | undefined,
+    PAYHERE_MERCHANT_SECRET: config.PAYHERE_MERCHANT_SECRET as string | undefined,
+    PAYHERE_PUBLIC_BASE_URL: config.PAYHERE_PUBLIC_BASE_URL as string | undefined,
   };
 }

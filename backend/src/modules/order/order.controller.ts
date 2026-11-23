@@ -1,26 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import { Request } from 'express';
-import { OrderService } from './order.service';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { FirebaseAuthGuard } from '../auth/guards/firebase-auth.guard';
+import type { AuthenticatedRequest } from '../auth/types/authenticated-request';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { UpdateOrderFulfillmentDto } from './dto/update-order-fulfillment.dto';
-import { FirebaseAuthGuard } from '../auth/guards/firebase-auth.guard';
-
-type AuthenticatedRequest = Request & {
-  user: {
-    uid: string;
-  };
-};
+import { OrderService } from './order.service';
 
 @UseGuards(FirebaseAuthGuard)
 @Controller('orders')
@@ -29,46 +13,45 @@ export class OrderController {
 
   @Post()
   createOrder(@Req() req: AuthenticatedRequest, @Body() dto: CreateOrderDto) {
-    const userId = req.user.uid;
-    return this.orderService.createOrder(userId, dto);
+    return this.orderService.createOrder(req.user, dto);
   }
 
   @Get('my-orders')
   getUserOrders(@Req() req: AuthenticatedRequest) {
-    const userId = req.user.uid;
-    return this.orderService.getUserOrders(userId);
+    return this.orderService.getUserOrders(req.user);
   }
 
   @Get('store/:storeId')
-  getOrdersByStore(@Param('storeId') storeId: string) {
-    return this.orderService.getOrdersByStore(storeId);
+  getOrdersByStore(@Req() req: AuthenticatedRequest, @Param('storeId') storeId: string) {
+    return this.orderService.getOrdersByStore(req.user, storeId);
   }
 
   @Get()
-  getAllOrders() {
-    return this.orderService.getAllOrders();
+  getAllOrders(@Req() req: AuthenticatedRequest) {
+    return this.orderService.getAllOrders(req.user);
   }
 
   @Get(':orderId')
-  getOrderById(@Param('orderId') orderId: string) {
-    return this.orderService.getOrderById(orderId);
+  getOrderById(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string) {
+    return this.orderService.getOrderById(req.user, orderId);
   }
 
   @Patch(':orderId')
-  updateOrder(@Param('orderId') orderId: string, @Body() dto: UpdateOrderDto) {
-    return this.orderService.updateOrder(orderId, dto);
+  updateOrder(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string, @Body() dto: UpdateOrderDto) {
+    return this.orderService.updateOrder(req.user, orderId, dto);
   }
 
   @Patch(':orderId/fulfillment')
   updateOrderFulfillment(
-    @Param('orderId') orderId: string,
+    @Req() req: AuthenticatedRequest,
+    @Param('orderId') fulfillmentId: string,
     @Body() dto: UpdateOrderFulfillmentDto,
   ) {
-    return this.orderService.updateOrderFulfillment(orderId, dto);
+    return this.orderService.updateOrderFulfillment(req.user, fulfillmentId, dto);
   }
 
   @Delete(':orderId')
-  deleteOrder(@Param('orderId') orderId: string) {
-    return this.orderService.deleteOrder(orderId);
+  deleteOrder(@Req() req: AuthenticatedRequest, @Param('orderId') orderId: string) {
+    return this.orderService.cancelOrder(req.user, orderId);
   }
 }

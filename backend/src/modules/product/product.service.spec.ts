@@ -18,6 +18,7 @@ describe('ProductService', () => {
     mockDoc = {
       id: 'mock-id',
       get: jest.fn(),
+      create: jest.fn(),
       set: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -91,7 +92,7 @@ describe('ProductService', () => {
       const result = await service.createProduct(storeId, sellerId, dto);
 
       expect(result.productId).toBe('new-prod-id');
-      expect(mockDoc.set).toHaveBeenCalled();
+      expect(mockDoc.create).toHaveBeenCalled();
     });
 
     it('should serialize dimensions into a plain object before saving', async () => {
@@ -103,7 +104,7 @@ describe('ProductService', () => {
         dimensions: { width: 80, height: 95, length: 75 } as any,
       });
 
-      expect(mockDoc.set).toHaveBeenCalledWith(
+      expect(mockDoc.create).toHaveBeenCalledWith(
         expect.objectContaining({
           dimensions: { width: 80, height: 95, length: 75 },
         }),

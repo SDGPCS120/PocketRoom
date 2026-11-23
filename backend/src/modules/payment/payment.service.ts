@@ -1,260 +1,177 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { generateMeaningfulId } from '../../common/utils/generate-id.util';
+import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { FirebaseService } from '../../firebase/firebase.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import {
-  PaymentStatus,
-  UpdatePaymentStatusDto,
-} from './dto/update-payment-status.dto';
+import type { AuthUser } from '../auth/types/auth-user.type';
+import { isAdministrator, requireAdministrator } from '../auth/types/authenticated-request';
 import { OrderStatus } from '../order/dto/create-order.dto';
-import * as crypto from 'crypto';
+import { authenticatedUid, CATALOG_PRICING, FULFILLMENTS_COLLECTION, requireCustomer, requireDocumentId } from '../order/order-access';
+import { PaymentStatus } from './dto/update-payment-status.dto';
+import { checkoutPage, checkoutTokenHash, parseNotification, payHereConfig } from './payhere-checkout';
+
+const CHECKOUT_LINK_TTL_MS = 15 * 60 * 1000;
 
 @Injectable()
 export class PaymentService {
-  private readonly MERCHANT_ID = '4OVybzavqDY4JH5Ex7E22E3PM';
-  private readonly APP_SECRET = '8RiWi2kyWOY49Y1ZRVq2sP4OfEWgFMnh44aBQAfI5uHB';
-  private readonly NOTIFY_URL = 'https://pocketroom-backend-93470454666.asia-south1.run.app/payments/notify';
-
   constructor(private readonly firebase: FirebaseService) {}
 
-  private paymentCollection() {
-    return this.firebase.firestore.collection('payments');
+  private get firestore() { return this.firebase.firestore; }
+  private payments() { return this.firestore.collection('payments'); }
+  private orders() { return this.firestore.collection('orders'); }
+
+  private paymentView(data: FirebaseFirestore.DocumentData) {
+    const { paymentId, orderId, amount, currency, paymentMethod, paymentStatus, settlementSource,
+      merchantMode, paidAt, createdAt, updatedAt, chargebackAt } = data;
+    const verified = settlementSource === 'payhere-notify';
+    return { paymentId, orderId, amount, currency, paymentMethod,
+      paymentStatus: paymentStatus === PaymentStatus.SUCCESS && !verified ? 'UNVERIFIED' : paymentStatus,
+      merchantMode, paidAt: verified ? paidAt : null, createdAt, updatedAt, chargebackAt };
   }
 
-  private orderCollection() {
-    return this.firebase.firestore.collection('orders');
-  }
-
-  private generatePayHereHash(orderId: string, amount: number, currency: string): string {
-    const hashedSecret = crypto
-      .createHash('md5')
-      .update(this.APP_SECRET)
-      .digest('hex')
-      .toUpperCase();
-    
-    // Amount must be formatted to 2 decimal places for PayHere hash
-    const amountFormatted = amount.toFixed(2);
-    
-    const mainHashString = 
-      this.MERCHANT_ID + 
-      orderId + 
-      amountFormatted + 
-      currency + 
-      hashedSecret;
-    
-    return crypto
-      .createHash('md5')
-      .update(mainHashString)
-      .digest('hex')
-      .toUpperCase();
-  }
-
-  async createPayment(userId: string, dto: CreatePaymentDto) {
-    const orderDoc = await this.orderCollection().doc(dto.orderId).get();
-
-    if (!orderDoc.exists) {
-      throw new NotFoundException('Order not found');
-    }
-
-    const orderData = orderDoc.data()!;
-    const amount = dto.amount ?? orderData.totalAmount;
-    const currency = dto.currency ?? orderData.currency ?? 'LKR';
-
-    if (amount === undefined || amount === null || isNaN(Number(amount))) {
-      throw new InternalServerErrorException(
-        `Order ${dto.orderId} has no totalAmount. Cannot create payment.`,
-      );
-    }
-
-    const customId = generateMeaningfulId('payment-' + Date.now());
-    const docRef = this.paymentCollection().doc(customId);
-
-    const hash = this.generatePayHereHash(dto.orderId, amount, currency);
-
-    const paymentData = {
-      paymentId: docRef.id,
-      orderId: dto.orderId,
-      customerId: userId,
-      amount: amount,
-      currency: currency,
-      paymentMethod: dto.paymentMethod ?? 'PAYHERE',
-      paymentStatus: PaymentStatus.PENDING,
-      transactionReference: null,
-      paidAt: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    try {
-      await docRef.set(paymentData);
-      
-      // Return PayHere specific object format for mobile SDK
-      return {
-        merchant_id: this.MERCHANT_ID,
-        order_id: dto.orderId,
-        amount: amount,
-        currency: currency,
-        hash: hash,
-        // PayHere requires non-empty strings — use order data with hardcoded fallbacks
-        first_name: orderData.firstName ?? orderData.customerName ?? 'PocketRoom',
-        last_name: orderData.lastName ?? 'Customer',
-        email: orderData.email ?? 'orders@pocketroom.app',
-        phone: orderData.phone ?? '0771234567',
-        notify_url: this.NOTIFY_URL,
-        items: `Order ${dto.orderId}`,
-      };
-    } catch (error) {
-      console.error('[PaymentService] Create Payment Error:', error);
-      throw new InternalServerErrorException('Failed to create payment');
-    }
-  }
-
-  async getAllPayments() {
-    const snapshot = await this.paymentCollection()
-      .orderBy('createdAt', 'desc')
-      .get();
-
-    return snapshot.docs.map((doc) => doc.data());
-  }
-
-  async getPaymentById(paymentId: string) {
-    const doc = await this.paymentCollection().doc(paymentId).get();
-
-    if (!doc.exists) {
-      throw new NotFoundException('Payment not found');
-    }
-
-    return doc.data();
-  }
-
-  async getPaymentsByUser(userId: string) {
-    const snapshot = await this.paymentCollection()
-      .where('customerId', '==', userId)
-      .orderBy('createdAt', 'desc')
-      .get();
-
-    return snapshot.docs.map((doc) => doc.data());
-  }
-
-  async getPaymentByOrderId(orderId: string) {
-    const snapshot = await this.paymentCollection()
-      .where('orderId', '==', orderId)
-      .limit(1)
-      .get();
-
-    if (snapshot.empty) {
-      throw new NotFoundException('Payment not found for this order');
-    }
-
-    return snapshot.docs[0].data();
-  }
-
-  async updatePaymentStatus(paymentId: string, dto: UpdatePaymentStatusDto) {
-    const paymentRef = this.paymentCollection().doc(paymentId);
-    const paymentDoc = await paymentRef.get();
-
-    if (!paymentDoc.exists) {
-      throw new NotFoundException('Payment not found');
-    }
-
-    const paymentData = paymentDoc.data()!;
-    const updateData: any = {
-      paymentStatus: dto.paymentStatus,
-      updatedAt: new Date(),
-    };
-
-    if (dto.transactionReference !== undefined) {
-      updateData.transactionReference = dto.transactionReference;
-    }
-
-    if (dto.paymentStatus === PaymentStatus.SUCCESS) {
-      updateData.paidAt = new Date();
-    }
-
-    try {
-      await paymentRef.update(updateData);
-
-      if (dto.paymentStatus === PaymentStatus.SUCCESS) {
-        await this.orderCollection().doc(paymentData.orderId).update({
-          orderStatus: OrderStatus.CONFIRMED,
-          updatedAt: new Date(),
-        });
+  async createPayment(actor: AuthUser, orderId: string) {
+    const config = payHereConfig();
+    const authUid = authenticatedUid(actor);
+    const orderRef = this.orders().doc(requireDocumentId(orderId));
+    const newPayment = this.payments().doc();
+    const token = randomBytes(32).toString('hex');
+    const checkoutToken = checkoutTokenHash(token);
+    return this.firestore.runTransaction(async (transaction) => {
+      const order = (await transaction.get(orderRef)).data();
+      requireCustomer(actor, order);
+      if (!order || order.pricingSource !== CATALOG_PRICING || !Number.isSafeInteger(order.totalMinor) ||
+          order.totalMinor <= 0 || order.totalMinor >= 10 ** 15 || order.currency !== 'LKR' ||
+          order.orderStatus !== OrderStatus.PENDING_PAYMENT) {
+        throw new ConflictException('Create a new catalog-priced order before payment');
       }
-
-      if (
-        dto.paymentStatus === PaymentStatus.FAILED ||
-        dto.paymentStatus === PaymentStatus.CANCELLED
-      ) {
-        await this.orderCollection().doc(paymentData.orderId).update({
-          orderStatus: OrderStatus.CANCELLED,
-          updatedAt: new Date(),
-        });
-      }
-
-      const updatedDoc = await paymentRef.get();
-      return updatedDoc.data();
-    } catch (error) {
-      console.error('[PaymentService] Update Payment Status Error:', error);
-      throw new InternalServerErrorException('Failed to update payment status');
-    }
-  }
-
-  async deletePayment(paymentId: string) {
-    const docRef = this.paymentCollection().doc(paymentId);
-    const doc = await docRef.get();
-
-    if (!doc.exists) {
-      throw new NotFoundException('Payment not found');
-    }
-
-    try {
-      await docRef.delete();
-      return { message: 'Payment deleted successfully' };
-    } catch (error) {
-      console.error('[PaymentService] Delete Payment Error:', error);
-      throw new InternalServerErrorException('Failed to delete payment');
-    }
-  }
-
-  async verifyPayment(orderId: string) {
-    const payment = (await this.getPaymentByOrderId(orderId)) as any;
-    if (!payment) {
-      throw new NotFoundException('Payment not found');
-    }
-
-    if (payment.paymentStatus !== PaymentStatus.SUCCESS) {
-      return this.updatePaymentStatus(payment.paymentId, {
-        paymentStatus: PaymentStatus.SUCCESS,
-        transactionReference: 'VERIFIED_BY_CLIENT',
-      });
-    }
-
-    return payment;
-  }
-
-  async handleNotify(data: any) {
-    const { order_id, status_code, payment_id: transactionReference } = data;
-
-    // status_code 2 means success in PayHere
-    if (status_code == 2 || status_code === '2') {
-      try {
-        const payment = await this.getPaymentByOrderId(order_id);
-        if (payment) {
-          await this.updatePaymentStatus(payment.paymentId, {
-            paymentStatus: PaymentStatus.SUCCESS,
-            transactionReference: transactionReference,
-          });
+      let ref = newPayment;
+      if (order.paymentAttemptId) {
+        ref = this.payments().doc(order.paymentAttemptId);
+        const payment = (await transaction.get(ref)).data();
+        if (payment?.orderId !== orderId || payment.merchantId !== config.merchantId ||
+            payment.totalMinor !== order.totalMinor || payment.currency !== order.currency) {
+          throw new ConflictException('Payment attempt no longer matches the order');
         }
-      } catch (error) {
-        // Payment might not exist yet or already updated
-        console.error('[PaymentService] Notify error:', error);
+        if (payment.checkoutOpenedAt || payment.paymentStatus !== PaymentStatus.PENDING) {
+          return { paymentId: ref.id, paymentStatus: payment.paymentStatus, checkoutUrl: null };
+        }
       }
+      const timestamp = new Date();
+      const link = { checkoutToken, checkoutExpiresAtMs: timestamp.getTime() + CHECKOUT_LINK_TTL_MS, updatedAt: timestamp };
+      if (order.paymentAttemptId) {
+        transaction.update(ref, link);
+      } else {
+        transaction.create(ref, {
+          ...link, paymentId: ref.id, orderId, customerId: actor.uid, customerAuthUid: authUid,
+          amount: order.totalAmount, totalMinor: order.totalMinor, currency: order.currency,
+          merchantId: config.merchantId, merchantMode: 'sandbox', paymentMethod: 'PAYHERE',
+          paymentStatus: PaymentStatus.PENDING, createdAt: timestamp,
+        });
+        transaction.update(orderRef, { paymentAttemptId: ref.id, updatedAt: timestamp });
+      }
+      return { paymentId: ref.id, paymentStatus: PaymentStatus.PENDING,
+        checkoutUrl: config.origin + '/payments/checkout/' + ref.id + '#' + token };
+    });
+  }
+
+  async openCheckout(paymentId: string, token: unknown) {
+    const config = payHereConfig();
+    if (typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token) || !/^[A-Za-z0-9]{20}$/.test(paymentId)) {
+      throw new NotFoundException('Checkout link unavailable');
     }
-    
+    const ref = this.payments().doc(paymentId);
+    return this.firestore.runTransaction(async (transaction) => {
+      const data = (await transaction.get(ref)).data();
+      if (!data || data.merchantId !== config.merchantId || data.merchantMode !== 'sandbox' ||
+          data.checkoutOpenedAt || data.paymentStatus !== PaymentStatus.PENDING ||
+          !(data.checkoutExpiresAtMs > Date.now()) || typeof data.checkoutToken !== 'string' ||
+          !/^[a-f0-9]{64}$/.test(data.checkoutToken) ||
+          !timingSafeEqual(Buffer.from(data.checkoutToken, 'hex'), Buffer.from(checkoutTokenHash(token), 'hex'))) {
+        throw new NotFoundException('Checkout link unavailable');
+      }
+      transaction.update(ref, { checkoutOpenedAt: new Date(), checkoutToken: this.firebase.fieldValue.delete() });
+      return checkoutPage(config, ref.id, data.totalMinor);
+    });
+  }
+
+  async getAllPayments(actor: AuthUser) {
+    requireAdministrator(actor);
+    const { docs } = await this.payments().orderBy('createdAt', 'desc').get();
+    return docs.map((doc) => this.paymentView(doc.data()));
+  }
+
+  async getPaymentsByUser(actor: AuthUser) {
+    const authUid = authenticatedUid(actor);
+    // Older payments stored a caller-selected order ID; they do not prove ownership.
+    const { docs } = await this.payments().where('customerAuthUid', '==', authUid).get();
+    return docs.map((doc) => this.paymentView(doc.data()));
+  }
+
+  async getPaymentById(actor: AuthUser, paymentId: string) {
+    const authUid = authenticatedUid(actor);
+    const data = (await this.payments().doc(requireDocumentId(paymentId)).get()).data();
+    if (!data || (!isAdministrator(actor) && data.customerAuthUid !== authUid)) {
+      throw new NotFoundException('Payment not found');
+    }
+    return this.paymentView(data);
+  }
+
+  async verifyPayment(actor: AuthUser, orderId: string) {
+    const order = (await this.orders().doc(requireDocumentId(orderId)).get()).data();
+    requireCustomer(actor, order);
+    if (!order?.paymentAttemptId) return { orderId, paymentStatus: PaymentStatus.PENDING };
+    return this.getPaymentById(actor, order.paymentAttemptId);
+  }
+
+  async handleNotify(body: unknown) {
+    const config = payHereConfig();
+    const notice = parseNotification(config, body);
+    const paymentRef = this.payments().doc(notice.id);
+    await this.firestore.runTransaction(async (transaction) => {
+      const payment = (await transaction.get(paymentRef)).data();
+      if (!payment || !payment.checkoutOpenedAt || payment.merchantId !== config.merchantId ||
+          payment.merchantMode !== 'sandbox' || payment.totalMinor !== notice.totalMinor ||
+          payment.currency !== notice.currency) {
+        throw new ConflictException('Notification does not match a payment attempt');
+      }
+      const orderRef = this.orders().doc(payment.orderId);
+      const order = (await transaction.get(orderRef)).data();
+      if (!order || order.paymentAttemptId !== paymentRef.id || order.pricingSource !== CATALOG_PRICING ||
+          order.customerAuthUid !== payment.customerAuthUid || order.totalMinor !== notice.totalMinor ||
+          order.currency !== notice.currency) {
+        throw new ConflictException('Notification does not match the order');
+      }
+      const timestamp = new Date();
+      if (payment.paymentStatus === PaymentStatus.SUCCESS) {
+        if (notice.code === '-3' && !payment.chargebackAt) {
+          transaction.update(paymentRef, { chargebackAt: timestamp, updatedAt: timestamp });
+        }
+        return;
+      }
+      if (notice.code === '0' || notice.code === '-3') return;
+      if (notice.code !== '2') {
+        transaction.update(paymentRef, {
+          paymentStatus: notice.code === '-1' ? PaymentStatus.CANCELLED : PaymentStatus.FAILED,
+          updatedAt: timestamp,
+        });
+        return;
+      }
+      if (order.orderStatus !== OrderStatus.PENDING_PAYMENT) {
+        throw new ConflictException('Order cannot be confirmed');
+      }
+      const fulfillments = await transaction.get(this.firestore.collection(FULFILLMENTS_COLLECTION)
+        .where('parentOrderId', '==', orderRef.id));
+      if (fulfillments.empty || fulfillments.docs.some((doc) => doc.get('orderStatus') !== OrderStatus.PENDING_PAYMENT)) {
+        throw new ConflictException('Order fulfillments cannot be confirmed');
+      }
+      const orderUpdate = { orderStatus: OrderStatus.CONFIRMED, paymentEnvironment: 'sandbox', updatedAt: timestamp };
+      transaction.update(paymentRef, {
+        paymentStatus: PaymentStatus.SUCCESS,
+        settlementSource: 'payhere-notify',
+        paidAt: timestamp,
+        updatedAt: timestamp,
+      });
+      transaction.update(orderRef, orderUpdate);
+      for (const fulfillment of fulfillments.docs) transaction.update(fulfillment.ref, orderUpdate);
+    });
     return { status: 'acknowledged' };
   }
 }

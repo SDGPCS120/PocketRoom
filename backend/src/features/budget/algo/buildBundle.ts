@@ -3,6 +3,7 @@ import { BudgetBundleRequestDto, BudgetBundleResponseDto, BundleVariantDto } fro
 import { norm, scoreItem } from './scoring';
 import { Candidate, mckp, minCostRequired } from './mckp';
 import { greedyOptional } from './greedy';
+import { budgetStateCount, DEFAULT_BUDGET_STEP_LKR } from './budget-limits';
 
 function topKByCategory(
   items: FurnitureItem[],
@@ -10,7 +11,7 @@ function topKByCategory(
   pref: any,
   k: number,
 ): Record<string, Candidate[]> {
-  const groups: Record<string, Candidate[]> = {};
+  const groups: Record<string, Candidate[]> = Object.create(null);
   const catSet = new Set(furnitureTypes.map(norm));
   furnitureTypes.forEach((c) => (groups[norm(c)] = []));
 
@@ -50,7 +51,8 @@ export function buildBundle(
   const cons = req.constraints ?? {};
 
   const topK = cons.topKPerFurnitureType ?? 30;
-  const step = cons.budgetStepLkr ?? 1000;
+  const step = cons.budgetStepLkr ?? DEFAULT_BUDGET_STEP_LKR;
+  const stateCount = budgetStateCount(req.totalBudget, step);
   const maxOptional = cons.maxOptionalItems ?? 3;
   const minRating = cons.minRating ?? 0;
 
@@ -58,7 +60,7 @@ export function buildBundle(
   const optional = (req.optionalFurnitureTypes ?? []).map(norm);
 
   const filtered = furnitureItems.filter((p) => {
-    if (typeof p.price !== 'number' || p.price <= 0) return false;
+    if (!Number.isFinite(p.price) || p.price <= 0) return false;
     if (typeof p.rating === 'number' && p.rating < minRating) return false;
     if (p.inStock === false) return false;
     return true;
@@ -95,9 +97,15 @@ export function buildBundle(
 
   const bundles: BundleVariantDto[] = [];
   const generatedSignatures = new Set<string>();
-  const MAX_LIMIT = 50;
+  // The solver retries with different scores to generate alternative bundles.
+  // Bound the total work across those retries, including scans of empty states.
+  const candidates = availableRequired.reduce(
+    (count, category) => count + requiredGroups[category].length + 1,
+    1,
+  );
+  const maxVariants = Math.min(50, Math.max(1, Math.floor(10_000_000 / (stateCount * candidates))));
 
-  while (bundles.length < MAX_LIMIT) {
+  while (bundles.length < maxVariants) {
     const dpRes = mckp(availableRequired, requiredGroups, req.totalBudget, step);
     if (!dpRes.ok) {
       if (bundles.length > 0) break;

@@ -32,13 +32,13 @@ export class AddressService {
     return this.firebaseService.firestore.collection(this.colName);
   }
 
-  async create(dto: CreateAddressDto) {
+  async create(userId: string, dto: CreateAddressDto) {
     const customId = generateMeaningfulId('address');
     const ref = this.col().doc(customId);
 
     const data: any = {
       id: ref.id,
-      userId: dto.userId,
+      userId,
       fullName: dto.fullName,
       phoneNumber: dto.phoneNumber,
       addressLine1: dto.addressLine1,
@@ -58,43 +58,21 @@ export class AddressService {
 
     // if this address is set as default, unset other default addresses of same user
     if (data.isDefault === true) {
-      // Single-field query + in-memory filter to avoid composite index requirement
-      const allUserAddresses = await this.col()
-        .where('userId', '==', dto.userId)
-        .get();
-
-      const batch = this.firebaseService.firestore.batch();
-
-      allUserAddresses.docs.forEach((doc) => {
-        const d = doc.data() as any;
-        if (!d.isDeleted && d.isDefault === true) {
-          batch.update(doc.ref, {
-            isDefault: false,
-            updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
-          });
-        }
+      await this.firebaseService.firestore.runTransaction(async (transaction) => {
+        await this.clearOtherDefaults(transaction, userId);
+        transaction.create(ref, data);
       });
-
-      batch.set(ref, data);
-      await batch.commit();
     } else {
-      await ref.set(data);
+      await ref.create(data);
     }
 
     const created = await ref.get();
     return created.data();
   }
 
-  async findAll(userId?: string, isDefault?: boolean) {
-    // Use a single-field query to avoid composite index requirements.
-    // Filter isDeleted and isDefault in memory.
-    let q: FirebaseFirestore.Query = this.col();
-
-    if (userId) {
-      q = q.where('userId', '==', userId);
-    }
-
-    const snap = await q.get();
+  async findAll(userId: string, isDefault?: boolean) {
+    // Filter isDeleted and isDefault in memory to avoid composite indexes.
+    const snap = await this.col().where('userId', '==', userId).get();
     let results = snap.docs.map((d) => d.data() as any);
 
     // In-memory filters (avoids composite index requirement)
@@ -106,32 +84,42 @@ export class AddressService {
     return results;
   }
 
-  async findOne(id: string) {
-    const ref = this.col().doc(id);
-    const snap = await ref.get();
-
-    if (!snap.exists) throw new NotFoundException('Address not found');
-
-    const data = snap.data() as any;
-    if (data?.isDeleted) throw new NotFoundException('Address not found');
-
+  private requireOwnedAddress(snap: FirebaseFirestore.DocumentSnapshot, userId: string) {
+    const data = snap.data() as AddressDoc | undefined;
+    if (!data || data.isDeleted || data.userId !== userId) {
+      throw new NotFoundException('Address not found');
+    }
     return data;
   }
 
-  async update(id: string, dto: UpdateAddressDto) {
+  private async clearOtherDefaults(
+    transaction: FirebaseFirestore.Transaction,
+    userId: string,
+    exceptId?: string,
+  ) {
+    const addresses = await transaction.get(this.col().where('userId', '==', userId));
+    for (const doc of addresses.docs) {
+      const address = doc.data() as AddressDoc;
+      if (doc.id !== exceptId && !address.isDeleted && address.isDefault === true) {
+        transaction.update(doc.ref, {
+          isDefault: false,
+          updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
+        });
+      }
+    }
+  }
+
+  async findOne(userId: string, id: string) {
+    return this.requireOwnedAddress(await this.col().doc(id).get(), userId);
+  }
+
+  async update(userId: string, id: string, dto: UpdateAddressDto) {
     const ref = this.col().doc(id);
-    const snap = await ref.get();
-
-    if (!snap.exists) throw new NotFoundException('Address not found');
-
-    const current = snap.data() as any;
-    if (current?.isDeleted) throw new NotFoundException('Address not found');
 
     const updateData: any = {
       updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
     };
 
-    if (dto.userId !== undefined) updateData.userId = dto.userId;
     if (dto.fullName !== undefined) updateData.fullName = dto.fullName;
     if (dto.phoneNumber !== undefined) updateData.phoneNumber = dto.phoneNumber;
     if (dto.addressLine1 !== undefined) updateData.addressLine1 = dto.addressLine1;
@@ -142,48 +130,27 @@ export class AddressService {
     if (dto.country !== undefined) updateData.country = dto.country;
     if (dto.isDefault !== undefined) updateData.isDefault = dto.isDefault;
 
-    // if making this address default, unset others for same user
-    if (dto.isDefault === true) {
-      const targetUserId = dto.userId ?? current.userId;
+    await this.firebaseService.firestore.runTransaction(async (transaction) => {
+      this.requireOwnedAddress(await transaction.get(ref), userId);
+      if (dto.isDefault === true) {
+        await this.clearOtherDefaults(transaction, userId, id);
+      }
+      transaction.update(ref, updateData);
+    });
 
-      // Single-field query + in-memory filter to avoid composite index requirement
-      const allUserAddresses = await this.col()
-        .where('userId', '==', targetUserId)
-        .get();
-
-      const batch = this.firebaseService.firestore.batch();
-
-      allUserAddresses.docs.forEach((doc) => {
-        if (doc.id !== id) {
-          const d = doc.data() as any;
-          if (!d.isDeleted && d.isDefault === true) {
-            batch.update(doc.ref, {
-              isDefault: false,
-              updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
-            });
-          }
-        }
-      });
-
-      batch.update(ref, updateData);
-      await batch.commit();
-    } else {
-      await ref.update(updateData);
-    }
-
-    const updated = await ref.get();
-    return updated.data();
+    return this.findOne(userId, id);
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
-
+  async remove(userId: string, id: string) {
     const ref = this.col().doc(id);
-    await ref.update({
-      isDeleted: true,
-      isDefault: false,
-      deletedAt: this.firebaseService.fieldValue.serverTimestamp(),
-      updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
+    await this.firebaseService.firestore.runTransaction(async (transaction) => {
+      this.requireOwnedAddress(await transaction.get(ref), userId);
+      transaction.update(ref, {
+        isDeleted: true,
+        isDefault: false,
+        deletedAt: this.firebaseService.fieldValue.serverTimestamp(),
+        updatedAt: this.firebaseService.fieldValue.serverTimestamp(),
+      });
     });
 
     return { deleted: true, id };

@@ -1,18 +1,24 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { BudgetBundleRequestDto, BudgetBundleResponseDto } from './dto/budget-bundle.dto';
 import { buildBundle } from './algo/buildBundle';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { FurnitureItem } from './algo/types';
+import { budgetStateCount, DEFAULT_BUDGET_STEP_LKR } from './algo/budget-limits';
 
 @Injectable()
 export class BudgetService {
   private readonly logger = new Logger(BudgetService.name);
+  private catalog?: { items: FurnitureItem[]; expiresAt: number };
+  private catalogLoad?: Promise<FurnitureItem[]>;
+  private readonly requestCounts = new Map<string, { count: number; expiresAt: number }>();
+  private globalRequests = { count: 0, expiresAt: 0 };
 
   constructor(private readonly firebase: FirebaseService) { }
 
   private async getFurnitureFromDB(): Promise<FurnitureItem[]> {
     const snapshot = await this.firebase.firestore
       .collection('products')
+      .limit(1000)
       .get();
 
     this.logger.log(`Fetched ${snapshot.docs.length} products from Firestore`);
@@ -56,10 +62,40 @@ export class BudgetService {
     return items;
   }
 
+  private furniture(): Promise<FurnitureItem[]> {
+    if (this.catalog && Date.now() < this.catalog.expiresAt) return Promise.resolve(this.catalog.items);
+    if (this.catalogLoad) return this.catalogLoad;
+    this.catalogLoad = this.getFurnitureFromDB().then((items) => {
+      this.catalog = { items, expiresAt: Date.now() + 60_000 };
+      return items;
+    }).finally(() => { this.catalogLoad = undefined; });
+    return this.catalogLoad;
+  }
+
+  private admitRequest(clientIp: string): void {
+    const now = Date.now();
+    if (now >= this.globalRequests.expiresAt) {
+      this.globalRequests = { count: 0, expiresAt: now + 60_000 };
+      this.requestCounts.clear();
+    }
+    const key = clientIp || 'unknown';
+    const client = this.requestCounts.get(key) ?? { count: 0, expiresAt: now + 60_000 };
+    if (now >= client.expiresAt) { client.count = 0; client.expiresAt = now + 60_000; }
+    if (client.count >= 20 || this.globalRequests.count >= 120) {
+      throw new HttpException('Budget request limit reached; try again shortly', HttpStatus.TOO_MANY_REQUESTS);
+    }
+    client.count++;
+    this.globalRequests.count++;
+    this.requestCounts.set(key, client);
+  }
+
   async generateBundle(
-    dto: BudgetBundleRequestDto
+    dto: BudgetBundleRequestDto,
+    clientIp = 'unknown',
   ): Promise<BudgetBundleResponseDto> {
-    const furnitureItems = await this.getFurnitureFromDB();
+    budgetStateCount(dto.totalBudget, dto.constraints?.budgetStepLkr ?? DEFAULT_BUDGET_STEP_LKR);
+    this.admitRequest(clientIp);
+    const furnitureItems = await this.furniture();
     this.logger.log(`Generating bundle for ${dto.requiredFurnitureTypes.join(', ')} with ${furnitureItems.length} items`);
     const result = buildBundle(dto, furnitureItems);
 

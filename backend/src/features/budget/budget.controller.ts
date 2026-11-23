@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req, ValidationPipe } from '@nestjs/common';
+import type { Request } from 'express';
 import { BudgetService } from './budget.service';
 import { BudgetBundleRequestDto, BudgetBundleResponseDto } from './dto/budget-bundle.dto';
 
@@ -8,11 +9,14 @@ export class BudgetController {
 
   @Post('generate')
   async generateBundle(
-    @Body() dto: BudgetBundleRequestDto,
+    @Req() request: Request,
+    @Body(new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    })) dto: BudgetBundleRequestDto,
   ): Promise<BudgetBundleResponseDto> {
-    console.log('[BudgetController] Received Request:', JSON.stringify(dto, null, 2));
-    const res = await this.budgetService.generateBundle(dto);
-    console.log('[BudgetController] Returning Full Response:', JSON.stringify(res, null, 2));
-    return res;
+    return this.budgetService.generateBundle(dto, request.ip);
   }
 }

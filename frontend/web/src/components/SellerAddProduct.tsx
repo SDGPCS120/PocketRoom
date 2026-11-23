@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../lib/firebase';
-import api, { getApiBaseURL } from '../lib/api';
+import api from '../lib/api';
 import { useSellerSession } from '../auth/sellerSession';
 import AppShell from './AppShell';
 import './SellerAddProduct.css';
@@ -142,17 +142,7 @@ const SellerAddProduct: React.FC = () => {
         multipart.append('y', formData.height || '10');
         multipart.append('z', formData.depth || '10');
 
-        const baseUrl = getApiBaseURL();
-        const genResponse = await fetch(`${baseUrl}/model-generation/${productId}/generate`, {
-          method: 'POST',
-          body: multipart,
-        });
-
-        if (!genResponse.ok) {
-          // Non-fatal: product was created successfully; warn the user
-          console.warn('3D generation failed:', await genResponse.text());
-          setError(`Product saved, but 3D generation failed. You can retry it from the product's edit page.`);
-        }
+        await api.postForm(`/model-generation/${encodeURIComponent(productId)}/generate`, multipart);
       } catch (err) {
         console.warn('3D generation error:', err);
         setError(`Product saved, but 3D generation encountered an error. You can retry it from the product's edit page.`);

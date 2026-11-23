@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType, PickType } from '@nestjs/mapped-types';
 import { CreateOrderDto } from './create-order.dto';
 
-export class UpdateOrderDto extends PartialType(CreateOrderDto) {}
+export class UpdateOrderDto extends PartialType(
+  PickType(CreateOrderDto, ['shippingAddressId', 'billingAddressId'] as const),
+) {}

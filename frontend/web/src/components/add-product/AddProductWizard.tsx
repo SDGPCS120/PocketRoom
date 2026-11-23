@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../lib/firebase';
-import api, { getApiBaseURL, toUserFacingApiError } from '../../lib/api';
+import api, { toUserFacingApiError } from '../../lib/api';
 import { useSellerSession } from '../../auth/sellerSession';
 import { useToast } from '../Toast';
 import AppShell from '../AppShell';
@@ -209,16 +209,7 @@ const SellerAddProductWizard: React.FC = () => {
         multipart.append('y', form.height || '10');
         multipart.append('z', form.depth || '10');
 
-        const baseUrl = getApiBaseURL();
-        const genResponse = await fetch(`${baseUrl}/model-generation/${productId}/generate`, {
-          method: 'POST',
-          body: multipart,
-        });
-
-        if (!genResponse.ok) {
-          console.warn('3D generation failed:', await genResponse.text());
-          showToast('Product saved, but 3D generation failed. You can retry from the edit page.', 'error');
-        }
+        await api.postForm(`/model-generation/${encodeURIComponent(productId)}/generate`, multipart);
       } catch (err) {
         console.warn('3D generation error:', err);
         showToast('Product saved, but 3D generation encountered an error. Retry from the edit page.', 'error');

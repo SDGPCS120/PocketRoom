@@ -1,4 +1,6 @@
-import { Controller, Get, Post, Body, Query, Res, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpStatus, HttpCode, Req, UseGuards } from '@nestjs/common';
+import { FirebaseAuthGuard } from '../../modules/auth/guards/firebase-auth.guard';
+import { requireAdministrator, type AuthenticatedRequest } from '../../modules/auth/types/authenticated-request';
 import { SearchService } from './search.service';
 
 @Controller('search')
@@ -24,7 +26,9 @@ export class SearchController {
     }
 
     @Post('reload')
-    async reloadProducts() {
+    @UseGuards(FirebaseAuthGuard)
+    async reloadProducts(@Req() request: AuthenticatedRequest) {
+        requireAdministrator(request.user);
         try {
             await this.searchService.rebuildSearchIndex();
             return {

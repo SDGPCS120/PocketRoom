@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../lib/firebase';
-import api, { getApiBaseURL, toUserFacingApiError } from '../lib/api';
+import api, { toUserFacingApiError } from '../lib/api';
 import { useSellerSession } from '../auth/sellerSession';
 import AppShell from './AppShell';
 import './SellerEditProduct.css';
@@ -150,6 +150,7 @@ const SellerEditProduct: React.FC = () => {
 
   // ── Generate 3D model ──────────────────────────────────────────────────────
   const handleGenerate = async () => {
+    if (!productId) return;
     if (!selectedGenImg) {
       setGenError('Please select a reference image first.');
       return;
@@ -177,22 +178,14 @@ const SellerEditProduct: React.FC = () => {
       multipart.append('y', formData.height || '10');
       multipart.append('z', formData.depth || '10');
 
-      const baseUrl = getApiBaseURL();
-      const res = await fetch(`${baseUrl}/model-generation/${productId}/generate`, {
-        method: 'POST',
-        body: multipart,
-      });
-
-      if (!res.ok) {
-        throw new Error(await res.text());
-      }
+      await api.postForm(`/model-generation/${encodeURIComponent(productId)}/generate`, multipart);
 
       setGenStatus('done');
       // Refresh product so AR badge shows
       const refreshed = await api.get<ProductData>(`/products/${productId}`);
       setProduct(refreshed.data);
     } catch (err) {
-      setGenError(err instanceof Error ? err.message : 'Generation failed.');
+      setGenError(toUserFacingApiError(err));
       setGenStatus('error');
     }
   };

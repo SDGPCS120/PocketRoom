@@ -51,8 +51,10 @@ class ApiClient {
     // Add logging interceptor for debugging
     _dio.interceptors.add(
       LogInterceptor(
-        requestBody: true,
-        responseBody: true,
+        requestHeader: false,
+        requestBody: false,
+        responseHeader: false,
+        responseBody: false,
         error: true,
         logPrint: (obj) => debugPrint('[API] $obj'),
       ),
